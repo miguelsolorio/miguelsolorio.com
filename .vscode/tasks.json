@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "develop",
+			"problemMatcher": [],
+			"label": "Start Hugo Server",
+			"detail": "hugo server -D",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}

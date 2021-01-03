@@ -1,0 +1,16 @@
+{
+  "name": "hugo-tailwind",
+  "version": "1.0.0",
+  "description": "",
+  "author": "miguelsolorio",
+  "license": "MIT",
+  "scripts": {
+    "develop": "hugo server -D",
+    "export": "hugo --minify"
+  },
+  "dependencies": {
+    "autoprefixer": "^9.8.0",
+    "postcss-cli": "^7.1.1",
+    "tailwindcss": "^1.4.6"
+  }
+}
