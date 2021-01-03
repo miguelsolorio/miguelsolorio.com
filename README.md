@@ -1,6 +1,8 @@
 # Miguel Solorio Site
 The code for my personal site. It's build with [Hugo](https://gohugo.io) and [Tailwind](https://tailwindcss.com).
 
+![Site](static/site.png)
+
 ## File Structure
     
 ### HTML
