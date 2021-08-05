@@ -1,7 +1,6 @@
 const hand = document.getElementById('wave');
 const emojis = ['👋', '👍', '🤙', '👊', '🤘', '👏', '✌️', '💪', '🎉', '🥳', '🚴‍♂️', '🌴', '🏖', '👀']
 
-// 🙏 https://stackoverflow.com/a/17891411
 function randomNoRepeats(array) {
   let copy = array.slice(0);
   return function () {
