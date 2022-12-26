@@ -1,0 +1,65 @@
+@layer components {
+
+    body {
+        @apply transition-all duration-200 ease-in bg-white
+    }
+
+    .noise, .gradient {
+        @apply pointer-events-none absolute top-0 left-0 w-full h-full transition-all duration-100 ease-in
+    }
+
+    .noise {
+        background: 1000px 1000px repeat url(../noise.svg);
+        @apply -z-10 bg-blend-overlay
+    }
+
+    .gradient {
+        @apply -z-20 bg-gradient-to-br from-indigo-100 to-blue-300 via-indigo-300 animate-gradientX
+    }
+
+    /* Code Version */
+    body.code {
+        @apply bg-gray-900
+    }
+
+    .code, .code intro p {
+        @apply text-gray-400
+    }
+
+    .code a::before {
+        @apply bg-green-300
+    }
+
+    .code a:hover {
+        @apply text-gray-900;
+    }
+
+    .code a:hover::before {
+        @apply bg-green-200 text-gray-900
+    }
+
+    .code .gradient {
+        @apply opacity-0
+    }
+
+    .code .noise {
+        @apply opacity-10
+    }
+
+    .code h1 {
+        font-family: 'DM Mono', monospace;
+        @apply text-green-500
+    }
+
+    .code intro h1::after{
+        @apply opacity-100 bg-green-200
+    }
+
+    .code intro profile img:nth-child(1) {
+        @apply opacity-0
+    }
+
+    .code intro profile img:nth-child(3) {
+        @apply opacity-100
+    }
+}

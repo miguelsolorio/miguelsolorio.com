@@ -20,3 +20,17 @@ hand.onclick = function (e) {
   favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
   e.preventDefault();
 }
+
+let timer;
+const code = document.getElementById('code')
+function toggleCode() { document.querySelector('body').classList.toggle('code') }
+code.addEventListener('mouseover', e => {
+  setTimeout(() => {
+    toggleCode()
+  }, 100);
+});
+code.addEventListener('mouseleave', e => {
+  setTimeout(() => {
+    toggleCode()
+  }, 100);
+});

@@ -9,12 +9,29 @@ module.exports = {
           raw: '(prefers-color-scheme: dark)'
         },
       },
+      colors: {
+        transparent: 'transparent',
+        current: 'currentColor',
+        'royal': '#2F5CFC',
+        'purple': '#3f3cbb',
+        'midnight': '#121063',
+        'metal': '#565584',
+        'tahiti': '#3ab7bf',
+        'silver': '#ecebff',
+        'bubble-gum': '#ff77e9',
+        'bermuda': '#78dcca',
+      },
       animation: {
-        gradientX: 'gradientX 15s ease infinite',
-        gradientY: 'gradientY 15s ease infinite',
-        gradientXY: 'gradientXY 15s ease infinite',
+        blink: 'blink 1s step-end infinite',
+        gradientX: 'gradientX 15s ease-in infinite',
+        gradientY: 'gradientY 15s ease-in infinite',
+        gradientXY: 'gradientXY 15s ease-in infinite',
       },
       keyframes: {
+        blink: {
+          'from,to': { 'visibility': 'hidden' },
+          '50%': { 'visibility': 'visible'}
+        },
         gradientY: {
           '0%, 100%': {
             'background-size': '400% 400%',

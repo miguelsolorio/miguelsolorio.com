@@ -7,6 +7,9 @@
     <meta property="og:description" content="Software designer and developer working at Microsoft">
     <meta property="og:url" content="https://miguelsolorio.com">
     <title>{{ .Site.Title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
     {{ $styles := resources.Get "css/main.css" }}
     {{ $styles = $styles | resources.PostCSS (dict "inlineImports" true) }}
     <link href="{{ $styles.Permalink }}" rel="stylesheet" />
@@ -14,10 +17,12 @@
 </head>
 
 <body>
+    <div class="noise"></div>
+    <div class="gradient"></div>
+
     {{/*  Container  */}}
+
     <div class="container mx-auto">
-        <div class="flex items-center p-6">
-            <div class="ml-auto">
-                {{ partial "navigation"  . }}
-            </div>
-        </div>
+        <navigation>
+            {{ partial "navigation"  . }}
+        </navigation>
