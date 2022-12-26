@@ -4,11 +4,6 @@ title = "Miguel Solorio"
 SectionPagesMenu = "main"
 
 [[menu.main]]
-  name = "Twitter"
-  weight = 1
-  url = "https://twitter.com/miguelsolorio_"
-
-[[menu.main]]
   name = "GitHub"
   weight = 2
   url = "https://github.com/misolori"

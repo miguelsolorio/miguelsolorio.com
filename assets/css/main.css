@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https: //fonts.googleapis.com/css?family=Playfair|Inter|IBM Plex Mono');
+
+@layer components {
+  body {
+    font-family: "Inter", sans-serif;
+    @apply bg-gradient-to-r from-indigo-100 to-blue-100 via-purple-100 animate-gradientX font-medium;
+    height: 100vh;
+  }
+  a {
+    @apply relative overflow-x-hidden no-underline
+  }
+  a:hover::before {
+    @apply h-full w-full bg-indigo-300
+  }
+  a::before {
+    content: "";
+    @apply w-5/6 h-2 bg-indigo-200 absolute left-0 right-0 bottom-0 m-auto -z-10 transition-all duration-100
+  }
+
+  intro {
+    @apply flex m-auto max-w-4xl
+  }
+
+  intro profile {
+    @apply w-48 h-48 mr-8 relative
+  }
+
+  intro profile:hover img {
+    @apply scale-125 shadow-xl
+  }
+
+  intro profile img {
+    @apply w-full rounded-full transition-all duration-300
+  }
+
+  intro profile img:nth-child(2){
+    @apply opacity-0 pointer-events-none absolute top-0 left-0
+  }
+
+  intro profile:hover img:nth-child(2) {
+    @apply opacity-100
+  }
+
+  intro p {
+    @apply py-0 m-0 text-lg text-gray-800
+  }
+
+  intro h1 {
+    font-family: "Playfair", serif;
+    @apply text-8xl font-bold text-indigo-600 pt-0 pb-4
+  }
+
+  #wave {
+    @apply inline-flex mr-1 transition duration-300 ease-in-out transform cursor-pointer hover:scale-150 hover:rotate-6
+  }
+}
