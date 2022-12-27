@@ -38,7 +38,7 @@
   }
 
   intro profile img {
-    @apply w-full rounded-full transition-all duration-100
+    @apply w-full rounded-full transition-all duration-200
   }
 
   intro profile img:nth-child(2),
@@ -54,9 +54,13 @@
     @apply py-0 m-0 text-base text-slate-700 tracking-tight font-medium
   }
 
+  intro strike {
+    @apply inline-block opacity-40 line-through
+  }
+
   intro h1 {
     font-family: 'Libre Baskerville', serif;
-    @apply text-7xl text-royal pt-2 pb-6 font-bold tracking-tighter inline-flex items-center gap-2
+    @apply text-7xl text-rizz4 pt-2 pb-6 font-semibold tracking-tighter inline-flex items-center gap-2
   }
 
   intro h1::after {

@@ -1,3 +1,4 @@
+
 @layer components {
 
     body {
@@ -9,12 +10,12 @@
     }
 
     .noise {
-        background: 1000px 1000px repeat url(../noise.svg);
-        @apply -z-10 bg-blend-overlay
+        background: 7000px 7000px repeat url(../noise.svg);
+        @apply -z-10 bg-blend-overlay opacity-60
     }
 
     .gradient {
-        @apply -z-20 bg-gradient-to-br from-indigo-100 to-blue-300 via-indigo-300 animate-gradientX
+        @apply -z-20 bg-gradient-to-br from-rizz1 to-rizz3 via-rizz2 animate-gradientX
     }
 
     /* Code Version */
@@ -61,5 +62,12 @@
 
     .code intro profile img:nth-child(3) {
         @apply opacity-100
+    }
+
+    #matrix {
+        @apply w-full h-full fixed top-0 left-0 -z-10 opacity-0
+    }
+    .code #matrix {
+        @apply opacity-20
     }
 }

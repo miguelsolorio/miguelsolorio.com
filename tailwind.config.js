@@ -10,16 +10,10 @@ module.exports = {
         },
       },
       colors: {
-        transparent: 'transparent',
-        current: 'currentColor',
-        'royal': '#2F5CFC',
-        'purple': '#3f3cbb',
-        'midnight': '#121063',
-        'metal': '#565584',
-        'tahiti': '#3ab7bf',
-        'silver': '#ecebff',
-        'bubble-gum': '#ff77e9',
-        'bermuda': '#78dcca',
+        'rizz1': '#dfe2fe',
+        'rizz2': '#b1cbfa',
+        'rizz3': '#8e98f5',
+        'rizz4': '#7971ea'
       },
       animation: {
         blink: 'blink 1s step-end infinite',
