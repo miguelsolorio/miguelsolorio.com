@@ -9,20 +9,40 @@
   body {
     font-family: "Inter", sans-serif;
     height: 100vh;
+    @apply text-slate-600
   }
+
+  noise {
+    pointer-events: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .9;
+    background: repeat center center url('../noise.svg');
+    background-size: 20%;
+  }
+
   a {
     @apply relative overflow-x-hidden no-underline
   }
+  a:hover{
+    @apply text-slate-800
+  }
   a:hover::before {
-    @apply h-full w-full bg-indigo-400
+    @apply h-full w-full bg-amber-400
   }
   a::before {
     content: "";
-    @apply w-5/6 h-1 bg-indigo-400 absolute left-0 right-0 bottom-0 m-auto -z-10 transition-all duration-100
+    @apply w-11/12 h-1/6 bg-amber-400 absolute left-0 right-0 bottom-0 m-auto -z-10 transition-all duration-100
+  }
+
+  #content {
+    @apply m-auto max-w-5xl
   }
 
   intro {
-    @apply flex m-auto max-w-4xl pt-10
+    @apply flex pt-10 pb-32
   }
 
   intro div {
@@ -51,7 +71,7 @@
   }
 
   intro p {
-    @apply py-0 m-0 text-base text-slate-700 tracking-tight font-medium
+    @apply py-0 m-0 text-base text-slate-600 tracking-tight font-medium
   }
 
   intro strike {
@@ -60,7 +80,7 @@
 
   intro h1 {
     font-family: 'Libre Baskerville', serif;
-    @apply text-7xl text-rizz4 pt-2 pb-6 font-semibold tracking-tighter inline-flex items-center gap-2
+    @apply text-7xl text-slate-800 pt-2 pb-6 font-semibold tracking-tighter inline-flex items-center gap-2
   }
 
   intro h1::after {
@@ -83,4 +103,26 @@
   footer {
     @apply pt-60 pb-12 text-sm text-center
   }
+
+  .section {
+    font-family: 'Libre Baskerville', serif;
+    @apply text-5xl text-slate-800 font-semibold tracking-tighter
+  }
+
+  #side {
+    @apply grid gap-6 mt-10 grid-cols-2
+  }
+
+  #side .project {
+    @apply flex
+  }
+
+  #side img {
+    @apply w-16 h-16 rounded-lg mr-6
+  }
+
+  #side .title {
+    @apply font-bold text-slate-800
+  }
+
 }

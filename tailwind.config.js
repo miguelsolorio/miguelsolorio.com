@@ -9,12 +9,6 @@ module.exports = {
           raw: '(prefers-color-scheme: dark)'
         },
       },
-      colors: {
-        'rizz1': '#dfe2fe',
-        'rizz2': '#b1cbfa',
-        'rizz3': '#8e98f5',
-        'rizz4': '#7971ea'
-      },
       animation: {
         blink: 'blink 1s step-end infinite',
         gradientX: 'gradientX 15s ease-in infinite',
@@ -24,7 +18,7 @@ module.exports = {
       keyframes: {
         blink: {
           'from,to': { 'visibility': 'hidden' },
-          '50%': { 'visibility': 'visible'}
+          '50%': { 'visibility': 'visible' }
         },
         gradientY: {
           '0%, 100%': {

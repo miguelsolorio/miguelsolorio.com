@@ -4,18 +4,27 @@
 
     {{ partial "intro" . }}
 
-    <!-- <div class="grid gap-6 mt-10 sm:grid-cols-1 med:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+    <!-- <p class="section">Projects</p>
+    <projects></projects> -->
+
+    <p class="section">Side Projects</p>
+
+    <div id="side">
         {{ .Content }}
-        {{ range .Pages }}
-            <a href="{{.Params.Link}}" class="flex flex-row p-6 transition duration-300 ease-in-out transform bg-gray-200 rounded-md dark:bg-gray-800 hover:scale-105 hover:-rotate-1 hover:shadow-md dark:hover:shadow-2xl">
-                    <img class="w-12 h-12 mr-4 rounded-md" src="{{ .Params.Thumbnail }}" alt="{{.Title}}">
-                    <div>
-                        <p class="flex items-center p-0 text-xl font-medium">{{.Title}}</p>
-                        <p class="p-0 text-base opacity-75">{{.Description}}</p>
+
+            {{ range .Pages }}
+                {{ if isset .Params "side" }}
+                    <div class="project">
+                        <img src="{{ .Params.Thumbnail }}" alt="{{.Title}}">
+                        <div>
+                            <a href="{{.Params.Link}}" class="title" target="_blank">{{.Title}}</a>
+                            <p class="description">{{.Description}}</p>
+                        </div>
                     </div>
-            </a>
-        {{ end }}
-    </div> -->
+
+                {{ end }}
+            {{ end }}
+    </div>
 
 </div>
 

@@ -2,20 +2,7 @@
 @layer components {
 
     body {
-        @apply transition-all duration-200 ease-in bg-white
-    }
-
-    .noise, .gradient {
-        @apply pointer-events-none absolute top-0 left-0 w-full h-full transition-all duration-100 ease-in
-    }
-
-    .noise {
-        background: 7000px 7000px repeat url(../noise.svg);
-        @apply -z-10 bg-blend-overlay opacity-60
-    }
-
-    .gradient {
-        @apply -z-20 bg-gradient-to-br from-rizz1 to-rizz3 via-rizz2 animate-gradientX
+        @apply transition-all duration-200 ease-in bg-stone-200
     }
 
     /* Code Version */
@@ -43,7 +30,7 @@
         @apply opacity-0
     }
 
-    .code .noise {
+    .code noise {
         @apply opacity-10
     }
 

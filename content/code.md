@@ -1,9 +1,10 @@
 ---
-title: "VS Code"
-description: "Code editing re-defined"
-date: 2021-01-01T21:57:22-08:00
+title: "VS Code Toolkit"
+description: "The design toolkit for VS Code"
+date: 2021-01-02T22:54:08-08:00
 draft: false
-thumbnail: "code.svg"
-link: "http://code.visualstudio.com/"
-weight: 1
+thumbnail: "codicons.svg"
+link: "https://www.figma.com/community/file/786632241522687494/Visual-Studio-Code-Toolkit"
+weight: 3
 ---
+
