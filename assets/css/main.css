@@ -34,15 +34,25 @@
   }
   a:not(.card)::before {
     content: "";
-    @apply w-11/12 h-1/6 bg-amber-400 absolute left-0 right-0 bottom-0 m-auto -z-10 transition-all duration-100
+    @apply w-11/12 h-1/6 bg-amber-400 absolute left-0 right-0 bottom-0 m-auto -z-10 rounded-sm transition-all duration-100
   }
 
   navigation{
     @apply w-full max-w-5xl fixed top-0 left-0 right-0 m-auto flex justify-end p-6
   }
-
+  navigation .content{
+    @apply flex gap-4 items-center
+  }
   navigation a {
-    @apply ml-4 text-sm
+    @apply text-sm transition-all duration-100
+  }
+
+  navigation #theme-toggle{
+    @apply w-6 h-6 p-1 rounded-sm transition-all duration-100 bg-transparent
+  }
+
+  navigation #theme-toggle:hover{
+    @apply bg-amber-400
   }
 
   #content {
