@@ -160,7 +160,7 @@
   }
 
   .card{
-    @apply relative overflow-hidden rounded-xl pt-20 p-16 border-0 bg-stone-900 border-stone-800 dark:border-gray-800 transition duration-200 ease-in-out
+    @apply relative overflow-hidden rounded-xl pt-32 p-16 border-0 bg-stone-900 border-stone-800 dark:border-gray-800 transition duration-200 ease-in-out
   }
   .card:hover{
     @apply shadow-2xl scale-105
@@ -216,7 +216,7 @@
   }
   .single blockquote{
     font-family: 'Libre Baskerville', serif;
-    @apply text-5xl font-bold text-slate-700
+    @apply text-4xl font-bold text-amber-600 pt-4 pb-4
   }
   .single img, .single video {
     @apply mt-8 mb-8 w-full
