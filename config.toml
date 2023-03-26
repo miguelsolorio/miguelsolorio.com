@@ -11,7 +11,7 @@ SectionPagesMenu = "main"
 [[menu.main]]
   name = "Resume"
   weight = 2
-  url = "miguel-solorio-resume.pdf"
+  url = "/miguel-solorio-resume.pdf"
 
 [[menu.footer]]
   name = "ADPList"
