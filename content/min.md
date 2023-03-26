@@ -6,6 +6,6 @@ draft: false
 thumbnail: "min.png"
 link: "https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme"
 weight: 9
-side: true
+project: "small"
 ---
 

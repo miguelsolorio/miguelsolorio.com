@@ -2,30 +2,33 @@
 
 <div id="content" class="p-6">
 
-    {{ partial "intro" . }}
+  {{ partial "intro" . }}
 
-    <!-- <p class="section">Projects</p>
-    <projects></projects> -->
+  <p class="section">Projects</p>
+  <div id="projects">
+    {{ range where .Pages "Params.project" "==" "large" }}
+        <a class="card" href="{{ .Permalink }}">
+            <p class="title">{{.Title}}</p>
+            <p class="description">{{.Description}}</p>
+            <div class="gradient"></div>
+            <img class="thumbnail -rotate-12 desktop:w-full mobile:w-screen desktop:scale-105 tablet:scale-125 mobile:scale-150 absolute top-0 bottom-0 left-0 m-auto z-0" src={{ lower .Title }}.png >
+        </a>
+    {{ end }}
+  </div>
 
-    <p class="section">Side Projects</p>
-
-    <div id="side">
-        {{ .Content }}
-
-            {{ range .Pages }}
-                {{ if isset .Params "side" }}
-                    <div class="project">
-                        <img src="{{ .Params.Thumbnail }}" alt="{{.Title}}">
-                        <div>
-                            <a href="{{.Params.Link}}" class="title" target="_blank">{{.Title}}</a>
-                            <p class="description">{{.Description}}</p>
-                        </div>
-                    </div>
-
-                {{ end }}
-            {{ end }}
+  <p class="section">Side Projects</p>
+  <div id="side">
+    {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
+    {{ range $smallProjects }}
+    <div class="project">
+      <img src="{{ .Params.Thumbnail }}" alt="{{.Title}}" />
+      <div>
+        <a href="{{.Params.Link}}" class="title" target="_blank">{{.Title}}</a>
+        <p class="description">{{.Description}}</p>
+      </div>
     </div>
-
+    {{ end }}
+  </div>
 </div>
 
 {{ partial "footer" . }}

@@ -1,6 +1,9 @@
 {{ partial "header" . }}
 
-<div id="content" class="p-6">
+<div id="content" class="single">
+    <p class="title">{{ .Title }}</p>
+    <p class="description">{{ .Description }}</p>
+    <separator></separator>
     {{ .Content }}
 </div>
 

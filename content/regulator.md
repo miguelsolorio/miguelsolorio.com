@@ -7,6 +7,6 @@ thumbnail: "regulator.png"
 link: "https://www.figma.com/community/plugin/772054917007268360/Regulator"
 weight: 4
 label: "plugin"
-side: true
+project: "small"
 ---
 

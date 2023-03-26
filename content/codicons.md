@@ -6,6 +6,6 @@ draft: false
 link: "https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons"
 thumbnail: "codicons.png"
 weight: 6
-side: true
+project: "small"
 ---
 

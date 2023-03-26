@@ -24,17 +24,25 @@
   }
 
   a {
-    @apply relative overflow-x-hidden no-underline
+    @apply relative no-underline
   }
   a:hover{
     @apply text-slate-800
   }
-  a:hover::before {
-    @apply h-full w-full bg-amber-400
+  a:not(.card):hover::before {
+    @apply h-full w-full bg-amber-400 scale-110
   }
-  a::before {
+  a:not(.card)::before {
     content: "";
     @apply w-11/12 h-1/6 bg-amber-400 absolute left-0 right-0 bottom-0 m-auto -z-10 transition-all duration-100
+  }
+
+  navigation{
+    @apply w-full max-w-5xl fixed top-0 left-0 right-0 m-auto flex justify-end p-6
+  }
+
+  navigation a {
+    @apply ml-4 text-sm
   }
 
   #content {
@@ -53,12 +61,14 @@
     @apply w-48 h-48 mr-8 relative shrink-0
   }
 
+  intro profile img {
+    @apply w-full rounded-full transition-all duration-200 ease-in
+  }
+  intro profile:hover{
+    @apply cursor-zoom-in
+  }
   intro profile:hover img {
     @apply scale-125 shadow-xl
-  }
-
-  intro profile img {
-    @apply w-full rounded-full transition-all duration-200
   }
 
   intro profile img:nth-child(2),
@@ -89,15 +99,11 @@
   }
 
   #wave {
-    @apply inline-flex mr-1 transition duration-300 ease-in-out transform cursor-pointer hover:scale-150 hover:rotate-6 select-none
+    @apply inline-flex mr-1 transition duration-300 ease-in-out transform cursor-pointer select-none
   }
 
-  navigation {
-    @apply flex p-6 justify-end
-  }
-
-  navigation a {
-    @apply ml-4 text-sm
+  #wave:hover{
+    transform: scale(2) rotate(12deg);
   }
 
   footer {
@@ -125,4 +131,66 @@
     @apply font-bold text-slate-800
   }
 
+  #projects{
+    @apply flex flex-col pb-20 gap-12 mt-10
+  }
+
+  .card{
+    @apply relative overflow-hidden rounded-xl pt-20 p-16 border-0 bg-stone-900 border-stone-800 dark:border-gray-800 transition duration-200 ease-in-out
+  }
+  .card:hover{
+    @apply shadow-2xl scale-105
+  }
+  .card:nth-child(odd){
+    @apply hover:rotate-1
+  }
+  .card:nth-child(even){
+    @apply hover:-rotate-1
+  }
+
+  .card .title{
+    font-family: 'Libre Baskerville', serif;
+    @apply relative z-20 pt-16 text-5xl font-bold text-slate-100
+  }
+  .card .description{
+    @apply relative z-20 text-slate-300
+  }
+  .card .gradient {
+    @apply w-full h-full top-0 left-0 absolute bg-gradient-to-t from-gray-900 to-gray-900/50 dark:to-gray-900/40 z-10 scale-110
+  }
+
+  .single .title{
+    font-family: 'Libre Baskerville', serif;
+    @apply mt-16 text-7xl text-slate-800 font-semibold tracking-tighter
+  }
+  .single .description{
+    @apply mt-4 text-xl
+  }
+  .single separator{
+    height: 1px;
+    @apply flex w-full mt-12 mb-12 bg-stone-300
+  }
+
+  .single h1, .single h2, .single h3 {
+    font-family: 'Libre Baskerville', serif;
+    @apply pt-10 pb-3 text-slate-800 font-semibold tracking-tighter
+  }
+  .single h1, .single h2, .single h3, .single p, .single ul {
+    @apply max-w-4xl m-auto
+  }
+  .single h1 {
+    @apply text-4xl
+  }
+  .single h2 {
+    @apply text-2xl
+  }
+  .single h3 {
+    @apply text-xl
+  }
+  .single img {
+    @apply mt-8 mb-8 w-full
+  }
+  .single li {
+    @apply list-disc ml-8
+  }
 }

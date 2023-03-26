@@ -6,7 +6,9 @@ SectionPagesMenu = "main"
 [[menu.main]]
   name = "Work"
   weight = 1
+  url = "/"
 
 [[menu.main]]
   name = "Resume"
   weight = 2
+  url = "miguel-solorio-resume.pdf"

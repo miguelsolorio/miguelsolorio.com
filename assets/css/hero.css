@@ -7,7 +7,7 @@
 
     /* Code Version */
     body.code {
-        @apply bg-gray-900
+        @apply bg-gray-900 cursor-help
     }
 
     .code, .code intro p {
@@ -15,11 +15,11 @@
     }
 
     .code a::before {
-        @apply bg-green-300
+        @apply bg-green-300 !important
     }
 
     .code a:hover {
-        @apply text-gray-900;
+        @apply text-gray-900 cursor-help
     }
 
     .code a:hover::before {

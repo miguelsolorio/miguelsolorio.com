@@ -6,7 +6,7 @@ draft: false
 thumbnail: "chroma.png"
 link: "https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors"
 weight: 1
-side: true
+project: "small"
 label: "plugin"
 ---
 

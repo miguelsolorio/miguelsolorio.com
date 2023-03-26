@@ -6,6 +6,6 @@ draft: false
 thumbnail: "symbols.png"
 link: "https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols"
 weight: 9
-side: true
+project: "small"
 ---
 

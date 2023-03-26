@@ -6,6 +6,6 @@ draft: false
 thumbnail: "fluent.png"
 link: "https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons"
 weight: 9
-side: true
+project: "small"
 ---
 

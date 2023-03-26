@@ -6,7 +6,7 @@ draft: false
 thumbnail: "colorizer.png"
 link: "https://www.figma.com/community/plugin/816889819624434639/Colorizer"
 weight: 2
-side: true
+project: "small"
 label: "plugin"
 ---
 

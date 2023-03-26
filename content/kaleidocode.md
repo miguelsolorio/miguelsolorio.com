@@ -7,6 +7,6 @@ thumbnail: "kaleidocode.png"
 link: "https://kaleidocode.com/"
 weight: 3
 label: "plugin"
-side: true
+project: "small"
 ---
 
