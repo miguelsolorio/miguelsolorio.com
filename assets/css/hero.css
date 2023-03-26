@@ -2,11 +2,12 @@
 @layer components {
 
     body {
-        @apply transition-all duration-200 ease-in bg-stone-200
+        @apply transition-all duration-200 ease-in
     }
 
     /* Code Version */
     body.code {
+        background-image: none;
         @apply bg-gray-900 cursor-help
     }
 

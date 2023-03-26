@@ -9,7 +9,8 @@
   body {
     font-family: "Inter", sans-serif;
     height: 100vh;
-    @apply text-slate-600
+    /* background-image:  url('../background-pattern.svg'); */
+    @apply transition-all duration-200 ease-in bg-stone-200 text-slate-600 bg-fixed
   }
 
   noise {
@@ -18,9 +19,10 @@
     top: 0; left: 0;
     width: 100%;
     height: 100%;
-    opacity: .9;
     background: repeat center center url('../noise.svg');
-    background-size: 20%;
+    background-size: 32%;
+    opacity: .8;
+    mix-blend-mode: luminosity;
   }
 
   a {
@@ -60,7 +62,7 @@
   }
 
   intro {
-    @apply flex pt-10 pb-32
+    @apply flex pt-32 pb-32
   }
 
   intro div {
@@ -117,12 +119,24 @@
   }
 
   footer {
-    @apply pt-60 pb-12 text-sm text-center
+    @apply flex w-full max-w-5xl m-auto pt-24 pb-12 text-sm text-center
+  }
+  footer > *{
+    @apply w-full
+  }
+  footer social{
+    @apply text-left flex gap-4
+  }
+  footer tag{
+    @apply text-right
   }
 
   .section {
     font-family: 'Libre Baskerville', serif;
     @apply text-5xl text-slate-800 font-semibold tracking-tighter
+  }
+  .section.mini{
+    @apply mt-16
   }
 
   #side {
@@ -142,7 +156,7 @@
   }
 
   #projects{
-    @apply flex flex-col pb-20 gap-12 mt-10
+    @apply flex flex-col pb-24 gap-12 mt-10
   }
 
   .card{
@@ -202,5 +216,33 @@
   }
   .single li {
     @apply list-disc ml-8
+  }
+
+  #split{
+    @apply flex flex-row mt-24
+  }
+  #split .col{
+    @apply w-full
+  }
+  #split .company{
+    @apply font-bold mt-6 text-slate-700
+  }
+  #split .detail{
+    @apply flex flex-row max-w-sm
+  }
+  #split .col:nth-child(2) .detail{
+    @apply max-w-md
+  }
+  #split .detail p {
+    @apply w-full
+  }
+  #split .detail .date{
+    @apply text-right
+  }
+  #split .detail.inline{
+    @apply mt-6
+  }
+  #split .detail.inline .company {
+    @apply mt-0
   }
 }
