@@ -12,32 +12,37 @@ function randomNoRepeats(array) {
   };
 }
 
-hand.onclick = function (e) {
-  let pickEmoji = randomNoRepeats(emojis);
-  let favicon = document.querySelector("link[rel~='icon']");
-  let emoji = pickEmoji();
-  this.innerText = emoji;
-  favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
-  e.preventDefault();
+if(hand){
+  hand.onclick = function (e) {
+    let pickEmoji = randomNoRepeats(emojis);
+    let favicon = document.querySelector("link[rel~='icon']");
+    let emoji = pickEmoji();
+    this.innerText = emoji;
+    favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
+    e.preventDefault();
+  }
 }
 
 let timer;
 const code = document.getElementById('code')
 function toggleCode() { document.querySelector('body').classList.toggle('code') }
-code.addEventListener('mouseover', e => {
-  setTimeout(() => {
-    toggleCode()
-  }, 100);
-});
-code.addEventListener('mouseleave', e => {
-  setTimeout(() => {
-    toggleCode()
-  }, 100);
-});
+if(code){
+  code.addEventListener('mouseover', e => {
+    setTimeout(() => {
+      toggleCode()
+    }, 100);
+  });
+  code.addEventListener('mouseleave', e => {
+    setTimeout(() => {
+      toggleCode()
+    }, 100);
+  });
+}
 
 // Matrix https://codepen.io/wefiy/pen/WPpEwo
 // geting canvas by Boujjou Achraf
 var c = document.getElementById("matrix");
+if(c){
 var ctx = c.getContext("2d");
 
 //making the canvas full screen
@@ -85,6 +90,7 @@ function draw() {
 }
 
 setInterval(draw, 35);
+}
 
 
 // dark mode
