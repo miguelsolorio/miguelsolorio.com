@@ -77,4 +77,15 @@ We also shipped the Codicon library as an npm package for anyone wanting to use 
 
 {{< image src="codicons-npm.png" >}}
 
-We also had previously discussed the idea of allowing users to customize their product icon themes as customization is a big part of VS Code. With the introduction of our icon font making it easier to consume icons, allowing product icon themes because a little easier. I partnered with an engineer to help introduce a new API for [product icon themes](https://code.visualstudio.com/api/extension-guides/product-icon-theme).
+We also had previously discussed the idea of allowing users to customize their product icon themes as customization is a big part of VS Code. With the introduction of our icon font making it easier to consume icons, allowing product icon themes because a little easier. I partnered with our engineer to help introduce a [new API](https://code.visualstudio.com/api/extension-guides/product-icon-theme) for product icon themes.
+
+{{< image src="product-icon-theme.png" >}}
+
+Introducing this new functionality meant we needed to increase the visibility. In an effort raise more awareness, I took the Fluent icon system and created a product icon theme named [Fluent Icons](https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons) and it currently has +350k installs.
+
+# Collaborators
+
+- Marco Doelling - Design
+- Cherry Wang - Design
+- David Dossett - Design
+- Martin Aeschlimann - Engineering
