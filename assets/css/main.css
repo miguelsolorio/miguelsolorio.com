@@ -15,6 +15,7 @@
 
   noise {
     pointer-events: none;
+    z-index: -1;
     position: fixed;
     top: 0; left: 0;
     width: 100%;
@@ -188,7 +189,7 @@
     @apply mt-16 text-7xl text-slate-800 font-semibold tracking-tighter
   }
   .single .description{
-    @apply mt-4 text-xl
+    @apply mt-2 text-xl pt-0 pb-0
   }
   .single separator{
     height: 1px;
@@ -212,7 +213,7 @@
     @apply text-xl
   }
   .single p{
-    @apply p-4
+    @apply pt-4 pb-4
   }
   .single blockquote{
     font-family: 'Libre Baskerville', serif;
