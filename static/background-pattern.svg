@@ -1,7 +1,1 @@
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="bozes" fill="#c9c9c9" opacity=".06">
-            <polygon points="0 0 20 0 0 20"></polygon>
-        </g>
-    </g>
-</svg>
+<svg height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h20l-20 20z" fill="#c9c9c9" fill-rule="evenodd" opacity=".06"/></svg>
