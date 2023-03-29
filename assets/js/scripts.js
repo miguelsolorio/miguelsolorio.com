@@ -23,6 +23,14 @@ if(hand){
   }
 }
 
+window.addEventListener('scroll', function() {
+  if (window.scrollY > 30) {
+    document.documentElement.classList.remove('top');
+  } else {
+    document.documentElement.classList.add('top');
+  }
+});
+
 let timer;
 const code = document.getElementById('code')
 let codeSticky = false;
@@ -44,7 +52,6 @@ if(code && !codeSticky){
   });
 
 }
-
 
 
 // Matrix https://codepen.io/wefiy/pen/WPpEwo

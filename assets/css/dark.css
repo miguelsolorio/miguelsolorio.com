@@ -14,4 +14,10 @@
     .dark .card .gradient {
         @apply bg-gradient-to-t from-stone-800 to-stone-800/50
     }
+    .dark nav {
+        @apply bg-stone-900/80
+    }
+    .dark .single separator{
+        @apply bg-stone-800
+    }
 }

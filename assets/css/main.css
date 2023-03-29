@@ -10,8 +10,11 @@
   body {
     font-family: "Inter", sans-serif;
     height: 100vh;
-    /* background-image:  url('../background-pattern.svg'); */
     @apply transition-all duration-200 ease-in bg-stone-200 text-slate-600 bg-fixed
+  }
+
+  .top nav{
+    @apply backdrop-blur-0 bg-stone-200/0
   }
 
   noise {
@@ -41,25 +44,29 @@
     @apply w-11/12 h-1/6 bg-amber-400 absolute left-0 right-0 bottom-0 m-auto -z-10 rounded-sm transition-all duration-100
   }
 
-  navigation{
-    @apply w-full max-w-5xl fixed top-0 left-0 right-0 m-auto flex justify-end p-6
+  nav{
+    @apply w-full fixed top-0 left-0 right-0 m-auto flex justify-end pt-3 pb-3 backdrop-blur-md z-30 bg-stone-200/80
   }
-  navigation .content{
-    @apply flex gap-4 items-center
+  nav .content{
+    @apply w-full max-w-5xl m-auto flex gap-4 items-center
   }
-  navigation a {
+  nav a {
     @apply text-sm transition-all duration-100
   }
 
-  navigation #theme-toggle{
+  nav a:first-child{
+    @apply ml-auto
+  }
+
+  nav #theme-toggle{
     @apply w-6 h-6 p-1 rounded-sm transition-all duration-100 bg-transparent
   }
 
-  navigation #theme-toggle:hover{
+  nav #theme-toggle:hover{
     @apply bg-amber-400 fill-slate-800
   }
 
-  navigation #theme-toggle:hover svg {
+  nav #theme-toggle:hover svg {
     @apply fill-slate-800
   }
 
@@ -278,6 +285,9 @@
     }
     .card .thumbnail{
       @apply w-screen scale-125
+    }
+    nav{
+      @apply pr-8
     }
   }
 
