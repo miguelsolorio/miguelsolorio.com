@@ -7,7 +7,7 @@
     <meta property="og:title" content="Miguel Solorio">
     <meta property="og:description" content="Software designer and developer working at Microsoft">
     <meta property="og:url" content="https://miguelsolorio.com">
-    <title>{{ .Site.Title }}</title>
+    <title>{{ .Site.Title }} - {{ .Page.Title }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -29,6 +29,15 @@
     }
     </script>
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PDB3DT24E5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PDB3DT24E5');
+</script>
 
 <body>
 
