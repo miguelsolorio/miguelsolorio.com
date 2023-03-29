@@ -30,6 +30,9 @@
     .code noise {
         @apply opacity-10
     }
+    .code nav {
+        @apply bg-transparent
+    }
 
     .code h1, .code .section, .code .project .title, .code a{
         font-family: 'DM Mono', monospace;

@@ -20,4 +20,7 @@
     .dark .single separator{
         @apply bg-stone-800
     }
+    .dark blockquote {
+        @apply text-amber-400 !important
+    }
 }
