@@ -61,7 +61,7 @@ To round it out, I also created a [Figma plugin](https://www.figma.com/community
 
 {{< image src="plugin.png" >}}
 
-# Open source
+# Open sourcing it
 
 Once the icons were shipped, the next thing I wanted to do was to give back to the community and open source the icons, which we’ve never done before. So we published [microsoft/vscode-icons](https://github.com/microsoft/vscode-icons) on GitHub. We also published these to the [Figma community](https://www.figma.com/community/file/768673354734944365) for others to duplicate and re-use.
 

@@ -62,9 +62,11 @@ Here’s a few cherry picked quotes from our customers:
 
 > “Enjoy the clean design, nice feedback on executing cells”
 
-We have dozens of notebook extensions that are used in a variety of languages that range from audio generative to query languages to REST API requests. It’s been remarkable to see how a tool made for a specific audience can have greater impacts when made accessible for everyone.
+We now have dozens of notebook extensions that are used in a variety of languages that range from audio generative to query languages to REST API requests (read about [custom notebooks](https://code.visualstudio.com/blogs/2021/11/08/custom-notebooks)). It’s been remarkable to see how a tool made for a specific audience can have greater impacts when made accessible for everyone.
 
-{{< image src="notebooks-extensions2.png" >}}
+The team ended up shipping native support for notebooks and wrote a [blog post](https://code.visualstudio.com/blogs/2021/08/05/notebooks) about what it means for the editor.
+
+{{< image src="notebooks-blogpost.png" >}}
 
 # Collaborators
 - Jill Jacobson - Design
