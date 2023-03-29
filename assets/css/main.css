@@ -193,7 +193,7 @@
     @apply relative z-20 text-slate-300
   }
   .card .gradient {
-    @apply w-full h-full top-0 left-0 absolute bg-gradient-to-t from-gray-900 to-gray-900/50 dark:to-gray-900/40 z-10 scale-110
+    @apply w-full h-full top-0 left-0 absolute rounded-xl bg-gradient-to-t from-gray-900 to-gray-900/50 dark:to-gray-900/40 z-10
   }
 
   .card .thumbnail{
@@ -288,6 +288,12 @@
     }
     nav{
       @apply pr-8
+    }
+    .card {
+      @apply p-8 pt-10
+    }
+    .card .title {
+      @apply text-4xl
     }
   }
 
