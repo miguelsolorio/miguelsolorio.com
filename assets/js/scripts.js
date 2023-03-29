@@ -25,19 +25,27 @@ if(hand){
 
 let timer;
 const code = document.getElementById('code')
+let codeSticky = false;
 function toggleCode() { document.querySelector('body').classList.toggle('code') }
-if(code){
+console.log(`codeSticky: ${codeSticky}`)
+
+if(code && !codeSticky){
+
   code.addEventListener('mouseover', e => {
     setTimeout(() => {
       toggleCode()
     }, 100);
   });
+
   code.addEventListener('mouseleave', e => {
     setTimeout(() => {
       toggleCode()
     }, 100);
   });
+
 }
+
+
 
 // Matrix https://codepen.io/wefiy/pen/WPpEwo
 // geting canvas by Boujjou Achraf

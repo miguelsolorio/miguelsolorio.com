@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'dark.css';
 @import 'hero.css';
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
 
@@ -55,7 +56,11 @@
   }
 
   navigation #theme-toggle:hover{
-    @apply bg-amber-400
+    @apply bg-amber-400 fill-slate-800
+  }
+
+  navigation #theme-toggle:hover svg {
+    @apply fill-slate-800
   }
 
   #content {
@@ -141,7 +146,7 @@
   }
 
   #side {
-    @apply grid gap-6 mt-10 grid-cols-2
+    @apply grid gap-x-20 gap-y-10 mt-10 grid-cols-2
   }
 
   #side .project {
@@ -149,7 +154,7 @@
   }
 
   #side img {
-    @apply w-16 h-16 rounded-lg mr-6
+    @apply w-16 h-16 rounded-lg mr-5
   }
 
   #side .title {
@@ -182,6 +187,10 @@
   }
   .card .gradient {
     @apply w-full h-full top-0 left-0 absolute bg-gradient-to-t from-gray-900 to-gray-900/50 dark:to-gray-900/40 z-10 scale-110
+  }
+
+  .card .thumbnail{
+    @apply -rotate-12 desktop:w-full absolute top-0 bottom-0 left-0 m-auto z-0
   }
 
   .single .title{
@@ -227,7 +236,7 @@
   }
 
   #split{
-    @apply flex flex-row mt-24
+    @apply flex flex-row mt-24 md:gap-20
   }
   #split .col{
     @apply w-full
@@ -252,5 +261,41 @@
   }
   #split .detail.inline .company {
     @apply mt-0
+  }
+
+  @media only screen and (max-width: 800px) {
+    body > .container {
+      @apply p-4
+    }
+    #split{
+      @apply flex-col
+    }
+    .col:nth-child(2){
+      @apply mt-16
+    }
+    #side{
+      @apply grid-cols-1
+    }
+    .card .thumbnail{
+      @apply w-screen scale-125
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    footer{
+      @apply flex-col
+    }
+    footer tag{
+      @apply text-left mt-8
+    }
+    intro {
+      @apply flex-col
+    }
+    intro profile {
+      @apply mb-12 m-auto
+    }
+    intro h1 {
+      @apply text-6xl
+    }
   }
 }

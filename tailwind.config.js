@@ -9,6 +9,10 @@ module.exports = {
         dark: {
           raw: '(prefers-color-scheme: dark)'
         },
+        'phone': '576px',
+        'tablet': '640px',
+        'laptop': '1024px',
+        'desktop': '1280px',
       },
       animation: {
         blink: 'blink 1s step-end infinite',
