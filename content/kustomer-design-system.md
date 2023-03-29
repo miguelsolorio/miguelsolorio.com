@@ -40,6 +40,22 @@ I also began documenting the various component requests we received from feature
 
 {{< image src="tracker.png" alt="Tracking updates of components in a component database" >}}
 
+# Accessible Design Systems
+
+While we were making sure our design components were in sync with our code components, I also wanted to ensure that we were building them with accessbility in mind. That meant that we needed to test each component against a set of acceessibility requirements (color contrast, keyboard navigation, etc) and ensure that they passed.
+
+{{< image src="accessibility.png" alt="Accessibility testing of components" >}}
+
+As we added and updated components in the library, they were constantly tested against these requirements to ensure that we were building them with accessibility in mind.
+
+{{< image src="banner.png" alt="Banners tested across different backgrounds" >}}
+
+# Kanvas Demo
+
+Below is a sample of one our popular components (Table Template) that has an array of variants and nested instances.
+
+{{< video src="kanvas-demo.mp4" alt="Example of Kanvas components in Figma" >}}
+
 # Impact
 
 Over the course of the next 6 months, I helped bring our Figma library up to pairity with what developers have been using and also snapped our terminology to the same vocabulary so designers and developers stayed in sync. We also worked to update all of our existing docuemntation to a single platform so that designers and developers were using the same guidelines.
