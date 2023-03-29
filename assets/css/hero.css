@@ -1,0 +1,65 @@
+
+@layer components {
+
+    body {
+        @apply transition-all duration-200 ease-in
+    }
+
+    /* Code Version */
+    body.code {
+        background-image: none;
+        @apply bg-gray-900 cursor-help
+    }
+
+    .code, .code intro p {
+        @apply text-gray-400
+    }
+
+    .code a::before {
+        @apply bg-green-300 !important
+    }
+
+    .code a:hover {
+        @apply text-gray-900 cursor-help
+    }
+
+    .code a:hover::before {
+        @apply bg-green-200 text-gray-900
+    }
+
+    .code noise {
+        @apply opacity-10
+    }
+
+    .code h1, .code .section, .code .project .title, .code a{
+        font-family: 'DM Mono', monospace;
+        @apply text-green-500 !important
+    }
+
+    .code .card .title, .code .company {
+        font-family: 'DM Mono', monospace;
+    }
+
+    .code .company{
+        @apply text-gray-400 !important
+    }
+
+    .code intro h1::after{
+        @apply opacity-100 bg-green-200
+    }
+
+    .code intro profile img:nth-child(1) {
+        @apply opacity-0
+    }
+
+    .code intro profile img:nth-child(3) {
+        @apply opacity-100
+    }
+
+    #matrix {
+        @apply w-full h-full fixed top-0 left-0 -z-10 opacity-0
+    }
+    .code #matrix {
+        @apply opacity-20
+    }
+}

@@ -1,0 +1,23 @@
+@layer components {
+    .dark body {
+        @apply bg-stone-900 text-gray-400
+    }
+    .dark noise{
+        @apply opacity-30
+    }
+    .dark .single h1, .dark .single h2, .dark .single h3, .dark blockquote, .dark .section, .dark .single .title, .dark intro h1, .dark #side .title, .dark #split .company {
+        @apply text-gray-200
+    }
+    .dark body, .dark intro p {
+        @apply text-gray-400
+    }
+    .dark .card .gradient {
+        @apply bg-gradient-to-t from-stone-800 to-stone-800/50
+    }
+    .dark nav {
+        @apply bg-stone-900/80
+    }
+    .dark .single separator{
+        @apply bg-stone-800
+    }
+}

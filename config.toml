@@ -4,21 +4,27 @@ title = "Miguel Solorio"
 SectionPagesMenu = "main"
 
 [[menu.main]]
-  name = "Twitter"
+  name = "Work"
   weight = 1
+  url = "/"
+
+[[menu.main]]
+  name = "Resume"
+  weight = 2
+  url = "/miguel-solorio-resume.pdf"
+
+[[menu.footer]]
+  name = "ADPList"
+  url = "https://adplist.org/mentors/miguel-solorio"
+
+[[menu.footer]]
+  name = "Twitter"
   url = "https://twitter.com/miguelsolorio_"
 
-[[menu.main]]
+[[menu.footer]]
   name = "GitHub"
-  weight = 2
-  url = "https://github.com/misolori"
+  url = "https://github.com/miguelsolorio"
 
-[[menu.main]]
+[[menu.footer]]
   name = "LinkedIn"
-  weight = 3
   url = "https://www.linkedin.com/in/miguel-solorio-a432b021"
-
-[[menu.main]]
-  name = "VSCO"
-  weight = 4
-  url = "https://vsco.co/miguel/gallery"

@@ -1,22 +1,120 @@
 {{ partial "header" . }}
 
-<div id="content" class="p-6">
+<canvas id="matrix"></canvas>
 
-    {{ partial "intro" . }}
+<div id="content">
 
-    <div class="grid gap-6 mt-10 sm:grid-cols-1 med:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-        {{ .Content }}
-        {{ range .Pages }}
-            <a href="{{.Params.Link}}" class="flex flex-row p-6 transition duration-300 ease-in-out transform bg-gray-200 rounded-md dark:bg-gray-800 hover:scale-105 hover:-rotate-1 hover:shadow-md dark:hover:shadow-2xl">
-                    <img class="w-12 h-12 mr-4 rounded-md" src="{{ .Params.Thumbnail }}" alt="{{.Title}}">
-                    <div>
-                        <p class="flex items-center p-0 text-xl font-medium">{{.Title}}</p>
-                        <p class="p-0 text-base opacity-75">{{.Description}}</p>
-                    </div>
-            </a>
-        {{ end }}
+  {{ partial "intro" . }}
+
+  <p class="section">Projects</p>
+  <div id="projects">
+    {{ range where .Pages "Params.project" "==" "large" }}
+        <a class="card" href="{{ .Permalink }}">
+            <p class="title">{{.Title}}</p>
+            <p class="description">{{.Description}}</p>
+            <div class="gradient"></div>
+            <img class="thumbnail" src={{ lower .Title }}.png >
+        </a>
+    {{ end }}
+  </div>
+
+  <p class="section">Side Projects</p>
+  <div id="side">
+    {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
+    {{ range $smallProjects }}
+    <div class="project">
+      <img src="{{ .Params.Thumbnail }}" alt="{{.Title}}" />
+      <div>
+        <a href="{{.Params.Link}}" class="title" target="_blank">{{.Title}}</a>
+        <p class="description">{{.Description}}</p>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+
+  <div id="split">
+    <div class="col">
+      <p class="section">Background</p>
+
+      <p class="company">Meta</p>
+      <div class="detail current">
+        <p class="title">Kustomer</p>
+        <p class="date">2022 - Present</p>
+      </div>
+
+      <p class="company">ADPList</p>
+      <div class="detail">
+        <p class="title">Mentor</p>
+        <p class="date">2022 - Present</p>
+      </div>
+
+      <p class="company">Microsoft</p>
+      <div class="detail">
+        <p class="title">Visual Studio Code</p>
+        <p class="date">2018 - 2022</p>
+      </div>
+      <div class="detail">
+        <p class="title">Azure DevOps</p>
+        <p class="date">2016 - 2018</p>
+      </div>
+      <div class="detail">
+        <p class="title">Azure</p>
+        <p class="date">2014 - 2016</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title company">Freelance</p>
+        <p class="date">2009 - 2014</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title company">Zumobi</p>
+        <p class="date">2012 - 2014</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title company">Beyond Traditional</p>
+        <p class="date">2011 - 2012</p>
+      </div>
+
+      <p class="company">Art Institute of Seattle</p>
+      <div class="detail">
+        <p class="title">Bachelor's, Web Design</p>
+        <p class="date">2009 - 2012</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title company">Artmil Design Studio</p>
+        <p class="date">2007 - 2009</p>
+      </div>
+
     </div>
 
+    <div class="col">
+      <p class="section">Talks</p>
+
+      <p class="company"><a href="https://www.youtube.com/watch?v=kFlJLolrkx0" target="_blank">VS Code: Live Stream</a></p>
+      <div class="detail">
+        <p class="title">Designing for Open Source</p>
+        <p class="date">2021</p>
+      </div>
+
+      <p class="company"><a href="https://www.youtube.com/watch?v=yZUZk9B-PlE" target="_blank">Figma: Config</a></p>
+      <div class="detail">
+        <p class="title">Open Source Design</p>
+        <p class="date">2020</p>
+      </div>
+
+      <p class="section mini">Patents</p>
+
+      <p class="company">Microsoft</p>
+      <div class="detail">
+        <p class="title">Code Editing Tracking and Management for Vision Impaired</p>
+        <p class="date">5/16/22</p>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 {{ partial "footer" . }}
