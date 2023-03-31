@@ -311,7 +311,7 @@
       @apply mb-12 m-auto
     }
     intro h1 {
-      @apply text-6xl
+      @apply text-6xl pb-4 pt-4
     }
   }
 }
