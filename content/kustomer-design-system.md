@@ -8,59 +8,52 @@ project: "large"
 weight: 1
 ---
 
-# Intro
-Kustomer is a cloud-based customer relationship management (CRM) platform that offers a unified view of customer interactions and communication channels. Kustomer was acquired by Meta in 2022.
+As the design system lead, I collaborated closely with our Engineering Lead to cultivate a community-driven design system, enhancing its maturity, scalability, and overall impact. Within our small team, I played a pivotal role in creating our roadmap planning, conducting weekly reviews, mentoring, and establishing recommendations on best practices.
 
-## My role
+{{< image src="hero.png" alt="Tracking updates of components in a component database" >}}
 
-I joined Kustomer as the first design systems lead and had the pleasure of partnering with our front-end engineer who had already made great strides in maturing the design system. Our team grew to 2 designers and 2 engineers and I lead our weekly syncs, roadmap planning & tracking, and socializing our work.
+# Auditing the Design System
 
-# Design System Audit
-
-Since I was the first design systems lead, the design system had been contributed by members of the design team over the years so in order to start cataloging our inventory I created a component audit and compared what we had in code vs our components in design (Figma).
+The existing design system had been a community driven effort with no real leadership. To better understand the state of the design system, I began auditing the existing components in Code & Figma to see what was being used and what was missing.
 
 {{< image src="audit.png" alt="Google spreadsheet of a component audit" >}}
 
-After auditing over 120 components, it was clear that our Figma library was either out of date or missing components completely. To make matters worse, we had a fraction of our components documented so there was no general guidance or best practices for using our components.
-
 # Influencing The Work
-In order to get the work done, we needed buy-in from leadership to ensure we'd have full support to properly build the foundation right so we can scale for the future. With the partnership of engineering, we created our team's roadmap for the year and created an execution plan to ensure the proper scope for our projects.
+In order to priotizie the work, it was crucial to secure buy-in from the leadership team. This would create alignment in establishing a solid foundation, enabling us to effectively scale for the future. Collaborating closely with the Engineering Lead, we formulated a roadmap for the entire year, meticulously outlining the scope of our projects and creating a detailed execution plan.
 
 {{< image src="roadmap.png" alt="Documents for the team's roadmap" >}}
 
-Once we received sign off from leadership on our priorities, we began the work to bring our library up to pairty with what is used in code. Over the next 4 months we were able to exceed our expectation and meet our milestones for the year. We also began to socialize our work across the organization to show the value that design systems brought to our product.
+# Making The Updates
+
+After receiving approval from leadership, we began updating our design library to match our code components. In the next four months, we not only met but exceeded our expectations and hit our yearly goals. Additionally, we started sharing our progress with the rest of the organization to demonstrate how design systems enhanced our product.
 
 {{< image src="work.png" alt="Figma updates to improve the design system" >}}
 
-I also began the process of documenting the changes through a changelog inside of the Figma design file, as well as with every update to ensure designers knew what components were being updated in each release. This increased awareness and visibility of design system component updates.
+# Tracking Changes
+
+In an effort to raise awareness of design system updates, I documented the changes within our Figma design files, and made sure to provide updates with each release so everyone knew which components were being updated.
 
 {{< image src="work-2.png" alt="Changelog of updates in Figma" >}}
 
-I also began documenting the various component requests we received from feature teams, as well as existing components that were being updated. This increased the visibility of design system components that were being updated and allowed product teams to track the status of components.
+We also discovered a need to raise visiblity for our in-progress work. This led to the creation of our component tracker, which was part of our product documentation and roadmap. This made it easier for people to view the updates and see what was coming next.
 
 {{< image src="tracker.png" alt="Tracking updates of components in a component database" >}}
 
-# Accessible Design Systems
+# Accessible Components
 
-While we were making sure our design components were in sync with our code components, I also wanted to ensure that we were building them with accessbility in mind. That meant that we needed to test each component against a set of acceessibility requirements (color contrast, keyboard navigation, etc) and ensure that they passed.
+In addition to having pairity between design & code components, I also ensured that we were building them with accessbility in mind. We tested each component against a set of acceessibility requirements (color contrast, keyboard navigation, themeing etc) and ensure that each component was accessible for everyone.
 
 {{< image src="accessibility.png" alt="Accessibility testing of components" >}}
 
-As we added and updated components in the library, they were constantly tested against these requirements to ensure that we were building them with accessibility in mind.
+# Kanvas Figma Demo
 
-{{< image src="banner.png" alt="Banners tested across different backgrounds" >}}
-
-# Kanvas Demo
-
-Below is a sample of one our popular components (Table Template) that has an array of variants and nested instances.
+Below is a sample of one our popular components (Table Template) that includes nested variants, component properties, built-in interactive states, and fully customizable.
 
 {{< video src="kanvas-demo.mp4" alt="Example of Kanvas components in Figma" >}}
 
 # Impact
 
 Over the course of the next 6 months, I helped bring our Figma library up to pairity with what developers have been using and also snapped our terminology to the same vocabulary so designers and developers stayed in sync. We also worked to update all of our existing docuemntation to a single platform so that designers and developers were using the same guidelines.
-
-{{< image src="components.png" alt="Components in Figma" >}}
 
 After several sprints, we were able to make major strides in bringing our component to pairity:
 
