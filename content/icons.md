@@ -1,10 +1,10 @@
 ---
 title: "Icons"
-description: "Open sourcing icons & the design process"
+description: "Open sourcing the design process"
 date: 2023-03-26T14:12:15-07:00
 draft: false
 project: "large"
-weight: 2
+weight: 3
 ---
 
 # Introduction
