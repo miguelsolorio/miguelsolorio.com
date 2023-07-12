@@ -23,7 +23,7 @@
     {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
     {{ range $smallProjects }}
     <div class="project">
-      <img src="{{ .Params.Thumbnail }}" alt="{{.Title}}" />
+      <a href="{{.Params.Link}}" class="thumb" target="_blank"><img src="{{ .Params.Thumbnail }}" alt="{{.Title}}" /></a>
       <div>
         <a href="{{.Params.Link}}" class="title" target="_blank">{{.Title}}</a>
         <p class="description">{{.Description}}</p>
@@ -36,16 +36,22 @@
     <div class="col">
       <p class="section">Background</p>
 
-      <p class="company">Meta</p>
+      <p class="company">Google</p>
       <div class="detail current">
-        <p class="title">Kustomer</p>
-        <p class="date">2022 - Present</p>
+        <p class="title">Google Cloud</p>
+        <p class="date">2023 - Present</p>
       </div>
 
       <p class="company">ADPList</p>
       <div class="detail">
         <p class="title">Mentor</p>
         <p class="date">2022 - Present</p>
+      </div>
+
+      <p class="company">Meta</p>
+      <div class="detail">
+        <p class="title">Business Messaging</p>
+        <p class="date">2022 - 2023</p>
       </div>
 
       <p class="company">Microsoft</p>
@@ -105,12 +111,24 @@
         <p class="date">2020</p>
       </div>
 
-      <p class="section mini">Patents</p>
+      <p class="section mini">Awards</p>
 
-      <p class="company">Microsoft</p>
+      <p class="company">Microsoft Patent</p>
       <div class="detail">
         <p class="title">Code Editing Tracking and Management for Vision Impaired</p>
         <p class="date">5/16/22</p>
+      </div>
+
+      <p class="company"><a href="https://adplist.org/mentors/miguel-solorio" target="_blank">ADPList</a></p>
+      <div class="detail">
+        <p class="title">Top 1% Mentor</p>
+        <p class="date">5/23</p>
+      </div>
+
+      <p class="company"><a href="https://finance.yahoo.com/news/zumobi-motor-trend-earn-coveted-180100204.html" target="_blank">Interactive Advertising Bureau (IAB)</a></p>
+      <div class="detail">
+        <p class="title">MIXX GOLD Award - Zumobi</p>
+        <p class="date">9/13</p>
       </div>
 
     </div>

@@ -2,8 +2,7 @@
 title: "Toolkit"
 description: "Tooling for our design workflows"
 date: 2023-03-28T08:26:20-07:00
-draft: false
-project: "large"
+draft: true
 ---
 
 # Introduction
