@@ -4,12 +4,11 @@
 @import 'dark.css';
 @import 'hero.css';
 @import 'project.css';
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
 
 @layer components {
   body {
-    @apply max-w-5xl mx-auto bg-neutral-100 text-slate-700;
+    @apply max-w-6xl mx-auto bg-neutral-100 text-slate-700;
   }
   * {
     @apply box-content
@@ -20,13 +19,37 @@
 
   /* Navigation */
   nav {
-    @apply py-4 flex items-center justify-between;
+    @apply py-6 flex items-center justify-between
   }
-  nav .nav {
-    @apply text-sm grid grid-flow-col gap-4;
+  nav svg, #theme-toggle {
+    @apply w-5 h-5;
   }
-  nav #theme-toggle{
-    @apply w-6 h-6 p-1 rounded-sm transition-all duration-100 bg-transparent
+  .social a, #theme-toggle {
+    @apply text-slate-700 p-1.5 rounded-md
+  }
+  .social a:hover {
+    @apply shadow-lg
+  }
+  .social a:hover svg path {
+    @apply fill-white
+  }
+  .social a svg, .social a svg path {
+    @apply fill-current text-current;
+  }
+  #linkedin:hover{
+    @apply bg-blue-700;
+  }
+  #github:hover{
+    @apply bg-black;
+  }
+  #twitter:hover{
+    @apply bg-blue-400;
+  }
+  .social {
+    @apply flex items-center text-sm gap-3;
+  }
+  .social #theme-toggle{
+    @apply flex items-center justify-center transition-all duration-100 bg-transparent
   }
 
   nav #theme-toggle:hover{
@@ -38,12 +61,15 @@
   }
 
   #logo{
-    @apply font-bold no-underline text-lg text-slate-700
+    @apply font-bold no-underline text-xl text-slate-700
   }
+
+
+
 
   /* Intro */
   intro {
-    @apply block py-32 text-3xl leading-relaxed;
+    @apply block pt-24 pb-40 text-3xl leading-relaxed;
   }
 
   #type-text {

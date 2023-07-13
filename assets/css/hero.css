@@ -8,55 +8,22 @@
     /* Code Version */
     body.code {
         background-image: none;
-        @apply bg-gray-900 cursor-help
+        @apply text-neutral-300 bg-gray-900 cursor-help
+    }
+    .code a, .code nav *, .code nav svg, .code nav svg path {
+        @apply text-green-400 fill-green-400 !important
+    }
+    .code nav, .code .section, .code .project .title, .code #theme-toggle {
+        font-family: 'JetBrains Mono', monospace;
     }
 
-    .code, .code intro p {
-        @apply text-gray-400
+    .code #type-text {
+        font-family: 'JetBrains Mono', monospace;
+        @apply bg-green-400 text-black
     }
 
-    .code a::before {
-        @apply bg-green-300 !important
-    }
-
-    .code a:hover {
-        @apply text-gray-900 cursor-help
-    }
-
-    .code a:hover::before {
-        @apply bg-green-200 text-gray-900
-    }
-
-    .code noise {
-        @apply opacity-10
-    }
-    .code nav {
-        @apply bg-transparent
-    }
-
-    .code h1, .code .section, .code .project .title, .code a{
-        font-family: 'DM Mono', monospace;
-        @apply text-green-500 !important
-    }
-
-    .code .card .title, .code .company {
-        font-family: 'DM Mono', monospace;
-    }
-
-    .code .company{
-        @apply text-gray-400 !important
-    }
-
-    .code intro h1::after{
-        @apply opacity-100 bg-green-200
-    }
-
-    .code intro profile img:nth-child(1) {
-        @apply opacity-0
-    }
-
-    .code intro profile img:nth-child(3) {
-        @apply opacity-100
+    .code .project .title.secondary {
+    @apply font-extrabold
     }
 
     #matrix {
