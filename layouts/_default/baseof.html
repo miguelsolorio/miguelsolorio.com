@@ -4,7 +4,7 @@
 
   {{ partial "intro" . }}
 
-  {{/*  <p class="section-title">Selected Work</p>  */}}
+
   <div id="selected-work">
     {{ range where .Pages "Params.project" "==" "large" }}
           <a class="project" href="{{ .Permalink }}">
@@ -17,7 +17,116 @@
   </div>
 
 
-  <p>Recent Projects</p>
+  <p class="section">Side Projects</p>
+  <div id="side-projects">
+    {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
+    {{ range $smallProjects }}
+    <div class="side-project">
+      <a href="{{.Params.Link}}" class="thumb" target="_blank"><img src="{{ .Params.Thumbnail }}" alt="{{.Title}}" /></a>
+      <div>
+        <a href="{{.Params.Link}}" class="side-project-title" target="_blank">{{.Title}} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg></a>
+        <p class="side-project-description">{{.Description}}</p>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+
+
+  <div id="split">
+    <div class="col">
+      <p class="section">Background</p>
+
+      <p class="company">Google</p>
+      <div class="detail current">
+        <p class="title">Google Cloud</p>
+        <p class="date">2023 - Present</p>
+      </div>
+
+      <p class="company">ADPList</p>
+      <div class="detail">
+        <p class="title">Mentor</p>
+        <p class="date">2022 - Present</p>
+      </div>
+
+      <p class="company">Meta</p>
+      <div class="detail">
+        <p class="title">Business Messaging</p>
+        <p class="date">2022 - 2023</p>
+      </div>
+
+      <p class="company">Microsoft</p>
+      <div class="detail">
+        <p class="title">Visual Studio Code</p>
+        <p class="date">2018 - 2022</p>
+      </div>
+      <div class="detail">
+        <p class="title">Azure DevOps</p>
+        <p class="date">2016 - 2018</p>
+      </div>
+      <div class="detail">
+        <p class="title">Azure</p>
+        <p class="date">2014 - 2016</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title company">Freelance</p>
+        <p class="date">2009 - 2014</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title company">Zumobi</p>
+        <p class="date">2012 - 2014</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title company">Beyond Traditional</p>
+        <p class="date">2011 - 2012</p>
+      </div>
+
+      <p class="company">Art Institute of Seattle</p>
+      <div class="detail">
+        <p class="title">Bachelor's, Web Design</p>
+        <p class="date">2009 - 2012</p>
+      </div>
+
+    </div>
+
+    <div class="col">
+      <p class="section">Talks</p>
+
+      <p class="company"><a href="https://www.youtube.com/watch?v=kFlJLolrkx0" target="_blank">VS Code: Live Stream</a></p>
+      <div class="detail">
+        <p class="title">Designing for Open Source</p>
+        <p class="date">2021</p>
+      </div>
+
+      <p class="company"><a href="https://www.youtube.com/watch?v=yZUZk9B-PlE" target="_blank">Figma: Config</a></p>
+      <div class="detail">
+        <p class="title">Open Source Design</p>
+        <p class="date">2020</p>
+      </div>
+
+      <p class="section mini">Awards</p>
+
+      <p class="company">Microsoft Patent</p>
+      <div class="detail">
+        <p class="title">Code Editing Tracking and Management for Vision Impaired</p>
+        <p class="date">5/16/22</p>
+      </div>
+
+      <p class="company"><a href="https://adplist.org/mentors/miguel-solorio" target="_blank">ADPList</a></p>
+      <div class="detail">
+        <p class="title">Top 1% Mentor</p>
+        <p class="date">5/23</p>
+      </div>
+
+      <p class="company"><a href="https://finance.yahoo.com/news/zumobi-motor-trend-earn-coveted-180100204.html" target="_blank">Interactive Advertising Bureau (IAB)</a></p>
+      <div class="detail">
+        <p class="title">MIXX GOLD Award - Zumobi</p>
+        <p class="date">9/13</p>
+      </div>
+
+    </div>
 
 
 

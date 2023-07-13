@@ -159,7 +159,7 @@ setInterval(draw, 35);
 const text = document.getElementById('type-text');
 const typewriter = new Typewriter(text, {
     strings: ['product', 'interaction', 'software', 'technical'],
-    pauseFor: 7000,
+    pauseFor: 4000,
     loop: true,
     autoStart: true
 });

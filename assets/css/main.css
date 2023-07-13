@@ -3,12 +3,13 @@
 @tailwind utilities;
 @import 'dark.css';
 @import 'hero.css';
+@import 'project.css';
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
 @layer components {
   body {
-    @apply max-w-6xl mx-auto bg-neutral-100 text-slate-700;
+    @apply max-w-5xl mx-auto bg-neutral-100 text-slate-700;
   }
   * {
     @apply box-content
@@ -46,58 +47,18 @@
   }
 
   #type-text {
-    @apply inline-block bg-primary text-white px-2;
+    @apply inline-block bg-primary text-white px-2 hover:cursor-alias;
   }
 
 
-  /* Projects */
-  .section-title {
-    font-family: 'Libre Baskerville', serif;
-    @apply mt-32 mb-10 text-4xl text-slate-800 font-semibold tracking-tighter
-  }
-  #selected-work {
-    @apply grid grid-flow-row gap-8;
-  }
-  .project {
-    @apply flex flex-col relative w-full h-96 overflow-hidden no-underline transition duration-300 ease-in-out
-  }
-  .project .thumbnail {
-    @apply w-full absolute top-0 bottom-0 left-0 m-auto z-0 transition duration-300 ease-in-out
-  }
-  .project .title,.project .description {
-    @apply absolute bottom-28 left-20
-  }
-  .project .description {
-    @apply bottom-20 transition duration-300 ease-in-out
-  }
-  .project .title {
-    @apply flex items-center text-8xl font-extrabold z-10 m-0 no-underline text-primary mix-blend-overlay transition duration-300 ease-in-out
-  }
-  .project .title svg {
-    @apply w-16 h-16 ml-4
-  }
-  .project .title.secondary {
-    @apply mix-blend-multiply opacity-0 z-20
-  }
-  .project .description {
-    @apply text-xl font-medium z-10 m-0 no-underline text-primary opacity-0
-  }
-  .project:hover {
-    @apply shadow-lg scale-105
-  }
-  .project:hover .description {
-    @apply opacity-100
-  }
-  .project:hover .title.secondary {
-    @apply opacity-100
-  }
-  .project:hover .thumbnail {
-    @apply scale-125
-  }
+
 
   /* Content */
 
   #content.single {
     @apply prose w-full max-w-none
   }
+
+
+
 }
