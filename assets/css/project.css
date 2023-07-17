@@ -9,6 +9,12 @@
   .project {
     @apply flex flex-col relative w-full h-96 overflow-hidden no-underline transition duration-300 ease-in-out;
   }
+  .project::before {
+    content: "";
+    width: 95%;
+    height: 90%;
+    @apply absolute top-0 left-0 right-0 bottom-0 m-auto border-solid border-8 mix-blend-overlay border-transparent z-10 transition duration-300 ease-in;
+  }
   .project .thumbnail {
     @apply w-full absolute top-0 bottom-0 left-0 m-auto z-0 transition duration-300 ease-in-out;
   }
@@ -30,6 +36,9 @@
   }
   .project .description {
     @apply text-xl font-medium z-10 m-0 no-underline text-primary opacity-0;
+  }
+  .project:hover::before {
+    @apply border-primary
   }
   .project:hover {
     @apply scale-105 z-10;
