@@ -46,7 +46,7 @@ jobs:
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
       - name: Build with Hugo
-        run: "npm run export"
+        run: npm run export
         # env:
         #   # For maximum backward compatibility with Hugo modules
         #   HUGO_ENVIRONMENT: production
