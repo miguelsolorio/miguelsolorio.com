@@ -33,28 +33,13 @@ jobs:
     env:
       HUGO_VERSION: 0.115.2
     steps:
-      # - name: Install Hugo CLI
-      #   run: |
-      #     wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-      #     && sudo dpkg -i ${{ runner.temp }}/hugo.deb
-      # - name: Install Dart Sass
-      #   run: sudo snap install dart-sass
-      # - name: Checkout
-      #   uses: actions/checkout@v3
-      #   with:
-      #     submodules: recursive
-      - name: Install Node.js dependencies
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-      - name: Build with Hugo
-        run: npm run export
-        # env:
-        #   # For maximum backward compatibility with Hugo modules
-        #   HUGO_ENVIRONMENT: production
-        #   HUGO_ENV: production
-        # run: |
-        #   hugo \
-        #     --minify \
-        #     --baseURL "${{ steps.pages.outputs.base_url }}/"
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16
+      - run: npm install
+      - run: npm run export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
