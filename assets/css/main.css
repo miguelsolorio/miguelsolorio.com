@@ -4,6 +4,7 @@
 @import 'dark.css';
 @import 'hero.css';
 @import 'project.css';
+@import 'single.css';
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
 
 @layer components {
@@ -25,10 +26,10 @@
     @apply w-5 h-5;
   }
   .social a, #theme-toggle {
-    @apply text-slate-700 p-1.5 rounded-md
+    @apply text-slate-700 p-1.5 rounded-md transition-all duration-300
   }
   .social a:hover {
-    @apply shadow-lg
+    @apply shadow-lg scale-110
   }
   .social a:hover svg path {
     @apply fill-white
@@ -82,7 +83,7 @@
   /* Content */
 
   #content.single {
-    @apply prose w-full max-w-none
+    @apply w-full max-w-none
   }
 
 

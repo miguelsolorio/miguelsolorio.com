@@ -81,7 +81,7 @@
 
   /* Background */
   #split {
-    @apply flex flex-row mt-24 md:gap-20;
+    @apply flex flex-row md:gap-20;
   }
   #split .col {
     @apply w-full;
@@ -107,4 +107,5 @@
   #split .detail.inline .company {
     @apply mt-0;
   }
+
 }

@@ -1,0 +1,18 @@
+@layer components {
+  .single .title {
+    @apply text-8xl mb-4 font-extrabold m-0 pt-24 !important;
+  }
+  .single .description {
+    @apply text-xl font-medium;
+  }
+  .single separator {
+    height: 1px;
+    @apply w-full block mt-8 mb-8 bg-current opacity-10
+  }
+  .single img, .single video {
+    @apply w-full h-full rounded-lg shadow-lg mt-12 mb-12
+  }
+  .single h1 {
+    @apply text-4xl font-bold mb-4 mt-20
+  }
+}
