@@ -1,8 +1,8 @@
 @layer components {
     .dark body {
-        @apply bg-stone-900 text-gray-400
+        @apply bg-slate-900 text-gray-400
     }
-    .dark noise{
+    /* .dark noise{
         @apply opacity-30
     }
     .dark .single h1, .dark .single h2, .dark .single h3, .dark blockquote, .dark .section, .dark .single .title, .dark intro h1, .dark #side .title, .dark #split .company {
@@ -22,5 +22,5 @@
     }
     .dark blockquote {
         @apply text-amber-400 !important
-    }
+    } */
 }

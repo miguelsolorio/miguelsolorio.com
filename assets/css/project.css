@@ -1,0 +1,111 @@
+@layer components {
+  /* Projects */
+  .section {
+    @apply mt-32 mb-10 text-3xl font-bold;
+  }
+  #selected-work {
+    @apply grid grid-flow-row gap-2;
+  }
+  .project {
+    @apply flex flex-col relative w-full h-96 overflow-hidden no-underline transition duration-300 ease-in-out;
+  }
+  .project::before {
+    content: "";
+    width: 95%;
+    height: 90%;
+    @apply absolute top-0 left-0 right-0 bottom-0 m-auto border-solid border-8 mix-blend-overlay border-transparent z-10 transition duration-300 ease-in;
+  }
+  .project .thumbnail {
+    @apply w-full absolute top-0 bottom-0 left-0 m-auto z-0 transition duration-300 ease-in-out;
+  }
+  .project .title,
+  .project .description {
+    @apply absolute bottom-28 left-20;
+  }
+  .project .description {
+    @apply bottom-20 transition duration-300 ease-in-out;
+  }
+  .project .title {
+    @apply flex items-center text-8xl font-extrabold z-10 m-0 no-underline text-primary mix-blend-overlay transition duration-300 ease-in;
+  }
+  .project .title svg {
+    @apply w-16 h-16 ml-4 -translate-x-4 transition duration-200 ease-in;
+  }
+  .project .title.secondary {
+    @apply mix-blend-multiply opacity-0 z-20;
+  }
+  .project .description {
+    @apply text-xl font-medium z-10 m-0 no-underline text-primary opacity-0;
+  }
+  .project:hover::before {
+    @apply border-primary
+  }
+  .project:hover {
+    @apply scale-105 z-10;
+  }
+  .project:hover .description {
+    @apply opacity-100;
+  }
+  .project:hover .title.secondary {
+    @apply opacity-100;
+  }
+  .project:hover .thumbnail {
+    @apply scale-125;
+  }
+  .project:hover svg {
+    @apply translate-x-0;
+  }
+
+  /* Side Projects */
+  #side-projects {
+    @apply grid gap-x-20 gap-y-10 mt-10 grid-cols-2;
+  }
+
+  #side-projects .side-project {
+    @apply flex flex-row items-center;
+  }
+
+  #side-projects img {
+    @apply w-16 h-16 rounded-lg mr-5 shadow-sm hover:shadow-lg hover:scale-110 hover:cursor-pointer transition duration-200 ease-in-out;
+  }
+
+  .side-project-title {
+    @apply flex items-center font-bold w-fit;
+  }
+  .side-project-title svg {
+    @apply w-5 h-5 ml-1 -translate-x-2 opacity-0 transition duration-150 ease-in;
+  }
+  .side-project-title:hover svg {
+    @apply translate-x-0 opacity-100;
+  }
+
+  /* Background */
+  #split {
+    @apply flex flex-row md:gap-20;
+  }
+  #split .col {
+    @apply w-full;
+  }
+  #split .company {
+    @apply font-bold mt-6;
+  }
+  #split .detail {
+    @apply flex flex-row max-w-sm;
+  }
+  #split .col:nth-child(2) .detail {
+    @apply max-w-md;
+  }
+  #split .detail p {
+    @apply w-full;
+  }
+  #split .detail .date {
+    @apply text-right;
+  }
+  #split .detail.inline {
+    @apply mt-6;
+  }
+  #split .detail.inline .company {
+    @apply mt-0;
+  }
+
+}

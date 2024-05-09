@@ -5,6 +5,9 @@ module.exports = {
   },
   theme: {
     extend: {
+      colors: {
+        'primary': '#2A25FF',
+      },
       screens: {
         dark: {
           raw: '(prefers-color-scheme: dark)'
@@ -14,16 +17,23 @@ module.exports = {
         'laptop': '1024px',
         'desktop': '1280px',
       },
-      animation: {
-        blink: 'blink 1s step-end infinite',
-        gradientX: 'gradientX 15s ease-in infinite',
-        gradientY: 'gradientY 15s ease-in infinite',
-        gradientXY: 'gradientXY 15s ease-in infinite',
-      },
       keyframes: {
+        typing: {
+          "0%": {
+            width: "0%",
+            visibility: "hidden"
+          },
+          "100%": {
+            width: "100%"
+          }
+        },
         blink: {
-          'from,to': { 'visibility': 'hidden' },
-          '50%': { 'visibility': 'visible' }
+          "50%": {
+            borderColor: "transparent"
+          },
+          "100%": {
+            borderColor: "white"
+          }
         },
         gradientY: {
           '0%, 100%': {
@@ -55,9 +65,16 @@ module.exports = {
             'background-position': 'right center'
           }
         }
+      },
+      animation: {
+        typing: "typing 2s steps(20) infinite alternate, blink .7s",
+        gradientX: 'gradientX 15s ease-in infinite',
+        gradientY: 'gradientY 15s ease-in infinite',
+        gradientXY: 'gradientXY 15s ease-in infinite',
       }
     },
   },
   variants: {},
-  plugins: []
+  plugins: [
+  ]
 };

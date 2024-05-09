@@ -6,31 +6,33 @@
 
   {{ partial "intro" . }}
 
-  <p class="section">Projects</p>
-  <div id="projects">
+
+  <div id="selected-work">
     {{ range where .Pages "Params.project" "==" "large" }}
-        <a class="card" href="{{ .Permalink }}">
+          <a class="project" href="{{ .Permalink }}">
             <p class="title">{{.Title}}</p>
+            <p class="title secondary">{{.Title}} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></p>
             <p class="description">{{.Description}}</p>
-            <div class="gradient"></div>
             <img class="thumbnail" src={{ lower .Title }}.png >
-        </a>
+          </a>
     {{ end }}
   </div>
 
+
   <p class="section">Side Projects</p>
-  <div id="side">
+  <div id="side-projects">
     {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
     {{ range $smallProjects }}
-    <div class="project">
+    <div class="side-project">
       <a href="{{.Params.Link}}" class="thumb" target="_blank"><img src="{{ .Params.Thumbnail }}" alt="{{.Title}}" /></a>
       <div>
-        <a href="{{.Params.Link}}" class="title" target="_blank">{{.Title}}</a>
-        <p class="description">{{.Description}}</p>
+        <a href="{{.Params.Link}}" class="side-project-title" target="_blank">{{.Title}} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg></a>
+        <p class="side-project-description">{{.Description}}</p>
       </div>
     </div>
     {{ end }}
   </div>
+
 
   <div id="split">
     <div class="col">
@@ -89,11 +91,6 @@
         <p class="date">2009 - 2012</p>
       </div>
 
-      <div class="detail inline">
-        <p class="title company">Artmil Design Studio</p>
-        <p class="date">2007 - 2009</p>
-      </div>
-
     </div>
 
     <div class="col">
@@ -132,7 +129,9 @@
       </div>
 
     </div>
-  </div>
+
+
+
 </div>
 
-{{ partial "footer" . }}
+  {{ partial "footer" . }}

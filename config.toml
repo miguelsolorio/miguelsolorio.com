@@ -1,4 +1,4 @@
-baseURL = "https://miguelsolorio.com"
+relativeURLs = true
 languageCode = "en-us"
 title = "Miguel Solorio"
 SectionPagesMenu = "main"
