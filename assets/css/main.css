@@ -89,3 +89,13 @@
 
 
 }
+
+/* for mobile */
+@media (max-width: 640px) {
+  @layer components {
+    body {
+      @apply p-8
+    }
+
+  }
+}
