@@ -1,7 +1,7 @@
 {{ $currentPage := . }}
 <div class="content">
   {{ range .Site.Menus.main }}
-  <a href="{{ .URL }}" title="{{ .Title }}">{{ .Name }}</a>
+  <a href="{{ .URL | relLangURL }}" title="{{ .Title }}">{{ .Name }}</a>
   {{ end }}
   <button id="theme-toggle" type="button">
     <svg

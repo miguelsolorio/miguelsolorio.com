@@ -8,12 +8,26 @@
 
   <p class="section">Projects</p>
   <div id="projects">
-    {{ range where .Pages "Params.project" "==" "large" }}
-        <a class="card" href="{{ .Permalink }}">
+    {{ $largeProjects := where .Site.RegularPages "Params.project" "==" "large" }}
+    {{ range (slice "ai-first-notebooks" "cli-agents") }}
+      {{ with index (where $largeProjects "File.BaseFileName" .) 0 }}
+      {{ $thumbnail := .Params.thumbnail | default (print (lower .Title) ".png") }}
+        <a class="card" href="{{ .RelPermalink }}">
             <p class="title">{{.Title}}</p>
             <p class="description">{{.Description}}</p>
             <div class="gradient"></div>
-            <img class="thumbnail" src={{ lower .Title }}.png >
+        <img class="thumbnail" src="{{ $thumbnail }}" alt="{{ .Title }} thumbnail" >
+        </a>
+      {{ end }}
+    {{ end }}
+
+    {{ range where $largeProjects "File.BaseFileName" "not in" (slice "ai-first-notebooks" "cli-agents") }}
+        {{ $thumbnail := .Params.thumbnail | default (print (lower .Title) ".png") }}
+      <a class="card" href="{{ .RelPermalink }}">
+            <p class="title">{{.Title}}</p>
+            <p class="description">{{.Description}}</p>
+            <div class="gradient"></div>
+            <img class="thumbnail" src="{{ $thumbnail }}" alt="{{ .Title }} thumbnail" >
         </a>
     {{ end }}
   </div>
