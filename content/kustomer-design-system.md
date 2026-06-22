@@ -3,7 +3,7 @@ title: "Kanvas"
 description: "Laying the foundation of a design system"
 date: 2023-03-24T15:57:19-07:00
 draft: false
-thumbnail: "kustomer.png"
+thumbnail: "kanvas.png"
 project: "large"
 weight: 1
 ---
