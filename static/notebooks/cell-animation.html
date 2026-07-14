@@ -11,7 +11,7 @@
     --bg: #ffffff;
     --cell-bg: #f8faf9;
     --cell-bg-added: #eef8f1;
-    --cell-border: #e1e3e1;
+    --cell-border: #b8aebe;
     --active-border: #1a73e8;
     --highlight: #c9ecd0;
     --gutter: #9aa0a6;
@@ -92,7 +92,7 @@
     position: absolute;
     top: 0;
     right: 100%;      /* hangs outside the column so cells align with the chat */
-    width: 48px;
+    width: 70px;
     padding-top: 12px;
     display: flex;
     justify-content: center;
@@ -156,13 +156,18 @@
 
   .cell {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
     background: var(--cell-bg);
     border: 1.5px solid var(--cell-border);
     border-radius: 10px;
-    padding: 14px 18px;
+    overflow: hidden;   /* keeps the attached output inside the rounded corners */
     transition: border-color 0.3s ease, box-shadow 0.3s ease,
                 border-top-left-radius 0.25s ease, background-color 0.4s ease;
+  }
+  .cell-main {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 18px;
   }
   .cell-row.added .cell { background: var(--cell-bg-added); }
   .cell-row.active .cell {
@@ -191,6 +196,7 @@
     background: var(--highlight);
     border-radius: 2px;
     padding: 1.5px 0;
+    transition: background-color 0.5s ease;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
   }
@@ -298,7 +304,7 @@
   }
   .chat.open {
     background: #fafbfc;
-    border-color: #e4e6e8;
+    border-color: var(--cell-border);
     box-shadow: 0 6px 24px rgba(0,0,0,0.08);
     padding: 18px 20px;
   }
@@ -352,7 +358,7 @@
   .chat-ai .chat-spinner {
     display: none;
     flex: none;
-    font-size: 18px;
+    font-size: 22px;   /* matches the spark size so the swap doesn't shift */
     color: #4285f4;
     margin-top: 2px;
     transform-origin: 50% 50%;
@@ -362,7 +368,7 @@
     display: block;
     animation: spin 1s linear infinite;
   }
-  .chat-ai.thinking .chat-ai-text { color: #5f6368; }
+  .chat-ai.thinking .chat-ai-text { color: #1f1f1f; }
   .chat-ai-body { flex: 1; min-width: 0; }
   .chat-ai-text { font-size: 14.5px; line-height: 1.55; color: #1f1f1f; }
   .chat-ai-text a { color: #0b57d0; }
@@ -389,8 +395,8 @@
     gap: 6px;
     color: #0b57d0;
     font: 500 14.5px "Google Sans", "Helvetica Neue", Arial, sans-serif;
-    padding: 6px 10px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
   }
   .chat-actions button:hover { background: #eef3fc; }
   .chat-actions .msym { font-size: 18px; }
@@ -422,7 +428,6 @@
     align-items: center;
     gap: 2px;
     font-size: 14px;
-    font-weight: 500;
     color: #1f1f1f;
     cursor: pointer;
   }
@@ -464,9 +469,116 @@
     font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
   }
 
+  /* ---------- fake mouse cursor ---------- */
+  .mouse {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(0, 0);
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  }
+  .mouse.show { opacity: 1; }
+  .mouse svg {
+    display: block;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+    transform-origin: 5px 4px;
+    transition: transform 0.12s ease;
+  }
+  .mouse.click svg { transform: scale(0.82); }
+  .mouse .ripple {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgba(11, 87, 208, 0.5);
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  .mouse.click .ripple { animation: ripple 0.5s ease-out forwards; }
+  @keyframes ripple {
+    from { opacity: 0.9; transform: scale(0.3); }
+    to   { opacity: 0; transform: scale(1.4); }
+  }
+  .chat-actions button.pressed { background: #d3e3fd; }
+
+  /* ---------- cell execution ---------- */
+  /* accepted cells lose the green diff highlight on the code */
+  .cell-row.accepted .line .hl { background: transparent; }
+
+  .cell-row.running .cell {
+    border-color: var(--active-border);
+    box-shadow: 0 0 0 0.5px var(--active-border);
+  }
+  /* while running, the play button becomes a plain spinner (no circle) */
+  .run-btn .run-spinner {
+    display: none;
+    font-size: 18px;
+    color: #444746;
+    transform-origin: 50% 50%;
+  }
+  .cell-row.running .run-btn {
+    opacity: 1;
+    transform: scale(1);
+    background: transparent;
+  }
+  .cell-row.running .run-btn .msym:not(.run-spinner) { display: none; }
+  .cell-row.running .run-btn .run-spinner {
+    display: block;
+    animation: spin 1s linear infinite;
+  }
+  /* when done: [n] plus a green check in the gutter */
+  .gutter .gutter-check {
+    display: none;
+    font-size: 15px;
+    color: #00af2f;
+    margin-right: 4px;
+    font-variation-settings: "FILL" 0, "wght" 600, "GRAD" 0, "opsz" 20;
+  }
+  .cell-row.ran .gutter-check { display: block; }
+  .gutter .brackets { transition: color 0.3s ease; }
+  .cell-row.ran .brackets { color: var(--code); }
+
+  /* output attached to the bottom of the code cell */
+  .cell-output {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .cell-output.open { grid-template-rows: 1fr; }
+  .cell-output-inner { overflow: hidden; min-height: 0; }
+  .cell-output-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 18px;
+    border-top: 1px solid var(--cell-border);
+  }
+  .out-dots {
+    visibility: hidden;   /* hidden but keeps the output aligned with the code */
+    flex: none;
+    width: 20px;
+    margin: 2px 12px 0 0;   /* mirrors the run button column */
+    font-size: 18px;
+    color: #444746;
+    text-align: center;
+  }
+  .cell-output pre {
+    margin: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #3c4043;
+    white-space: pre-wrap;
+  }
+
   /* freeze looping animations while paused */
   body.paused .icon-spinner,
   body.paused .chat-spinner,
+  body.paused .run-spinner,
   body.paused .cursor {
     animation-play-state: paused;
   }
@@ -483,12 +595,12 @@
     <span class="chat-user-text" id="chatUserText"></span>
   </div>
   <div class="chat-msg chat-ai" id="chatAi">
-    <svg class="chat-spark" width="18" height="18" viewBox="0 0 24 24" fill="#4285f4"><path d="M12 1.5c.6 5.7 4.8 9.9 10.5 10.5C16.8 12.6 12.6 16.8 12 22.5 11.4 16.8 7.2 12.6 1.5 12 7.2 11.4 11.4 7.2 12 1.5z"/></svg>
+    <svg class="chat-spark" width="22" height="22" viewBox="0 0 24 24" fill="#4285f4"><path d="M12 1.5c.6 5.7 4.8 9.9 10.5 10.5C16.8 12.6 12.6 16.8 12 22.5 11.4 16.8 7.2 12.6 1.5 12 7.2 11.4 11.4 7.2 12 1.5z"/></svg>
     <span class="msym chat-spinner">progress_activity</span>
     <div class="chat-ai-body">
       <span class="chat-ai-text" id="chatAiText"></span>
       <div class="chat-actions" id="chatActions">
-        <button><span class="msym">play_arrow</span>Accept &amp; Run</button>
+        <button id="acceptRunBtn"><span class="msym">play_arrow</span>Accept &amp; Run</button>
         <button><span class="msym">check</span>Accept</button>
         <button><span class="msym">close</span>Cancel</button>
       </div>
@@ -508,6 +620,14 @@
 </div><!-- /.frame -->
 
 <button class="fab" id="fab" aria-label="Pause"><span class="msym" id="fabIcon">pause</span></button>
+
+<div class="mouse" id="mouse">
+  <span class="ripple"></span>
+  <svg width="22" height="22" viewBox="0 0 24 24">
+    <path d="M5.2 2.8v16.9l4.1-3.6 2.5 5.8 2.9-1.2-2.5-5.7 5.5-.6z"
+          fill="#fff" stroke="#1f1f1f" stroke-width="1.4" stroke-linejoin="round"/>
+  </svg>
+</div>
 
 <script>
 /* ---------------- content ----------------
@@ -535,14 +655,14 @@ const CELLS = [
 
 /* ---------------- timing (ms) ---------------- */
 const T = {
-  chunkMin: 8,       // delay between streamed chunks
-  chunkMax: 22,
-  charsMin: 3,       // characters per chunk
-  charsMax: 9,
-  linePause: 70,     // pause after each line
-  cellExpand: 300,   // expansion transition before the cell chrome appears
-  cellAppear: 120,   // beat after the chrome appears before streaming
-  cellPause: 180,    // pause after a cell finishes before the next appears
+  chunkMin: 4,       // delay between streamed chunks
+  chunkMax: 12,
+  charsMin: 5,       // characters per chunk
+  charsMax: 14,
+  linePause: 40,     // pause after each line
+  cellExpand: 250,   // expansion transition before the cell chrome appears
+  cellAppear: 80,    // beat after the chrome appears before streaming
+  cellPause: 120,    // pause after a cell finishes before the next appears
   startDelay: 500,  // lead-in before the animation begins
 };
 
@@ -565,6 +685,13 @@ const AI_MAIN = [
   ["secrets.", "link"],
 ];
 const AI_TAIL = [[" Your notebook has been updated.", ""]];
+const AI_SUMMARY = [
+  ["All 3 cells ran successfully! I imported the Gemini SDK, initialized gemini-2.5-flash, and the model generated a short poem about the moon.", ""],
+];
+const POEM = `The moon hangs low in velvet skies,
+A silver lamp for weary eyes.
+She pulls the tides and lights the foam,
+And guides the wandering sailor home.`;
 
 const notebook = document.getElementById("notebook");
 const chat = document.getElementById("chat");
@@ -579,6 +706,7 @@ const placeholder = document.getElementById("placeholder");
 const sendBtn = document.getElementById("sendBtn");
 const fab = document.getElementById("fab");
 const fabIcon = document.getElementById("fabIcon");
+const mouse = document.getElementById("mouse");
 const rand = (min, max) => min + Math.random() * (max - min);
 let runId = 0;
 
@@ -620,6 +748,7 @@ function buildCell(cellLines) {
   row.innerHTML = `
     <div class="cell-inner">
       <div class="gutter">
+        <span class="msym gutter-check">check</span>
         <span class="brackets">[ ]</span>
       </div>
       <div class="cell-wrap">
@@ -632,8 +761,10 @@ function buildCell(cellLines) {
           <button aria-label="More">${ICONS.more}</button>
         </div>
         <div class="cell">
-          <span class="run-btn">${ICONS.play}</span>
-          <div class="cell-code"></div>
+          <div class="cell-main">
+            <span class="run-btn">${ICONS.play}<span class="msym run-spinner">progress_activity</span></span>
+            <div class="cell-code"></div>
+          </div>
         </div>
       </div>
     </div>`;
@@ -694,6 +825,33 @@ async function streamRich(el, parts, cursor, id) {
   }
 }
 
+/* ---------------- fake mouse ---------------- */
+function placeMouse(x, y, instant = false) {
+  if (instant) {
+    mouse.style.transition = "none";
+    mouse.style.transform = `translate(${x}px, ${y}px)`;
+    void mouse.offsetWidth; // flush so the next move transitions
+    mouse.style.transition = "";
+  } else {
+    mouse.style.transform = `translate(${x}px, ${y}px)`;
+  }
+}
+
+async function moveMouseTo(el, ms = 900) {
+  const r = el.getBoundingClientRect();
+  placeMouse(r.left + r.width * 0.55, r.top + r.height * 0.55);
+  await sleep(ms);
+}
+
+async function clickMouse(btn) {
+  mouse.classList.add("click");
+  btn.classList.add("pressed");
+  await sleep(150);
+  mouse.classList.remove("click");
+  await sleep(180);
+  btn.classList.remove("pressed");
+}
+
 /* human-speed typing into the chat input */
 async function typePrompt(text, id) {
   const caret = document.createElement("span");
@@ -729,6 +887,9 @@ async function run() {
   placeholder.style.display = "";
   sendBtn.classList.remove("enabled");
   chatInput.querySelectorAll(".cursor").forEach((e) => e.remove());
+
+  // reset mouse cursor
+  mouse.classList.remove("show", "click");
 
   // reset playback
   if (paused) setPaused(false);
@@ -799,6 +960,64 @@ async function run() {
   if (id !== runId) return;
   chatCursor.remove();
   chatActions.classList.add("show");
+
+  // 5. the mouse cursor comes in and clicks "Accept & Run"
+  await sleep(600);
+  const acceptBtn = document.getElementById("acceptRunBtn");
+  placeMouse(window.innerWidth * 0.75, window.innerHeight + 40, true);
+  mouse.classList.add("show");
+  await sleep(150);
+  await moveMouseTo(acceptBtn);
+  if (id !== runId) return;
+  await clickMouse(acceptBtn);
+  if (id !== runId) return;
+
+  // accepted: actions fade out, message flips to "Executing...", green diff colors clear
+  chatActions.classList.remove("show");
+  chatAi.classList.add("thinking");
+  chatAiText.textContent = "Executing...";
+  rows.forEach((r) => {
+    r.classList.remove("added", "active", "tagged", "streaming");
+    r.classList.add("accepted");
+  });
+  await sleep(300);
+  mouse.classList.remove("show");
+
+  // 6. all cells run at once; they finish one by one
+  rows.forEach((r) => r.classList.add("running"));
+  for (let c = 0; c < rows.length; c++) {
+    if (id !== runId) return;
+    await sleep(c === rows.length - 1 ? 450 : 250); // the last cell "calls the model"
+    const row = rows[c];
+    row.classList.remove("running");
+    row.classList.add("ran");
+    row.querySelector(".brackets").textContent = `[${c + 1}]`;
+  }
+  if (id !== runId) return;
+
+  // 7. the final cell prints its output
+  const lastRow = rows[rows.length - 1];
+  const outWrap = document.createElement("div");
+  outWrap.className = "cell-output";
+  outWrap.innerHTML = `<div class="cell-output-inner"><div class="cell-output-row"><span class="msym out-dots">more_horiz</span><pre class="out-text"></pre></div></div>`;
+  lastRow.querySelector(".cell").appendChild(outWrap);
+  requestAnimationFrame(() => outWrap.classList.add("open"));
+  await sleep(350);
+  const outCursor = document.createElement("span");
+  outCursor.className = "cursor";
+  await streamRich(outWrap.querySelector(".out-text"), [[POEM, ""]], outCursor, id);
+  if (id !== runId) return;
+  outCursor.remove();
+
+  // 8. execution finished: the agent summarizes what it did
+  await sleep(300);
+  chatAi.classList.remove("thinking");
+  chatAiText.innerHTML = "";
+  const summaryCursor = document.createElement("span");
+  summaryCursor.className = "cursor";
+  await streamRich(chatAiText, AI_SUMMARY, summaryCursor, id);
+  if (id !== runId) return;
+  summaryCursor.remove();
   setFab("done");
 }
 
