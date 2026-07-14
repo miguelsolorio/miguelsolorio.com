@@ -8,17 +8,18 @@ thumbnail: "agentic-notebooks.png"
 weight: 1
 ---
 
-As the lead designer, I partnered with engineering and product to reimagine Google Colab as an AI-first coding environment. The goal was to move beyond static AI suggestions and make Gemini a genuine collaborative partner — one that understands your entire notebook, not just the cell in front of it.
+As the lead designer, I partnered with our engineering and product teams to reimagine Colab as an AI-first coding environment. The goal was to move beyond static AI suggestions and make Gemini an integrated and collaborative partner, one that understands your entire notebook and not just the cell in front of it.
 
-{{< image src="intro.png" alt="Overview of the AI-first Colab interface with Gemini integration" >}}
+{{< iframe src="/notebooks/cell-animation.html" height="775" title="Gemini generating notebook cells from a prompt, with accept and reject controls" >}}
+
 
 # Understanding the Problem
 
-Colab had accumulated AI features incrementally over several years, but the experience felt bolted on. Suggestions were isolated to single cells, there was no continuity across a session, and users had to context-switch between writing code and asking for help. Data scientists in particular told us they wanted to stay in flow — not copy-paste errors into a chat window or re-explain what they were working on every time they needed assistance.
+Colab had accumulated AI features incrementally over several years, but the experience felt bolted on. Suggestions were isolated to single cells, there was no continuity across a session, and users had to context-switch between writing code and asking for help. Below is an example of the very first agent Colab shipped in 2024.
 
-The opportunity was to make AI ambient: always aware of where you are, what you've run, and where you're trying to go.
+{{< video src="colab-dsa-original.mp4" poster="/agentic-notebooks.png" >}}
 
-{{< image src="intro.png" alt="Overview of the AI-first Colab interface with Gemini integration" >}}
+We heard from our users that they wanted to stay in the flow, not copy-paste errors into a chat window or re-explain what they were working on every time they needed assistance. The opportunity was to make AI more fluid: always aware of where you are, what you've run, and where you're trying to go.
 
 # Designing the Interaction Model
 
@@ -30,7 +31,7 @@ I explored a range of entry points, from inline cell overlays to a floating pane
 
 The key design principle was that both surfaces should feel like the same conversation. Context carries over seamlessly — you can start a quick prompt from the toolbar and continue it in the panel without losing thread.
 
-{{< image src="toolbar.png" alt="Center toolbar showing the Gemini prompt entry point" >}}
+{{< image src="intro.png" alt="Overview of the AI-first Colab interface with Gemini integration" >}}
 
 # Agentic UX and Trust
 

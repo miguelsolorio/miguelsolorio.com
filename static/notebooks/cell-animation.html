@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notebook cell generation</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">
+<style>
+  :root {
+    --bg: #ffffff;
+    --cell-bg: #f8faf9;
+    --cell-bg-added: #eef8f1;
+    --cell-border: #e1e3e1;
+    --active-border: #1a73e8;
+    --highlight: #c9ecd0;
+    --gutter: #9aa0a6;
+    --code: #202124;
+    --kw: #a625a4;
+    --com: #007400;
+    --str: #c41a16;
+    --prm: #0b5fcc;
+    --gemini: #1a73e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #cfc6e8; /* purple frame around the animation */
+    font-family: "Google Sans", "Helvetica Neue", Arial, sans-serif;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .frame {
+    width: 720px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 0;
+  }
+
+  .notebook {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .notebook.active {
+    display: flex;
+  }
+
+  /* ---------- cell row ---------- */
+  .cell-row {
+    position: relative;
+    display: none;  /* hidden by default; only visible cells display */
+    align-items: flex-start;
+    opacity: 0;
+  }
+  .cell-row.visible {
+    display: flex;  /* visible cells remain displayed, occupy their layout space */
+  }
+  .cell-row.in {
+    animation: cellIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes cellIn {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.985);
+      filter: blur(2px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  /* ---------- gutter ---------- */
+  .gutter {
+    position: absolute;
+    top: 0;
+    right: 100%;      /* hangs outside the column so cells align with the chat */
+    width: 48px;
+    padding-top: 12px;
+    display: flex;
+    justify-content: center;
+  }
+  .gutter .brackets {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: var(--gutter);
+    white-space: pre;
+  }
+  .run-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #1f1f1f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    margin: 1px 12px 0 0;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  /* Material Symbols base */
+  .msym {
+    font-family: "Material Symbols Rounded";
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+    user-select: none;
+  }
+  .run-btn .msym {
+    font-size: 14px;
+    color: #fff;
+    font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
+  }
+  .gemini-tag .msym {
+    font-size: 14px;
+    font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
+  }
+  .toolbar .msym { font-size: 17px; }
+  .cell-row.active .run-btn {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ---------- cell ---------- */
+  .cell-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cell {
+    display: flex;
+    align-items: flex-start;
+    background: var(--cell-bg);
+    border: 1.5px solid var(--cell-border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease,
+                border-top-left-radius 0.25s ease, background-color 0.4s ease;
+  }
+  .cell-row.added .cell { background: var(--cell-bg-added); }
+  .cell-row.active .cell {
+    border-color: var(--active-border);
+    box-shadow: 0 0 0 0.5px var(--active-border);
+  }
+  .cell-row.tagged .cell { border-top-left-radius: 0; }
+
+  .cell-code {
+    flex: 1;
+    min-width: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--code);
+    overflow-x: auto;
+  }
+
+  .line {
+    display: none;
+    white-space: pre;
+    min-height: 1.65em;
+  }
+  .line.on { display: block; }
+  .line .hl {
+    background: var(--highlight);
+    border-radius: 2px;
+    padding: 1.5px 0;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .tok-kw  { color: var(--kw); }
+  .tok-com { color: var(--com); }
+  .tok-str { color: var(--str); }
+  .tok-prm { color: var(--prm); }
+
+  /* streaming cursor */
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    background: var(--active-border);
+    vertical-align: text-bottom;
+    margin-left: 1px;
+    animation: blink 0.9s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- Gemini tag ---------- */
+  .gemini-tag {
+    position: absolute;
+    bottom: calc(100% - 2px);
+    left: -1px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--gemini);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px 7px 13px;
+    border-radius: 8px 8px 0 0;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .cell-row.tagged .gemini-tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .gemini-tag .icon-spinner { display: none; transform-origin: 50% 50%; }
+  .cell-row.streaming .icon-spark { display: none; }
+  .cell-row.streaming .icon-spinner {
+    display: block;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- toolbar ---------- */
+  .toolbar {
+    position: absolute;
+    top: -21px;
+    right: 14px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 9px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    padding: 3px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .cell-row.active .toolbar {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .toolbar button {
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 4px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #444746;
+    display: flex;
+  }
+  .toolbar button:hover { background: #f1f3f4; }
+
+  /* ---------- chat ---------- */
+  .chat {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 18px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 10;
+    font-family: "Google Sans", "Helvetica Neue", Arial, sans-serif;
+    transition: background-color 0.3s ease, border-color 0.3s ease,
+                box-shadow 0.3s ease, padding 0.3s ease;
+  }
+  .chat.centered {
+    /* vertically centered hero state; slides back down when the prompt sends */
+    /* transform removed since chat is now a flow element */
+  }
+  .chat.open {
+    background: #fafbfc;
+    border-color: #e4e6e8;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    padding: 18px 20px;
+  }
+  .chat-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(12px);
+    margin-top: -16px;   /* cancel the flex gap while hidden */
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                margin-top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s ease 0.12s;
+  }
+  .chat-msg.show {
+    max-height: 320px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 0;
+  }
+  .avatar {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #b06ab3, #4568dc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    overflow: hidden;
+  }
+  .avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .avatar .msym {
+    font-size: 16px;
+    color: #fff;
+    font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
+  }
+  .chat-user { align-items: center; }
+  .chat-user-text { font-size: 14.5px; color: #1f1f1f; }
+  .chat-spark { flex: none; margin-top: 3px; }
+  .chat-ai .chat-spinner {
+    display: none;
+    flex: none;
+    font-size: 18px;
+    color: #4285f4;
+    margin-top: 2px;
+    transform-origin: 50% 50%;
+  }
+  .chat-ai.thinking .chat-spark { display: none; }
+  .chat-ai.thinking .chat-spinner {
+    display: block;
+    animation: spin 1s linear infinite;
+  }
+  .chat-ai.thinking .chat-ai-text { color: #5f6368; }
+  .chat-ai-body { flex: 1; min-width: 0; }
+  .chat-ai-text { font-size: 14.5px; line-height: 1.55; color: #1f1f1f; }
+  .chat-ai-text a { color: #0b57d0; }
+  .chat-actions {
+    display: none;
+    gap: 10px;
+    margin-top: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .chat-actions.show {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .chat-actions button {
+    appearance: none;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #0b57d0;
+    font: 500 14.5px "Google Sans", "Helvetica Neue", Arial, sans-serif;
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+  .chat-actions button:hover { background: #eef3fc; }
+  .chat-actions .msym { font-size: 18px; }
+  .chat-input {
+    background: #f8fafd;
+    border: 1.5px solid #e4e6e8;
+    border-radius: 16px;
+    padding: 12px 14px 10px;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+  .chat-input.focus,
+  .chat.open .chat-input {
+    background: #fff;
+    border-color: #0b57d0;
+  }
+  .chat-input-text { font-size: 15px; color: #1f1f1f; min-height: 22px; }
+  .chat-input-text .placeholder { color: #80868b; }
+  .chat-input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  .chat-input-row .msym { font-size: 20px; color: #444746; cursor: pointer; }
+  .chat-input-row .left { display: flex; gap: 16px; }
+  .chat-input-row .right { display: flex; align-items: center; gap: 14px; }
+  .chat-input-row .model {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f1f1f;
+    cursor: pointer;
+  }
+  .chat-input-row .send-btn {
+    color: #c4c7c5;          /* disabled until there is text */
+    cursor: default;
+    transition: color 0.2s ease;
+  }
+  .chat-input-row .send-btn.enabled {
+    color: #444746;
+    cursor: pointer;
+  }
+
+  /* ---------- playback FAB ---------- */
+  .fab {
+    position: fixed;
+    right: 56px;   /* clears the purple frame padding */
+    bottom: 56px;
+    z-index: 50;   /* above the chat and everything else */
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 0;
+    background: #fff;
+    color: #1f1f1f;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .fab:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.18), 0 12px 32px rgba(0,0,0,0.16);
+    transform: translateY(-1px);
+  }
+  .fab .msym {
+    font-size: 22px;
+    font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+  }
+
+  /* freeze looping animations while paused */
+  body.paused .icon-spinner,
+  body.paused .chat-spinner,
+  body.paused .cursor {
+    animation-play-state: paused;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+<div class="notebook" id="notebook"></div>
+
+<div class="chat" id="chat">
+  <div class="chat-msg chat-user" id="chatUser">
+    <span class="avatar"><img src="/avatar.png" alt="" ></span>
+    <span class="chat-user-text" id="chatUserText"></span>
+  </div>
+  <div class="chat-msg chat-ai" id="chatAi">
+    <svg class="chat-spark" width="18" height="18" viewBox="0 0 24 24" fill="#4285f4"><path d="M12 1.5c.6 5.7 4.8 9.9 10.5 10.5C16.8 12.6 12.6 16.8 12 22.5 11.4 16.8 7.2 12.6 1.5 12 7.2 11.4 11.4 7.2 12 1.5z"/></svg>
+    <span class="msym chat-spinner">progress_activity</span>
+    <div class="chat-ai-body">
+      <span class="chat-ai-text" id="chatAiText"></span>
+      <div class="chat-actions" id="chatActions">
+        <button><span class="msym">play_arrow</span>Accept &amp; Run</button>
+        <button><span class="msym">check</span>Accept</button>
+        <button><span class="msym">close</span>Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="chat-input" id="chatInput">
+    <div class="chat-input-text"><span id="inputText"></span><span class="placeholder" id="placeholder">What can I help you build?</span></div>
+    <div class="chat-input-row">
+      <div class="left"><span class="msym">add</span><span class="msym">tune</span></div>
+      <div class="right">
+        <span class="model">Gemini Pro<span class="msym">arrow_drop_down</span></span>
+        <span class="msym send-btn" id="sendBtn">send</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /.frame -->
+
+<button class="fab" id="fab" aria-label="Pause"><span class="msym" id="fabIcon">pause</span></button>
+
+<script>
+/* ---------------- content ----------------
+   Each cell is a list of lines; each line is a list of [text, tokenClass] pairs.
+   tokenClass: '' plain | 'kw' keyword | 'com' comment | 'str' string | 'prm' param
+*/
+const CELLS = [
+  [
+    [["# Import the Python SDK", "com"]],
+    [["import", "kw"], [" google.generativeai ", ""], ["as", "kw"], [" genai", ""]],
+    [["# Used to securely store your API key", "com"]],
+    [["from", "kw"], [" google.colab ", ""], ["import", "kw"], [" userdata", ""]],
+    [],
+    [["GOOGLE_API_KEY=userdata.get(", ""], ["'GOOGLE_API_KEY'", "str"], [")", ""]],
+    [["genai.configure(", ""], ["api_key", "prm"], ["=GOOGLE_API_KEY)", ""]],
+  ],
+  [
+    [["gemini_model = genai.GenerativeModel(", ""], ["'gemini-2.5-flash-preview-04-17'", "str"], [")", ""]],
+  ],
+  [
+    [["response = gemini_model.generate_content(", ""], ["'Write a poem about the moon.'", "str"], [")", ""]],
+    [["print(response.text)", ""]],
+  ],
+];
+
+/* ---------------- timing (ms) ---------------- */
+const T = {
+  chunkMin: 8,       // delay between streamed chunks
+  chunkMax: 22,
+  charsMin: 3,       // characters per chunk
+  charsMax: 9,
+  linePause: 70,     // pause after each line
+  cellAppear: 250,   // wait after a cell fades in before streaming
+  cellPause: 300,    // pause after a cell finishes before the next appears
+  startDelay: 500,  // lead-in before the animation begins
+};
+
+const ICONS = {
+  spark: `<svg class="icon-spark" width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 1.5c.6 5.7 4.8 9.9 10.5 10.5C16.8 12.6 12.6 16.8 12 22.5 11.4 16.8 7.2 12.6 1.5 12 7.2 11.4 11.4 7.2 12 1.5z"/></svg>`,
+  spinner: `<span class="msym icon-spinner">progress_activity</span>`,
+  play: `<span class="msym">play_arrow</span>`,
+  up: `<span class="msym">arrow_upward</span>`,
+  down: `<span class="msym">arrow_downward</span>`,
+  edit: `<span class="msym">edit</span>`,
+  trash: `<span class="msym">delete</span>`,
+  more: `<span class="msym">more_vert</span>`,
+};
+
+const PROMPT = "Import the Gemini api";
+const AI_MAIN = [
+  ["Okay, here's how to import Gemini in Colab using the Gemini package library. To use Gemini, you will need an ", ""],
+  ["API key", "link"],
+  [" and add the key to your ", ""],
+  ["secrets.", "link"],
+];
+const AI_TAIL = [[" Your notebook has been updated.", ""]];
+
+const notebook = document.getElementById("notebook");
+const chat = document.getElementById("chat");
+const chatInput = document.getElementById("chatInput");
+const chatUser = document.getElementById("chatUser");
+const chatAi = document.getElementById("chatAi");
+const chatActions = document.getElementById("chatActions");
+const chatUserText = document.getElementById("chatUserText");
+const chatAiText = document.getElementById("chatAiText");
+const inputText = document.getElementById("inputText");
+const placeholder = document.getElementById("placeholder");
+const sendBtn = document.getElementById("sendBtn");
+const fab = document.getElementById("fab");
+const fabIcon = document.getElementById("fabIcon");
+const rand = (min, max) => min + Math.random() * (max - min);
+let runId = 0;
+
+/* ---------------- playback control ---------------- */
+let paused = false;
+let resumeQueue = [];
+let fabState = "playing"; // "playing" | "paused" | "done"
+
+// every sleep passes through the pause gate, so the whole run freezes/resumes
+const gate = () => (paused ? new Promise((r) => resumeQueue.push(r)) : Promise.resolve());
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms)).then(gate);
+
+function setFab(state) {
+  fabState = state;
+  const icon = { playing: "pause", paused: "play_arrow", done: "replay" }[state];
+  const label = { playing: "Pause", paused: "Play", done: "Replay" }[state];
+  fabIcon.textContent = icon;
+  fab.setAttribute("aria-label", label);
+}
+
+function setPaused(on) {
+  paused = on;
+  document.body.classList.toggle("paused", on);
+  if (!on) {
+    resumeQueue.forEach((r) => r());
+    resumeQueue = [];
+  }
+  setFab(on ? "paused" : "playing");
+}
+
+fab.addEventListener("click", () => {
+  if (fabState === "done") run();
+  else setPaused(!paused);
+});
+
+function buildCell(cellLines) {
+  const row = document.createElement("div");
+  row.className = "cell-row";
+  row.innerHTML = `
+    <div class="gutter">
+      <span class="brackets">[ ]</span>
+    </div>
+    <div class="cell-wrap">
+      <div class="gemini-tag">${ICONS.spark}${ICONS.spinner}Gemini</div>
+      <div class="toolbar">
+        <button aria-label="Move up">${ICONS.up}</button>
+        <button aria-label="Move down">${ICONS.down}</button>
+        <button aria-label="Edit with AI">${ICONS.edit}</button>
+        <button aria-label="Delete">${ICONS.trash}</button>
+        <button aria-label="More">${ICONS.more}</button>
+      </div>
+      <div class="cell">
+        <span class="run-btn">${ICONS.play}</span>
+        <div class="cell-code"></div>
+      </div>
+    </div>`;
+
+  const cell = row.querySelector(".cell-code");
+  for (const tokens of cellLines) {
+    const line = document.createElement("div");
+    line.className = "line";
+    if (tokens.length) {
+      const hl = document.createElement("span");
+      hl.className = "hl";
+      line.appendChild(hl);
+    }
+    cell.appendChild(line);
+  }
+  return row;
+}
+
+async function streamLine(lineEl, tokens, cursor, id) {
+  lineEl.classList.add("on");
+  if (!tokens.length) {           // blank line: brief beat
+    lineEl.appendChild(cursor);
+    await sleep(T.linePause);
+    return;
+  }
+  const hl = lineEl.querySelector(".hl");
+  hl.appendChild(cursor);
+
+  for (const [text, cls] of tokens) {
+    const span = document.createElement("span");
+    if (cls) span.className = "tok-" + cls;
+    hl.insertBefore(span, cursor);
+    let i = 0;
+    while (i < text.length) {
+      if (id !== runId) return;
+      i = Math.min(text.length, i + Math.round(rand(T.charsMin, T.charsMax)));
+      span.textContent = text.slice(0, i);
+      await sleep(rand(T.chunkMin, T.chunkMax));
+    }
+  }
+  await sleep(T.linePause);
+}
+
+/* stream rich text (with links) into a chat element */
+async function streamRich(el, parts, cursor, id) {
+  el.appendChild(cursor);
+  for (const [text, cls] of parts) {
+    const span = document.createElement(cls === "link" ? "a" : "span");
+    if (cls === "link") span.href = "#";
+    el.insertBefore(span, cursor);
+    let i = 0;
+    while (i < text.length) {
+      if (id !== runId) return;
+      i = Math.min(text.length, i + Math.round(rand(T.charsMin, T.charsMax)));
+      span.textContent = text.slice(0, i);
+      await sleep(rand(T.chunkMin, T.chunkMax));
+    }
+  }
+}
+
+/* human-speed typing into the chat input */
+async function typePrompt(text, id) {
+  const caret = document.createElement("span");
+  caret.className = "cursor";
+  chatInput.classList.add("focus");
+  placeholder.style.display = "none";
+  inputText.after(caret);
+  for (let i = 1; i <= text.length; i++) {
+    if (id !== runId) { caret.remove(); return; }
+    inputText.textContent = text.slice(0, i);
+    sendBtn.classList.add("enabled");
+    await sleep(rand(60, 140));
+  }
+  await sleep(900);
+  // caret stays in the input after sending
+}
+
+async function run() {
+  const id = ++runId;
+  notebook.innerHTML = "";
+
+  // reset chat: bare input, vertically centered
+  chat.classList.add("centered");
+  chat.classList.remove("open");
+  chatInput.classList.remove("focus");
+  chatUser.classList.remove("show");
+  chatAi.classList.remove("show", "thinking");
+  chatActions.classList.remove("show");
+  chatUserText.textContent = "";
+  chatAiText.innerHTML = "";
+  inputText.textContent = "";
+  placeholder.style.display = "";
+  sendBtn.classList.remove("enabled");
+  chatInput.querySelectorAll(".cursor").forEach((e) => e.remove());
+
+  // reset playback
+  if (paused) setPaused(false);
+  setFab("playing");
+
+  const rows = CELLS.map(buildCell);
+  rows.forEach((r) => notebook.appendChild(r));
+
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+
+  await sleep(T.startDelay);
+
+  // 1. the user types and sends the prompt
+  await typePrompt(PROMPT, id);
+  if (id !== runId) return;
+  inputText.textContent = "";
+  placeholder.style.display = "";
+  sendBtn.classList.remove("enabled"); // input is empty again
+  chatUserText.textContent = PROMPT;
+  chat.classList.add("open");     // bare input expands into the card
+  chatUser.classList.add("show");
+  await sleep(450);
+
+  // 2. Gemini is thinking (chat stays centered)
+  chatAi.classList.add("show", "thinking");
+  chatAiText.textContent = "Thinking...";
+  await sleep(1000);
+
+  // 3. the notebook cells stream in
+  for (let c = 0; c < rows.length; c++) {
+    if (id !== runId) return;
+    const row = rows[c];
+    if (c > 0) rows[c - 1].classList.remove("active", "tagged", "streaming");
+    row.classList.add("visible", "in", "active", "tagged", "streaming");
+    if (c === 0) {
+      notebook.classList.add("active");
+      chat.classList.remove("centered"); // first cell appears: chat glides down
+      await sleep(450);
+    }
+    await sleep(T.cellAppear);
+    row.classList.add("added");
+
+    const lineEls = row.querySelectorAll(".line");
+    for (let l = 0; l < lineEls.length; l++) {
+      if (id !== runId) return;
+      await streamLine(lineEls[l], CELLS[c][l], cursor, id);
+    }
+    cursor.remove();
+
+    if (c < rows.length - 1) {
+      await sleep(T.cellPause);
+    } else {
+      row.classList.remove("streaming"); // all cells done: spinner back to star
+    }
+  }
+  if (id !== runId) return;
+
+  // 4. all cells done: replace "Thinking..." with the full response + actions
+  await sleep(300);
+  chatAi.classList.remove("thinking");
+  chatAiText.textContent = "";
+  const chatCursor = document.createElement("span");
+  chatCursor.className = "cursor";
+  await streamRich(chatAiText, AI_MAIN, chatCursor, id);
+  if (id !== runId) return;
+  await streamRich(chatAiText, AI_TAIL, chatCursor, id);
+  if (id !== runId) return;
+  chatCursor.remove();
+  chatActions.classList.add("show");
+  setFab("done");
+}
+
+run();
+</script>
+</body>
+</html>
