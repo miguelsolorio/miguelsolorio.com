@@ -47,39 +47,45 @@
 
   .notebook {
     width: 100%;
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 20px;
+    margin-bottom: -20px;   /* cancels the frame gap while empty */
+    transition: margin-bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   }
   .notebook.active {
-    display: flex;
+    margin-bottom: 0;
   }
 
   /* ---------- cell row ---------- */
+  /* Collapsed rows animate open via grid-template-rows so the layout grows
+     smoothly (no display:none jump) using only compositor-friendly props. */
   .cell-row {
     position: relative;
-    display: none;  /* hidden by default; only visible cells display */
-    align-items: flex-start;
+    display: grid;
+    grid-template-rows: 0fr;
     opacity: 0;
+    transform: translateY(12px);
+    margin-bottom: -20px;   /* cancels the notebook flex gap while collapsed */
+    transition: grid-template-rows 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+                margin-bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+                transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+                opacity 0.3s ease 0.05s;
   }
   .cell-row.visible {
-    display: flex;  /* visible cells remain displayed, occupy their layout space */
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 0;
   }
-  .cell-row.in {
-    animation: cellIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  .cell-inner {
+    display: flex;
+    align-items: flex-start;
+    min-height: 0;
+    overflow: hidden;   /* required for the 0fr -> 1fr expansion */
   }
-  @keyframes cellIn {
-    from {
-      opacity: 0;
-      transform: translateY(16px) scale(0.985);
-      filter: blur(2px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
-  }
+  /* once expanded, let the Gemini tag and toolbar overhang the cell again */
+  .cell-row.settled .cell-inner { overflow: visible; }
 
   /* ---------- gutter ---------- */
   .gutter {
@@ -534,8 +540,9 @@ const T = {
   charsMin: 3,       // characters per chunk
   charsMax: 9,
   linePause: 70,     // pause after each line
-  cellAppear: 250,   // wait after a cell fades in before streaming
-  cellPause: 300,    // pause after a cell finishes before the next appears
+  cellExpand: 300,   // expansion transition before the cell chrome appears
+  cellAppear: 120,   // beat after the chrome appears before streaming
+  cellPause: 180,    // pause after a cell finishes before the next appears
   startDelay: 500,  // lead-in before the animation begins
 };
 
@@ -611,21 +618,23 @@ function buildCell(cellLines) {
   const row = document.createElement("div");
   row.className = "cell-row";
   row.innerHTML = `
-    <div class="gutter">
-      <span class="brackets">[ ]</span>
-    </div>
-    <div class="cell-wrap">
-      <div class="gemini-tag">${ICONS.spark}${ICONS.spinner}Gemini</div>
-      <div class="toolbar">
-        <button aria-label="Move up">${ICONS.up}</button>
-        <button aria-label="Move down">${ICONS.down}</button>
-        <button aria-label="Edit with AI">${ICONS.edit}</button>
-        <button aria-label="Delete">${ICONS.trash}</button>
-        <button aria-label="More">${ICONS.more}</button>
+    <div class="cell-inner">
+      <div class="gutter">
+        <span class="brackets">[ ]</span>
       </div>
-      <div class="cell">
-        <span class="run-btn">${ICONS.play}</span>
-        <div class="cell-code"></div>
+      <div class="cell-wrap">
+        <div class="gemini-tag">${ICONS.spark}${ICONS.spinner}Gemini</div>
+        <div class="toolbar">
+          <button aria-label="Move up">${ICONS.up}</button>
+          <button aria-label="Move down">${ICONS.down}</button>
+          <button aria-label="Edit with AI">${ICONS.edit}</button>
+          <button aria-label="Delete">${ICONS.trash}</button>
+          <button aria-label="More">${ICONS.more}</button>
+        </div>
+        <div class="cell">
+          <span class="run-btn">${ICONS.play}</span>
+          <div class="cell-code"></div>
+        </div>
       </div>
     </div>`;
 
@@ -696,7 +705,7 @@ async function typePrompt(text, id) {
     if (id !== runId) { caret.remove(); return; }
     inputText.textContent = text.slice(0, i);
     sendBtn.classList.add("enabled");
-    await sleep(rand(60, 140));
+    await sleep(rand(35, 85));
   }
   await sleep(900);
   // caret stays in the input after sending
@@ -705,6 +714,7 @@ async function typePrompt(text, id) {
 async function run() {
   const id = ++runId;
   notebook.innerHTML = "";
+  notebook.classList.remove("active");
 
   // reset chat: bare input, vertically centered
   chat.classList.add("centered");
@@ -753,14 +763,14 @@ async function run() {
     if (id !== runId) return;
     const row = rows[c];
     if (c > 0) rows[c - 1].classList.remove("active", "tagged", "streaming");
-    row.classList.add("visible", "in", "active", "tagged", "streaming");
+    row.classList.add("visible"); // row expands + fades in
     if (c === 0) {
       notebook.classList.add("active");
       chat.classList.remove("centered"); // first cell appears: chat glides down
-      await sleep(450);
     }
+    await sleep(T.cellExpand);
+    row.classList.add("settled", "active", "tagged", "streaming", "added");
     await sleep(T.cellAppear);
-    row.classList.add("added");
 
     const lineEls = row.querySelectorAll(".line");
     for (let l = 0; l < lineEls.length; l++) {
