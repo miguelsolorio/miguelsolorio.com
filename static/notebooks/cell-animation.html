@@ -172,7 +172,7 @@
   .cell-row.added .cell { background: var(--cell-bg-added); }
   .cell-row.active .cell {
     border-color: var(--active-border);
-    box-shadow: 0 0 0 0.5px var(--active-border);
+    box-shadow: 0 0 10px 0px #1a73e866, 0 0 20px 5px rgba(11, 87, 208, 0.05), 0 4px 40px 8px rgba(11, 87, 208, 0.14);
   }
   .cell-row.tagged .cell { border-top-left-radius: 0; }
 
@@ -407,12 +407,21 @@
     border: 1.5px solid #e4e6e8;
     border-radius: 999px;
     padding: 12px 8px;
-    transition: background-color 0.25s ease, border-color 0.25s ease;
+    transition: background-color 0.25s ease, border-color 0.25s ease,
+                box-shadow 0.25s ease;
   }
-  .chat-input.focus,
+  /* bare hero state: blue border + glow */
+  .chat-input.focus {
+    background: #fff;
+    border-color: #0b57d0;
+    box-shadow: 0 0 12px 5px rgba(11, 87, 208, 0.05),
+                0 4px 40px 8px rgba(11, 87, 208, 0.14);
+  }
+  /* grown into the card: blue border only, no glow */
   .chat.open .chat-input {
     background: #fff;
     border-color: #0b57d0;
+    box-shadow: none;
   }
   .chat-input-text {
     flex: 1;
@@ -594,7 +603,9 @@
 
   .cell-row.running .cell {
     border-color: var(--active-border);
-    box-shadow: 0 0 0 0.5px var(--active-border);
+    box-shadow: 0 0 0 0.5px var(--active-border),
+                0 0 0 5px rgba(11, 87, 208, 0.05),
+                0 4px 40px 8px rgba(11, 87, 208, 0.14);
   }
   /* while running, the play button becomes a plain spinner (no circle) */
   .run-btn .run-spinner {
