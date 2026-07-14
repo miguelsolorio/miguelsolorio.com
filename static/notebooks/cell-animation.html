@@ -668,6 +668,9 @@
     white-space: pre-wrap;
   }
 
+  /* card mode: decorative background embed, no playback controls */
+  body.card .timeline { display: none; }
+
   /* freeze looping animations while paused */
   body.paused .icon-spinner,
   body.paused .chat-spinner,
@@ -810,6 +813,13 @@ const tlFill = document.getElementById("tlFill");
 const tlThumb = document.getElementById("tlThumb");
 const tlTime = document.getElementById("tlTime");
 const mouse = document.getElementById("mouse");
+
+/* card mode: embedded as a decorative background on the home-page project card.
+   No controls, starts paused, plays only while the parent card is hovered, and
+   loops 5s after finishing. Toggled by the ?card=1 query param. */
+const CARD = new URLSearchParams(location.search).has("card");
+if (CARD) document.body.classList.add("card");
+const CARD_START_MS = 4000;   // card mode skips the first 4s on start and each loop
 
 /* seeded PRNG (mulberry32) so the whole run is deterministic — a given virtual
    time always maps to the same visual state, which is what makes seeking work */
@@ -1237,6 +1247,14 @@ async function run() {
   if (id !== runId) return;
   summaryCursor.remove();
   setFab("done");
+
+  // card mode: hold on the final frame for 5s, then loop back to the CARD_START_MS
+  // spot (skip the first few seconds again) and keep playing.
+  // (!instant skips this during measure()'s dry run, which would recurse forever.)
+  if (CARD && !instant) {
+    await sleep(3000);
+    if (id === runId) seekTo(CARD_START_MS / TOTAL_MS, true);
+  }
 }
 
 /* Measure the full duration by playing once instantly (no delays, no transitions),
@@ -1258,7 +1276,12 @@ async function measure() {
   await measure();
   setProgress(0);
   requestAnimationFrame(tick);
-  run();
+  if (CARD) {
+    // skip the first few seconds and play straight through
+    seekTo(CARD_START_MS / TOTAL_MS, true);
+  } else {
+    run();
+  }
 })();
 </script>
 </body>

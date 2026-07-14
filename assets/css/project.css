@@ -52,6 +52,26 @@
   .project:hover .thumbnail {
     @apply scale-125;
   }
+  .project--embed {
+    background-color: #cfc6e8;    /* card fill so the title stays readable off the video */
+  }
+  .project .thumbnail.cell-embed {
+    @apply pointer-events-none;
+    border: 0;
+    width: 70%;                   /* smaller: a floating snippet, not a full-bleed bg */
+    height: 140%;
+    top: -20%;                    /* nudged toward the top-right corner */
+    right: -4%;
+    left: auto;
+    bottom: auto;
+    margin: 0;
+    transform: rotate(-7deg) scale(0.9);
+    transform-origin: top right;
+    filter: blur(2px);
+  }
+  .project:hover .thumbnail.cell-embed {   /* beats .project:hover .thumbnail scale-125 */
+    transform: rotate(-5deg) scale(0.94);
+  }
   .project:hover svg {
     @apply translate-x-0;
   }

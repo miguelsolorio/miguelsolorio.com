@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Card Explorations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary: #2A25FF;
+    --lavender: #cfc6e8;
+    --ink: #334155;
+  }
+
+  body {
+    background: #f5f5f5;
+    color: var(--ink);
+    font-family: Inter, sans-serif;
+    padding: 80px 32px 160px;
+  }
+
+  .page-header { max-width: 1152px; margin: 0 auto 96px; }
+  .page-header h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.02em; }
+  .page-header p { margin-top: 12px; font-size: 16px; color: #64748b; max-width: 640px; line-height: 1.6; }
+  .page-header code { font-family: "JetBrains Mono", monospace; font-size: 13px; background: #e8e8ee; padding: 2px 6px; border-radius: 4px; }
+
+  .variation { max-width: 1152px; margin: 0 auto 120px; }
+  .variation > header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; }
+  .variation > header .num { font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 700; color: var(--primary); }
+  .variation > header h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .variation > header p { font-size: 14px; color: #94a3b8; }
+
+  /* ---- shared card shell ---- */
+  .card {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 20px;
+  }
+
+  /* shared iframe embed: --zoom scales the notebook, wrapper crops it.
+     iframe content is 720px wide, centered, on a #cfc6e8 field */
+  .embed {
+    border: 0;
+    pointer-events: none;
+    width: calc(100% / var(--zoom, 1));
+    height: calc(100% / var(--zoom, 1));
+    transform: scale(var(--zoom, 1));
+    transform-origin: top left;
+  }
+
+  .arrow { width: 0.9em; height: 0.9em; margin-left: 0.25em; flex: none; }
+
+  /* =========================================================
+     01 — CURRENT, SHARPENED
+     the existing language: blend-mode title + floating snippet,
+     but the animation is bigger, sharper, and straightens on hover
+     ========================================================= */
+  .v1 { background: var(--lavender); transition: transform .3s ease; }
+  .v1 .anim {
+    position: absolute; top: -14%; right: -6%;
+    width: 68%; height: 150%;
+    transform: rotate(-6deg);
+    transform-origin: top right;
+    transition: transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .v1 .anim .embed { --zoom: 0.82; }
+  .v1 .title {
+    position: absolute; left: 64px; bottom: 96px;
+    display: flex; align-items: center;
+    font-size: 88px; font-weight: 800; letter-spacing: -0.03em;
+    color: var(--primary); mix-blend-mode: overlay; z-index: 2;
+    transition: opacity .3s ease;
+  }
+  .v1 .title.solid { mix-blend-mode: multiply; opacity: 0; }
+  .v1 .desc {
+    position: absolute; left: 66px; bottom: 64px;
+    font-size: 19px; font-weight: 500; color: var(--primary);
+    opacity: 0; transition: opacity .3s ease, transform .3s ease; transform: translateY(6px);
+    z-index: 2;
+  }
+  .v1 .arrow { width: 56px; height: 56px; margin-left: 16px; transform: translateX(-12px); transition: transform .25s ease; }
+  .v1:hover { transform: scale(1.02); }
+  .v1:hover .anim { transform: rotate(-2deg) scale(1.04); }
+  .v1:hover .title.solid { opacity: 1; }
+  .v1:hover .desc { opacity: 1; transform: none; }
+  .v1:hover .arrow { transform: none; }
+
+  /* =========================================================
+     02 — FULL BLEED
+     the animation IS the card, edge to edge; type sits on a
+     scrim that breathes away on hover
+     ========================================================= */
+  .v2 { background: var(--lavender); }
+  .v2 .anim {
+    position: absolute; inset: 0;
+    transition: transform .6s cubic-bezier(.2,.8,.2,1);
+  }
+  .v2 .anim .embed { --zoom: 0.62; margin-left: -6%; }
+  .v2::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(42,37,255,.92) 0%, rgba(42,37,255,.35) 38%, transparent 65%);
+    transition: opacity .4s ease;
+  }
+  .v2 .meta { position: absolute; left: 48px; right: 48px; bottom: 40px; z-index: 2; color: #fff; }
+  .v2 .meta .kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+  .v2 .meta .row { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
+  .v2 .title { font-size: 56px; font-weight: 800; letter-spacing: -0.03em; margin-top: 6px; }
+  .v2 .desc { font-size: 17px; font-weight: 500; opacity: .85; white-space: nowrap; display: flex; align-items: center; }
+  .v2 .arrow { width: 20px; height: 20px; margin-left: 10px; transition: transform .25s ease; }
+  .v2:hover .anim { transform: scale(1.05); }
+  .v2:hover .arrow { transform: translateX(6px); }
+
+  /* =========================================================
+     03 — SPLIT EDITORIAL
+     hard 40/60 split: typography block in solid primary,
+     animation cropped full-height on the right
+     ========================================================= */
+  .v3 { display: flex; background: var(--primary); }
+  .v3 .panel {
+    width: 42%; flex: none; padding: 48px;
+    display: flex; flex-direction: column; color: #fff;
+  }
+  .v3 .kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+  .v3 .title { font-size: 52px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin-top: auto; }
+  .v3 .desc { font-size: 17px; font-weight: 500; opacity: .8; margin-top: 14px; line-height: 1.5; }
+  .v3 .chips { display: flex; gap: 8px; margin-top: 24px; }
+  .v3 .chips span {
+    font-family: "JetBrains Mono", monospace; font-size: 11px; padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,.35); border-radius: 999px;
+  }
+  .v3 .go {
+    position: absolute; top: 40px; right: 40px; z-index: 3;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: #fff; color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .v3 .go .arrow { width: 22px; height: 22px; margin: 0; transform: rotate(-45deg); transition: transform .3s ease; }
+  .v3 .anim { position: relative; flex: 1; overflow: hidden; }
+  .v3 .anim .embed { --zoom: 0.68; margin-left: -8%; margin-top: -4%; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .v3:hover .anim .embed { transform: scale(calc(var(--zoom) * 1.04)); }
+  .v3:hover .go { transform: scale(1.12); }
+  .v3:hover .go .arrow { transform: rotate(0deg); }
+
+  /* =========================================================
+     04 — FLOATING BROWSER
+     the animation lives in a browser window hovering over a
+     soft gradient; hover lifts the window off the card
+     ========================================================= */
+  .v4 { background: linear-gradient(120deg, #d9d2ef 0%, #cfc6e8 45%, #ecd6e4 100%); }
+  .v4 .window {
+    position: absolute; top: 48px; right: 56px; bottom: -80px;
+    width: 54%;
+    background: var(--lavender);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px -12px rgba(42, 37, 255, .35), 0 4px 16px rgba(42,37,255,.15);
+    transform: rotate(2deg);
+    transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease;
+  }
+  .v4 .titlebar {
+    height: 40px; background: #fff; display: flex; align-items: center; gap: 8px; padding: 0 16px;
+    border-bottom: 1px solid #e9e4f4;
+  }
+  .v4 .titlebar i { width: 11px; height: 11px; border-radius: 50%; background: #e4e0ef; }
+  .v4 .titlebar i:nth-child(1) { background: #ff5f57; }
+  .v4 .titlebar i:nth-child(2) { background: #febc2e; }
+  .v4 .titlebar i:nth-child(3) { background: #28c840; }
+  .v4 .titlebar .url {
+    flex: 1; margin-left: 12px; height: 24px; border-radius: 6px; background: #f2effa;
+    font-family: "JetBrains Mono", monospace; font-size: 11px; color: #8b84a8;
+    display: flex; align-items: center; padding: 0 12px;
+  }
+  .v4 .window .body { position: absolute; inset: 40px 0 0; }
+  .v4 .window .embed { --zoom: 0.72; margin-left: -9%; }
+  .v4 .meta { position: absolute; left: 56px; top: 50%; transform: translateY(-50%); max-width: 38%; }
+  .v4 .kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--primary); opacity: .65; }
+  .v4 .title { font-size: 54px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; color: var(--primary); margin-top: 12px; }
+  .v4 .desc { font-size: 17px; font-weight: 500; color: #5b54a0; margin-top: 14px; line-height: 1.5; }
+  .v4 .cta { display: inline-flex; align-items: center; margin-top: 22px; font-weight: 700; color: var(--primary); font-size: 16px; }
+  .v4 .cta .arrow { transition: transform .25s ease; }
+  .v4:hover .window {
+    transform: rotate(0deg) translateY(-16px);
+    box-shadow: 0 40px 80px -12px rgba(42, 37, 255, .45), 0 8px 24px rgba(42,37,255,.2);
+  }
+  .v4:hover .cta .arrow { transform: translateX(6px); }
+
+  /* =========================================================
+     05 — SPOTLIGHT
+     dark card; the animation is revealed through a spotlight
+     that follows the cursor
+     ========================================================= */
+  .v5 { background: #0d0c16; --mx: 70%; --my: 45%; }
+  .v5 .anim { position: absolute; inset: 0; }
+  .v5 .anim .embed { --zoom: 0.62; margin-left: -6%; }
+  .v5 .anim.dim { filter: grayscale(1) brightness(.4); opacity: .5; }
+  .v5 .anim.lit {
+    -webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my), #000 0%, transparent 100%);
+    mask-image: radial-gradient(circle 260px at var(--mx) var(--my), #000 0%, transparent 100%);
+  }
+  .v5 .title {
+    position: absolute; left: 48px; bottom: 88px; z-index: 2;
+    font-size: 72px; font-weight: 900; letter-spacing: -0.03em; line-height: 1;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.85);
+    transition: color .4s ease;
+  }
+  .v5 .desc {
+    position: absolute; left: 50px; bottom: 48px; z-index: 2;
+    display: flex; align-items: center;
+    font-size: 16px; font-weight: 500; color: rgba(255,255,255,.65);
+  }
+  .v5 .desc .arrow { transition: transform .25s ease; }
+  .v5:hover .title { color: #fff; -webkit-text-stroke-color: transparent; }
+  .v5:hover .desc .arrow { transform: translateX(6px); }
+
+  /* =========================================================
+     06 — 3D PARALLAX TILT
+     the whole card tilts toward the cursor; the animation
+     window and the type float at different depths
+     ========================================================= */
+  .v6-scene { perspective: 1400px; }
+  .v6 {
+    background: linear-gradient(135deg, #241f6b, #2A25FF 55%, #6b46e5);
+    transform-style: preserve-3d;
+    transition: transform .2s ease-out;
+    will-change: transform;
+  }
+  .v6 .window {
+    position: absolute; top: 44px; right: 48px; bottom: 44px; width: 52%;
+    border-radius: 12px; overflow: hidden; background: var(--lavender);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.5);
+    transform: translateZ(50px);
+  }
+  .v6 .window .embed { --zoom: 0.66; margin-left: -8%; margin-top: -6%; }
+  .v6 .meta { position: absolute; left: 52px; bottom: 48px; color: #fff; transform: translateZ(90px); max-width: 40%; }
+  .v6 .kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+  .v6 .title { font-size: 54px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin-top: 10px; }
+  .v6 .desc { display: flex; align-items: center; font-size: 16px; font-weight: 500; opacity: .85; margin-top: 12px; }
+  .v6 .glare {
+    position: absolute; inset: 0; border-radius: 20px; pointer-events: none;
+    background: radial-gradient(600px circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.18), transparent 60%);
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .v6:hover .glare { opacity: 1; }
+
+  /* =========================================================
+     07 — THE PORTAL
+     the animation is glimpsed through an arched doorway that
+     swells open on hover
+     ========================================================= */
+  .v7 { background: #eceafb; }
+  .v7::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(42,37,255,.14) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .v7 .portal {
+    position: absolute; right: 72px; bottom: 0;
+    width: 380px; height: 360px;
+    border-radius: 190px 190px 0 0;
+    overflow: hidden;
+    background: var(--lavender);
+    box-shadow: 0 0 0 10px #fff, 0 30px 60px -20px rgba(42,37,255,.35);
+    transition: transform .55s cubic-bezier(.2,.8,.2,1), box-shadow .55s ease;
+    transform-origin: bottom center;
+  }
+  .v7 .portal .embed { --zoom: 0.6; margin-left: -32%; margin-top: -6%; }
+  .v7 .meta { position: absolute; left: 56px; bottom: 56px; max-width: 42%; z-index: 2; }
+  .v7 .kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--primary); opacity: .6; }
+  .v7 .title { font-size: 56px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; color: var(--primary); margin-top: 12px; }
+  .v7 .desc { display: flex; align-items: center; font-size: 17px; font-weight: 500; color: #6d66a8; margin-top: 14px; }
+  .v7 .desc .arrow { transition: transform .25s ease; }
+  .v7:hover .portal { transform: scale(1.12); box-shadow: 0 0 0 10px #fff, 0 40px 80px -20px rgba(42,37,255,.5); }
+  .v7:hover .desc .arrow { transform: translateX(6px); }
+
+  /* =========================================================
+     08 — GHOST TYPE
+     full-bleed animation with a giant outlined wordmark laid
+     over it; hover fills the type and raises a glass footer
+     ========================================================= */
+  .v8 { background: var(--lavender); }
+  .v8 .anim { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .v8 .anim .embed { --zoom: 0.62; margin-left: -6%; }
+  .v8 .title {
+    position: absolute; left: 0; right: 0; top: 44%; transform: translateY(-50%);
+    text-align: center;
+    font-size: 118px; font-weight: 900; letter-spacing: -0.045em; line-height: .92;
+    color: transparent; -webkit-text-stroke: 2px var(--primary);
+    z-index: 2; pointer-events: none;
+    transition: color .35s ease, transform .5s cubic-bezier(.2,.8,.2,1);
+    mix-blend-mode: multiply;
+  }
+  .v8 .glass {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px;
+    background: rgba(255,255,255,.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255,255,255,.7);
+    transform: translateY(101%);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .v8 .glass .desc { font-size: 16px; font-weight: 600; color: var(--primary); }
+  .v8 .glass .cta { display: flex; align-items: center; font-size: 14px; font-weight: 700; color: var(--primary); font-family: "JetBrains Mono", monospace; }
+  .v8:hover .anim { transform: scale(1.04); }
+  .v8:hover .title { color: var(--primary); transform: translateY(-58%); }
+  .v8:hover .glass { transform: none; }
+
+  /* =========================================================
+     09 — STICKER SHEET
+     playful poster: the animation as a tilted mac window with a
+     hard offset shadow and sticker chips
+     ========================================================= */
+  .v9 { background: #f3edda; }
+  .v9::before {
+    content: ""; position: absolute; inset: 0; opacity: .5;
+    background-image: radial-gradient(rgba(51,65,85,.12) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+  .v9 .window {
+    position: absolute; top: 56px; right: 64px; width: 50%; bottom: -60px;
+    background: var(--lavender); border-radius: 12px; overflow: hidden;
+    border: 3px solid #1e1b4b;
+    box-shadow: 10px 10px 0 var(--primary);
+    transform: rotate(2.5deg);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .v9 .titlebar { height: 34px; background: #fff; border-bottom: 3px solid #1e1b4b; display: flex; align-items: center; gap: 7px; padding: 0 14px; }
+  .v9 .titlebar i { width: 12px; height: 12px; border-radius: 50%; border: 2.5px solid #1e1b4b; }
+  .v9 .window .body { position: absolute; inset: 34px 0 0; }
+  .v9 .window .embed { --zoom: 0.68; margin-left: -8%; }
+  .v9 .meta { position: absolute; left: 56px; top: 50%; transform: translateY(-50%); max-width: 38%; z-index: 2; }
+  .v9 .title { font-size: 58px; font-weight: 900; letter-spacing: -0.03em; line-height: 1; color: #1e1b4b; }
+  .v9 .title em { font-style: normal; color: var(--primary); }
+  .v9 .desc { font-size: 17px; font-weight: 600; color: #4c4784; margin-top: 14px; line-height: 1.5; }
+  .v9 .stickers { display: flex; gap: 10px; margin-top: 22px; }
+  .v9 .stickers span {
+    font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700;
+    background: #fff; border: 2.5px solid #1e1b4b; border-radius: 999px; padding: 7px 14px;
+    box-shadow: 3px 3px 0 #1e1b4b;
+    transition: transform .25s ease;
+  }
+  .v9 .stickers span:nth-child(2) { transform: rotate(-3deg); background: #ffe580; }
+  .v9 .stickers span:nth-child(3) { transform: rotate(2deg); background: #cdeac0; }
+  .v9:hover .window { transform: rotate(0deg); box-shadow: 16px 16px 0 var(--primary); }
+  .v9:hover .stickers span { transform: rotate(0deg) translateY(-3px); }
+
+  /* =========================================================
+     10 — KINETIC MARQUEE
+     an endless outlined wordmark streams behind the animation;
+     hover snaps the front title solid and speeds the stream
+     ========================================================= */
+  .v10 { background: #16123f; }
+  .v10 .marquee {
+    position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%);
+    display: flex; white-space: nowrap; z-index: 1; pointer-events: none;
+  }
+  .v10 .marquee span {
+    font-size: 140px; font-weight: 900; letter-spacing: -0.03em; padding-right: 60px;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(207,198,232,.35);
+    animation: v10-stream 22s linear infinite;
+  }
+  @keyframes v10-stream { to { transform: translateX(-100%); } }
+  .v10:hover .marquee span { animation-duration: 9s; }
+  .v10 .window {
+    position: absolute; top: 40px; bottom: 40px; right: 64px; width: 46%;
+    border-radius: 14px; overflow: hidden; background: var(--lavender); z-index: 2;
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(207,198,232,.25);
+    transition: transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .v10 .window .embed { --zoom: 0.62; margin-left: -10%; margin-top: -4%; }
+  .v10 .meta { position: absolute; left: 56px; bottom: 52px; z-index: 3; color: #fff; max-width: 40%; }
+  .v10 .kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #b9aef0; }
+  .v10 .title { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-top: 10px; }
+  .v10 .desc { display: flex; align-items: center; font-size: 16px; font-weight: 500; opacity: .8; margin-top: 12px; }
+  .v10 .desc .arrow { transition: transform .25s ease; }
+  .v10:hover .window { transform: scale(1.03) rotate(-1deg); }
+  .v10:hover .desc .arrow { transform: translateX(6px); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Project card explorations</h1>
+  <p>Ten directions for the home-page project cards, all built around the live
+  <code>cell-animation.html?card=1</code> embed as the focal point. Best viewed via
+  <code>hugo server</code> at <code>/prototypes/card-variations.html</code>.</p>
+</div>
+
+<!-- shared arrow icon -->
+<svg style="display:none"><symbol id="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></symbol></svg>
+
+<!-- 01 -->
+<section class="variation">
+  <header><span class="num">01</span><h2>Current, sharpened</h2><p>your existing language — snippet bigger, sharper, straightens on hover</p></header>
+  <a class="card v1" href="#">
+    <div class="anim"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <p class="title">Agentic Notebooks</p>
+    <p class="title solid">Agentic Notebooks <svg class="arrow"><use href="#arr"/></svg></p>
+    <p class="desc">Data science workflows via natural language</p>
+  </a>
+</section>
+
+<!-- 02 -->
+<section class="variation">
+  <header><span class="num">02</span><h2>Full bleed</h2><p>the animation is the card; type rides a primary scrim</p></header>
+  <a class="card v2" href="#">
+    <div class="anim"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <div class="meta">
+      <p class="kicker">Google Colab · 2026</p>
+      <div class="row">
+        <p class="title">Agentic Notebooks</p>
+        <p class="desc">Data science workflows via natural language <svg class="arrow"><use href="#arr"/></svg></p>
+      </div>
+    </div>
+  </a>
+</section>
+
+<!-- 03 -->
+<section class="variation">
+  <header><span class="num">03</span><h2>Split editorial</h2><p>hard 40/60 split — typography panel plus full-height crop</p></header>
+  <a class="card v3" href="#">
+    <div class="panel">
+      <p class="kicker">Case study — 01</p>
+      <p class="title">Agentic Notebooks</p>
+      <p class="desc">Data science workflows via natural language</p>
+      <div class="chips"><span>Colab</span><span>Gemini</span><span>Lead designer</span></div>
+    </div>
+    <div class="anim"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <span class="go"><svg class="arrow"><use href="#arr"/></svg></span>
+  </a>
+</section>
+
+<!-- 04 -->
+<section class="variation">
+  <header><span class="num">04</span><h2>Floating browser</h2><p>the animation in a browser window that lifts off the card</p></header>
+  <a class="card v4" href="#">
+    <div class="window">
+      <div class="titlebar"><i></i><i></i><i></i><span class="url">colab.research.google.com</span></div>
+      <div class="body"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    </div>
+    <div class="meta">
+      <p class="kicker">Google Colab</p>
+      <p class="title">Agentic Notebooks</p>
+      <p class="desc">Data science workflows via natural language</p>
+      <span class="cta">Read the case study <svg class="arrow"><use href="#arr"/></svg></span>
+    </div>
+  </a>
+</section>
+
+<!-- 05 -->
+<section class="variation">
+  <header><span class="num">05</span><h2>Spotlight</h2><p>dark card; the cursor sweeps a light across the animation</p></header>
+  <a class="card v5" href="#" id="spotlight">
+    <div class="anim dim"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <div class="anim lit"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <p class="title">Agentic<br>Notebooks</p>
+    <p class="desc">Data science workflows via natural language <svg class="arrow"><use href="#arr"/></svg></p>
+  </a>
+</section>
+
+<!-- 06 -->
+<section class="variation">
+  <header><span class="num">06</span><h2>3D parallax tilt</h2><p>the card tilts toward the cursor; window and type float at depths</p></header>
+  <div class="v6-scene">
+    <a class="card v6" href="#" id="tilt">
+      <div class="window"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+      <div class="meta">
+        <p class="kicker">Google Colab</p>
+        <p class="title">Agentic Notebooks</p>
+        <p class="desc">Data science workflows via natural language <svg class="arrow"><use href="#arr"/></svg></p>
+      </div>
+      <div class="glare"></div>
+    </a>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="variation">
+  <header><span class="num">07</span><h2>The portal</h2><p>the animation glimpsed through an arch that swells open</p></header>
+  <a class="card v7" href="#">
+    <div class="portal"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <div class="meta">
+      <p class="kicker">Google Colab · 2026</p>
+      <p class="title">Agentic Notebooks</p>
+      <p class="desc">Data science workflows via natural language <svg class="arrow"><use href="#arr"/></svg></p>
+    </div>
+  </a>
+</section>
+
+<!-- 08 -->
+<section class="variation">
+  <header><span class="num">08</span><h2>Ghost type</h2><p>outlined wordmark over the full-bleed animation; hover fills it in</p></header>
+  <a class="card v8" href="#">
+    <div class="anim"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <p class="title">Agentic<br>Notebooks</p>
+    <div class="glass">
+      <p class="desc">Data science workflows via natural language</p>
+      <span class="cta">READ CASE STUDY <svg class="arrow"><use href="#arr"/></svg></span>
+    </div>
+  </a>
+</section>
+
+<!-- 09 -->
+<section class="variation">
+  <header><span class="num">09</span><h2>Sticker sheet</h2><p>playful poster — tilted window, hard shadow, sticker chips</p></header>
+  <a class="card v9" href="#">
+    <div class="window">
+      <div class="titlebar"><i></i><i></i><i></i></div>
+      <div class="body"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    </div>
+    <div class="meta">
+      <p class="title">Agentic <em>Notebooks</em></p>
+      <p class="desc">Data science workflows via natural language</p>
+      <div class="stickers"><span>Colab</span><span>Gemini ✦</span><span>2026</span></div>
+    </div>
+  </a>
+</section>
+
+<!-- 10 -->
+<section class="variation">
+  <header><span class="num">10</span><h2>Kinetic marquee</h2><p>an endless outlined wordmark streams behind the animation</p></header>
+  <a class="card v10" href="#">
+    <div class="marquee">
+      <span>AGENTIC NOTEBOOKS — AGENTIC NOTEBOOKS — </span>
+      <span aria-hidden="true">AGENTIC NOTEBOOKS — AGENTIC NOTEBOOKS — </span>
+    </div>
+    <div class="window"><iframe class="embed" src="../notebooks/cell-animation.html?card=1" scrolling="no" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+    <div class="meta">
+      <p class="kicker">Google Colab · 2026</p>
+      <p class="title">Agentic Notebooks</p>
+      <p class="desc">Data science workflows via natural language <svg class="arrow"><use href="#arr"/></svg></p>
+    </div>
+  </a>
+</section>
+
+<script>
+  // 05 — spotlight follows the cursor
+  const spot = document.getElementById("spotlight");
+  spot.addEventListener("mousemove", (e) => {
+    const r = spot.getBoundingClientRect();
+    spot.style.setProperty("--mx", ((e.clientX - r.left) / r.width) * 100 + "%");
+    spot.style.setProperty("--my", ((e.clientY - r.top) / r.height) * 100 + "%");
+  });
+
+  // 06 — parallax tilt toward the cursor
+  const tilt = document.getElementById("tilt");
+  tilt.addEventListener("mousemove", (e) => {
+    const r = tilt.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    tilt.style.transform = `rotateY(${x * 7}deg) rotateX(${y * -7}deg)`;
+    tilt.style.setProperty("--gx", (x + 0.5) * 100 + "%");
+    tilt.style.setProperty("--gy", (y + 0.5) * 100 + "%");
+  });
+  tilt.addEventListener("mouseleave", () => { tilt.style.transform = ""; });
+
+  // prototype links go nowhere
+  document.querySelectorAll("a.card").forEach((a) => a.addEventListener("click", (e) => e.preventDefault()));
+</script>
+
+</body>
+</html>

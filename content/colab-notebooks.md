@@ -5,6 +5,7 @@ date: 2026-06-04T10:00:00-07:00
 draft: false
 project: "large"
 thumbnail: "agentic-notebooks.png"
+card_animation: "/notebooks/cell-animation.html"
 weight: 1
 ---
 
@@ -15,7 +16,7 @@ As the lead designer, I partnered with our engineering and product teams to reim
 
 # Understanding the Problem
 
-Colab had accumulated AI features incrementally over several years, but the experience felt bolted on. Suggestions were isolated to single cells, there was no continuity across a session, and users had to context-switch between writing code and asking for help. Below is an example of the very first agent Colab shipped in 2024.
+Colab had added AI features incrementally over the years, but the experience felt bolted on. Code generation was limited to single cells, there was no continuity across chat sessions, and users had to context-switch between writing code and asking for help in the side panel. Below is an example of the first Colab agent that shipped in 2024.
 
 {{< video src="colab-dsa-original.mp4" poster="/agentic-notebooks.png" >}}
 
@@ -23,7 +24,7 @@ We heard from our users that they wanted to stay in the flow, not copy-paste err
 
 # Designing the Interaction Model
 
-Early exploration surfaced a fundamental tension: how do you make AI easy to invoke without cluttering a surface that people rely on for dense, focused work? Notebooks are already visually complex — cells, outputs, sidebars, toolbars — and adding a chat panel risked making things feel even heavier.
+Early exploration surfaced a fundamental tension: how do you make AI easy to invoke without cluttering a surface that people rely on for dense, focused work? Notebooks are already visually complex with cells, outputs, sidebars, toolbars — and adding a chat panel risked making things feel even heavier.
 
 I explored a range of entry points, from inline cell overlays to a floating panel, before landing on a two-mode approach. A compact prompt box in the center toolbar handles quick requests — generate a function, fix this error, explain this output — without breaking the reading flow. A persistent side panel opens for longer conversations or when users want to iterate deeply on a problem.
 
