@@ -1,5 +1,5 @@
 ---
-title: "Agentic Notebooks"
+title: "Notebooks"
 description: "Data science workflows via natural language"
 date: 2026-06-04T10:00:00-07:00
 draft: false

@@ -4,6 +4,7 @@ description: "Laying the foundation of a design system"
 date: 2023-03-24T15:57:19-07:00
 draft: false
 thumbnail: "kanvas.png"
+card_video: "kustomer-design-system/northstar-vision.mp4"
 project: "large"
 weight: 1
 ---

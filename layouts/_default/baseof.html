@@ -11,17 +11,22 @@
     {{ range where .Pages "Params.project" "==" "large" }}
           {{ $thumbnail := .Params.thumbnail | default (printf "%s.png" (lower .Title)) }}
           <a class="project{{ if .Params.card_animation }} project--embed{{ end }}" href="{{ .Permalink }}">
-            <p class="title">{{.Title}}</p>
-            <p class="title secondary">{{.Title}} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></p>
-            <p class="description">{{.Description}}</p>
-            {{ if .Params.card_animation }}
-              <iframe class="thumbnail cell-embed"
-                      src="{{ printf "%s?card=1" (.Params.card_animation | relURL) }}"
-                      title="{{ .Title }}" scrolling="no" loading="lazy"
-                      tabindex="-1" aria-hidden="true"></iframe>
-            {{ else }}
-              <img class="thumbnail" src="{{ $thumbnail | relURL }}" alt="{{ .Title }}">
-            {{ end }}
+            <div class="project-media" aria-hidden="true">
+              {{ if .Params.card_video }}
+                <video class="thumbnail card-video card-video--{{ .File.ContentBaseName }}" autoplay loop muted playsinline preload="metadata">
+                  <source src="{{ .Params.card_video | relURL }}" type="video/mp4">
+                </video>
+              {{ else if .Params.card_animation }}
+                <iframe class="thumbnail cell-embed"
+                        src="{{ printf "%s?card=1" (.Params.card_animation | relURL) }}"
+                        scrolling="no" loading="lazy" tabindex="-1"></iframe>
+              {{ else }}
+                <img class="thumbnail" src="{{ $thumbnail | relURL }}" alt="">
+              {{ end }}
+            </div>
+            <div class="project-meta">
+              <p class="title">{{.Title}} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></p>
+            </div>
           </a>
     {{ end }}
   </div>

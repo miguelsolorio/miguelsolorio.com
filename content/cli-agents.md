@@ -1,10 +1,11 @@
 ---
-title: "CLI Agents"
+title: "Gemini CLI"
 description: "Agent experiences for terminal-first developer workflows"
 date: 2026-06-04T10:00:00-07:00
 draft: false
 project: "large"
 thumbnail: "cli-agents.png"
+card_video: "cli-agents/gemini-cli-demo.mp4"
 weight: 2
 ---
 

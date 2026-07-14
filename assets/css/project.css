@@ -7,73 +7,102 @@
     @apply grid grid-flow-row gap-2;
   }
   .project {
-    @apply flex flex-col relative w-full h-96 overflow-hidden no-underline transition duration-300 ease-in-out;
+    @apply relative block w-full h-96 overflow-hidden no-underline;
+    background-color: #cfc6e8;
+    isolation: isolate;
   }
-  .project::before {
-    content: "";
-    width: 95%;
-    height: 90%;
-    @apply absolute top-0 left-0 right-0 bottom-0 m-auto border-solid border-8 mix-blend-overlay border-transparent z-10 transition duration-300 ease-in;
+  .project-media {
+    @apply absolute inset-0 z-0 overflow-hidden;
+    transition: transform .6s cubic-bezier(.2,.8,.2,1);
   }
   .project .thumbnail {
-    @apply w-full absolute top-0 bottom-0 left-0 m-auto z-0 transition duration-300 ease-in-out;
+    @apply absolute inset-0 w-full h-full m-0 pointer-events-none;
+    object-fit: cover;
   }
-  .project .title,
-  .project .description {
-    @apply absolute bottom-28 left-20;
+  .project .thumbnail.card-video {
+    height: auto;
+    max-width: none;
+    right: auto;
+    bottom: auto;
+    object-fit: initial;
+    border-radius: 1rem;
+    transform: translateX(-50%);
   }
-  .project .description {
-    @apply bottom-20 transition duration-300 ease-in-out;
+  .project .card-video--kustomer-design-system {
+    width: 85%;
+    top: 12%;
+    left: 50%;
   }
-  .project .title {
-    @apply flex items-center text-8xl font-extrabold z-10 m-0 no-underline text-primary mix-blend-overlay transition duration-300 ease-in;
-  }
-  .project .title svg {
-    @apply w-16 h-16 ml-4 -translate-x-4 transition duration-200 ease-in;
-  }
-  .project .title.secondary {
-    @apply mix-blend-multiply opacity-0 z-20;
-  }
-  .project .description {
-    @apply text-xl font-medium z-10 m-0 no-underline text-primary opacity-0;
-  }
-  .project:hover::before {
-    @apply border-primary
-  }
-  .project:hover {
-    @apply scale-105 z-10;
-  }
-  .project:hover .description {
-    @apply opacity-100;
-  }
-  .project:hover .title.secondary {
-    @apply opacity-100;
-  }
-  .project:hover .thumbnail {
-    @apply scale-125;
-  }
-  .project--embed {
-    background-color: #cfc6e8;    /* card fill so the title stays readable off the video */
+  .project .card-video--cli-agents {
+    width: 105%;
+    top: 0;
+    left: 50%;
+    border-radius: 0;
   }
   .project .thumbnail.cell-embed {
-    @apply pointer-events-none;
     border: 0;
-    width: 70%;                   /* smaller: a floating snippet, not a full-bleed bg */
-    height: 140%;
-    top: -20%;                    /* nudged toward the top-right corner */
-    right: -4%;
-    left: auto;
-    bottom: auto;
-    margin: 0;
-    transform: rotate(-7deg) scale(0.9);
-    transform-origin: top right;
-    filter: blur(2px);
   }
-  .project:hover .thumbnail.cell-embed {   /* beats .project:hover .thumbnail scale-125 */
-    transform: rotate(-5deg) scale(0.94);
+  .project-meta {
+    @apply absolute left-0 right-0 z-10 text-center;
+    top: 44%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: transform .5s cubic-bezier(.2,.8,.2,1);
   }
-  .project:hover svg {
-    @apply translate-x-0;
+  .project .title {
+    @apply m-0 text-center font-extrabold text-primary;
+    font-size: clamp(3.25rem, 9vw, 7.375rem);
+    letter-spacing: -.045em;
+    line-height: .92;
+    color: transparent;
+    -webkit-text-stroke: 2px #2A25FF;
+    overflow-wrap: anywhere;
+    transition: color .35s ease;
+    mix-blend-mode: multiply;
+  }
+  .project .title svg {
+    display: inline-block;
+    width: .62em;
+    height: .62em;
+    margin-left: .08em;
+    vertical-align: .02em;
+    stroke-width: 1.75;
+  }
+  .project:hover .project-media,
+  .project:focus-visible .project-media {
+    transform: scale(1.04);
+  }
+  .project:hover .project-meta,
+  .project:focus-visible .project-meta {
+    transform: translateY(-53%);
+  }
+  .project:hover .title,
+  .project:focus-visible .title {
+    color: #2A25FF;
+  }
+  .project:focus-visible {
+    outline: 3px solid #2A25FF;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 639px) {
+    .project .title {
+      font-size: clamp(2.75rem, 15vw, 4.5rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-media,
+    .project .title,
+    .project-meta {
+      transition: none;
+    }
+    .project:hover .project-media,
+    .project:focus-visible .project-media {
+      transform: none;
+    }
   }
 
   /* Side Projects */
