@@ -397,14 +397,16 @@
     font: 500 14.5px "Google Sans", "Helvetica Neue", Arial, sans-serif;
     padding: 6px 12px;
     border-radius: 999px;
+    transition: background-color 0.2s ease, transform 0.15s ease;
   }
   .chat-actions button:hover { background: #eef3fc; }
+  .chat-actions button:active { transform: scale(0.96); }
   .chat-actions .msym { font-size: 18px; }
   .chat-input {
     background: #f8fafd;
     border: 1.5px solid #e4e6e8;
-    border-radius: 16px;
-    padding: 12px 14px 10px;
+    border-radius: 999px;
+    padding: 12px 8px;
     transition: background-color 0.25s ease, border-color 0.25s ease;
   }
   .chat-input.focus,
@@ -412,17 +414,36 @@
     background: #fff;
     border-color: #0b57d0;
   }
-  .chat-input-text { font-size: 15px; color: #1f1f1f; min-height: 22px; }
+  .chat-input-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 15px;
+    color: #1f1f1f;
+    white-space: nowrap;
+    overflow: hidden;
+  }
   .chat-input-text .placeholder { color: #80868b; }
   .chat-input-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
+    gap: 4px;
   }
   .chat-input-row .msym { font-size: 20px; color: #444746; cursor: pointer; }
-  .chat-input-row .left { display: flex; gap: 16px; }
-  .chat-input-row .right { display: flex; align-items: center; gap: 14px; }
+  /* icon buttons: circular hover target, kept from growing the pill via -margin */
+  .chat-input-row .add-btn,
+  .chat-input-row .send-btn {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    margin: -6px 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .chat-input-row .add-btn:hover { background: #f1f3f4; }
+  .chat-input-row .add-btn:active { transform: scale(0.9); }
   .chat-input-row .model {
     display: flex;
     align-items: center;
@@ -430,43 +451,104 @@
     font-size: 14px;
     color: #1f1f1f;
     cursor: pointer;
+    flex: none;
+    padding: 5px 6px 5px 10px;
+    margin: -5px 0;
+    border-radius: 999px;
+    transition: background-color 0.2s ease;
   }
+  .chat-input-row .model:hover { background: #f1f3f4; }
   .chat-input-row .send-btn {
     color: #c4c7c5;          /* disabled until there is text */
     cursor: default;
-    transition: color 0.2s ease;
   }
   .chat-input-row .send-btn.enabled {
     color: #444746;
     cursor: pointer;
   }
+  .chat-input-row .send-btn.enabled:hover { background: #f1f3f4; }
+  .chat-input-row .send-btn.enabled:active { transform: scale(0.9); }
+  /* while the agent executes, the send button becomes a filled stop button */
+  .chat-input-row .send-btn.stop {
+    color: #444746;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  .chat-input-row .send-btn.stop:hover { background: #f1f3f4; }
+  .chat-input-row .send-btn.stop:active { transform: scale(0.9); }
 
-  /* ---------- playback FAB ---------- */
-  .fab {
+  /* ---------- playback timeline ---------- */
+  .timeline {
     position: fixed;
-    right: 56px;   /* clears the purple frame padding */
-    bottom: 56px;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
     z-index: 50;   /* above the chat and everything else */
-    width: 48px;
-    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: min(560px, calc(100vw - 80px));
+    user-select: none;
+  }
+  .tl-btn {
+    flex: none;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     border: 0;
-    background: #fff;
+    background: #f1f3f4;
     color: #1f1f1f;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.12);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease;
   }
-  .fab:hover {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.18), 0 12px 32px rgba(0,0,0,0.16);
-    transform: translateY(-1px);
-  }
-  .fab .msym {
-    font-size: 22px;
+  .tl-btn:hover { background: #e4e6e8; }
+  .tl-btn .msym {
+    font-size: 20px;
     font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+  }
+  .tl-track {
+    position: relative;
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #e4e6e8;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .tl-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%;
+    border-radius: 3px;
+    background: var(--gemini);
+  }
+  .tl-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gemini);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s ease;
+  }
+  .tl-track:hover .tl-thumb,
+  .timeline.dragging .tl-thumb { transform: translate(-50%, -50%) scale(1.25); }
+  .tl-time { display: none; }
+
+  /* while seeking, kill every transition/animation so states snap instantly */
+  body.no-anim *,
+  body.no-anim *::before,
+  body.no-anim *::after {
+    transition: none !important;
+    animation: none !important;
   }
 
   /* ---------- fake mouse cursor ---------- */
@@ -534,8 +616,8 @@
   /* when done: [n] plus a green check in the gutter */
   .gutter .gutter-check {
     display: none;
-    font-size: 15px;
-    color: #00af2f;
+    font-size: 16px;
+    color: var(--gemini);
     margin-right: 4px;
     font-variation-settings: "FILL" 0, "wght" 600, "GRAD" 0, "opsz" 20;
   }
@@ -607,19 +689,24 @@
     </div>
   </div>
   <div class="chat-input" id="chatInput">
-    <div class="chat-input-text"><span id="inputText"></span><span class="placeholder" id="placeholder">What can I help you build?</span></div>
     <div class="chat-input-row">
-      <div class="left"><span class="msym">add</span><span class="msym">tune</span></div>
-      <div class="right">
-        <span class="model">Gemini Pro<span class="msym">arrow_drop_down</span></span>
-        <span class="msym send-btn" id="sendBtn">send</span>
-      </div>
+      <span class="msym add-btn">add</span>
+      <div class="chat-input-text"><span id="inputText"></span><span class="placeholder" id="placeholder">What can I help you build?</span></div>
+      <span class="model">Gemini Pro<span class="msym">arrow_drop_down</span></span>
+      <span class="msym send-btn" id="sendBtn">send</span>
     </div>
   </div>
 </div>
 </div><!-- /.frame -->
 
-<button class="fab" id="fab" aria-label="Pause"><span class="msym" id="fabIcon">pause</span></button>
+<div class="timeline" id="timeline">
+  <button class="tl-btn" id="tlBtn" aria-label="Pause"><span class="msym" id="tlIcon">pause</span></button>
+  <div class="tl-track" id="tlTrack">
+    <div class="tl-fill" id="tlFill"></div>
+    <div class="tl-thumb" id="tlThumb"></div>
+  </div>
+  <div class="tl-time" id="tlTime">0:00 / 0:00</div>
+</div>
 
 <div class="mouse" id="mouse">
   <span class="ripple"></span>
@@ -704,10 +791,27 @@ const chatAiText = document.getElementById("chatAiText");
 const inputText = document.getElementById("inputText");
 const placeholder = document.getElementById("placeholder");
 const sendBtn = document.getElementById("sendBtn");
-const fab = document.getElementById("fab");
-const fabIcon = document.getElementById("fabIcon");
+const timelineEl = document.getElementById("timeline");
+const tlBtn = document.getElementById("tlBtn");
+const tlIcon = document.getElementById("tlIcon");
+const tlTrack = document.getElementById("tlTrack");
+const tlFill = document.getElementById("tlFill");
+const tlThumb = document.getElementById("tlThumb");
+const tlTime = document.getElementById("tlTime");
 const mouse = document.getElementById("mouse");
-const rand = (min, max) => min + Math.random() * (max - min);
+
+/* seeded PRNG (mulberry32) so the whole run is deterministic — a given virtual
+   time always maps to the same visual state, which is what makes seeking work */
+const SEED = 0x9e3779b9;
+let _seed = SEED;
+function srand() {
+  _seed = (_seed + 0x6d2b79f5) | 0;
+  let t = _seed;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+const rand = (min, max) => min + srand() * (max - min);
 let runId = 0;
 
 /* ---------------- playback control ---------------- */
@@ -715,16 +819,41 @@ let paused = false;
 let resumeQueue = [];
 let fabState = "playing"; // "playing" | "paused" | "done"
 
+/* virtual clock: vt is the animation's time in ms, accumulated through every
+   sleep(). In instant mode sleeps resolve with no real delay so we can
+   fast-forward to a seek target; TOTAL_MS is the full duration (measured once). */
+let vt = 0;
+let instant = false;
+let seekTarget = 0;
+let playAfterSeek = false;
+let TOTAL_MS = 0;
+
 // every sleep passes through the pause gate, so the whole run freezes/resumes
 const gate = () => (paused ? new Promise((r) => resumeQueue.push(r)) : Promise.resolve());
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms)).then(gate);
+const sleep = (ms) => {
+  vt += ms;
+  if (instant) {
+    if (vt < seekTarget) return Promise.resolve();  // keep fast-forwarding
+    // reached the seek target: leave fast-forward mode
+    instant = false;
+    document.body.classList.remove("no-anim");
+    if (!playAfterSeek) {                            // scrubbing: freeze here
+      paused = true;
+      document.body.classList.add("paused");
+      setFab("paused");
+      return gate();
+    }
+    setFab("playing");                               // resume live from here
+  }
+  return new Promise((r) => setTimeout(r, ms)).then(gate);
+};
 
 function setFab(state) {
   fabState = state;
   const icon = { playing: "pause", paused: "play_arrow", done: "replay" }[state];
   const label = { playing: "Pause", paused: "Play", done: "Replay" }[state];
-  fabIcon.textContent = icon;
-  fab.setAttribute("aria-label", label);
+  tlIcon.textContent = icon;
+  tlBtn.setAttribute("aria-label", label);
 }
 
 function setPaused(on) {
@@ -737,9 +866,77 @@ function setPaused(on) {
   setFab(on ? "paused" : "playing");
 }
 
-fab.addEventListener("click", () => {
-  if (fabState === "done") run();
-  else setPaused(!paused);
+/* ---------------- timeline ---------------- */
+const fmt = (ms) => {
+  const s = Math.max(0, Math.round(ms / 1000));
+  return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+};
+
+function setProgress(pct) {
+  pct = Math.max(0, Math.min(1, pct));
+  tlFill.style.width = pct * 100 + "%";
+  tlThumb.style.left = pct * 100 + "%";
+  tlTime.textContent = fmt(pct * TOTAL_MS) + " / " + fmt(TOTAL_MS);
+}
+
+// wall-clock loop that keeps the playhead in sync with vt during live playback
+function tick() {
+  if (TOTAL_MS && !dragging) setProgress(vt / TOTAL_MS);
+  requestAnimationFrame(tick);
+}
+
+// cancel the current run, reset to the start, and fast-forward to `pct`
+function seekTo(pct, resumePlaying) {
+  if (!TOTAL_MS) return;
+  playAfterSeek = resumePlaying;
+  seekTarget = Math.max(0, Math.min(TOTAL_MS, pct * TOTAL_MS));
+  instant = true;
+  paused = false;
+  document.body.classList.remove("paused");
+  document.body.classList.add("no-anim");
+  setProgress(pct);
+  run();
+}
+
+let dragging = false;
+let wasPlaying = false;
+let lastPct = 0;
+const pctFromEvent = (e) => {
+  const r = tlTrack.getBoundingClientRect();
+  return (e.clientX - r.left) / r.width;
+};
+
+tlTrack.addEventListener("pointerdown", (e) => {
+  if (!TOTAL_MS) return;
+  dragging = true;
+  wasPlaying = fabState === "playing";
+  timelineEl.classList.add("dragging");
+  tlTrack.setPointerCapture(e.pointerId);
+  lastPct = pctFromEvent(e);
+  seekTo(lastPct, false);
+});
+tlTrack.addEventListener("pointermove", (e) => {
+  if (!dragging) return;
+  lastPct = pctFromEvent(e);
+  seekTo(lastPct, false);
+});
+tlTrack.addEventListener("pointerup", () => {
+  if (!dragging) return;
+  dragging = false;
+  timelineEl.classList.remove("dragging");
+  if (wasPlaying) seekTo(lastPct, true);  // resume playing from the drop point
+});
+
+tlBtn.addEventListener("click", () => {
+  if (fabState === "done") {
+    instant = false;
+    seekTarget = 0;
+    playAfterSeek = true;
+    document.body.classList.remove("no-anim", "paused");
+    run();
+  } else {
+    setPaused(!paused);
+  }
 });
 
 function buildCell(cellLines) {
@@ -871,6 +1068,9 @@ async function typePrompt(text, id) {
 
 async function run() {
   const id = ++runId;
+  _seed = SEED;         // deterministic run: same seed -> same timeline every time
+  vt = 0;               // restart the virtual clock
+  resumeQueue = [];     // abandon any awaits parked by a cancelled run
   notebook.innerHTML = "";
   notebook.classList.remove("active");
 
@@ -885,7 +1085,8 @@ async function run() {
   chatAiText.innerHTML = "";
   inputText.textContent = "";
   placeholder.style.display = "";
-  sendBtn.classList.remove("enabled");
+  sendBtn.classList.remove("enabled", "stop");
+  sendBtn.textContent = "send";
   chatInput.querySelectorAll(".cursor").forEach((e) => e.remove());
 
   // reset mouse cursor
@@ -976,6 +1177,9 @@ async function run() {
   chatActions.classList.remove("show");
   chatAi.classList.add("thinking");
   chatAiText.textContent = "Executing...";
+  sendBtn.classList.remove("enabled");   // send -> stop while executing
+  sendBtn.classList.add("stop");
+  sendBtn.textContent = "stop";
   rows.forEach((r) => {
     r.classList.remove("added", "active", "tagged", "streaming");
     r.classList.add("accepted");
@@ -987,7 +1191,7 @@ async function run() {
   rows.forEach((r) => r.classList.add("running"));
   for (let c = 0; c < rows.length; c++) {
     if (id !== runId) return;
-    await sleep(c === rows.length - 1 ? 450 : 250); // the last cell "calls the model"
+    await sleep(c === rows.length - 1 ? 600 : 400); // the last cell "calls the model"
     const row = rows[c];
     row.classList.remove("running");
     row.classList.add("ran");
@@ -1001,7 +1205,8 @@ async function run() {
   outWrap.className = "cell-output";
   outWrap.innerHTML = `<div class="cell-output-inner"><div class="cell-output-row"><span class="msym out-dots">more_horiz</span><pre class="out-text"></pre></div></div>`;
   lastRow.querySelector(".cell").appendChild(outWrap);
-  requestAnimationFrame(() => outWrap.classList.add("open"));
+  if (instant) outWrap.classList.add("open");   // seek: snap open, no rAF
+  else requestAnimationFrame(() => outWrap.classList.add("open"));
   await sleep(350);
   const outCursor = document.createElement("span");
   outCursor.className = "cursor";
@@ -1009,7 +1214,9 @@ async function run() {
   if (id !== runId) return;
   outCursor.remove();
 
-  // 8. execution finished: the agent summarizes what it did
+  // 8. execution finished: stop -> send (disabled, since the input is empty)
+  sendBtn.classList.remove("stop", "enabled");
+  sendBtn.textContent = "send";
   await sleep(300);
   chatAi.classList.remove("thinking");
   chatAiText.innerHTML = "";
@@ -1021,7 +1228,27 @@ async function run() {
   setFab("done");
 }
 
-run();
+/* Measure the full duration by playing once instantly (no delays, no transitions),
+   then reset and start the real, visible playback. Deterministic seed means the
+   measured TOTAL_MS matches live playback exactly. */
+async function measure() {
+  instant = true;
+  seekTarget = Infinity;   // never crosses -> plays straight through to the end
+  playAfterSeek = false;
+  document.body.classList.add("no-anim");
+  await run();
+  TOTAL_MS = vt;
+  instant = false;
+  seekTarget = 0;
+  document.body.classList.remove("no-anim");
+}
+
+(async function init() {
+  await measure();
+  setProgress(0);
+  requestAnimationFrame(tick);
+  run();
+})();
 </script>
 </body>
 </html>
