@@ -5,29 +5,41 @@
       <p class="home-hero-summary">I'm a software designer that's passionate about developer tools, design systems, and open source. When I'm not vibe coding, I enjoy <a href="https://vsco.co/miguel/gallery" target="_blank">🗺️ exploring new places</a>, 🍜 trying new foods, and finding new hobbies ⚾ 🤿 🚴‍♂️.</p>
     </div>
 
-    <aside class="home-hero-current" aria-label="Work history">
+    <aside class="home-hero-current" aria-label="Interactive portfolio terminal">
       <div class="home-hero-terminal-bar">
         <div class="home-hero-lights" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="home-hero-terminal-title">miguelsolorio.com</div>
         <div></div>
       </div>
       <div class="home-hero-terminal-body">
-        <p class="home-hero-row"><span class="t-ps1" aria-hidden="true">~</span> <span class="t-cmd">miguelsolorio --history</span></p>
+        <div class="home-hero-terminal-output" id="terminal-output" role="log" aria-live="polite" aria-relevant="additions text">
+          <p class="home-hero-row"><span class="t-ps1" aria-hidden="true">~</span> <span class="t-cmd">miguelsolorio history</span></p>
 
-        <p class="home-hero-row is-spaced"><span class="t-hash">2023-2026</span> <span class="t-scope">google-colab:</span> <span class="t-out">data science agents</span></p>
-        <p class="home-hero-row"><span class="t-hash">2025</span> <span class="t-scope">gemini-cli:</span> <span class="t-out">agentic development</span></p>
-        <p class="home-hero-row"><span class="t-hash">2022-2023</span> <span class="t-scope">meta:</span> <span class="t-out">design systems</span></p>
-        <p class="home-hero-row"><span class="t-hash">2018-2022</span> <span class="t-scope">vs-code:</span> <span class="t-out">ai code editor</span></p>
+          <p class="home-hero-row is-spaced"><span class="t-hash">2023-2026</span> <span class="t-scope">google-colab:</span> <span class="t-out">data science agents</span></p>
+          <p class="home-hero-row"><span class="t-hash">2025</span> <span class="t-scope">gemini-cli:</span> <span class="t-out">agentic development</span></p>
+          <p class="home-hero-row"><span class="t-hash">2022-2023</span> <span class="t-scope">meta:</span> <span class="t-out">design systems</span></p>
+          <p class="home-hero-row"><span class="t-hash">2018-2022</span> <span class="t-scope">vs-code:</span> <span class="t-out">ai code editor</span></p>
 
-        <p class="home-hero-row is-spaced"><span class="t-ps1" aria-hidden="true">~</span> <span class="t-cmd">miguelsolorio status</span></p>
-        <p class="home-hero-row t-ok">On branch main</p>
+          <p class="home-hero-row is-spaced"><span class="t-ps1" aria-hidden="true">~</span> <span class="t-cmd">miguelsolorio status</span></p>
+          <p class="home-hero-row t-ok">On branch main</p>
 
-        <p class="home-hero-row is-spaced">Changes to be committed:</p>
-        <p class="home-hero-row t-deleted">  deleted    should-designers-code.md</p>
-        <p class="home-hero-row t-modified">  modified   vibe-projects</p>
-        <p class="home-hero-row t-added">  new file   next-chapter.md</p>
+          <p class="home-hero-row is-spaced">Changes to be committed:</p>
+          <p class="home-hero-row t-deleted">  deleted    should-designers-code.md</p>
+          <p class="home-hero-row t-modified">  modified   vibe-projects</p>
+          <p class="home-hero-row t-added">  new file   next-chapter.md</p>
+        </div>
 
-        <p class="home-hero-row is-spaced"><span class="t-ps1" aria-hidden="true">~</span> <span class="home-hero-cursor" aria-hidden="true"></span></p>
+        <div class="home-hero-terminal-controls">
+          <form class="home-hero-terminal-form" id="terminal-form" autocomplete="off">
+            <span class="t-ps1" aria-hidden="true">~</span>
+            <label class="sr-only" for="terminal-input">Enter a portfolio terminal command</label>
+            <span class="home-hero-terminal-input-wrap">
+              <input id="terminal-input" class="home-hero-terminal-input" type="text" inputmode="text" autocapitalize="none" spellcheck="false" aria-autocomplete="list" aria-controls="terminal-suggestions" aria-expanded="false" placeholder="type a command" />
+              <span class="home-hero-terminal-caret-layer" id="terminal-caret-layer" aria-hidden="true"><span id="terminal-caret-text"></span><span class="home-hero-terminal-caret"></span></span>
+            </span>
+          </form>
+          <ul class="home-hero-terminal-suggestions" id="terminal-suggestions" role="listbox" aria-label="Available commands" hidden></ul>
+        </div>
       </div>
     </aside>
   </div>

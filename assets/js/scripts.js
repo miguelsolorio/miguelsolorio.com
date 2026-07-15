@@ -31,6 +31,560 @@ window.addEventListener('scroll', function() {
   }
 });
 
+// Interactive portfolio terminal
+const portfolioTerminal = document.querySelector('.home-hero-current');
+if (portfolioTerminal) {
+  const terminalOutput = document.getElementById('terminal-output');
+  const terminalForm = document.getElementById('terminal-form');
+  const terminalInput = document.getElementById('terminal-input');
+  const terminalCaretLayer = document.getElementById('terminal-caret-layer');
+  const terminalCaretText = document.getElementById('terminal-caret-text');
+  const terminalSuggestions = document.getElementById('terminal-suggestions');
+  const commandHistory = ['miguelsolorio history', 'miguelsolorio status'];
+  let historyIndex = commandHistory.length;
+  const allSuggestionEntries = [];
+  let suggestionEntries = [];
+  let selectedSuggestion = 0;
+  let suggestionsVisible = false;
+  let pendingConfirmation = null;
+
+  const historyRows = [
+    ['2023-2026', 'google-colab:', 'data science agents'],
+    ['2025', 'gemini-cli:', 'agentic development'],
+    ['2022-2023', 'meta:', 'design systems'],
+    ['2018-2022', 'vs-code:', 'ai code editor']
+  ];
+
+  const workProjects = [
+    { name: 'Notebooks', description: 'data science workflows via natural language', url: '/colab-notebooks/' },
+    { name: 'Kanvas', description: 'laying the foundation of a design system', url: '/kustomer-design-system/' },
+    { name: 'Gemini CLI', description: 'terminal-first agent experiences', url: '/cli-agents/' },
+    { name: 'Icons', description: 'open sourcing the design process', url: '/icons/' },
+    { name: 'Onboarding', description: 'a redesign that led to a framework', url: '/onboarding/' }
+  ];
+
+  const sideProjectGroups = [
+    {
+      name: 'Figma',
+      projects: [
+        { name: 'Chroma Colors', description: 'create bulk color styles', url: 'https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors' },
+        { name: 'Variables Generator', description: 'create variables via JSON', url: 'https://www.figma.com/community/plugin/1319728928151105267/variables-generator' },
+        { name: 'Colorizer', description: 'sort colors by hue values', url: 'https://www.figma.com/community/plugin/816889819624434639/Colorizer' },
+        { name: 'Kaleidocode', description: 'generate VS Code themes', url: 'https://kaleidocode.com/' },
+        { name: 'Regulator', description: 'bulk rename color styles', url: 'https://www.figma.com/community/plugin/772054917007268360/Regulator' },
+        { name: 'Navigator', description: 'find color styles', url: 'https://www.figma.com/community/plugin/739558587628004077/Navigator' },
+        { name: 'VS Code Icons', description: 'use VS Code icons', url: 'https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons' }
+      ]
+    },
+    {
+      name: 'VS Code',
+      projects: [
+        { name: 'Min', description: 'a minimal theme', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme' },
+        { name: 'Fluent Icons', description: 'a product icon theme', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons' },
+        { name: 'Symbols', description: 'a simple file icon theme', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols' }
+      ]
+    }
+  ];
+
+  const commandDefinitions = [
+    {
+      name: 'help',
+      description: 'show available commands',
+      run: showHelp
+    },
+    {
+      name: 'about',
+      description: 'learn what Miguel designs',
+      run: function () {
+        addLine('Miguel Solorio — software designer focused on developer tools, design systems, and open source.', 't-out');
+      }
+    },
+    {
+      name: 'history',
+      description: 'see the work timeline',
+      run: showHistory
+    },
+    {
+      name: 'status',
+      description: 'see what is currently in progress',
+      run: showStatus
+    },
+    {
+      name: 'work',
+      description: 'browse selected work',
+      run: showWork
+    },
+    {
+      name: 'projects',
+      description: 'list side projects and tools',
+      run: showProjects
+    },
+    {
+      name: 'talks',
+      description: 'list talks and presentations',
+      run: showTalks
+    },
+    {
+      name: 'contact',
+      description: 'find Miguel around the web',
+      run: showContact
+    },
+    {
+      name: 'resume',
+      description: 'open the resume PDF',
+      run: function () {
+        requestConfirmation('Open Miguel\'s resume PDF?', function () {
+          addLine('Opening resume...', 't-ok');
+          window.open('/miguel-solorio-resume.pdf', '_blank', 'noopener,noreferrer');
+        });
+      }
+    },
+    {
+      name: 'theme',
+      description: 'toggle light and dark mode',
+      run: function () {
+        const themeButton = document.getElementById('theme-toggle');
+        if (themeButton) themeButton.click();
+        addLine('Theme: ' + (document.documentElement.classList.contains('dark') ? 'dark' : 'light'), 't-ok');
+      }
+    },
+  ];
+
+  commandDefinitions.forEach(function (definition) {
+    allSuggestionEntries.push({
+      value: definition.name,
+      description: definition.description,
+      command: definition.name
+    });
+  });
+
+  function createRow(spaced) {
+    const row = document.createElement('p');
+    row.className = 'home-hero-row';
+    if (spaced) row.classList.add('is-spaced');
+    return row;
+  }
+
+  function syncTerminalCaret() {
+    const caretPosition = terminalInput.selectionStart === null ? terminalInput.value.length : terminalInput.selectionStart;
+    terminalCaretText.textContent = terminalInput.value.slice(0, caretPosition);
+    terminalCaretLayer.style.transform = 'translateX(' + (-terminalInput.scrollLeft) + 'px)';
+  }
+
+  function setTerminalInputValue(value) {
+    terminalInput.value = value;
+    terminalInput.setSelectionRange(value.length, value.length);
+    syncTerminalCaret();
+  }
+
+  function addLine(text, className, spaced) {
+    const row = createRow(spaced);
+    row.classList.add(className || 't-out');
+    row.textContent = text;
+    terminalOutput.appendChild(row);
+    return row;
+  }
+
+  function addParts(parts, spaced) {
+    const row = createRow(spaced);
+    parts.forEach(function (part) {
+      const span = document.createElement('span');
+      span.className = part.className || 't-out';
+      span.textContent = part.text;
+      row.appendChild(span);
+    });
+    terminalOutput.appendChild(row);
+    return row;
+  }
+
+  function addProjectLink(project, external) {
+    const row = createRow(false);
+    const link = document.createElement('a');
+    link.className = 'home-hero-terminal-link';
+    link.href = project.url;
+    link.textContent = project.name;
+
+    if (external) {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    }
+
+    const description = document.createElement('span');
+    description.className = 't-out';
+    description.textContent = ' — ' + project.description;
+
+    row.appendChild(document.createTextNode('  '));
+    row.appendChild(link);
+    row.appendChild(description);
+    terminalOutput.appendChild(row);
+    return row;
+  }
+
+  function addCommandLine(command) {
+    addParts([
+      { text: '~', className: 't-ps1' },
+      { text: ' ' + command, className: 't-cmd' }
+    ], true);
+  }
+
+  function scrollToBottom() {
+    window.requestAnimationFrame(function () {
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    });
+  }
+
+  function showHistory() {
+    historyRows.forEach(function (row, index) {
+      addParts([
+        { text: row[0], className: 't-hash' },
+        { text: ' ' + row[1], className: 't-scope' },
+        { text: ' ' + row[2], className: 't-out' }
+      ], index === 0);
+    });
+  }
+
+  function showStatus() {
+    addLine('On branch main', 't-ok', true);
+    addLine('Changes to be committed:', 't-out', true);
+    addLine('  deleted    should-designers-code.md', 't-deleted');
+    addLine('  modified   vibe-projects', 't-modified');
+    addLine('  new file   next-chapter.md', 't-added');
+    addLine('Current focus: making software feel a little more human.', 't-muted', true);
+  }
+
+  function showHelp() {
+    addLine('Available commands:', 't-out', true);
+    commandDefinitions.forEach(function (definition) {
+      addParts([
+        { text: '  ' + definition.name, className: 't-cmd' },
+        { text: '  ' + definition.description, className: 't-out' }
+      ]);
+    });
+    addLine('Type to filter · Tab to complete · Cmd/Ctrl+Space for all commands.', 't-muted', true);
+  }
+
+  function showWork() {
+    addLine('Selected work:', 't-out', true);
+    workProjects.forEach(function (project) {
+      addProjectLink(project, false);
+    });
+  }
+
+  function showProjects() {
+    addLine('Side projects:', 't-out', true);
+    sideProjectGroups.forEach(function (group) {
+      addLine(group.name + ':', 't-scope', true);
+      group.projects.forEach(function (project) {
+        addProjectLink(project, true);
+      });
+    });
+  }
+
+  function showTalks() {
+    addLine('Talks:', 't-out', true);
+    addLine('  2021  VS Code: Live Stream — Designing for Open Source', 't-scope');
+    addLine('  2020  Figma: Config — Open Source Design', 't-scope');
+  }
+
+  function showContact() {
+    addLine('Find Miguel around the web:', 't-out', true);
+    addLine('  LinkedIn  linkedin.com/in/miguel-solorio-a432b021', 't-scope');
+    addLine('  GitHub    github.com/miguelsolorio', 't-scope');
+    addLine('  Twitter   twitter.com/miguelsolorio_', 't-scope');
+    addLine('  ADPList   adplist.org/mentors/miguel-solorio', 't-scope');
+  }
+
+  function requestConfirmation(message, action) {
+    const row = addLine(message + ' [y/N]', 't-out', true);
+    const controls = document.createElement('span');
+    controls.className = 'home-hero-terminal-confirmation';
+
+    ['Open', 'Cancel'].forEach(function (label) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', function () {
+        finishConfirmation(label === 'Open');
+      });
+      controls.appendChild(button);
+    });
+
+    row.appendChild(controls);
+    pendingConfirmation = { action: action, row: row };
+    terminalInput.setAttribute('aria-label', 'Type yes or no to confirm the pending terminal action');
+    terminalInput.placeholder = 'yes or no';
+    hideSuggestions();
+  }
+
+  function finishConfirmation(confirmed) {
+    if (!pendingConfirmation) return;
+    const confirmation = pendingConfirmation;
+    pendingConfirmation = null;
+    confirmation.row.querySelector('.home-hero-terminal-confirmation').remove();
+    terminalInput.setAttribute('aria-label', 'Enter a portfolio terminal command');
+    terminalInput.placeholder = 'type a command';
+
+    if (confirmed) {
+      confirmation.action();
+    } else {
+      addLine('Cancelled.', 't-muted');
+    }
+    scrollToBottom();
+  }
+
+  function parseInput(value) {
+    const trimmed = value.trim();
+    if (!trimmed) return { name: 'help', rawName: '' };
+
+    const tokens = trimmed.split(/\s+/);
+    if (tokens[0].toLowerCase() === 'miguelsolorio') tokens.shift();
+
+    const rawName = (tokens.shift() || '').toLowerCase();
+    const name = rawName.charAt(0) === '/' ? rawName.slice(1) : rawName;
+    return { name: name, rawName: rawName };
+  }
+
+  function getCommand(name) {
+    return commandDefinitions.find(function (definition) {
+      return definition.name === name || (definition.aliases || []).indexOf(name) !== -1;
+    });
+  }
+
+  function getCommandQuery(value) {
+    let query = value.trimStart().toLowerCase();
+    if (query.charAt(0) === '/') query = query.slice(1);
+    if (/^miguelsolorio(?:\s|$)/.test(query)) query = query.slice('miguelsolorio'.length).trimStart();
+    return (query.split(/\s+/)[0] || '');
+  }
+
+  function getCompletionValue(value) {
+    const trimmed = value.trimStart();
+    if (trimmed.charAt(0) === '/') return '/' + suggestionEntries[selectedSuggestion].value;
+    if (/^miguelsolorio(?:\s|$)/i.test(trimmed)) return 'miguelsolorio ' + suggestionEntries[selectedSuggestion].value;
+    return suggestionEntries[selectedSuggestion].value;
+  }
+
+  function hideSuggestions() {
+    suggestionsVisible = false;
+    terminalSuggestions.hidden = true;
+    terminalInput.setAttribute('aria-expanded', 'false');
+    terminalInput.removeAttribute('aria-activedescendant');
+  }
+
+  function renderSuggestions(entries) {
+    suggestionEntries = entries;
+    terminalSuggestions.replaceChildren();
+    terminalSuggestions.scrollTop = 0;
+
+    entries.forEach(function (entry, index) {
+      const option = document.createElement('li');
+      option.id = 'terminal-suggestion-' + index;
+      option.className = 'home-hero-terminal-suggestion';
+      option.classList.toggle('is-active', index === selectedSuggestion);
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', index === selectedSuggestion ? 'true' : 'false');
+      option.tabIndex = -1;
+
+      const name = document.createElement('span');
+      name.className = 'home-hero-terminal-suggestion-name';
+      name.textContent = entry.value;
+      option.appendChild(name);
+
+      const description = document.createElement('span');
+      description.className = 'home-hero-terminal-suggestion-description';
+      description.textContent = entry.description;
+      option.appendChild(description);
+
+      option.addEventListener('mousedown', function (event) {
+        event.preventDefault();
+      });
+      option.addEventListener('click', function () {
+        completeSelectedSuggestion(index);
+      });
+      terminalSuggestions.appendChild(option);
+    });
+
+    if (entries.length) {
+      suggestionsVisible = true;
+      terminalSuggestions.hidden = false;
+      terminalInput.setAttribute('aria-expanded', 'true');
+      terminalInput.setAttribute('aria-activedescendant', 'terminal-suggestion-' + selectedSuggestion);
+    } else {
+      hideSuggestions();
+    }
+  }
+
+  function updateSuggestions(showAll) {
+    if (pendingConfirmation) {
+      hideSuggestions();
+      return;
+    }
+
+    const query = getCommandQuery(terminalInput.value);
+    if (!showAll && !terminalInput.value.trim()) {
+      hideSuggestions();
+      return;
+    }
+
+    const matches = showAll ? allSuggestionEntries : allSuggestionEntries.filter(function (entry) {
+      return entry.value.toLowerCase().indexOf(query) === 0;
+    });
+    selectedSuggestion = 0;
+    renderSuggestions(matches);
+  }
+
+  function completeSelectedSuggestion(index) {
+    selectedSuggestion = index;
+    setTerminalInputValue(getCompletionValue(terminalInput.value));
+    hideSuggestions();
+    terminalInput.focus();
+  }
+
+  function moveSuggestion(direction) {
+    if (!suggestionsVisible || !suggestionEntries.length) return;
+    selectedSuggestion = (selectedSuggestion + direction + suggestionEntries.length) % suggestionEntries.length;
+    Array.from(terminalSuggestions.children).forEach(function (option, index) {
+      const active = index === selectedSuggestion;
+      option.classList.toggle('is-active', active);
+      option.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    terminalInput.setAttribute('aria-activedescendant', 'terminal-suggestion-' + selectedSuggestion);
+
+    const activeOption = terminalSuggestions.children[selectedSuggestion];
+    const optionTop = activeOption.offsetTop;
+    const optionBottom = optionTop + activeOption.offsetHeight;
+    const viewportTop = terminalSuggestions.scrollTop;
+    const viewportBottom = viewportTop + terminalSuggestions.clientHeight;
+
+    if (optionTop < viewportTop) {
+      terminalSuggestions.scrollTop = optionTop;
+    } else if (optionBottom > viewportBottom) {
+      terminalSuggestions.scrollTop = optionBottom - terminalSuggestions.clientHeight;
+    }
+  }
+
+  function recallCommand(direction) {
+    if (!commandHistory.length) return;
+    historyIndex = Math.max(0, Math.min(commandHistory.length, historyIndex + direction));
+    setTerminalInputValue(commandHistory[historyIndex] || '');
+    updateSuggestions(false);
+  }
+
+  function executeCommand(value) {
+    const command = value.trim();
+    if (!command) return;
+
+    if (pendingConfirmation) {
+      addCommandLine(command);
+      const answer = command.toLowerCase();
+      if (answer === 'y' || answer === 'yes') finishConfirmation(true);
+      else if (answer === 'n' || answer === 'no') finishConfirmation(false);
+      else addLine('Please answer yes or no.', 't-error');
+      setTerminalInputValue('');
+      scrollToBottom();
+      return;
+    }
+
+    const historyCommand = command.charAt(0) === '/' ? command.slice(1) : command;
+    if (commandHistory[commandHistory.length - 1] !== historyCommand) commandHistory.push(historyCommand);
+    historyIndex = commandHistory.length;
+    addCommandLine(historyCommand);
+
+    const parsed = parseInput(command);
+    const definition = getCommand(parsed.name || 'help');
+    if (!definition) {
+      const closeMatches = commandDefinitions.filter(function (item) {
+        return item.name.indexOf(parsed.name) === 0;
+      }).slice(0, 3).map(function (item) { return item.name; });
+      addLine('command not found: ' + (parsed.rawName || command), 't-error');
+      addLine(closeMatches.length ? 'Try: ' + closeMatches.join(' · ') : 'Try `help` to see what is available.', 't-muted');
+    } else {
+      definition.run();
+    }
+
+    setTerminalInputValue('');
+    hideSuggestions();
+    scrollToBottom();
+  }
+
+  terminalInput.addEventListener('input', function () {
+    syncTerminalCaret();
+    updateSuggestions(false);
+  });
+
+  ['click', 'keyup', 'select', 'focus', 'scroll'].forEach(function (eventName) {
+    terminalInput.addEventListener(eventName, syncTerminalCaret);
+  });
+
+  terminalInput.addEventListener('keydown', function (event) {
+    if ((event.metaKey || event.ctrlKey) && event.code === 'Space') {
+      event.preventDefault();
+      updateSuggestions(true);
+      return;
+    }
+
+    if (event.key === 'ArrowDown' && suggestionsVisible) {
+      event.preventDefault();
+      moveSuggestion(1);
+      return;
+    }
+
+    if (event.key === 'ArrowUp' && suggestionsVisible) {
+      event.preventDefault();
+      moveSuggestion(-1);
+      return;
+    }
+
+    if (event.key === 'Enter' && suggestionsVisible && suggestionEntries.length) {
+      event.preventDefault();
+      const completedValue = getCompletionValue(terminalInput.value);
+      setTerminalInputValue(completedValue);
+      hideSuggestions();
+      executeCommand(completedValue);
+      return;
+    }
+
+    if (event.key === 'Tab' && suggestionsVisible) {
+      event.preventDefault();
+      completeSelectedSuggestion(selectedSuggestion);
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      if (pendingConfirmation) {
+        finishConfirmation(false);
+      } else {
+        hideSuggestions();
+      }
+      return;
+    }
+
+    if (!suggestionsVisible && event.key === 'ArrowUp') {
+      event.preventDefault();
+      recallCommand(-1);
+    }
+
+    if (!suggestionsVisible && event.key === 'ArrowDown') {
+      event.preventDefault();
+      recallCommand(1);
+    }
+  });
+
+  terminalForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    executeCommand(terminalInput.value);
+  });
+
+  portfolioTerminal.addEventListener('click', function (event) {
+    if (!event.target.closest('button, a, input')) terminalInput.focus();
+  });
+
+  scrollToBottom();
+  syncTerminalCaret();
+  if (document.activeElement === document.body) terminalInput.focus({ preventScroll: true });
+}
+
 let timer;
 const code = document.getElementById('code')
 let codeSticky = false;

@@ -145,7 +145,22 @@
     }
 
     .home-hero-terminal-body {
-        padding: .875rem .875rem 1rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 21rem;
+        padding: .875rem .875rem .75rem;
+        overflow: hidden;
+    }
+
+    .home-hero-terminal-output {
+        display: block;
+        min-height: 0;
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-color: var(--t-light) transparent;
+        scrollbar-width: thin;
     }
 
     /* pre-wrap preserves the leading indent on the `modified:` row. */
@@ -161,6 +176,190 @@
 
     .home-hero-row + .home-hero-row.is-spaced {
         margin-top: .625rem;
+    }
+
+    .home-hero-terminal-controls {
+        position: relative;
+        flex: 0 0 auto;
+        margin-top: .625rem;
+    }
+
+    .home-hero-terminal-form {
+        display: flex;
+        align-items: center;
+        min-height: 1.25rem;
+    }
+
+    .home-hero-terminal-input-wrap {
+        position: relative;
+        min-width: 0;
+        flex: 1 1 auto;
+        margin-left: .375rem;
+        overflow: hidden;
+    }
+
+    .home-hero-terminal-input {
+        position: relative;
+        z-index: 0;
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--t-bright);
+        font: inherit;
+        line-height: inherit;
+        caret-color: transparent;
+    }
+
+    .home-hero-terminal-input::placeholder {
+        color: var(--t-dim);
+        opacity: .8;
+    }
+
+    .home-hero-terminal-input:focus::placeholder {
+        opacity: 0;
+    }
+
+    .home-hero-terminal-caret-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        display: block;
+        width: max-content;
+        min-width: 100%;
+        overflow: visible;
+        color: transparent;
+        font: inherit;
+        line-height: inherit;
+        white-space: pre;
+        pointer-events: none;
+    }
+
+    .home-hero-terminal-caret {
+        display: inline-block;
+        visibility: hidden;
+        width: .65em;
+        height: 1.05em;
+        background: var(--t-green);
+        vertical-align: -.16em;
+    }
+
+    .home-hero-terminal-form:focus-within .home-hero-terminal-caret {
+        visibility: visible;
+        animation: home-hero-terminal-blink 1.1s steps(1, end) infinite;
+    }
+
+    @keyframes home-hero-terminal-blink {
+        50% {
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .home-hero-terminal-form:focus-within .home-hero-terminal-caret {
+            animation: none;
+        }
+    }
+
+    .home-hero-terminal-suggestions {
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + .375rem);
+        left: 0;
+        z-index: 2;
+        max-height: 11rem;
+        margin: 0;
+        padding: .25rem;
+        overflow-y: auto;
+        list-style: none;
+        border: 1px solid var(--t-line);
+        border-radius: .375rem;
+        background: var(--t-bg);
+        box-shadow: 0 .75rem 1.5rem -1rem var(--t-shadow);
+    }
+
+    .home-hero-terminal-suggestion {
+        display: flex;
+        width: 100%;
+        align-items: baseline;
+        gap: .75rem;
+        padding: .3rem .45rem;
+        border: 0;
+        border-radius: .2rem;
+        background: transparent;
+        color: var(--t-text);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .home-hero-terminal-suggestion:hover,
+    .home-hero-terminal-suggestion.is-active {
+        background: var(--t-bar);
+        color: var(--t-bright);
+    }
+
+    .home-hero-terminal-suggestion.is-active {
+        background: var(--t-green);
+        box-shadow: inset .2rem 0 0 var(--t-bright);
+        color: var(--t-bg);
+    }
+
+    .home-hero-terminal-suggestion-name {
+        flex: 0 0 auto;
+        padding-left: .125rem;
+        color: var(--t-cyan);
+    }
+
+    .home-hero-terminal-suggestion-description {
+        margin-left: .25rem;
+        overflow: hidden;
+        color: var(--t-dim);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .home-hero-terminal-suggestion.is-active .home-hero-terminal-suggestion-name,
+    .home-hero-terminal-suggestion.is-active .home-hero-terminal-suggestion-description {
+        color: var(--t-bg);
+    }
+
+    .home-hero-terminal-confirmation {
+        display: inline-flex;
+        gap: .375rem;
+        margin-left: .625rem;
+        vertical-align: middle;
+    }
+
+    .home-hero-terminal-confirmation button {
+        padding: .1rem .35rem;
+        border: 1px solid var(--t-line);
+        border-radius: .2rem;
+        background: transparent;
+        color: var(--t-cyan);
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .home-hero-terminal-confirmation button:hover,
+    .home-hero-terminal-confirmation button:focus-visible {
+        background: var(--t-bar);
+        color: var(--t-bright);
+    }
+
+    .home-hero-current .home-hero-terminal-link {
+        color: var(--t-cyan);
+        text-decoration: none;
+        text-underline-offset: .18em;
+    }
+
+    .home-hero-current .home-hero-terminal-link:hover,
+    .home-hero-current .home-hero-terminal-link:focus-visible {
+        text-decoration: underline;
     }
 
     .home-hero-current .t-ps1 {
@@ -206,26 +405,12 @@
         color: var(--t-red);
     }
 
-    .home-hero-cursor {
-        display: inline-block;
-        width: .4375rem;
-        height: .8125rem;
-        margin-left: .125rem;
-        background: var(--t-green);
-        vertical-align: text-bottom;
-        animation: home-hero-blink 1.1s steps(1, end) infinite;
+    .home-hero-current .t-error {
+        color: var(--t-red);
     }
 
-    @keyframes home-hero-blink {
-        50% {
-            opacity: 0;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .home-hero-cursor {
-            animation: none;
-        }
+    .home-hero-current .t-muted {
+        color: var(--t-dim);
     }
 
     .dark .home-hero-current {
@@ -302,6 +487,15 @@
     }
 
     .home-hero-terminal-body {
-        padding: .875rem .75rem 1.125rem;
+        height: 19rem;
+        padding: .875rem .75rem .875rem;
+    }
+
+    .home-hero-terminal-suggestion {
+        gap: .5rem;
+    }
+
+    .home-hero-terminal-suggestion-description {
+        display: none;
     }
 }

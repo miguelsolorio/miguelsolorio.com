@@ -1,7 +1,7 @@
 module.exports = {
   darkMode: 'class',
   purge: {
-    content: ["./layouts/**/*.html", "./content/**/*.md", "./content/**/*.html"],
+    content: ["./layouts/**/*.html", "./content/**/*.md", "./content/**/*.html", "./assets/js/**/*.js"],
   },
   theme: {
     extend: {
