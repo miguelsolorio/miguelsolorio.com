@@ -49,9 +49,11 @@
 
     .home-hero-inner {
         display: grid;
-        /* 26rem keeps the terminal at 80 columns' worth of the log lines
-           without wrapping; narrower and the commit rows break. */
-        grid-template-columns: minmax(0, 1fr) 26rem;
+        /* 23rem holds the log lines on one line each, but only at the
+           terminal's 12px type: the longest row is 44 chars (~317px in
+           JetBrains Mono) against 340px of usable width once body padding is
+           taken out. Widen the type and this has to widen with it. */
+        grid-template-columns: minmax(0, 1fr) 23rem;
         gap: 4rem;
         align-items: center;
         min-height: 30rem;
@@ -81,63 +83,56 @@
         line-height: 1.65;
     }
 
-    /* Terminal window. Stays dark in both themes on purpose — a shell is dark,
-       so it reads as a real prompt rather than a card. */
+    /* Terminal window. Follows the page theme; the dark palette lives in the
+       `.dark` override below. The token hues differ between themes rather than
+       being reused — the dark set is tuned against #10141c and would fail
+       contrast on white, yellow and green worst of all. */
     .home-hero-current {
-        --t-bg: #10141c;
-        --t-bar: #1b2130;
-        --t-line: rgba(148, 163, 184, .22);
-        --t-text: #cbd5e1;
-        --t-dim: #7c8899;
-        --t-bright: #f1f5f9;
-        --t-green: #4ade80;
-        --t-cyan: #38bdf8;
-        --t-yellow: #fbbf24;
-        --t-purple: #a78bfa;
-        --t-red: #f87171;
+        --t-bg: #ffffff;
+        --t-bar: #f1f5f9;
+        --t-line: rgba(15, 23, 42, .12);
+        --t-text: #475569;
+        --t-dim: #94a3b8;
+        --t-bright: #0f172a;
+        --t-green: #15803d;
+        --t-cyan: #0369a1;
+        --t-yellow: #b45309;
+        --t-purple: #6d28d9;
+        --t-red: #b91c1c;
+        --t-light: #cbd5e1;
+        --t-shadow: rgba(15, 23, 42, .1);
 
         overflow: hidden;
         border: 1px solid var(--t-line);
-        border-radius: .75rem;
+        border-radius: .625rem;
         background: var(--t-bg);
-        box-shadow: 0 1.5rem 3.75rem -1.25rem rgba(2, 6, 23, .5);
+        box-shadow: 0 1.5rem 3.75rem -1.25rem var(--t-shadow);
         color: var(--t-text);
         font-family: 'JetBrains Mono', monospace;
-        font-size: .78125rem;
-        line-height: 1.7;
+        font-size: .75rem;
+        line-height: 1.55;
     }
 
     .home-hero-terminal-bar {
         display: grid;
         grid-template-columns: 3.25rem 1fr 3.25rem;
         align-items: center;
-        min-height: 2.375rem;
-        padding: 0 .75rem;
+        min-height: 2rem;
+        padding: 0 .625rem;
         border-bottom: 1px solid var(--t-line);
         background: var(--t-bar);
     }
 
     .home-hero-lights {
         display: flex;
-        gap: .5rem;
+        gap: .4375rem;
     }
 
     .home-hero-lights i {
-        width: .6875rem;
-        height: .6875rem;
+        width: .625rem;
+        height: .625rem;
         border-radius: 50%;
-    }
-
-    .home-hero-lights i:nth-child(1) {
-        background: #ff5f57;
-    }
-
-    .home-hero-lights i:nth-child(2) {
-        background: #febc2e;
-    }
-
-    .home-hero-lights i:nth-child(3) {
-        background: #28c840;
+        background: var(--t-light);
     }
 
     .home-hero-terminal-title {
@@ -150,7 +145,7 @@
     }
 
     .home-hero-terminal-body {
-        padding: 1.125rem 1rem 1.375rem;
+        padding: .875rem .875rem 1rem;
     }
 
     /* pre-wrap preserves the leading indent on the `modified:` row. */
@@ -165,7 +160,7 @@
     }
 
     .home-hero-row + .home-hero-row.is-spaced {
-        margin-top: .875rem;
+        margin-top: .625rem;
     }
 
     .home-hero-current .t-ps1 {
@@ -214,7 +209,7 @@
     .home-hero-cursor {
         display: inline-block;
         width: .4375rem;
-        height: .875rem;
+        height: .8125rem;
         margin-left: .125rem;
         background: var(--t-green);
         vertical-align: text-bottom;
@@ -231,6 +226,22 @@
         .home-hero-cursor {
             animation: none;
         }
+    }
+
+    .dark .home-hero-current {
+        --t-bg: #10141c;
+        --t-bar: #1b2130;
+        --t-line: rgba(148, 163, 184, .22);
+        --t-text: #cbd5e1;
+        --t-dim: #7c8899;
+        --t-bright: #f1f5f9;
+        --t-green: #4ade80;
+        --t-cyan: #38bdf8;
+        --t-yellow: #fbbf24;
+        --t-purple: #a78bfa;
+        --t-red: #f87171;
+        --t-light: #3f4757;
+        --t-shadow: rgba(2, 6, 23, .5);
     }
 
     .dark .home-hero h1 {
@@ -250,7 +261,7 @@
     }
 
     .home-hero-current {
-        max-width: 26rem;
+        max-width: 23rem;
     }
 }
 
@@ -280,10 +291,9 @@
 
     .home-hero-current {
         max-width: 100%;
-        border-radius: .625rem;
         /* Scale the type to the viewport so the longest commit row (44 chars)
            still fits on one line down to ~320px. */
-        font-size: clamp(.5rem, calc(3.6vw - 3px), .78125rem);
+        font-size: clamp(.5rem, calc(3.6vw - 3px), .75rem);
     }
 
     /* Too narrow to render the session title without truncating it. */
