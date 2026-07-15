@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Portfolio Intro Explorations — Miguel Solorio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&amp;display=swap">
+  <style>
+    :root {
+      --primary: #2a25ff;
+      --primary-soft: #e7e6ff;
+      --paper: #f4f4f2;
+      --surface: #fff;
+      --ink: #27364c;
+      --muted: #68758a;
+      --line: #d9dce2;
+      --shadow: 0 24px 80px rgba(39, 54, 76, .11);
+      --radius: 28px;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    [data-theme="dark"] {
+      --paper: #101118;
+      --surface: #191b24;
+      --ink: #edf0f7;
+      --muted: #9ba4b6;
+      --line: #30333e;
+      --primary-soft: #292758;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .3);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition: color .25s ease, background-color .25s ease;
+    }
+    button, a { font: inherit; }
+    button { color: inherit; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid #ffb800; outline-offset: 4px; }
+    ::selection { color: #fff; background: var(--primary); }
+
+    .shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+    .page-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 48px;
+      align-items: end;
+      padding: 88px 0 52px;
+    }
+    .eyebrow, .mono {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .eyebrow { color: var(--primary); }
+    .page-head h1 {
+      max-width: 780px;
+      margin: 16px 0 0;
+      font-size: clamp(42px, 7vw, 82px);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+    .page-head p {
+      max-width: 650px;
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      background: var(--surface);
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(39, 54, 76, .06);
+    }
+    .theme-toggle svg { width: 18px; height: 18px; }
+
+    .concept-nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-block: 1px solid var(--line);
+      background: color-mix(in srgb, var(--paper) 88%, transparent);
+      backdrop-filter: blur(18px);
+    }
+    .concept-nav {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      overflow-x: auto;
+      padding: 10px 0;
+      scrollbar-width: none;
+    }
+    .concept-nav::-webkit-scrollbar { display: none; }
+    .concept-nav a {
+      display: grid;
+      min-width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--muted);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      text-decoration: none;
+      transition: color .2s ease, background .2s ease, transform .2s ease;
+    }
+    .concept-nav a:hover { color: var(--ink); background: var(--surface); transform: translateY(-2px); }
+    .concept-nav a.active { color: #fff; background: var(--primary); }
+    .concept-nav .nav-label { margin-left: 10px; color: var(--muted); white-space: nowrap; }
+
+    main { padding: 76px 0 140px; }
+    .concept { margin-bottom: 120px; scroll-margin-top: 90px; }
+    .concept-meta {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr) minmax(260px, 440px);
+      gap: 20px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+    .concept-number { color: var(--primary); }
+    .concept-meta h2 { margin: -4px 0 0; font-size: 24px; letter-spacing: -.025em; }
+    .concept-meta p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .recommendation {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 10px;
+      padding: 6px 9px;
+      border-radius: 99px;
+      color: #fff;
+      background: var(--primary);
+      font: 600 10px/1 "JetBrains Mono", monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .recommendation::before { content: "★"; }
+
+    .stage {
+      position: relative;
+      min-height: 620px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+    .stage a { text-underline-offset: .16em; }
+    .hero-inner { position: relative; z-index: 2; height: 100%; min-height: 620px; padding: 64px; }
+    .intro-links { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 34px; }
+    .primary-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .primary-link .arrow { transition: transform .2s ease; }
+    .primary-link:hover .arrow { transform: translateX(5px); }
+    .secondary-link { color: inherit; font-weight: 600; }
+
+    /* 01 — complex software */
+    .v1 { color: #fff; background: var(--primary); }
+    .v1::before {
+      position: absolute;
+      inset: -30%;
+      content: "";
+      background:
+        radial-gradient(circle at 68% 28%, rgba(255,255,255,.22), transparent 20%),
+        radial-gradient(circle at 92% 74%, rgba(128,255,221,.2), transparent 21%);
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .v1 .hero-inner { display: flex; flex-direction: column; justify-content: space-between; }
+    .v1 .status { display: flex; justify-content: space-between; color: rgba(255,255,255,.72); }
+    .v1 h3 {
+      max-width: 980px;
+      margin: 60px 0 0;
+      font-size: clamp(58px, 9vw, 120px);
+      line-height: .9;
+      letter-spacing: -.075em;
+    }
+    .v1 h3 em { color: #b8ffea; font-family: "Libre Baskerville", serif; font-weight: 400; }
+    .v1 .proof {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 40px;
+      align-items: end;
+      padding-top: 36px;
+      border-top: 1px solid rgba(255,255,255,.28);
+    }
+    .v1 .proof p { max-width: 620px; margin: 0; font-size: 18px; line-height: 1.5; }
+    .v1 .proof a { font-weight: 700; }
+
+    /* 02 — ideas into software */
+    .v2 { background: var(--surface); }
+    .v2 .hero-inner { display: grid; align-content: center; }
+    .v2 .role { margin-bottom: 28px; color: var(--muted); }
+    .v2 h3 {
+      max-width: 980px;
+      margin: 0;
+      font-size: clamp(54px, 8vw, 106px);
+      line-height: 1;
+      letter-spacing: -.065em;
+    }
+    .v2 .rotator {
+      position: relative;
+      display: inline-block;
+      min-width: 4.7em;
+      color: #fff;
+      background: var(--primary);
+      transform: rotate(-1deg);
+      padding: 0 .12em .08em;
+    }
+    .v2 .rotator::after {
+      position: absolute;
+      right: .1em;
+      bottom: .12em;
+      width: .08em;
+      height: .72em;
+      content: "";
+      background: #fff;
+      animation: blink 1s steps(1) infinite;
+    }
+    .v2 .bottom-note { display: flex; justify-content: space-between; gap: 32px; align-items: end; margin-top: 58px; }
+    .v2 .bottom-note p { max-width: 560px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.6; }
+    .v2 .orbit {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: end;
+    }
+    .v2 .orbit span { padding: 8px 12px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); font-size: 12px; }
+
+    /* 03 — AI */
+    .v3 { color: #eef5f0; background: #08110d; }
+    .v3::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      opacity: .35;
+      background-image: linear-gradient(rgba(78,255,169,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(78,255,169,.12) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to right, transparent, #000 40%, #000);
+    }
+    .v3 .hero-inner { display: grid; grid-template-columns: 1.15fr .85fr; gap: 70px; align-items: center; }
+    .v3 .green { color: #4effa9; }
+    .v3 h3 { margin: 18px 0 0; font-size: clamp(56px, 7vw, 94px); line-height: .96; letter-spacing: -.06em; }
+    .v3 .summary { max-width: 610px; margin: 28px 0 0; color: #aebdb4; font-size: 18px; line-height: 1.65; }
+    .v3 .copy-frame { transition: opacity .18s ease, transform .18s ease; }
+    .v3 .copy-frame.changing { opacity: 0; transform: translateY(8px); }
+    .v3 .terminal {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #2f493c;
+      border-radius: 18px;
+      background: rgba(10, 24, 17, .82);
+      box-shadow: 0 30px 80px rgba(0,0,0,.35);
+      font: 13px/1.65 "JetBrains Mono", monospace;
+    }
+    .terminal-top { display: flex; gap: 7px; align-items: center; padding: 14px 16px; border-bottom: 1px solid #24382f; }
+    .terminal-top i { width: 9px; height: 9px; border-radius: 50%; background: #385246; }
+    .terminal-body { min-height: 310px; padding: 24px; color: #b5c7bc; }
+    .terminal-line { margin: 0 0 12px; }
+    .terminal-line .prompt { color: #4effa9; }
+    .copy-switcher { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 18px 0 24px; }
+    .copy-switcher button {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      padding: 10px 11px;
+      border: 1px solid #294437;
+      border-radius: 9px;
+      color: #8da397;
+      text-align: left;
+      background: rgba(78,255,169,.025);
+      cursor: pointer;
+      font: 10px/1.3 "JetBrains Mono", monospace;
+      transition: color .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .copy-switcher button span:first-child { color: #4effa9; font-weight: 700; }
+    .copy-switcher button:hover,
+    .copy-switcher button[aria-selected="true"] { color: #fff; border-color: #4effa9; background: rgba(78,255,169,.1); }
+    .copy-voice { color: #6f8a7b; }
+    .terminal-card { margin: 24px 0; padding: 18px; border: 1px solid #294437; border-radius: 10px; background: rgba(78,255,169,.05); }
+    .terminal-card strong { display: block; margin-bottom: 6px; color: #fff; font-family: Inter, sans-serif; font-size: 18px; }
+    .terminal-pulse { display: inline-block; width: 8px; height: 1em; background: #4effa9; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+
+    /* 04 — obvious */
+    .v4 { background: #efede6; color: #1d2523; }
+    [data-theme="dark"] .v4 { background: #e6e2d8; }
+    .v4 .hero-inner { display: grid; grid-template-columns: 1.3fr .7fr; gap: 80px; align-items: center; }
+    .v4 h3 { margin: 0; font-family: "Libre Baskerville", serif; font-size: clamp(58px, 8vw, 106px); font-weight: 400; line-height: 1.02; letter-spacing: -.055em; }
+    .v4 h3 span { position: relative; z-index: 1; }
+    .v4 h3 span::after { position: absolute; right: 0; bottom: .08em; left: 0; z-index: -1; height: .17em; content: ""; background: #b9ff3f; transform: rotate(-1deg); }
+    .v4 .aside { align-self: stretch; display: flex; flex-direction: column; justify-content: space-between; padding-left: 40px; border-left: 1px solid #b5b3aa; }
+    .v4 .aside p { margin: 0; font-size: 18px; line-height: 1.65; }
+    .v4 .experience { font-size: 72px; font-weight: 800; letter-spacing: -.06em; }
+    .v4 .experience small { display: block; color: #65706c; font: 12px/1.4 "JetBrains Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+
+    /* 05 — three roles */
+    .v5 { background: #eae9ff; color: #242252; }
+    [data-theme="dark"] .v5 { background: #292758; color: #f5f4ff; }
+    .v5 .hero-inner { display: flex; flex-direction: column; }
+    .v5 .intro-row { display: flex; justify-content: space-between; gap: 32px; align-items: start; }
+    .v5 h3 { max-width: 720px; margin: 0; font-size: clamp(46px, 6vw, 78px); line-height: .98; letter-spacing: -.055em; }
+    .v5 .intro-row p { max-width: 340px; margin: 6px 0 0; color: #6966a1; line-height: 1.6; }
+    [data-theme="dark"] .v5 .intro-row p { color: #b9b6df; }
+    .role-panels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: auto; padding-top: 56px; }
+    .role-panel {
+      min-height: 260px;
+      padding: 26px;
+      border: 0;
+      border-radius: 18px;
+      text-align: left;
+      background: rgba(255,255,255,.7);
+      cursor: pointer;
+      transition: color .35s ease, background .35s ease, transform .35s var(--ease);
+    }
+    [data-theme="dark"] .role-panel { background: rgba(255,255,255,.08); }
+    .role-panel:hover, .role-panel[aria-expanded="true"] { color: #fff; background: var(--primary); transform: translateY(-10px); }
+    .role-panel .panel-num { display: block; margin-bottom: 58px; opacity: .6; }
+    .role-panel strong { display: block; font-size: 28px; letter-spacing: -.03em; }
+    .role-panel p { margin: 10px 0 0; color: currentColor; line-height: 1.55; opacity: .72; }
+
+    /* 06 — timeline */
+    .v6 { color: #17233a; background: #fff; }
+    .v6 .hero-inner { display: grid; grid-template-rows: auto 1fr auto; }
+    .v6 .topline { display: flex; justify-content: space-between; align-items: center; color: #68758a; }
+    .v6 h3 { align-self: center; max-width: 940px; margin: 38px 0; font-size: clamp(56px, 8vw, 104px); line-height: .94; letter-spacing: -.065em; }
+    .v6 h3 span { color: var(--primary); }
+    .career-line { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 30px; border-top: 2px solid #dfe3ec; }
+    .career-line::before { position: absolute; top: -5px; left: 0; width: 62%; height: 8px; border-radius: 99px; content: ""; background: var(--primary); }
+    .career-step { position: relative; }
+    .career-step::before { position: absolute; top: -36px; left: 0; width: 10px; height: 10px; border: 3px solid #fff; border-radius: 50%; content: ""; background: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+    .career-step:last-child::before { animation: pulse 2s ease-in-out infinite; }
+    .career-step small { color: #8490a2; font-family: "JetBrains Mono", monospace; }
+    .career-step strong { display: block; margin-top: 7px; font-size: 20px; }
+    .career-step p { margin: 5px 0 0; color: #68758a; font-size: 13px; }
+
+    /* 07 — complex to clear */
+    .v7 { color: #fff; background: #241f6b; }
+    .v7 .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .v7 h3 { margin: 14px 0 0; font-size: clamp(58px, 7vw, 92px); line-height: .94; letter-spacing: -.065em; }
+    .v7 .summary { max-width: 530px; margin: 28px 0 0; color: #c2bee8; font-size: 18px; line-height: 1.6; }
+    .clarity-map { position: relative; min-height: 420px; }
+    .clarity-map svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .messy-line { fill: none; stroke: #ff9ddd; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 10 10; animation: dash 10s linear infinite; }
+    .clear-line { fill: none; stroke: #73ffd1; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 280; stroke-dashoffset: 280; animation: draw 2.4s var(--ease) infinite alternate; }
+    .chaos-dot { position: absolute; width: 24px; height: 24px; border-radius: 50%; background: #ff9ddd; box-shadow: 0 0 30px rgba(255,157,221,.5); }
+    .chaos-dot:nth-of-type(1) { left: 3%; top: 13%; }
+    .chaos-dot:nth-of-type(2) { left: 9%; top: 55%; }
+    .chaos-dot:nth-of-type(3) { left: 24%; top: 78%; }
+    .ui-card {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: min(300px, 64%);
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 34px 90px rgba(0,0,0,.3);
+      transform: translateY(-50%) rotate(2deg);
+    }
+    .ui-card .bar { height: 9px; margin-bottom: 12px; border-radius: 99px; background: #dde0ea; }
+    .ui-card .bar.primary { width: 58%; height: 14px; background: var(--primary); }
+    .ui-card .row { display: grid; grid-template-columns: 34px 1fr; gap: 12px; margin-top: 22px; }
+    .ui-card .square { height: 34px; border-radius: 9px; background: #dffcef; }
+    .ui-card .lines .bar:last-child { width: 70%; }
+
+    /* 08 — whoami */
+    .v8 { color: #dbffe8; background: #08100b; }
+    .v8 .hero-inner { display: grid; grid-template-columns: .75fr 1.25fr; gap: 70px; align-items: center; }
+    .v8 .copy h3 { margin: 14px 0 0; font-size: clamp(50px, 6vw, 80px); line-height: .98; letter-spacing: -.055em; }
+    .v8 .copy p { margin: 24px 0 0; color: #93a89a; font-size: 17px; line-height: 1.65; }
+    .interactive-terminal { overflow: hidden; border: 1px solid #294233; border-radius: 20px; background: #0d1911; box-shadow: 0 30px 90px rgba(0,0,0,.4); }
+    .terminal-output { min-height: 330px; padding: 30px; font: 14px/1.75 "JetBrains Mono", monospace; }
+    .terminal-output .command { color: #5cff99; }
+    .terminal-output .response { margin: 4px 0 20px; color: #e8fff0; }
+    .terminal-output a { color: #7eb4ff; }
+    .terminal-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; border-top: 1px solid #294233; background: #0a140e; }
+    .terminal-actions button {
+      padding: 8px 11px;
+      border: 1px solid #31513c;
+      border-radius: 8px;
+      color: #b7cabe;
+      background: transparent;
+      cursor: pointer;
+      font: 12px "JetBrains Mono", monospace;
+    }
+    .terminal-actions button:hover, .terminal-actions button[aria-pressed="true"] { color: #08100b; background: #5cff99; border-color: #5cff99; }
+
+    /* 09 — conversation */
+    .v9 { color: #342936; background: #ffe9ed; }
+    [data-theme="dark"] .v9 { background: #f0d9df; }
+    .v9 .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 66px; align-items: center; }
+    .v9 h3 { margin: 16px 0 0; font-family: "Libre Baskerville", serif; font-size: clamp(54px, 7vw, 90px); font-weight: 400; line-height: 1.02; letter-spacing: -.055em; }
+    .v9 .copy p { max-width: 520px; margin: 26px 0 0; color: #745f70; font-size: 18px; line-height: 1.65; }
+    .conversation { display: flex; flex-direction: column; gap: 14px; }
+    .bubble { max-width: 84%; padding: 18px 22px; border-radius: 24px; font-size: 16px; line-height: 1.45; box-shadow: 0 12px 30px rgba(92,54,73,.08); }
+    .bubble.question { align-self: flex-start; border-bottom-left-radius: 6px; background: #fff; }
+    .bubble.answer { align-self: flex-end; border-bottom-right-radius: 6px; color: #fff; background: var(--primary); }
+    .bubble:nth-child(2) { animation: bubbleIn 5s var(--ease) infinite; }
+    .bubble:nth-child(3) { animation: bubbleIn 5s .45s var(--ease) infinite; }
+    .typing { display: flex; gap: 5px; width: max-content; padding: 14px 18px; border-radius: 20px 20px 20px 6px; background: #fff; }
+    .typing i { width: 6px; height: 6px; border-radius: 50%; background: #aa96a5; animation: typing 1s ease-in-out infinite; }
+    .typing i:nth-child(2) { animation-delay: .15s; }
+    .typing i:nth-child(3) { animation-delay: .3s; }
+
+    /* 10 — portrait */
+    .v10 { background: #f1f0ea; color: #232d2b; }
+    [data-theme="dark"] .v10 { background: #e2e0d8; }
+    .v10 .hero-inner { display: grid; grid-template-columns: 1.25fr .75fr; gap: 28px; padding: 28px; }
+    .editorial-copy { display: flex; flex-direction: column; justify-content: space-between; padding: 36px; border-radius: 20px; background: #fff; }
+    .editorial-copy h3 { max-width: 720px; margin: 46px 0; font-size: clamp(54px, 7.3vw, 98px); line-height: .94; letter-spacing: -.065em; }
+    .editorial-copy h3 em { color: var(--primary); font-family: "Libre Baskerville", serif; font-weight: 400; }
+    .editorial-bottom { display: flex; justify-content: space-between; gap: 30px; align-items: end; padding-top: 26px; border-top: 1px solid #dfe1df; }
+    .editorial-bottom p { max-width: 490px; margin: 0; color: #68736f; line-height: 1.55; }
+    .portrait-card { position: relative; overflow: hidden; min-height: 564px; border-radius: 20px; background: #beb8ff; }
+    .portrait-card img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.85) contrast(.95); transition: transform .7s var(--ease), filter .5s ease; }
+    .portrait-card:hover img { transform: scale(1.04); filter: saturate(1) contrast(1); }
+    .portrait-label { position: absolute; right: 18px; bottom: 18px; left: 18px; display: flex; justify-content: space-between; gap: 16px; padding: 14px 16px; border-radius: 12px; background: rgba(255,255,255,.88); backdrop-filter: blur(12px); }
+    .portrait-label span:last-child { color: #64706c; }
+
+    .page-footer { display: flex; justify-content: space-between; gap: 28px; padding: 36px 0 70px; border-top: 1px solid var(--line); color: var(--muted); }
+    .page-footer a { color: var(--ink); font-weight: 600; }
+
+    @keyframes drift { to { transform: translate3d(8%, -4%, 0) rotate(6deg); } }
+    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 12px rgba(42,37,255,0); } }
+    @keyframes dash { to { stroke-dashoffset: -200; } }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes bubbleIn { 0%, 12% { opacity: 0; transform: translateY(12px) scale(.96); } 22%, 100% { opacity: 1; transform: none; } }
+    @keyframes typing { 50% { opacity: .3; transform: translateY(-3px); } }
+
+    @media (max-width: 900px) {
+      .shell { width: min(100% - 32px, 1180px); }
+      .page-head { grid-template-columns: 1fr; padding-top: 64px; }
+      .page-head .theme-toggle { justify-self: start; }
+      .concept-meta { grid-template-columns: 48px 1fr; }
+      .concept-meta p { grid-column: 2; }
+      .hero-inner { padding: 44px; }
+      .v3 .hero-inner, .v4 .hero-inner, .v7 .hero-inner, .v8 .hero-inner, .v9 .hero-inner { grid-template-columns: 1fr; gap: 44px; }
+      .v3 .terminal { max-width: 600px; }
+      .v4 .aside { min-height: 240px; }
+      .v5 .intro-row { flex-direction: column; }
+      .v10 .hero-inner { grid-template-columns: 1fr; }
+      .portrait-card { min-height: 520px; }
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1180px); }
+      .page-head { padding: 46px 6px 36px; }
+      .page-head p { font-size: 16px; }
+      .concept-nav .nav-label { display: none; }
+      main { padding-top: 52px; }
+      .concept { margin-bottom: 88px; }
+      .concept-meta { grid-template-columns: 38px 1fr; padding: 0 6px; }
+      .concept-meta h2 { font-size: 20px; }
+      .stage, .hero-inner { min-height: 560px; }
+      .stage { border-radius: 20px; }
+      .hero-inner { padding: 30px 24px; }
+      .v1 .status { align-items: start; gap: 18px; }
+      .v1 .status span:last-child { text-align: right; }
+      .v1 h3 { margin-top: 52px; font-size: clamp(50px, 17vw, 74px); }
+      .v1 .proof { grid-template-columns: 1fr 1fr; gap: 20px; }
+      .v1 .proof p { grid-column: 1 / -1; font-size: 16px; }
+      .v2 h3 { font-size: clamp(45px, 14vw, 68px); }
+      .v2 .bottom-note { align-items: start; flex-direction: column; margin-top: 40px; }
+      .v2 .bottom-note p { font-size: 16px; }
+      .v2 .orbit { justify-content: start; }
+      .v3 h3, .v4 h3, .v7 h3, .v9 h3 { font-size: clamp(48px, 14vw, 66px); }
+      .v3 .summary, .v7 .summary, .v9 .copy p { font-size: 16px; }
+      .v3 .hero-inner { align-content: center; }
+      .v3 .terminal-body { min-height: 0; padding: 18px; }
+      .v3 .terminal-card { display: none; }
+      .copy-switcher { grid-template-columns: repeat(2, 1fr); margin-bottom: 0; }
+      .v4 .hero-inner { gap: 46px; }
+      .v4 .aside { min-height: 220px; padding-left: 24px; }
+      .v4 .experience { font-size: 58px; }
+      .v5 h3 { font-size: 48px; }
+      .role-panels { grid-template-columns: 1fr; padding-top: 36px; }
+      .role-panel { min-height: auto; }
+      .role-panel .panel-num { margin-bottom: 26px; }
+      .v6 .hero-inner { padding: 30px 24px; }
+      .v6 h3 { font-size: clamp(48px, 14vw, 68px); }
+      .career-line { gap: 10px; }
+      .career-step p { display: none; }
+      .career-step strong { font-size: 15px; }
+      .clarity-map { min-height: 280px; }
+      .v7 .hero-inner { align-content: center; }
+      .v8 .hero-inner { grid-template-columns: 1fr; }
+      .v8 .copy { display: none; }
+      .terminal-output { min-height: 360px; padding: 22px; font-size: 12px; }
+      .v9 .conversation { margin-top: 12px; }
+      .bubble { padding: 14px 17px; font-size: 14px; }
+      .v10 .hero-inner { padding: 12px; }
+      .editorial-copy { min-height: 540px; padding: 24px; }
+      .editorial-copy h3 { font-size: clamp(47px, 14vw, 68px); }
+      .editorial-bottom { align-items: start; flex-direction: column; }
+      .portrait-card { min-height: 440px; }
+      .page-footer { align-items: start; flex-direction: column; padding-inline: 6px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="shell page-head">
+    <div>
+      <div class="eyebrow">Intro explorations · 10 directions</div>
+      <h1>A clearer opening for Miguel’s portfolio.</h1>
+      <p>Ten ways to introduce the same designer—ranging from direct and credible to personal and expressive. Each concept is designed to help hiring leaders understand the value in a few seconds.</p>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark previews">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.8 15.1A9 9 0 1 1 8.9 3.2 7 7 0 0 0 20.8 15Z"/></svg>
+      <span>Dark previews</span>
+    </button>
+  </header>
+
+  <div class="concept-nav-wrap">
+    <nav class="shell concept-nav" aria-label="Intro concepts">
+      <a class="active" href="#concept-1" aria-label="Concept 1">01</a>
+      <a href="#concept-2" aria-label="Concept 2">02</a>
+      <a href="#concept-3" aria-label="Concept 3">03</a>
+      <a href="#concept-4" aria-label="Concept 4">04</a>
+      <a href="#concept-5" aria-label="Concept 5">05</a>
+      <a href="#concept-6" aria-label="Concept 6">06</a>
+      <a href="#concept-7" aria-label="Concept 7">07</a>
+      <a href="#concept-8" aria-label="Concept 8">08</a>
+      <a href="#concept-9" aria-label="Concept 9">09</a>
+      <a href="#concept-10" aria-label="Concept 10">10</a>
+      <span class="nav-label mono">Jump to a direction</span>
+    </nav>
+  </div>
+
+  <main class="shell">
+    <section class="concept" id="concept-1" aria-labelledby="title-1">
+      <header class="concept-meta">
+        <span class="concept-number mono">01</span>
+        <div><h2 id="title-1">Complex software, made clear</h2><span class="recommendation">Recommended</span></div>
+        <p>The strongest all-around option: an immediate value proposition, followed by role, location, and recognizable proof.</p>
+      </header>
+      <div class="stage v1">
+        <div class="hero-inner">
+          <div class="status mono"><span>Product designer · Seattle</span><span>Currently at Google</span></div>
+          <h3>Complex software, <em>made clear.</em></h3>
+          <div class="proof">
+            <p>I’m Miguel, a product designer who designs and ships tools for developers—from VS Code to Gemini.</p>
+            <a href="../#selected-work">Selected work</a>
+            <a href="../miguel-solorio-resume.pdf">Résumé ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-2" aria-labelledby="title-2">
+      <header class="concept-meta">
+        <span class="concept-number mono">02</span>
+        <h2 id="title-2">Ideas into software</h2>
+        <p>An evolution of the current rotating word treatment that makes the design-to-code bridge more outcome-oriented.</p>
+      </header>
+      <div class="stage v2">
+        <div class="hero-inner">
+          <div class="role mono">Miguel Solorio · Product designer</div>
+          <h3>I turn <span class="rotator" id="rotatingWord" aria-live="polite">ideas</span><br>into software.</h3>
+          <div class="bottom-note">
+            <p>I move between product thinking, systems, and code to help ambitious ideas become useful, well-crafted products.</p>
+            <div class="orbit mono" aria-label="Focus areas"><span>Design</span><span>Systems</span><span>Code</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-3" aria-labelledby="title-3">
+      <header class="concept-meta">
+        <span class="concept-number mono">03</span>
+        <h2 id="title-3">Tools for people who build · Headline study</h2>
+        <p>Eight close variations focused on the words that matter: tools or software, and people who build, people who make things, or builders.</p>
+      </header>
+      <div class="stage v3">
+        <div class="hero-inner">
+          <div class="copy-frame" id="aiCopyFrame">
+            <div class="mono green" id="aiKicker">Product designer · Google</div>
+            <h3 id="aiHeadline">Designing software for builders.</h3>
+            <p class="summary">I’m a product designer at Google, currently working on Gemini CLI and Colab.</p>
+            <div class="intro-links"><a class="primary-link green" href="../#selected-work">Explore the work <span class="arrow">→</span></a></div>
+          </div>
+          <div class="terminal" aria-label="AI intro copy variations">
+            <div class="terminal-top" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="terminal-body">
+              <p class="terminal-line"><span class="prompt">$</span> intro --headline <span class="copy-voice" id="copyVoice">software / builders</span></p>
+              <div class="copy-switcher" role="tablist" aria-label="Choose a headline variation">
+                <button type="button" role="tab" aria-selected="false" tabindex="-1" data-ai-copy="toolsPeople"><span>01</span><span>Tools / people who build</span></button>
+                <button type="button" role="tab" aria-selected="false" tabindex="-1" data-ai-copy="softwarePeople"><span>02</span><span>Software / people who build</span></button>
+                <button type="button" role="tab" aria-selected="false" tabindex="-1" data-ai-copy="toolsBuilders"><span>03</span><span>Tools / builders</span></button>
+                <button type="button" role="tab" aria-selected="true" data-ai-copy="softwareBuilders"><span>04</span><span>Software / builders</span></button>
+                <button type="button" role="tab" aria-selected="false" tabindex="-1" data-ai-copy="toolsMakers"><span>05</span><span>Tools / make things</span></button>
+                <button type="button" role="tab" aria-selected="false" tabindex="-1" data-ai-copy="softwareMakers"><span>06</span><span>Software / make things</span></button>
+                <button type="button" role="tab" aria-selected="false" tabindex="-1" data-ai-copy="shortTools"><span>07</span><span>Short / tools</span></button>
+                <button type="button" role="tab" aria-selected="false" tabindex="-1" data-ai-copy="shortSoftware"><span>08</span><span>Short / software</span></button>
+              </div>
+              <div class="terminal-card"><strong>Gemini CLI</strong>Bringing agentic AI into the terminal.</div>
+              <div class="terminal-card"><strong>Google Colab</strong>Reimagining notebooks as an AI-first workspace.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-4" aria-labelledby="title-4">
+      <header class="concept-meta">
+        <span class="concept-number mono">04</span>
+        <h2 id="title-4">Powerful tools, obvious experiences</h2>
+        <p>A restrained editorial approach that signals maturity and lets the clarity of the message carry the visual identity.</p>
+      </header>
+      <div class="stage v4">
+        <div class="hero-inner">
+          <h3>I make powerful tools feel <span>obvious.</span></h3>
+          <aside class="aside">
+            <p>I’m a Seattle-based product designer turning complex workflows into products people can learn, trust, and use.</p>
+            <div class="experience">15+<small>Years designing and shipping software</small></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-5" aria-labelledby="title-5">
+      <header class="concept-meta">
+        <span class="concept-number mono">05</span>
+        <h2 id="title-5">Designer / Builder / Systems thinker</h2>
+        <p>A capability-led introduction that explains Miguel’s range without reducing him to a long list of tools.</p>
+      </header>
+      <div class="stage v5">
+        <div class="hero-inner">
+          <div class="intro-row">
+            <h3>I work across the whole product.</h3>
+            <p>From first principles to pixels—and close enough to code to help the product ship.</p>
+          </div>
+          <div class="role-panels">
+            <button class="role-panel" type="button" aria-expanded="true"><span class="panel-num mono">01</span><strong>Designer</strong><p>Making complex workflows clear, useful, and thoughtfully crafted.</p></button>
+            <button class="role-panel" type="button" aria-expanded="false"><span class="panel-num mono">02</span><strong>Builder</strong><p>Prototyping real interactions and collaborating closely with engineering.</p></button>
+            <button class="role-panel" type="button" aria-expanded="false"><span class="panel-num mono">03</span><strong>Systems thinker</strong><p>Connecting product decisions across features, teams, and platforms.</p></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-6" aria-labelledby="title-6">
+      <header class="concept-meta">
+        <span class="concept-number mono">06</span>
+        <h2 id="title-6">From VS Code to Gemini</h2>
+        <p>A compact career narrative that makes Miguel’s trajectory and developer-tools specialization instantly legible.</p>
+      </header>
+      <div class="stage v6">
+        <div class="hero-inner">
+          <div class="topline mono"><span>Miguel Solorio</span><span>Seattle, WA</span></div>
+          <h3>From <span>VS Code</span> to <span>Gemini</span>, I design tools for people who make things.</h3>
+          <div class="career-line" aria-label="Career highlights">
+            <div class="career-step"><small>2014–2022</small><strong>Microsoft</strong><p>Azure · DevOps · VS Code</p></div>
+            <div class="career-step"><small>2022–2023</small><strong>Meta</strong><p>Business messaging</p></div>
+            <div class="career-step"><small>2023–Now</small><strong>Google</strong><p>AI · Cloud · Developer tools</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-7" aria-labelledby="title-7">
+      <header class="concept-meta">
+        <span class="concept-number mono">07</span>
+        <h2 id="title-7">Complex to clear</h2>
+        <p>A visual metaphor for Miguel’s process, showing the outcome instead of merely describing a passion for simplicity.</p>
+      </header>
+      <div class="stage v7">
+        <div class="hero-inner">
+          <div>
+            <div class="mono" style="color:#ff9ddd">Product designer · Systems thinker</div>
+            <h3>The shortest path from complex to clear.</h3>
+            <p class="summary">I turn technical capability, user needs, and product constraints into software that feels focused and inevitable.</p>
+          </div>
+          <div class="clarity-map" aria-hidden="true">
+            <span class="chaos-dot"></span><span class="chaos-dot"></span><span class="chaos-dot"></span>
+            <svg viewBox="0 0 560 420" preserveAspectRatio="none"><path class="messy-line" d="M24 70C110 30 70 220 166 106S238 340 292 226C334 138 340 204 400 210"/><path class="clear-line" d="M292 226C348 226 382 210 438 210"/></svg>
+            <div class="ui-card"><div class="bar primary"></div><div class="bar"></div><div class="row"><div class="square"></div><div class="lines"><div class="bar"></div><div class="bar"></div></div></div><div class="row"><div class="square"></div><div class="lines"><div class="bar"></div><div class="bar"></div></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-8" aria-labelledby="title-8">
+      <header class="concept-meta">
+        <span class="concept-number mono">08</span>
+        <h2 id="title-8">Interactive whoami</h2>
+        <p>A functional code-native introduction that rewards exploration while keeping the essential positioning visible.</p>
+      </header>
+      <div class="stage v8">
+        <div class="hero-inner">
+          <div class="copy">
+            <div class="mono" style="color:#5cff99">A product designer who codes</div>
+            <h3>Curiosity, in command-line form.</h3>
+            <p>Use the terminal to learn who I am, what I focus on, and where to find the work.</p>
+          </div>
+          <div class="interactive-terminal">
+            <div class="terminal-top" aria-hidden="true"><i></i><i></i><i></i><span style="margin-left:auto;color:#6e8776;font:11px 'JetBrains Mono'">miguel@portfolio</span></div>
+            <div class="terminal-output" id="terminalOutput" aria-live="polite"><div class="command">$ whoami</div><div class="response">Miguel Solorio — product designer, builder, and mentor based in Seattle.</div><div class="command">$ focus</div><div class="response">Developer tools · AI · Design systems</div><div class="command">$ open work</div><div class="response"><a href="../#selected-work">View selected case studies →</a></div></div>
+            <div class="terminal-actions" aria-label="Terminal commands"><button type="button" data-command="whoami" aria-pressed="true">whoami</button><button type="button" data-command="focus" aria-pressed="false">focus</button><button type="button" data-command="experience" aria-pressed="false">experience</button><button type="button" data-command="contact" aria-pressed="false">contact</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-9" aria-labelledby="title-9">
+      <header class="concept-meta">
+        <span class="concept-number mono">09</span>
+        <h2 id="title-9">Software as conversation</h2>
+        <p>A warmer, values-led alternative for teams that care as much about empathy and accessibility as technical fluency.</p>
+      </header>
+      <div class="stage v9">
+        <div class="hero-inner">
+          <div class="copy">
+            <div class="mono" style="color:#9b496a">Thoughtful tools for real people</div>
+            <h3>Good software should feel like a conversation.</h3>
+            <p>I design accessible tools that meet people where they work—clear enough to welcome them in, powerful enough to grow with them.</p>
+          </div>
+          <div class="conversation" aria-label="A conversation about product design">
+            <div class="bubble question">What makes a complex tool feel simple?</div>
+            <div class="bubble answer">A clear model, the right details, and respect for the person using it.</div>
+            <div class="bubble question">And the designer’s role?</div>
+            <div class="bubble answer">Listen closely. Make the hard choices. Stay until it ships.</div>
+            <div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="concept" id="concept-10" aria-labelledby="title-10">
+      <header class="concept-meta">
+        <span class="concept-number mono">10</span>
+        <h2 id="title-10">Editorial portrait</h2>
+        <p>A more personal close to the set, combining a confident point of view with location, current role, and a human face.</p>
+      </header>
+      <div class="stage v10">
+        <div class="hero-inner">
+          <div class="editorial-copy">
+            <div class="mono" style="color:#65706c">Hello, I’m Miguel 👋</div>
+            <h3>I design products for the people building <em>what’s next.</em></h3>
+            <div class="editorial-bottom"><p>Seattle-based product designer working across AI, developer tools, systems, and code. Currently designing at Google.</p><a class="primary-link" href="../#selected-work">See my work <span class="arrow">→</span></a></div>
+          </div>
+          <div class="portrait-card"><img src="../profile3.jpg" alt="Portrait of Miguel Solorio"><div class="portrait-label mono"><span>Seattle, WA</span><span>Available to connect</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell page-footer"><span>Portfolio intro explorations · July 2026</span><span><a href="../">Return to portfolio</a> · <a href="#concept-1">Back to top</a></span></footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeLabel = themeToggle.querySelector('span');
+    themeToggle.addEventListener('click', () => {
+      const dark = root.dataset.theme !== 'dark';
+      root.dataset.theme = dark ? 'dark' : 'light';
+      themeToggle.setAttribute('aria-pressed', String(dark));
+      themeToggle.setAttribute('aria-label', dark ? 'Switch to light previews' : 'Switch to dark previews');
+      themeLabel.textContent = dark ? 'Light previews' : 'Dark previews';
+    });
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const rotatingWord = document.getElementById('rotatingWord');
+    const rotatingWords = ['ideas', 'systems', 'intent', 'design'];
+    let wordIndex = 0;
+    if (!reduceMotion) {
+      window.setInterval(() => {
+        wordIndex = (wordIndex + 1) % rotatingWords.length;
+        rotatingWord.textContent = rotatingWords[wordIndex];
+      }, 2200);
+    }
+
+    const aiCopy = {
+      toolsPeople: {
+        label: 'tools / people who build',
+        headline: 'Designing tools for people who build.'
+      },
+      softwarePeople: {
+        label: 'software / people who build',
+        headline: 'Designing software for people who build.'
+      },
+      toolsBuilders: {
+        label: 'tools / builders',
+        headline: 'Designing tools for builders.'
+      },
+      softwareBuilders: {
+        label: 'software / builders',
+        headline: 'Designing software for builders.'
+      },
+      toolsMakers: {
+        label: 'tools / people who make things',
+        headline: 'Designing tools for people who make things.'
+      },
+      softwareMakers: {
+        label: 'software / people who make things',
+        headline: 'Designing software for people who make things.'
+      },
+      shortTools: {
+        label: 'short / tools',
+        headline: 'Tools for people who build.'
+      },
+      shortSoftware: {
+        label: 'short / software',
+        headline: 'Software for people who build.'
+      }
+    };
+    const aiCopyFrame = document.getElementById('aiCopyFrame');
+    const aiHeadline = document.getElementById('aiHeadline');
+    const copyVoice = document.getElementById('copyVoice');
+    const aiCopyButtons = [...document.querySelectorAll('[data-ai-copy]')];
+    const selectAiCopy = button => {
+      const voice = button.dataset.aiCopy;
+      const copy = aiCopy[voice];
+      const update = () => {
+        aiHeadline.textContent = copy.headline;
+        copyVoice.textContent = copy.label;
+        aiCopyButtons.forEach(item => {
+          const selected = item === button;
+          item.setAttribute('aria-selected', String(selected));
+          item.tabIndex = selected ? 0 : -1;
+        });
+        aiCopyFrame.classList.remove('changing');
+      };
+      if (reduceMotion) update();
+      else {
+        aiCopyFrame.classList.add('changing');
+        window.setTimeout(update, 160);
+      }
+    };
+    aiCopyButtons.forEach((button, index) => {
+      button.addEventListener('click', () => selectAiCopy(button));
+      button.addEventListener('keydown', event => {
+        if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+        event.preventDefault();
+        const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
+        const next = aiCopyButtons[(index + direction + aiCopyButtons.length) % aiCopyButtons.length];
+        next.focus();
+        selectAiCopy(next);
+      });
+    });
+
+    document.querySelectorAll('.role-panel').forEach(panel => {
+      panel.addEventListener('click', () => {
+        document.querySelectorAll('.role-panel').forEach(item => item.setAttribute('aria-expanded', String(item === panel)));
+      });
+    });
+
+    const terminalResponses = {
+      whoami: ['whoami', 'Miguel Solorio — product designer, builder, and mentor based in Seattle.'],
+      focus: ['focus', 'Developer tools · AI · Design systems'],
+      experience: ['experience --highlights', 'Google / Gemini and Colab<br>Meta / Business Messaging<br>Microsoft / VS Code, Azure DevOps, Azure'],
+      contact: ['open contact', '<a href="https://www.linkedin.com/in/miguel-solorio-a432b021">Connect on LinkedIn →</a>']
+    };
+    const terminalOutput = document.getElementById('terminalOutput');
+    document.querySelectorAll('[data-command]').forEach(button => {
+      button.addEventListener('click', () => {
+        const response = terminalResponses[button.dataset.command];
+        terminalOutput.innerHTML = `<div class="command">$ ${response[0]}</div><div class="response">${response[1]}</div><div class="command">$ <span class="terminal-pulse"></span></div>`;
+        document.querySelectorAll('[data-command]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      });
+    });
+
+    const navLinks = [...document.querySelectorAll('.concept-nav a')];
+    const sections = [...document.querySelectorAll('.concept')];
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+      });
+    }, { rootMargin: '-20% 0px -68% 0px' });
+    sections.forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>

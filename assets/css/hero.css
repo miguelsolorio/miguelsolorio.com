@@ -32,4 +32,266 @@
     .code #matrix {
         @apply opacity-20
     }
+
+    /* Homepage intro */
+    intro.home-hero {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 6rem;
+        margin-bottom: 10rem;
+        padding: 0;
+    }
+
+    .home-hero * {
+        box-sizing: border-box;
+    }
+
+    .home-hero-inner {
+        display: grid;
+        /* 26rem keeps the terminal at 80 columns' worth of the log lines
+           without wrapping; narrower and the commit rows break. */
+        grid-template-columns: minmax(0, 1fr) 26rem;
+        gap: 4rem;
+        align-items: center;
+        min-height: 30rem;
+        padding: 2rem 0;
+    }
+
+    .home-hero h1 {
+        max-width: none;
+        margin: 0;
+        color: #334155;
+        font-size: clamp(3.5rem, 6.8vw, 5.5rem);
+        font-weight: 700;
+        line-height: .96;
+        letter-spacing: -.06em;
+    }
+
+    .home-hero-line {
+        display: block;
+        white-space: nowrap;
+    }
+
+    .home-hero-summary {
+        max-width: 38rem;
+        margin: 1.75rem 0 0;
+        color: #64748b;
+        font-size: 1.125rem;
+        line-height: 1.65;
+    }
+
+    /* Terminal window. Stays dark in both themes on purpose — a shell is dark,
+       so it reads as a real prompt rather than a card. */
+    .home-hero-current {
+        --t-bg: #10141c;
+        --t-bar: #1b2130;
+        --t-line: rgba(148, 163, 184, .22);
+        --t-text: #cbd5e1;
+        --t-dim: #7c8899;
+        --t-bright: #f1f5f9;
+        --t-green: #4ade80;
+        --t-cyan: #38bdf8;
+        --t-yellow: #fbbf24;
+        --t-purple: #a78bfa;
+        --t-red: #f87171;
+
+        overflow: hidden;
+        border: 1px solid var(--t-line);
+        border-radius: .75rem;
+        background: var(--t-bg);
+        box-shadow: 0 1.5rem 3.75rem -1.25rem rgba(2, 6, 23, .5);
+        color: var(--t-text);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .78125rem;
+        line-height: 1.7;
+    }
+
+    .home-hero-terminal-bar {
+        display: grid;
+        grid-template-columns: 3.25rem 1fr 3.25rem;
+        align-items: center;
+        min-height: 2.375rem;
+        padding: 0 .75rem;
+        border-bottom: 1px solid var(--t-line);
+        background: var(--t-bar);
+    }
+
+    .home-hero-lights {
+        display: flex;
+        gap: .5rem;
+    }
+
+    .home-hero-lights i {
+        width: .6875rem;
+        height: .6875rem;
+        border-radius: 50%;
+    }
+
+    .home-hero-lights i:nth-child(1) {
+        background: #ff5f57;
+    }
+
+    .home-hero-lights i:nth-child(2) {
+        background: #febc2e;
+    }
+
+    .home-hero-lights i:nth-child(3) {
+        background: #28c840;
+    }
+
+    .home-hero-terminal-title {
+        overflow: hidden;
+        color: var(--t-dim);
+        font-size: .6875rem;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .home-hero-terminal-body {
+        padding: 1.125rem 1rem 1.375rem;
+    }
+
+    /* pre-wrap preserves the leading indent on the `modified:` row. */
+    .home-hero-row {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .home-hero-row + .home-hero-row {
+        margin-top: .125rem;
+    }
+
+    .home-hero-row + .home-hero-row.is-spaced {
+        margin-top: .875rem;
+    }
+
+    .home-hero-current .t-ps1 {
+        color: var(--t-green);
+    }
+
+    .home-hero-current .t-cmd {
+        color: var(--t-bright);
+    }
+
+    .home-hero-current .t-hash {
+        color: var(--t-purple);
+    }
+
+    .home-hero-current .t-scope {
+        color: var(--t-cyan);
+    }
+
+    .home-hero-current .t-out {
+        color: var(--t-text);
+    }
+
+    .home-hero-current .t-ok {
+        color: var(--t-green);
+    }
+
+    .home-hero-current .t-dim {
+        color: var(--t-dim);
+    }
+
+    /* Status entries take VS Code's Source Control hues — added green,
+       modified yellow, deleted red — rather than git's own scheme, which
+       paints every staged entry green regardless of type. */
+    .home-hero-current .t-added {
+        color: var(--t-green);
+    }
+
+    .home-hero-current .t-modified {
+        color: var(--t-yellow);
+    }
+
+    .home-hero-current .t-deleted {
+        color: var(--t-red);
+    }
+
+    .home-hero-cursor {
+        display: inline-block;
+        width: .4375rem;
+        height: .875rem;
+        margin-left: .125rem;
+        background: var(--t-green);
+        vertical-align: text-bottom;
+        animation: home-hero-blink 1.1s steps(1, end) infinite;
+    }
+
+    @keyframes home-hero-blink {
+        50% {
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .home-hero-cursor {
+            animation: none;
+        }
+    }
+
+    .dark .home-hero h1 {
+        color: #e5e7eb;
+    }
+
+    .dark .home-hero-summary {
+        color: #9ca3af !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .home-hero-inner {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+        padding: 2rem 0;
+    }
+
+    .home-hero-current {
+        max-width: 26rem;
+    }
+}
+
+@media (max-width: 640px) {
+    intro.home-hero {
+        margin-top: 3rem;
+        margin-bottom: 7rem;
+    }
+
+    .home-hero-inner {
+        gap: 3rem;
+        min-height: 0;
+        padding: 2rem 0;
+    }
+
+    .home-hero h1 {
+        font-size: clamp(3rem, 15vw, 4.25rem);
+    }
+
+    .home-hero-line {
+        white-space: normal;
+    }
+
+    .home-hero-summary {
+        font-size: 1rem;
+    }
+
+    .home-hero-current {
+        max-width: 100%;
+        border-radius: .625rem;
+        /* Scale the type to the viewport so the longest commit row (44 chars)
+           still fits on one line down to ~320px. */
+        font-size: clamp(.5rem, calc(3.6vw - 3px), .78125rem);
+    }
+
+    /* Too narrow to render the session title without truncating it. */
+    .home-hero-terminal-title {
+        display: none;
+    }
+
+    .home-hero-terminal-body {
+        padding: .875rem .75rem 1.125rem;
+    }
 }

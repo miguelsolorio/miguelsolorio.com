@@ -39,6 +39,11 @@
     left: 50%;
     border-radius: 0;
   }
+  .project .card-video--onboarding {
+    width: 90%;
+    top: 10%;
+    left: 50%;
+  }
   .project .thumbnail.cell-embed {
     border: 0;
   }

@@ -65,21 +65,6 @@
     @apply font-bold no-underline text-xl text-slate-700
   }
 
-
-
-
-  /* Intro */
-  intro {
-    @apply block pt-24 pb-40 text-3xl leading-relaxed;
-  }
-
-  #type-text {
-    @apply inline-block bg-primary text-white px-2 hover:cursor-alias;
-  }
-
-
-
-
   /* Content */
 
   #content.single {
