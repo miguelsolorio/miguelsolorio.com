@@ -5,6 +5,12 @@
         @apply transition-all duration-200 ease-in
     }
 
+    /* Keep the site header above the full-viewport ambient hero layer. */
+    body > nav {
+        position: relative;
+        z-index: 2;
+    }
+
     /* Code Version */
     body.code {
         background-image: none;
@@ -35,12 +41,91 @@
 
     /* Homepage intro */
     intro.home-hero {
+        position: relative;
+        isolation: isolate;
         display: block;
         box-sizing: border-box;
         width: 100%;
         margin-top: 2rem;
         margin-bottom: 6rem;
         padding: 0;
+    }
+
+    /* Aurora Wash sits in its own stacking layer, so it adds atmosphere
+       without changing the terminal's existing syntax or theme tokens. */
+    .home-hero-ambient {
+        position: absolute;
+        top: -8rem;
+        left: 50%;
+        z-index: -1;
+        width: 100vw;
+        height: calc(100% + 11rem);
+        overflow: hidden;
+        background: linear-gradient(180deg, #f2f0ff 0%, #f8f7ff 42%, rgba(248, 250, 252, 0) 100%);
+        -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
+        mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
+        pointer-events: none;
+        transform: translateX(-50%);
+    }
+
+    .home-hero-ambient::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        opacity: .11;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.72'/%3E%3C/svg%3E");
+        background-size: 180px 180px;
+        mix-blend-mode: soft-light;
+    }
+
+    .home-hero-ambient i {
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+        filter: blur(4rem);
+        will-change: transform;
+    }
+
+    .home-hero-ambient i:nth-child(1) {
+        top: -22%;
+        left: -10%;
+        width: 58%;
+        height: 70%;
+        background: #8b7cff;
+        opacity: .24;
+        animation: home-hero-aurora-left 14s ease-in-out infinite alternate;
+    }
+
+    .home-hero-ambient i:nth-child(2) {
+        top: -30%;
+        right: -12%;
+        width: 58%;
+        height: 76%;
+        background: #ff8f70;
+        opacity: .22;
+        animation: home-hero-aurora-right 17s ease-in-out infinite alternate;
+    }
+
+    .home-hero-ambient i:nth-child(3) {
+        top: 2%;
+        left: 30%;
+        width: 40%;
+        height: 48%;
+        background: #c4b5fd;
+        opacity: .3;
+        animation: home-hero-aurora-center 16s ease-in-out -5s infinite alternate;
+    }
+
+    @keyframes home-hero-aurora-left {
+        to { transform: translate(8%, 7%) scale(1.08); }
+    }
+
+    @keyframes home-hero-aurora-right {
+        to { transform: translate(-9%, 10%) scale(.95); }
+    }
+
+    @keyframes home-hero-aurora-center {
+        to { transform: translate(4%, 12%) scale(1.1); }
     }
 
     .home-hero * {
@@ -446,6 +531,30 @@
         --t-shadow: rgba(2, 6, 23, .5);
     }
 
+    .dark .home-hero-ambient {
+        background: linear-gradient(180deg, #15172d 0%, #111827 48%, rgba(15, 23, 42, 0) 100%);
+    }
+
+    .dark .home-hero-ambient::after {
+        opacity: .15;
+        mix-blend-mode: overlay;
+    }
+
+    .dark .home-hero-ambient i:nth-child(1) {
+        background: #4338ca;
+        opacity: .32;
+    }
+
+    .dark .home-hero-ambient i:nth-child(2) {
+        background: #c2415b;
+        opacity: .23;
+    }
+
+    .dark .home-hero-ambient i:nth-child(3) {
+        background: #6d28d9;
+        opacity: .24;
+    }
+
     .dark .home-hero h1 {
         color: #e5e7eb;
     }
@@ -471,6 +580,11 @@
     intro.home-hero {
         margin-top: 3rem;
         margin-bottom: 7rem;
+    }
+
+    .home-hero-ambient {
+        top: -7rem;
+        height: calc(100% + 9rem);
     }
 
     .home-hero-inner {
@@ -515,5 +629,12 @@
 
     .home-hero-terminal-suggestion-description {
         display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-hero-ambient i {
+        animation: none;
+        will-change: auto;
     }
 }
