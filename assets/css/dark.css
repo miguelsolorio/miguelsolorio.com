@@ -18,6 +18,9 @@
         @apply bg-slate-800;
         border-color: #334155;
     }
+    .dark #side-projects {
+        --side-projects-edge-color: rgb(15 23 42);
+    }
     .dark .side-project-title {
         @apply text-gray-200;
     }

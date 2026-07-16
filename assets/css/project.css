@@ -145,10 +145,30 @@
   /* Side Projects */
   #side-projects {
     @apply grid gap-4 mt-10;
+    --side-projects-edge-color: rgb(245 245 245);
+    position: relative;
+    isolation: isolate;
     overflow-x: clip;
     overflow-y: visible;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  #side-projects::before,
+  #side-projects::after {
+    /* A container mask would also clip the cards' hover lift and shadow. */
+    content: '';
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    width: 8%;
+    pointer-events: none;
+  }
+  #side-projects::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--side-projects-edge-color), transparent);
+  }
+  #side-projects::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--side-projects-edge-color), transparent);
   }
   .marquee-track {
     @apply flex gap-4;
