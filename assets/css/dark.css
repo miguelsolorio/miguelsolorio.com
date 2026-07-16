@@ -2,6 +2,29 @@
     .dark body {
         @apply bg-slate-900 text-gray-400
     }
+
+    .dark #logo,
+    .dark .social a,
+    .dark .social #theme-toggle {
+        @apply text-gray-200;
+    }
+
+    .dark .social a svg,
+    .dark .social a svg path {
+        @apply text-gray-200 fill-current;
+    }
+
+    .dark .side-project {
+        @apply bg-slate-800;
+        border-color: #334155;
+    }
+    .dark .side-project-title {
+        @apply text-gray-200;
+    }
+    .dark .side-project-description {
+        @apply text-slate-400;
+    }
+
     /* .dark noise{
         @apply opacity-30
     }

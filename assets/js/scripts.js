@@ -55,6 +55,20 @@ if (portfolioTerminal) {
     ['2018-2022', 'vs-code:', 'ai code editor']
   ];
 
+  const statusRows = [
+    { spaced: true, parts: [{ text: 'On branch main', className: 't-ok' }] },
+    { spaced: true, parts: [{ text: 'Changes to be committed:', className: 't-out' }] },
+    {
+      spaced: false,
+      parts: [
+        { text: '  deleted    ', className: 't-deleted' },
+        { text: 'should-designers-code.md', className: 't-deleted-file' }
+      ]
+    },
+    { spaced: false, parts: [{ text: '  modified   vibe-projects', className: 't-modified' }] },
+    { spaced: false, parts: [{ text: '  new file   next-chapter.md', className: 't-added' }] }
+  ];
+
   const workProjects = [
     { name: 'Notebooks', description: 'data science workflows via natural language', url: '/colab-notebooks/' },
     { name: 'Kanvas', description: 'laying the foundation of a design system', url: '/kustomer-design-system/' },
@@ -93,13 +107,6 @@ if (portfolioTerminal) {
       run: showHelp
     },
     {
-      name: 'about',
-      description: 'learn what Miguel designs',
-      run: function () {
-        addLine('Miguel Solorio — software designer focused on developer tools, design systems, and open source.', 't-out');
-      }
-    },
-    {
       name: 'history',
       description: 'see the work timeline',
       run: showHistory
@@ -120,18 +127,20 @@ if (portfolioTerminal) {
       run: showProjects
     },
     {
-      name: 'talks',
-      description: 'list talks and presentations',
-      run: showTalks
-    },
-    {
       name: 'contact',
-      description: 'find Miguel around the web',
+      description: 'find me around the web',
       run: showContact
     },
     {
+      name: 'clear',
+      description: 'clear the terminal output',
+      run: function () {
+        terminalOutput.innerHTML = '';
+      }
+    },
+    {
       name: 'resume',
-      description: 'open the resume PDF',
+      description: 'open my resume',
       run: function () {
         requestConfirmation('Open Miguel\'s resume PDF?', function () {
           addLine('Opening resume...', 't-ok');
@@ -145,7 +154,7 @@ if (portfolioTerminal) {
       run: function () {
         const themeButton = document.getElementById('theme-toggle');
         if (themeButton) themeButton.click();
-        addLine('Theme: ' + (document.documentElement.classList.contains('dark') ? 'dark' : 'light'), 't-ok');
+        addLine('Changing theme to ' + (document.documentElement.classList.contains('dark') ? 'dark' : 'light'), 't-ok');
       }
     },
   ];
@@ -211,7 +220,7 @@ if (portfolioTerminal) {
 
     const description = document.createElement('span');
     description.className = 't-out';
-    description.textContent = ' — ' + project.description;
+    description.textContent = ': ' + project.description;
 
     row.appendChild(document.createTextNode('  '));
     row.appendChild(link);
@@ -220,11 +229,11 @@ if (portfolioTerminal) {
     return row;
   }
 
-  function addCommandLine(command) {
+  function addCommandLine(command, spaced) {
     addParts([
       { text: '~', className: 't-ps1' },
       { text: ' ' + command, className: 't-cmd' }
-    ], true);
+    ], spaced === undefined ? true : spaced);
   }
 
   function scrollToBottom() {
@@ -244,27 +253,35 @@ if (portfolioTerminal) {
   }
 
   function showStatus() {
-    addLine('On branch main', 't-ok', true);
-    addLine('Changes to be committed:', 't-out', true);
-    addLine('  deleted    should-designers-code.md', 't-deleted');
-    addLine('  modified   vibe-projects', 't-modified');
-    addLine('  new file   next-chapter.md', 't-added');
-    addLine('Current focus: making software feel a little more human.', 't-muted', true);
+    statusRows.forEach(function (row) {
+      addParts(row.parts, row.spaced);
+    });
+  }
+
+  function renderInitialOutput() {
+    terminalOutput.replaceChildren();
+    addCommandLine('miguelsolorio history', false);
+    showHistory();
+    addCommandLine('miguelsolorio status');
+    showStatus();
   }
 
   function showHelp() {
     addLine('Available commands:', 't-out', true);
+    // Rows render as pre-wrap monospace, so padding the name gives a real
+    // column; without it the descriptions rag with each name's length.
+    const nameColumn = commandDefinitions.reduce(function (width, definition) {
+      return Math.max(width, definition.name.length);
+    }, 0) + 2;
     commandDefinitions.forEach(function (definition) {
       addParts([
-        { text: '  ' + definition.name, className: 't-cmd' },
-        { text: '  ' + definition.description, className: 't-out' }
+        { text: '  ' + definition.name.padEnd(nameColumn), className: 't-scope' },
+        { text: definition.description, className: 't-out' }
       ]);
     });
-    addLine('Type to filter · Tab to complete · Cmd/Ctrl+Space for all commands.', 't-muted', true);
   }
 
   function showWork() {
-    addLine('Selected work:', 't-out', true);
     workProjects.forEach(function (project) {
       addProjectLink(project, false);
     });
@@ -290,7 +307,6 @@ if (portfolioTerminal) {
     addLine('Find Miguel around the web:', 't-out', true);
     addLine('  LinkedIn  linkedin.com/in/miguel-solorio-a432b021', 't-scope');
     addLine('  GitHub    github.com/miguelsolorio', 't-scope');
-    addLine('  Twitter   twitter.com/miguelsolorio_', 't-scope');
     addLine('  ADPList   adplist.org/mentors/miguel-solorio', 't-scope');
   }
 
@@ -322,7 +338,7 @@ if (portfolioTerminal) {
     pendingConfirmation = null;
     confirmation.row.querySelector('.home-hero-terminal-confirmation').remove();
     terminalInput.setAttribute('aria-label', 'Enter a portfolio terminal command');
-    terminalInput.placeholder = 'type a command';
+    terminalInput.placeholder = 'type / see all commands';
 
     if (confirmed) {
       confirmation.action();
@@ -580,6 +596,7 @@ if (portfolioTerminal) {
     if (!event.target.closest('button, a, input')) terminalInput.focus();
   });
 
+  renderInitialOutput();
   scrollToBottom();
   syncTerminalCaret();
   if (document.activeElement === document.body) terminalInput.focus({ preventScroll: true });

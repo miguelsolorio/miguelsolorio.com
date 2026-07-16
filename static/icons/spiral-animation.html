@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Icon spiral</title>
+  <style>
+    :root {
+      --background: #1f1f1f;
+      --icon: #c8c8c8;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: var(--background);
+      color: var(--icon);
+    }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .galaxy {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      animation: spin 60s linear infinite;
+    }
+
+    .arm {
+      position: absolute;
+      transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(var(--angle) * -1));
+    }
+
+    .icon {
+      display: block;
+      flex: none;
+      margin: calc(var(--size) * -0.5px) 0 0 calc(var(--size) * -0.5px);
+      animation: spin 60s linear infinite reverse;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .galaxy,
+      .icon {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="A slowly rotating spiral field made from product icons">
+    <div class="galaxy" aria-hidden="true"></div>
+  </main>
+
+  <script>
+    (async function () {
+      const spriteResponse = await fetch('../prototypes/icons-sprite.svg');
+      const spriteHolder = document.createElement('div');
+      spriteHolder.innerHTML = await spriteResponse.text();
+      const sprite = spriteHolder.firstElementChild;
+      sprite.setAttribute('aria-hidden', 'true');
+      document.body.prepend(sprite);
+
+      const stage = document.querySelector('.stage');
+      const galaxy = document.querySelector('.galaxy');
+      const total = document.querySelectorAll('symbol[id^="icon-"]').length;
+      const goldenAngle = 137.508;
+      const sizes = [14, 14, 16, 18, 18, 20, 22, 24, 28, 32];
+
+      function shuffle(values) {
+        for (let i = values.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [values[i], values[j]] = [values[j], values[i]];
+        }
+        return values;
+      }
+
+      function dealer() {
+        let deck = [];
+        let index = 0;
+
+        return function () {
+          if (index >= deck.length) {
+            deck = shuffle(Array.from({ length: total }, (_, id) => id));
+            index = 0;
+          }
+          return deck[index++];
+        };
+      }
+
+      function sizeDealer() {
+        let batch = [];
+        let index = 0;
+
+        return function () {
+          if (index >= batch.length) {
+            batch = shuffle([...sizes]);
+            index = 0;
+          }
+          return batch[index++];
+        };
+      }
+
+      function createIcon(id, size) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('icon');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.setAttribute('width', size);
+        svg.setAttribute('height', size);
+        svg.style.setProperty('--size', size);
+
+        const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+        use.setAttribute('href', '#icon-' + id);
+        svg.appendChild(use);
+        return svg;
+      }
+
+      function render() {
+        const width = stage.clientWidth;
+        const height = stage.clientHeight;
+        const count = Math.max(220, Math.min(360, Math.round((width * height) / 1900)));
+        const outerRadius = Math.hypot(width, height) * 0.57;
+        const nextIcon = dealer();
+        const nextSize = sizeDealer();
+
+        galaxy.replaceChildren();
+
+        for (let index = 1; index <= count; index += 1) {
+          const arm = document.createElement('div');
+          const size = Math.max(11, Math.round(nextSize() * Math.min(1, width / 760)));
+          const radius = 10 + outerRadius * Math.sqrt(index / count);
+          const angle = index * goldenAngle;
+          const edge = index / count;
+
+          arm.className = 'arm';
+          arm.style.setProperty('--angle', angle.toFixed(1) + 'deg');
+          arm.style.setProperty('--radius', radius.toFixed(1) + 'px');
+
+          const icon = createIcon(nextIcon(), size);
+          icon.style.opacity = (0.92 - edge * 0.56).toFixed(2);
+          arm.appendChild(icon);
+          galaxy.appendChild(arm);
+        }
+      }
+
+      render();
+      window.addEventListener('resize', render);
+    })();
+  </script>
+</body>
+</html>

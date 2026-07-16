@@ -14,8 +14,25 @@
   * {
     @apply box-content
   }
-  a:not(.project) {
-    @apply text-primary underline;
+  .container a:not(.project):not(:has(img, picture, video, canvas)) {
+    @apply underline;
+    padding-inline: .2em;
+    margin-inline: -.2em;
+    color: #241bc7;
+    background-image: linear-gradient(#3429ff, #3429ff);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    box-shadow: 0 0 0 transparent;
+    transition: color .22s ease, background-size .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s cubic-bezier(.2, .8, .2, 1);
+  }
+  .container a:not(.project):not(:has(img, picture, video, canvas)):hover,
+  .container a:not(.project):not(:has(img, picture, video, canvas)):focus-visible {
+    @apply text-white no-underline;
+    background-size: 100% 100%;
+    box-shadow: .2em 0 #3429ff, -.2em 0 #3429ff;
   }
 
   /* Navigation */
@@ -75,12 +92,15 @@
 
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .container a:not(.project):not(:has(img, picture, video, canvas)) {
+    transition: none;
+  }
+}
+
 /* for mobile */
 @media (max-width: 640px) {
-  @layer components {
-    body {
-      @apply p-8
-    }
-
+  body {
+    @apply p-6
   }
 }

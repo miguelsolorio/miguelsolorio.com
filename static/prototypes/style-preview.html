@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Miguel Solorio — Style Preview (AI Design Field Guide aesthetic)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFCF1;
+      --accent: #FF002A;
+      --ink: #171717;
+      --hairline: 1px solid var(--accent);
+      --display: "Poppins", system-ui, sans-serif;
+      --body: "Inter", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .dark {
+      --bg: #171310;
+      --accent: #FF3350;
+      --ink: #FFFCF1;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.5;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 2rem 2rem 4rem;
+      transition: background .25s ease, color .25s ease;
+    }
+    a { color: var(--ink); text-decoration: none; }
+    p a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ---- shared primitives ---- */
+    .micro {
+      font-family: var(--body);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ---- nav (original layout, recolored) ---- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 0;
+      margin-bottom: 3.5rem;
+    }
+    nav #logo {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--ink);
+    }
+    nav .social { display: flex; align-items: center; gap: .75rem; }
+    nav svg { width: 1.25rem; height: 1.25rem; display: block; }
+    .social a, #theme-toggle {
+      color: var(--ink);
+      padding: .375rem;
+      border-radius: .375rem;
+      transition: all .3s ease;
+    }
+    .social a svg path { fill: currentColor; }
+    .social a:hover { background: var(--accent); transform: scale(1.1); }
+    .social a:hover svg path { fill: var(--bg); }
+    #theme-toggle {
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none; cursor: pointer;
+      transition: all .1s ease;
+    }
+    #theme-toggle svg { width: 1.25rem; height: 1.25rem; fill: currentColor; }
+    #theme-toggle:hover { background: var(--accent); color: var(--bg); }
+    #theme-toggle .hidden { display: none; }
+
+    /* ---- hero ---- */
+    .home-hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 23rem;
+      gap: 4rem;
+      align-items: center;
+      margin-bottom: 7rem;
+    }
+    .home-hero-copy .kicker { display: block; margin-bottom: 1.5rem; }
+    .home-hero h1 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(3.25rem, 7vw, 5.75rem);
+      line-height: .92;
+      letter-spacing: -.03em;
+      color: var(--accent);
+      margin-bottom: 1.75rem;
+    }
+    .home-hero-line { display: block; }
+    .home-hero-summary {
+      max-width: 34rem;
+      color: var(--ink);
+      font-size: 1.05rem;
+    }
+
+    /* ---- terminal ---- */
+    .home-hero-current {
+      border: var(--hairline);
+      background: var(--bg);
+      font-family: var(--mono);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    .home-hero-terminal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: var(--hairline);
+      padding: .6rem .9rem;
+    }
+    .home-hero-lights { display: flex; gap: 6px; }
+    .home-hero-lights i {
+      width: 9px; height: 9px; border-radius: 50%;
+      border: var(--hairline); display: block;
+    }
+    .home-hero-lights i:first-child { background: var(--accent); }
+    .home-hero-terminal-title {
+      font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--accent);
+    }
+    .home-hero-terminal-body { padding: 1rem .9rem .9rem; }
+    .home-hero-row { margin: 0 0 .25rem; color: var(--ink); opacity: .85; }
+    .home-hero-row.is-spaced { margin-top: .9rem; }
+    .t-ps1 { color: var(--accent); font-weight: 700; }
+    .t-cmd { color: var(--ink); font-weight: 700; opacity: 1; }
+    .t-hash { color: var(--accent); opacity: .65; }
+    .t-scope { color: var(--accent); font-weight: 500; }
+    .t-out { color: var(--ink); }
+    .t-ok { color: var(--accent); }
+    .t-added::before, .t-modified::before, .t-deleted::before { content: ""; }
+    .t-added { color: var(--accent); }
+    .t-modified { color: var(--ink); }
+    .t-deleted { color: var(--ink); opacity: .45; }
+    .t-deleted-file { text-decoration: line-through; text-decoration-thickness: .08em; }
+    .home-hero-terminal-controls { margin-top: 1rem; border-top: var(--hairline); padding-top: .75rem; }
+    .home-hero-terminal-form { display: flex; align-items: center; gap: .5rem; }
+    .home-hero-terminal-input {
+      font: inherit; color: var(--ink);
+      background: transparent; border: none; outline: none; width: 100%;
+      caret-color: var(--accent);
+    }
+    .home-hero-terminal-input::placeholder { color: var(--ink); opacity: .35; }
+    .caret {
+      display: inline-block; width: 7px; height: 14px;
+      background: var(--accent); animation: blink 1.1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+
+    /* ---- section headings ---- */
+    .section {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      color: var(--accent);
+      margin: 6rem 0 2rem;
+    }
+    .section-label { display: block; margin: 6rem 0 1.25rem; }
+
+    /* ---- selected work (original card design, recolored) ---- */
+    #selected-work { display: grid; grid-auto-flow: row; gap: .5rem; }
+    .project {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 24rem;
+      overflow: hidden;
+      background-color: color-mix(in srgb, var(--accent) 14%, var(--bg));
+      isolation: isolate;
+    }
+    .project-media {
+      position: absolute; inset: 0; z-index: 0; overflow: hidden;
+      transition: transform .6s cubic-bezier(.2,.8,.2,1);
+    }
+    .project .thumbnail {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      margin: 0; pointer-events: none; object-fit: cover;
+    }
+    .project-meta {
+      position: absolute; left: 0; right: 0; z-index: 10; text-align: center;
+      top: 44%;
+      padding: 0 1rem;
+      pointer-events: none;
+      transform: translateY(-50%);
+      transition: transform .5s cubic-bezier(.2,.8,.2,1);
+    }
+    .project .title {
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(3.25rem, 9vw, 7.375rem);
+      letter-spacing: -.045em;
+      line-height: .92;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--accent);
+      overflow-wrap: anywhere;
+      transition: color .35s ease;
+      mix-blend-mode: multiply;
+    }
+    .dark .project .title { mix-blend-mode: normal; }
+    .project .title svg {
+      display: inline-block;
+      width: .62em; height: .62em;
+      margin-left: .08em;
+      vertical-align: .02em;
+      stroke-width: 1.75;
+    }
+    .project:hover .project-media,
+    .project:focus-visible .project-media { transform: scale(1.04); }
+    .project:hover .project-meta,
+    .project:focus-visible .project-meta { transform: translateY(-53%); }
+    .project:hover .title,
+    .project:focus-visible .title { color: var(--accent); }
+    .project:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    @media (max-width: 639px) {
+      .project .title { font-size: clamp(2.75rem, 15vw, 4.5rem); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .project-media, .project .title, .project-meta { transition: none; }
+      .project:hover .project-media { transform: none; }
+    }
+
+    /* ---- side projects ---- */
+    #side-projects {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .side-project {
+      display: flex; gap: 1rem; align-items: flex-start;
+      border: var(--hairline);
+      padding: 1.25rem;
+      transition: background .15s ease;
+    }
+    .side-project .thumb img {
+      width: 56px; height: 56px; display: block; object-fit: cover;
+      border: var(--hairline);
+    }
+    .side-project-title {
+      font-family: var(--display);
+      font-weight: 700; font-size: 1.15rem;
+      color: var(--accent);
+      display: inline-flex; align-items: center; gap: .4rem;
+    }
+    .side-project-title svg { width: .85em; height: .85em; }
+    .side-project-description { color: var(--ink); opacity: .8; font-size: .95rem; margin-top: .15rem; transition: color .15s ease; }
+    .side-project:hover { background: var(--accent); }
+    .side-project:hover .side-project-title,
+    .side-project:hover .side-project-description { color: var(--bg); opacity: 1; }
+    .side-project:hover .thumb img { border-color: var(--bg); }
+
+    /* ---- background / talks ---- */
+    #split { display: flex; gap: 4rem; }
+    #split .col { flex: 1; min-width: 0; }
+    #split .company {
+      font-family: var(--display);
+      font-weight: 700; font-size: 1.25rem;
+      color: var(--accent);
+      margin-top: 2.25rem;
+    }
+    #split .company a { color: var(--accent); }
+    #split .company a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    #split .detail {
+      display: flex; justify-content: space-between; gap: 1rem;
+      border-bottom: var(--hairline);
+      padding: .55rem 0;
+    }
+    #split .detail .title { color: var(--ink); }
+    #split .detail .date {
+      font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent); white-space: nowrap; align-self: center;
+    }
+    #split .detail.current .title::after {
+      content: "NOW";
+      font-size: 10px; font-weight: 600; letter-spacing: .18em;
+      color: var(--bg); background: var(--accent);
+      padding: 2px 7px; margin-left: .6rem; vertical-align: 2px;
+    }
+    #split .detail.inline .title { font-family: var(--display); font-weight: 700; font-size: 1.05rem; color: var(--accent); }
+    #split .section.mini { font-size: clamp(2rem, 4vw, 3rem); }
+
+    /* ---- footer ---- */
+    footer {
+      margin-top: 7rem;
+      border-top: var(--hairline);
+      padding-top: 2rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    footer .social { display: flex; gap: 1.5rem; }
+    footer .social a {
+      font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--ink);
+    }
+    footer .social a:hover { color: var(--accent); }
+    footer tag { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+
+    /* ---- responsive ---- */
+    @media (max-width: 900px) {
+      .home-hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+      #split { flex-direction: column; gap: 0; }
+    }
+    @media (max-width: 640px) {
+      body { padding: 1.25rem 1.25rem 3rem; }
+      nav { flex-wrap: wrap; row-gap: .75rem; }
+      #side-projects { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a id="logo" href="/">Miguel Solorio</a>
+    <div class="social">
+      <a id="linkedin" href="https://www.linkedin.com/in/miguel-solorio-a432b021" target="_blank" aria-label="LinkedIn">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.0123 18.1494H13.8024V44.6017H5.0123V18.1494ZM9.46621 5.39819C6.45771 5.39819 4.49219 7.37329 4.49219 9.96567C4.49219 12.5047 6.40019 14.5373 9.35117 14.5373H9.40723C12.4732 14.5373 14.3826 12.5046 14.3826 9.96567C14.3251 7.37329 12.4733 5.39819 9.46621 5.39819ZM35.3847 17.528C30.7187 17.528 28.6284 20.0944 27.4623 21.8942V18.1494H18.6695C18.7859 20.6309 18.6695 44.6017 18.6695 44.6017H27.4623V29.8289C27.4623 29.0376 27.5198 28.2494 27.7512 27.6826C28.3878 26.1031 29.8345 24.4674 32.2611 24.4674C35.4449 24.4674 36.7164 26.8943 36.7164 30.4487V44.6016H45.5078V29.4334C45.5078 21.3084 41.1717 17.528 35.3847 17.528Z"/></svg>
+      </a>
+      <a id="github" href="https://github.com/miguelsolorio" target="_blank" aria-label="GitHub">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M24.9255 1C11.1423 1 0 12.2245 0 26.1107C0 37.2107 7.13928 46.6066 17.0434 49.9321C18.2816 50.1821 18.7352 49.3918 18.7352 48.727C18.7352 48.1449 18.6944 46.1495 18.6944 44.0704C11.7607 45.5673 10.3168 41.077 10.3168 41.077C9.20255 38.1668 7.55153 37.4189 7.55153 37.4189C5.28214 35.8806 7.71684 35.8806 7.71684 35.8806C10.2342 36.0469 11.5551 38.4582 11.5551 38.4582C13.7832 42.2827 17.3735 41.202 18.8179 40.5367C19.024 38.9153 19.6847 37.7929 20.3862 37.1694C14.8561 36.5872 9.03776 34.4255 9.03776 24.7801C9.03776 22.0362 10.0276 19.7913 11.5959 18.0454C11.3485 17.4219 10.4816 14.8439 11.8439 11.3934C11.8439 11.3934 13.9485 10.7281 18.6939 13.9709C20.7256 13.4213 22.8208 13.1416 24.9255 13.1393C27.0301 13.1393 29.1755 13.4306 31.1566 13.9709C35.9026 10.7281 38.0071 11.3934 38.0071 11.3934C39.3694 14.8439 38.502 17.4219 38.2546 18.0454C39.8643 19.7913 40.8133 22.0362 40.8133 24.7801C40.8133 34.4255 34.9949 36.5454 29.4235 37.1694C30.3316 37.9592 31.1153 39.4556 31.1153 41.8255C31.1153 45.1929 31.0745 47.8954 31.0745 48.7265C31.0745 49.3918 31.5286 50.1821 32.7663 49.9327C42.6704 46.6061 49.8097 37.2107 49.8097 26.1107C49.8505 12.2245 38.6673 1 24.9255 1Z"/></svg>
+      </a>
+      <a id="twitter" href="https://twitter.com/miguelsolorio_" target="_blank" aria-label="Twitter">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.9937 11.6651C45.3749 12.3844 43.6364 12.8699 41.8086 13.0858C43.6722 11.969 45.1039 10.2003 45.7792 8.09327C44.0339 9.12616 42.1029 9.87985 40.0468 10.2828C38.3991 8.52926 36.0528 7.43311 33.4548 7.43311C28.4691 7.43311 24.4298 11.4739 24.4298 16.4595C24.4298 17.1665 24.5082 17.8569 24.6622 18.5171C17.1597 18.1402 10.5085 14.5464 6.05517 9.0849C5.27947 10.419 4.83386 11.969 4.83386 13.6236C4.83386 16.7566 6.42789 19.5183 8.84849 21.1385C7.37 21.0903 5.97815 20.686 4.76097 20.0093C4.75959 20.0464 4.75959 20.0863 4.75959 20.1221C4.75959 24.4971 7.87062 28.1459 12.0008 28.9752C11.2443 29.1801 10.4466 29.2915 9.62281 29.2915C9.03966 29.2915 8.47577 29.2352 7.92564 29.1306C9.07267 32.7148 12.4079 35.3252 16.3565 35.3995C13.2688 37.8201 9.37662 39.2656 5.14744 39.2656C4.41851 39.2656 3.6992 39.223 2.99365 39.1391C6.98765 41.6972 11.7326 43.1922 16.831 43.1922C33.4341 43.1922 42.5155 29.4373 42.5155 17.5075C42.5155 17.1169 42.5045 16.7263 42.488 16.3385C44.2526 15.0663 45.782 13.4778 46.9937 11.6651Z"/></svg>
+      </a>
+      <button id="theme-toggle" type="button" aria-label="Toggle theme">
+        <svg id="theme-toggle-dark-icon" class="hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+        <svg id="theme-toggle-light-icon" class="hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+      </button>
+    </div>
+  </nav>
+
+  <intro class="home-hero">
+    <div class="home-hero-inner">
+      <div class="home-hero-copy">
+        <span class="micro kicker">Product Designer&ensp;·&ensp;Field Notes #01</span>
+        <h1><span class="home-hero-line">Designing software</span><span class="home-hero-line">for builders.</span></h1>
+        <p class="home-hero-summary">I'm a software designer that's passionate about developer tools, design systems, and open source. When I'm not vibe coding, I enjoy <a href="https://vsco.co/miguel/gallery" target="_blank">🗺️ exploring new places</a>, 🍜 trying new foods, and finding new hobbies ⚾ 🤿 🚴‍♂️.</p>
+      </div>
+
+      <aside class="home-hero-current" aria-label="Interactive portfolio terminal">
+        <div class="home-hero-terminal-bar">
+          <div class="home-hero-lights" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="home-hero-terminal-title">miguelsolorio.com</div>
+          <div></div>
+        </div>
+        <div class="home-hero-terminal-body">
+          <div class="home-hero-terminal-output" role="log">
+            <p class="home-hero-row"><span class="t-ps1">~</span> <span class="t-cmd">miguelsolorio history</span></p>
+            <p class="home-hero-row is-spaced"><span class="t-hash">2023-2026</span> <span class="t-scope">google-colab:</span> <span class="t-out">data science agents</span></p>
+            <p class="home-hero-row"><span class="t-hash">2025</span> <span class="t-scope">gemini-cli:</span> <span class="t-out">agentic development</span></p>
+            <p class="home-hero-row"><span class="t-hash">2022-2023</span> <span class="t-scope">meta:</span> <span class="t-out">design systems</span></p>
+            <p class="home-hero-row"><span class="t-hash">2018-2022</span> <span class="t-scope">vs-code:</span> <span class="t-out">ai code editor</span></p>
+            <p class="home-hero-row is-spaced"><span class="t-ps1">~</span> <span class="t-cmd">miguelsolorio status</span></p>
+            <p class="home-hero-row t-ok">On branch main</p>
+            <p class="home-hero-row is-spaced">Changes to be committed:</p>
+            <p class="home-hero-row t-deleted"><span>&nbsp;&nbsp;deleted&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="t-deleted-file">should-designers-code.md</span></p>
+            <p class="home-hero-row t-modified">&nbsp;&nbsp;modified&nbsp;&nbsp;&nbsp;vibe-projects</p>
+            <p class="home-hero-row t-added">&nbsp;&nbsp;new file&nbsp;&nbsp;&nbsp;next-chapter.md</p>
+          </div>
+          <div class="home-hero-terminal-controls">
+            <form class="home-hero-terminal-form" autocomplete="off" onsubmit="return false">
+              <span class="t-ps1">~</span>
+              <input class="home-hero-terminal-input" type="text" spellcheck="false" placeholder="type a command" aria-label="Enter a portfolio terminal command">
+              <span class="caret" aria-hidden="true"></span>
+            </form>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </intro>
+
+  <div id="selected-work">
+    <a class="project" href="#">
+      <div class="project-media" aria-hidden="true">
+        <img class="thumbnail" src="agentic-notebooks.png" alt="">
+      </div>
+      <div class="project-meta">
+        <p class="title">Notebooks <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>
+      </div>
+    </a>
+    <a class="project" href="#">
+      <div class="project-media" aria-hidden="true">
+        <img class="thumbnail" src="cli-agents.png" alt="">
+      </div>
+      <div class="project-meta">
+        <p class="title">Gemini CLI <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>
+      </div>
+    </a>
+    <a class="project" href="#">
+      <div class="project-media" aria-hidden="true">
+        <img class="thumbnail" src="kanvas.png" alt="">
+      </div>
+      <div class="project-meta">
+        <p class="title">Kanvas <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>
+      </div>
+    </a>
+    <a class="project" href="#">
+      <div class="project-media" aria-hidden="true">
+        <img class="thumbnail" src="icons.png" alt="">
+      </div>
+      <div class="project-meta">
+        <p class="title">Icons <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>
+      </div>
+    </a>
+  </div>
+
+  <span class="micro section-label">Side Projects</span>
+  <div id="side-projects">
+    <div class="side-project">
+      <a href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" class="thumb" target="_blank"><img src="chroma.png" alt="Chroma Colors"></a>
+      <div>
+        <a href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" class="side-project-title" target="_blank">Chroma Colors <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg></a>
+        <p class="side-project-description">Create bulk color styles in Figma</p>
+      </div>
+    </div>
+    <div class="side-project">
+      <a href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" class="thumb" target="_blank"><img src="colorizer.png" alt="Colorizer"></a>
+      <div>
+        <a href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" class="side-project-title" target="_blank">Colorizer <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg></a>
+        <p class="side-project-description">Sort colors by hue values in Figma</p>
+      </div>
+    </div>
+    <div class="side-project">
+      <a href="https://kaleidocode.com/" class="thumb" target="_blank"><img src="kaleidocode.png" alt="Kaleidocode"></a>
+      <div>
+        <a href="https://kaleidocode.com/" class="side-project-title" target="_blank">Kaleidocode <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg></a>
+        <p class="side-project-description">Generate VS Code themes in Figma</p>
+      </div>
+    </div>
+    <div class="side-project">
+      <a href="https://www.figma.com/community/plugin/739558587628004077/Navigator" class="thumb" target="_blank"><img src="navigator.png" alt="Navigator"></a>
+      <div>
+        <a href="https://www.figma.com/community/plugin/739558587628004077/Navigator" class="side-project-title" target="_blank">Navigator <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg></a>
+        <p class="side-project-description">Find color styles in Figma</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="split">
+    <div class="col">
+      <p class="section">Background</p>
+
+      <p class="company">Google</p>
+      <div class="detail current">
+        <p class="title">Google Cloud</p>
+        <p class="date">2023 - Present</p>
+      </div>
+
+      <p class="company">ADPList</p>
+      <div class="detail">
+        <p class="title">Mentor</p>
+        <p class="date">2022 - Present</p>
+      </div>
+
+      <p class="company">Meta</p>
+      <div class="detail">
+        <p class="title">Business Messaging</p>
+        <p class="date">2022 - 2023</p>
+      </div>
+
+      <p class="company">Microsoft</p>
+      <div class="detail">
+        <p class="title">Visual Studio Code</p>
+        <p class="date">2018 - 2022</p>
+      </div>
+      <div class="detail">
+        <p class="title">Azure DevOps</p>
+        <p class="date">2016 - 2018</p>
+      </div>
+      <div class="detail">
+        <p class="title">Azure</p>
+        <p class="date">2014 - 2016</p>
+      </div>
+
+      <div class="detail inline">
+        <p class="title">Freelance</p>
+        <p class="date">2009 - 2014</p>
+      </div>
+      <div class="detail inline">
+        <p class="title">Zumobi</p>
+        <p class="date">2012 - 2014</p>
+      </div>
+      <div class="detail inline">
+        <p class="title">Beyond Traditional</p>
+        <p class="date">2011 - 2012</p>
+      </div>
+
+      <p class="company">Art Institute of Seattle</p>
+      <div class="detail">
+        <p class="title">Bachelor's, Web Design</p>
+        <p class="date">2009 - 2012</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <p class="section">Talks</p>
+
+      <p class="company"><a href="https://www.youtube.com/watch?v=kFlJLolrkx0" target="_blank">VS Code: Live Stream</a></p>
+      <div class="detail">
+        <p class="title">Designing for Open Source</p>
+        <p class="date">2021</p>
+      </div>
+
+      <p class="company"><a href="https://www.youtube.com/watch?v=yZUZk9B-PlE" target="_blank">Figma: Config</a></p>
+      <div class="detail">
+        <p class="title">Open Source Design</p>
+        <p class="date">2020</p>
+      </div>
+
+      <p class="section mini">Awards</p>
+
+      <p class="company">Microsoft Patent</p>
+      <div class="detail">
+        <p class="title">Code Editing Tracking and Management for Vision Impaired</p>
+        <p class="date">5/16/22</p>
+      </div>
+
+      <p class="company"><a href="https://adplist.org/mentors/miguel-solorio" target="_blank">ADPList</a></p>
+      <div class="detail">
+        <p class="title">Top 1% Mentor</p>
+        <p class="date">5/23</p>
+      </div>
+
+      <p class="company"><a href="https://finance.yahoo.com/news/zumobi-motor-trend-earn-coveted-180100204.html" target="_blank">Interactive Advertising Bureau (IAB)</a></p>
+      <div class="detail">
+        <p class="title">MIXX GOLD Award - Zumobi</p>
+        <p class="date">9/13</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="social">
+      <a href="https://www.linkedin.com/in/miguelsolorio/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/miguelsolorio" target="_blank">GitHub</a>
+      <a href="https://twitter.com/miguelsolorio_" target="_blank">Twitter</a>
+    </div>
+    <tag>Made in California · Style preview</tag>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
+    function setTheme(dark) {
+      root.classList.toggle('dark', dark);
+      darkIcon.classList.toggle('hidden', dark);
+      lightIcon.classList.toggle('hidden', !dark);
+      try { localStorage.setItem('preview-theme', dark ? 'dark' : 'light'); } catch (e) {}
+    }
+    toggle.addEventListener('click', () => setTheme(!root.classList.contains('dark')));
+    try { setTheme(localStorage.getItem('preview-theme') === 'dark'); } catch (e) {}
+  </script>
+</body>
+</html>

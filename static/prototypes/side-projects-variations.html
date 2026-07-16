@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Side Projects — 10 Layout Variations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f5f5;          /* neutral-100 */
+      --ink: #334155;          /* slate-700 */
+      --ink-strong: #1e293b;   /* slate-800 */
+      --muted: #64748b;        /* slate-500 */
+      --primary: #3429ff;
+      --primary-deep: #2A25FF;
+      --card: #ffffff;
+      --line: #e2e8f0;         /* slate-200 */
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 3rem 2rem 8rem;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; }
+
+    /* page chrome */
+    .page-title { font-size: 2rem; font-weight: 800; color: var(--ink-strong); letter-spacing: -.02em; }
+    .page-sub { color: var(--muted); margin-top: .5rem; max-width: 42rem; }
+    .toc { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+    .toc a {
+      font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 500;
+      padding: .35rem .7rem; border-radius: 999px; background: #fff; border: 1px solid var(--line);
+      transition: all .15s ease;
+    }
+    .toc a:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    .variation { margin-top: 7rem; }
+    .var-label {
+      font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 600;
+      color: var(--primary); letter-spacing: .12em; text-transform: uppercase;
+    }
+    .var-title { font-size: 1.875rem; font-weight: 700; color: var(--ink-strong); margin: .35rem 0 .35rem; letter-spacing: -.01em; }
+    .var-note { color: var(--muted); font-size: .9375rem; max-width: 44rem; margin-bottom: 2rem; }
+
+    .ext {
+      width: 1em; height: 1em; flex: none;
+    }
+
+    /* ============ 01 — Tile Grid ============ */
+    .v1-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .v1-card {
+      background: var(--card); border-radius: 1rem; padding: 1.5rem;
+      display: flex; flex-direction: column; gap: .875rem;
+      box-shadow: 0 1px 2px rgba(15,23,42,.05);
+      transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
+    }
+    .v1-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px -8px rgba(52,41,255,.25); }
+    .v1-card img { width: 3rem; height: 3rem; border-radius: .625rem; }
+    .v1-card .name { font-weight: 700; color: var(--ink-strong); display: flex; align-items: center; gap: .3rem; }
+    .v1-card .name svg { opacity: 0; transform: translateX(-4px); transition: all .15s ease; color: var(--primary); }
+    .v1-card:hover .name svg { opacity: 1; transform: none; }
+    .v1-card p { font-size: .875rem; color: var(--muted); line-height: 1.45; }
+
+    /* ============ 02 — Index List ============ */
+    .v2-list { border-top: 1px solid var(--line); }
+    .v2-row {
+      display: grid; grid-template-columns: 3rem 2.5rem 1fr auto auto; gap: 1.25rem; align-items: center;
+      padding: 1rem .5rem; border-bottom: 1px solid var(--line);
+      transition: background .15s ease, padding .2s ease;
+    }
+    .v2-row:hover { background: #fff; padding-left: 1rem; }
+    .v2-num { font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--muted); }
+    .v2-row img { width: 2rem; height: 2rem; border-radius: .5rem; }
+    .v2-name { font-weight: 700; color: var(--ink-strong); }
+    .v2-desc { font-size: .875rem; color: var(--muted); text-align: right; }
+    .v2-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: .6875rem; padding: .2rem .55rem;
+      border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: #fff;
+    }
+    .v2-row:hover .v2-tag { border-color: var(--primary); color: var(--primary); }
+    @media (max-width: 700px) { .v2-desc { display: none; } .v2-row { grid-template-columns: 3rem 2.5rem 1fr auto; } }
+
+    /* ============ 03 — Bento ============ */
+    .v3-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 11rem; gap: 1rem; }
+    .v3-cell {
+      border-radius: 1rem; padding: 1.5rem; background: var(--card);
+      display: flex; flex-direction: column; justify-content: flex-end; gap: .25rem;
+      position: relative; overflow: hidden; isolation: isolate;
+      box-shadow: 0 1px 2px rgba(15,23,42,.05);
+      transition: transform .3s cubic-bezier(.2,.8,.2,1);
+    }
+    .v3-cell:hover { transform: scale(.985); }
+    .v3-cell img { width: 2.75rem; height: 2.75rem; border-radius: .625rem; position: absolute; top: 1.5rem; left: 1.5rem; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+    .v3-cell:hover img { transform: scale(1.12) rotate(-4deg); }
+    .v3-cell .name { font-weight: 700; color: var(--ink-strong); }
+    .v3-cell p { font-size: .8125rem; color: var(--muted); line-height: 1.4; }
+    .v3-cell.wide { grid-column: span 2; }
+    .v3-cell.tall { grid-row: span 2; }
+    .v3-cell.tint-purple { background: #ede9fe; }
+    .v3-cell.tint-cyan { background: #cffafe; }
+    .v3-cell.tint-pink { background: #fce7f3; }
+    .v3-cell.tint-indigo { background: #e0e7ff; }
+    .v3-cell.tint-blue { background: #dbeafe; }
+    .v3-cell.tint-green { background: #dcfce7; }
+    @media (max-width: 800px) { .v3-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ============ 04 — Terminal ============ */
+    .v4-terminal {
+      background: #0f172a; border-radius: 1rem; overflow: hidden;
+      font-family: 'JetBrains Mono', monospace; font-size: .875rem;
+      box-shadow: 0 20px 45px -20px rgba(15,23,42,.5);
+    }
+    .v4-bar { display: flex; gap: .45rem; padding: .875rem 1.25rem; background: #1e293b; }
+    .v4-bar span { width: .75rem; height: .75rem; border-radius: 50%; }
+    .v4-body { padding: 1.5rem 1.5rem 2rem; color: #94a3b8; overflow-x: auto; }
+    .v4-prompt { color: #34d399; }
+    .v4-body .path { color: #60a5fa; }
+    .v4-rows { margin-top: 1rem; display: grid; gap: .1rem; }
+    .v4-row {
+      display: grid; grid-template-columns: 1.5rem 11rem 7rem 1fr; gap: 1rem; align-items: center;
+      padding: .3rem .5rem; border-radius: .375rem; white-space: nowrap;
+      transition: background .12s ease;
+    }
+    .v4-row:hover { background: rgba(52,41,255,.35); color: #e2e8f0; }
+    .v4-row img { width: 1.125rem; height: 1.125rem; border-radius: .25rem; }
+    .v4-row .n { color: #e2e8f0; font-weight: 500; }
+    .v4-row:hover .n { color: #fff; }
+    .v4-row .t { color: #f472b6; font-size: .75rem; }
+    .v4-cursor { display: inline-block; width: .55em; height: 1.1em; background: #34d399; vertical-align: text-bottom; animation: blink 1.1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    @media (max-width: 700px) { .v4-row { grid-template-columns: 1.5rem 1fr; } .v4-row .t, .v4-row .d { display: none; } }
+
+    /* ============ 05 — Big Type ============ */
+    .v5-list { display: flex; flex-direction: column; }
+    .v5-row {
+      display: flex; align-items: baseline; gap: 1.5rem; padding: .35rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .v5-name {
+      font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.15;
+      color: transparent; -webkit-text-stroke: 1.5px var(--primary-deep);
+      transition: color .25s ease;
+      white-space: nowrap;
+    }
+    .v5-row:hover .v5-name { color: var(--primary-deep); }
+    .v5-desc { color: var(--muted); font-size: .9375rem; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+    .v5-row img { width: 2rem; height: 2rem; border-radius: .5rem; align-self: center; opacity: 0; transform: scale(.5); transition: all .25s cubic-bezier(.2,.8,.2,1); }
+    .v5-row:hover img { opacity: 1; transform: none; }
+    @media (max-width: 700px) { .v5-desc { display: none; } }
+
+    /* ============ 06 — Sticker Sheet ============ */
+    .v6-cloud { display: flex; flex-wrap: wrap; gap: .75rem; }
+    .v6-chip {
+      display: inline-flex; align-items: center; gap: .625rem;
+      background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+      padding: .5rem 1.125rem .5rem .5rem; font-weight: 600; color: var(--ink-strong);
+      position: relative;
+      transition: all .2s cubic-bezier(.2,.8,.2,1);
+    }
+    .v6-chip img { width: 1.75rem; height: 1.75rem; border-radius: 50%; }
+    .v6-chip:hover { border-color: var(--primary); transform: rotate(-2deg) scale(1.05); box-shadow: .25em .25em 0 var(--primary); }
+    .v6-chip .tip {
+      position: absolute; left: 50%; bottom: calc(100% + .5rem); transform: translateX(-50%) translateY(4px);
+      background: var(--ink-strong); color: #fff; font-size: .75rem; font-weight: 500;
+      padding: .35rem .7rem; border-radius: .5rem; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: all .18s ease; z-index: 5;
+    }
+    .v6-chip:hover .tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ============ 07 — Grouped Shelves ============ */
+    .v7-group { margin-bottom: 2.5rem; }
+    .v7-head { display: flex; align-items: baseline; gap: .75rem; margin-bottom: 1rem; }
+    .v7-head h3 { font-size: 1.125rem; font-weight: 700; color: var(--ink-strong); }
+    .v7-head .count { font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--primary); }
+    .v7-shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .75rem; }
+    .v7-item {
+      display: flex; align-items: center; gap: .875rem; background: var(--card);
+      border-radius: .75rem; padding: .875rem 1rem; border: 1px solid transparent;
+      transition: border-color .15s ease, transform .2s ease;
+    }
+    .v7-item:hover { border-color: var(--primary); transform: translateX(4px); }
+    .v7-item img { width: 2.25rem; height: 2.25rem; border-radius: .5rem; }
+    .v7-item .name { font-weight: 700; font-size: .9375rem; color: var(--ink-strong); }
+    .v7-item p { font-size: .8125rem; color: var(--muted); }
+
+    /* ============ 08 — Ticket Stubs ============ */
+    .v8-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+    .v8-ticket {
+      display: grid; grid-template-columns: 5.5rem 1fr; background: var(--card);
+      border-radius: 1rem; overflow: hidden; box-shadow: 0 1px 3px rgba(15,23,42,.07);
+      transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
+      position: relative;
+    }
+    .v8-ticket::after {
+      content: ''; position: absolute; left: 5.5rem; top: 0; bottom: 0;
+      border-left: 2px dashed var(--line); transform: translateX(-1px);
+    }
+    .v8-ticket:hover { transform: translateY(-3px) rotate(.5deg); box-shadow: 0 14px 30px -10px rgba(52,41,255,.28); }
+    .v8-stub { display: grid; place-items: center; background: linear-gradient(160deg, #eef2ff, #e0e7ff); }
+    .v8-stub img { width: 2.75rem; height: 2.75rem; border-radius: .625rem; transition: transform .25s ease; }
+    .v8-ticket:hover .v8-stub img { transform: scale(1.15); }
+    .v8-body { padding: 1.125rem 1.25rem; }
+    .v8-body .name { font-weight: 700; color: var(--ink-strong); }
+    .v8-body p { font-size: .875rem; color: var(--muted); margin-top: .15rem; }
+    .v8-meta { font-family: 'JetBrains Mono', monospace; font-size: .6875rem; color: var(--primary); margin-top: .625rem; letter-spacing: .08em; text-transform: uppercase; }
+
+    /* ============ 09 — Marquee Rows ============ */
+    .v9-wrap { overflow: hidden; display: grid; gap: 1rem; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+    .v9-track { display: flex; gap: 1rem; width: max-content; animation: v9scroll 36s linear infinite; }
+    .v9-track.reverse { animation-direction: reverse; }
+    .v9-wrap:hover .v9-track { animation-play-state: paused; }
+    @keyframes v9scroll { to { transform: translateX(-50%); } }
+    .v9-card {
+      display: flex; align-items: center; gap: .875rem; background: var(--card);
+      border-radius: .875rem; padding: .875rem 1.5rem .875rem 1rem;
+      border: 1px solid var(--line); white-space: nowrap;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .v9-card:hover { border-color: var(--primary); }
+    .v9-card img { width: 2.25rem; height: 2.25rem; border-radius: .5rem; }
+    .v9-card .name { font-weight: 700; font-size: .9375rem; color: var(--ink-strong); }
+    .v9-card p { font-size: .8125rem; color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) { .v9-track { animation: none; } .v9-wrap { overflow-x: auto; mask-image: none; -webkit-mask-image: none; } }
+
+    /* ============ 10 — Editorial Spread ============ */
+    .v10 { display: grid; grid-template-columns: 16rem 1fr; gap: 4rem; }
+    .v10-aside { position: sticky; top: 2rem; align-self: start; }
+    .v10-aside .serif { font-family: 'Libre Baskerville', Georgia, serif; font-style: italic; font-size: 1.375rem; color: var(--ink-strong); line-height: 1.5; }
+    .v10-aside .rule { width: 3rem; height: 3px; background: var(--primary); margin: 1.25rem 0; }
+    .v10-aside p { font-size: .875rem; color: var(--muted); }
+    .v10-entries { counter-reset: proj; }
+    .v10-entry {
+      counter-increment: proj; display: grid; grid-template-columns: 3.5rem 3rem 1fr; gap: 1.25rem;
+      align-items: start; padding: 1.5rem 0; border-bottom: 1px solid var(--line);
+    }
+    .v10-entry::before {
+      content: counter(proj, decimal-leading-zero);
+      font-family: 'JetBrains Mono', monospace; font-size: .8125rem; color: var(--primary); padding-top: .3rem;
+    }
+    .v10-entry img { width: 2.75rem; height: 2.75rem; border-radius: .625rem; transition: transform .2s ease; }
+    .v10-entry:hover img { transform: scale(1.1) rotate(3deg); }
+    .v10-entry .name { font-weight: 700; font-size: 1.0625rem; color: var(--ink-strong); }
+    .v10-entry .name:hover { color: var(--primary); }
+    .v10-entry p { font-size: .9375rem; color: var(--muted); margin-top: .25rem; max-width: 34rem; }
+    @media (max-width: 800px) { .v10 { grid-template-columns: 1fr; gap: 2rem; } .v10-aside { position: static; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="var-label">Exploration</p>
+    <h1 class="page-title">Side Projects — 10 Layout Variations</h1>
+    <p class="page-sub">Same content, ten different treatments. All variations use the site's existing palette (neutral bg, slate ink, <span style="color:var(--primary);font-weight:600">#3429ff</span> primary), fonts (Inter, JetBrains Mono, Libre Baskerville), and 1rem-radius card language.</p>
+    <nav class="toc">
+      <a href="#v1">01 Tile Grid</a><a href="#v2">02 Index List</a><a href="#v3">03 Bento</a><a href="#v4">04 Terminal</a><a href="#v5">05 Big Type</a><a href="#v6">06 Sticker Sheet</a><a href="#v7">07 Shelves</a><a href="#v8">08 Tickets</a><a href="#v9">09 Marquee</a><a href="#v10">10 Editorial</a>
+    </nav>
+  </header>
+
+  <!-- 01 -->
+  <section class="variation" id="v1">
+    <p class="var-label">Variation 01</p>
+    <h2 class="var-title">Tile Grid</h2>
+    <p class="var-note">Compact app-store-style tiles. Icon up top, name and description below, whole card is the tap target. Scales gracefully from 2 to 5 columns.</p>
+    <div class="v1-grid">
+      <a class="v1-card" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><img src="/variables.png" alt=""><div><div class="name">Variables Generator <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>Create Figma variables via JSON</p></div></a>
+      <a class="v1-card" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><img src="/chroma.png" alt=""><div><div class="name">Chroma Colors <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>Create bulk color styles in Figma</p></div></a>
+      <a class="v1-card" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><img src="/colorizer.png" alt=""><div><div class="name">Colorizer <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>Sort colors by hue values in Figma</p></div></a>
+      <a class="v1-card" href="https://kaleidocode.com/" target="_blank"><img src="/kaleidocode.png" alt=""><div><div class="name">Kaleidocode <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>Generate VS Code themes in Figma</p></div></a>
+      <a class="v1-card" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><img src="/regulator.png" alt=""><div><div class="name">Regulator <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>Bulk rename color styles in Figma</p></div></a>
+      <a class="v1-card" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><img src="/navigator.png" alt=""><div><div class="name">Navigator <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>Find color styles in Figma</p></div></a>
+      <a class="v1-card" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><img src="/codicons.png" alt=""><div><div class="name">VS Code Icons <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>Use VS Code icons in Figma</p></div></a>
+      <a class="v1-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><img src="/fluent.png" alt=""><div><div class="name">Fluent Icons <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>A product icon theme for VS Code</p></div></a>
+      <a class="v1-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><img src="/min.png" alt=""><div><div class="name">Min <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>A minimal theme for VS Code</p></div></a>
+      <a class="v1-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><img src="/symbols.png" alt=""><div><div class="name">Symbols <svg class="ext" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></div><p>A simple file icon theme for VS Code</p></div></a>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="variation" id="v2">
+    <p class="var-label">Variation 02</p>
+    <h2 class="var-title">Index List</h2>
+    <p class="var-note">A dense, scannable index with numbered rows and category tags. Reads like a table of contents — good if the list keeps growing.</p>
+    <div class="v2-list">
+      <a class="v2-row" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><span class="v2-num">01</span><img src="/variables.png" alt=""><span class="v2-name">Variables Generator</span><span class="v2-desc">Create Figma variables via JSON</span><span class="v2-tag">figma plugin</span></a>
+      <a class="v2-row" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><span class="v2-num">02</span><img src="/chroma.png" alt=""><span class="v2-name">Chroma Colors</span><span class="v2-desc">Create bulk color styles in Figma</span><span class="v2-tag">figma plugin</span></a>
+      <a class="v2-row" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><span class="v2-num">03</span><img src="/colorizer.png" alt=""><span class="v2-name">Colorizer</span><span class="v2-desc">Sort colors by hue values in Figma</span><span class="v2-tag">figma plugin</span></a>
+      <a class="v2-row" href="https://kaleidocode.com/" target="_blank"><span class="v2-num">04</span><img src="/kaleidocode.png" alt=""><span class="v2-name">Kaleidocode</span><span class="v2-desc">Generate VS Code themes in Figma</span><span class="v2-tag">figma plugin</span></a>
+      <a class="v2-row" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><span class="v2-num">05</span><img src="/regulator.png" alt=""><span class="v2-name">Regulator</span><span class="v2-desc">Bulk rename color styles in Figma</span><span class="v2-tag">figma plugin</span></a>
+      <a class="v2-row" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><span class="v2-num">06</span><img src="/navigator.png" alt=""><span class="v2-name">Navigator</span><span class="v2-desc">Find color styles in Figma</span><span class="v2-tag">figma plugin</span></a>
+      <a class="v2-row" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><span class="v2-num">07</span><img src="/codicons.png" alt=""><span class="v2-name">VS Code Icons</span><span class="v2-desc">Use VS Code icons in Figma</span><span class="v2-tag">figma plugin</span></a>
+      <a class="v2-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><span class="v2-num">08</span><img src="/fluent.png" alt=""><span class="v2-name">Fluent Icons</span><span class="v2-desc">A product icon theme for VS Code</span><span class="v2-tag">vs code</span></a>
+      <a class="v2-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><span class="v2-num">09</span><img src="/min.png" alt=""><span class="v2-name">Min</span><span class="v2-desc">A minimal theme for VS Code</span><span class="v2-tag">vs code</span></a>
+      <a class="v2-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><span class="v2-num">10</span><img src="/symbols.png" alt=""><span class="v2-name">Symbols</span><span class="v2-desc">A simple file icon theme for VS Code</span><span class="v2-tag">vs code</span></a>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="variation" id="v3">
+    <p class="var-label">Variation 03</p>
+    <h2 class="var-title">Bento Grid</h2>
+    <p class="var-note">Mixed tile sizes with soft color tints pulled from each project's icon. The two VS Code themes with the most downloads get the feature slots.</p>
+    <div class="v3-grid">
+      <a class="v3-cell wide tint-indigo" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><img src="/symbols.png" alt=""><span class="name">Symbols</span><p>A simple file icon theme for VS Code, with hand-drawn icons for 300+ file types</p></a>
+      <a class="v3-cell tint-purple" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><img src="/variables.png" alt=""><span class="name">Variables Generator</span><p>Create Figma variables via JSON</p></a>
+      <a class="v3-cell tint-cyan" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><img src="/chroma.png" alt=""><span class="name">Chroma Colors</span><p>Create bulk color styles in Figma</p></a>
+      <a class="v3-cell tint-pink" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><img src="/colorizer.png" alt=""><span class="name">Colorizer</span><p>Sort colors by hue values in Figma</p></a>
+      <a class="v3-cell wide" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><img src="/min.png" alt=""><span class="name">Min</span><p>A minimal dark &amp; light theme for VS Code that gets out of your way</p></a>
+      <a class="v3-cell tint-blue" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><img src="/regulator.png" alt=""><span class="name">Regulator</span><p>Bulk rename color styles in Figma</p></a>
+      <a class="v3-cell tint-green" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><img src="/navigator.png" alt=""><span class="name">Navigator</span><p>Find color styles in Figma</p></a>
+      <a class="v3-cell" href="https://kaleidocode.com/" target="_blank"><img src="/kaleidocode.png" alt=""><span class="name">Kaleidocode</span><p>Generate VS Code themes in Figma</p></a>
+      <a class="v3-cell" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><img src="/codicons.png" alt=""><span class="name">VS Code Icons</span><p>Use VS Code icons in Figma</p></a>
+      <a class="v3-cell" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><img src="/fluent.png" alt=""><span class="name">Fluent Icons</span><p>A product icon theme for VS Code</p></a>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="variation" id="v4">
+    <p class="var-label">Variation 04</p>
+    <h2 class="var-title">Terminal Listing</h2>
+    <p class="var-note">Leans into the interactive-terminal personality already on the site. Projects rendered as an <code style="font-family:'JetBrains Mono',monospace;font-size:.85em">ls</code> output — each row is a link.</p>
+    <div class="v4-terminal">
+      <div class="v4-bar"><span style="background:#f87171"></span><span style="background:#fbbf24"></span><span style="background:#34d399"></span></div>
+      <div class="v4-body">
+        <div><span class="v4-prompt">miguel@web</span> <span class="path">~/side-projects</span> $ ls --details</div>
+        <div class="v4-rows">
+          <a class="v4-row" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><img src="/variables.png" alt=""><span class="n">variables-generator</span><span class="t">figma-plugin</span><span class="d">Create Figma variables via JSON</span></a>
+          <a class="v4-row" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><img src="/chroma.png" alt=""><span class="n">chroma-colors</span><span class="t">figma-plugin</span><span class="d">Create bulk color styles in Figma</span></a>
+          <a class="v4-row" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><img src="/colorizer.png" alt=""><span class="n">colorizer</span><span class="t">figma-plugin</span><span class="d">Sort colors by hue values in Figma</span></a>
+          <a class="v4-row" href="https://kaleidocode.com/" target="_blank"><img src="/kaleidocode.png" alt=""><span class="n">kaleidocode</span><span class="t">figma-plugin</span><span class="d">Generate VS Code themes in Figma</span></a>
+          <a class="v4-row" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><img src="/regulator.png" alt=""><span class="n">regulator</span><span class="t">figma-plugin</span><span class="d">Bulk rename color styles in Figma</span></a>
+          <a class="v4-row" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><img src="/navigator.png" alt=""><span class="n">navigator</span><span class="t">figma-plugin</span><span class="d">Find color styles in Figma</span></a>
+          <a class="v4-row" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><img src="/codicons.png" alt=""><span class="n">vscode-icons</span><span class="t">figma-plugin</span><span class="d">Use VS Code icons in Figma</span></a>
+          <a class="v4-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><img src="/fluent.png" alt=""><span class="n">fluent-icons</span><span class="t">vscode-ext</span><span class="d">A product icon theme for VS Code</span></a>
+          <a class="v4-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><img src="/min.png" alt=""><span class="n">min</span><span class="t">vscode-ext</span><span class="d">A minimal theme for VS Code</span></a>
+          <a class="v4-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><img src="/symbols.png" alt=""><span class="n">symbols</span><span class="t">vscode-ext</span><span class="d">A simple file icon theme for VS Code</span></a>
+        </div>
+        <div style="margin-top:1rem"><span class="v4-prompt">miguel@web</span> <span class="path">~/side-projects</span> $ <span class="v4-cursor"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="variation" id="v5">
+    <p class="var-label">Variation 05</p>
+    <h2 class="var-title">Big Type</h2>
+    <p class="var-note">Borrows the outlined-text hover treatment from your Selected Work cards. Names render as strokes and fill with the primary blue on hover, with the icon popping in.</p>
+    <div class="v5-list">
+      <a class="v5-row" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><span class="v5-name">Variables Generator</span><img src="/variables.png" alt=""><span class="v5-desc">Create Figma variables via JSON</span></a>
+      <a class="v5-row" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><span class="v5-name">Chroma Colors</span><img src="/chroma.png" alt=""><span class="v5-desc">Create bulk color styles in Figma</span></a>
+      <a class="v5-row" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><span class="v5-name">Colorizer</span><img src="/colorizer.png" alt=""><span class="v5-desc">Sort colors by hue values in Figma</span></a>
+      <a class="v5-row" href="https://kaleidocode.com/" target="_blank"><span class="v5-name">Kaleidocode</span><img src="/kaleidocode.png" alt=""><span class="v5-desc">Generate VS Code themes in Figma</span></a>
+      <a class="v5-row" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><span class="v5-name">Regulator</span><img src="/regulator.png" alt=""><span class="v5-desc">Bulk rename color styles in Figma</span></a>
+      <a class="v5-row" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><span class="v5-name">Navigator</span><img src="/navigator.png" alt=""><span class="v5-desc">Find color styles in Figma</span></a>
+      <a class="v5-row" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><span class="v5-name">VS Code Icons</span><img src="/codicons.png" alt=""><span class="v5-desc">Use VS Code icons in Figma</span></a>
+      <a class="v5-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><span class="v5-name">Fluent Icons</span><img src="/fluent.png" alt=""><span class="v5-desc">A product icon theme for VS Code</span></a>
+      <a class="v5-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><span class="v5-name">Min</span><img src="/min.png" alt=""><span class="v5-desc">A minimal theme for VS Code</span></a>
+      <a class="v5-row" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><span class="v5-name">Symbols</span><img src="/symbols.png" alt=""><span class="v5-desc">A simple file icon theme for VS Code</span></a>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="variation" id="v6">
+    <p class="var-label">Variation 06</p>
+    <h2 class="var-title">Sticker Sheet</h2>
+    <p class="var-note">Playful chips that wrap like a sticker collection. Hover tilts the chip and shows the description in a tooltip — very compact, personality-forward.</p>
+    <div class="v6-cloud">
+      <a class="v6-chip" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><img src="/variables.png" alt="">Variables Generator<span class="tip">Create Figma variables via JSON</span></a>
+      <a class="v6-chip" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><img src="/chroma.png" alt="">Chroma Colors<span class="tip">Create bulk color styles in Figma</span></a>
+      <a class="v6-chip" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><img src="/colorizer.png" alt="">Colorizer<span class="tip">Sort colors by hue values in Figma</span></a>
+      <a class="v6-chip" href="https://kaleidocode.com/" target="_blank"><img src="/kaleidocode.png" alt="">Kaleidocode<span class="tip">Generate VS Code themes in Figma</span></a>
+      <a class="v6-chip" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><img src="/regulator.png" alt="">Regulator<span class="tip">Bulk rename color styles in Figma</span></a>
+      <a class="v6-chip" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><img src="/navigator.png" alt="">Navigator<span class="tip">Find color styles in Figma</span></a>
+      <a class="v6-chip" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><img src="/codicons.png" alt="">VS Code Icons<span class="tip">Use VS Code icons in Figma</span></a>
+      <a class="v6-chip" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><img src="/fluent.png" alt="">Fluent Icons<span class="tip">A product icon theme for VS Code</span></a>
+      <a class="v6-chip" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><img src="/min.png" alt="">Min<span class="tip">A minimal theme for VS Code</span></a>
+      <a class="v6-chip" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><img src="/symbols.png" alt="">Symbols<span class="tip">A simple file icon theme for VS Code</span></a>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="variation" id="v7">
+    <p class="var-label">Variation 07</p>
+    <h2 class="var-title">Grouped Shelves</h2>
+    <p class="var-note">Organized by ecosystem — Figma plugins vs. VS Code extensions — with counts. Adds narrative structure and makes the breadth of each ecosystem obvious.</p>
+    <div class="v7-group">
+      <div class="v7-head"><h3>Figma Plugins</h3><span class="count">×7</span></div>
+      <div class="v7-shelf">
+        <a class="v7-item" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><img src="/variables.png" alt=""><div><div class="name">Variables Generator</div><p>Create Figma variables via JSON</p></div></a>
+        <a class="v7-item" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><img src="/chroma.png" alt=""><div><div class="name">Chroma Colors</div><p>Create bulk color styles in Figma</p></div></a>
+        <a class="v7-item" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><img src="/colorizer.png" alt=""><div><div class="name">Colorizer</div><p>Sort colors by hue values</p></div></a>
+        <a class="v7-item" href="https://kaleidocode.com/" target="_blank"><img src="/kaleidocode.png" alt=""><div><div class="name">Kaleidocode</div><p>Generate VS Code themes</p></div></a>
+        <a class="v7-item" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><img src="/regulator.png" alt=""><div><div class="name">Regulator</div><p>Bulk rename color styles</p></div></a>
+        <a class="v7-item" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><img src="/navigator.png" alt=""><div><div class="name">Navigator</div><p>Find color styles</p></div></a>
+        <a class="v7-item" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><img src="/codicons.png" alt=""><div><div class="name">VS Code Icons</div><p>Use VS Code icons in Figma</p></div></a>
+      </div>
+    </div>
+    <div class="v7-group">
+      <div class="v7-head"><h3>VS Code Extensions</h3><span class="count">×3</span></div>
+      <div class="v7-shelf">
+        <a class="v7-item" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><img src="/fluent.png" alt=""><div><div class="name">Fluent Icons</div><p>A product icon theme</p></div></a>
+        <a class="v7-item" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><img src="/min.png" alt=""><div><div class="name">Min</div><p>A minimal color theme</p></div></a>
+        <a class="v7-item" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><img src="/symbols.png" alt=""><div><div class="name">Symbols</div><p>A simple file icon theme</p></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="variation" id="v8">
+    <p class="var-label">Variation 08</p>
+    <h2 class="var-title">Ticket Stubs</h2>
+    <p class="var-note">Two-part cards with a perforated edge — icon lives on the stub, details on the body, with a small monospace meta line. A bit more crafted and collectible-feeling.</p>
+    <div class="v8-grid">
+      <a class="v8-ticket" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><div class="v8-stub"><img src="/variables.png" alt=""></div><div class="v8-body"><div class="name">Variables Generator</div><p>Create Figma variables via JSON</p><div class="v8-meta">figma · plugin</div></div></a>
+      <a class="v8-ticket" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><div class="v8-stub"><img src="/chroma.png" alt=""></div><div class="v8-body"><div class="name">Chroma Colors</div><p>Create bulk color styles in Figma</p><div class="v8-meta">figma · plugin</div></div></a>
+      <a class="v8-ticket" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><div class="v8-stub"><img src="/colorizer.png" alt=""></div><div class="v8-body"><div class="name">Colorizer</div><p>Sort colors by hue values in Figma</p><div class="v8-meta">figma · plugin</div></div></a>
+      <a class="v8-ticket" href="https://kaleidocode.com/" target="_blank"><div class="v8-stub"><img src="/kaleidocode.png" alt=""></div><div class="v8-body"><div class="name">Kaleidocode</div><p>Generate VS Code themes in Figma</p><div class="v8-meta">figma · plugin</div></div></a>
+      <a class="v8-ticket" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><div class="v8-stub"><img src="/regulator.png" alt=""></div><div class="v8-body"><div class="name">Regulator</div><p>Bulk rename color styles in Figma</p><div class="v8-meta">figma · plugin</div></div></a>
+      <a class="v8-ticket" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><div class="v8-stub"><img src="/navigator.png" alt=""></div><div class="v8-body"><div class="name">Navigator</div><p>Find color styles in Figma</p><div class="v8-meta">figma · plugin</div></div></a>
+      <a class="v8-ticket" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><div class="v8-stub"><img src="/codicons.png" alt=""></div><div class="v8-body"><div class="name">VS Code Icons</div><p>Use VS Code icons in Figma</p><div class="v8-meta">figma · plugin</div></div></a>
+      <a class="v8-ticket" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><div class="v8-stub"><img src="/fluent.png" alt=""></div><div class="v8-body"><div class="name">Fluent Icons</div><p>A product icon theme for VS Code</p><div class="v8-meta">vs code · theme</div></div></a>
+      <a class="v8-ticket" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><div class="v8-stub"><img src="/min.png" alt=""></div><div class="v8-body"><div class="name">Min</div><p>A minimal theme for VS Code</p><div class="v8-meta">vs code · theme</div></div></a>
+      <a class="v8-ticket" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><div class="v8-stub"><img src="/symbols.png" alt=""></div><div class="v8-body"><div class="name">Symbols</div><p>A simple file icon theme for VS Code</p><div class="v8-meta">vs code · theme</div></div></a>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="variation" id="v9">
+    <p class="var-label">Variation 09</p>
+    <h2 class="var-title">Marquee Rows</h2>
+    <p class="var-note">Two auto-scrolling rows drifting in opposite directions; hovering pauses the motion. Treats the collection as ambient texture rather than a list to read top-to-bottom. (Respects reduced-motion.)</p>
+    <div class="v9-wrap">
+      <div class="v9-track">
+        <a class="v9-card" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><img src="/variables.png" alt=""><div><div class="name">Variables Generator</div><p>Figma variables via JSON</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><img src="/chroma.png" alt=""><div><div class="name">Chroma Colors</div><p>Bulk color styles in Figma</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><img src="/colorizer.png" alt=""><div><div class="name">Colorizer</div><p>Sort colors by hue</p></div></a>
+        <a class="v9-card" href="https://kaleidocode.com/" target="_blank"><img src="/kaleidocode.png" alt=""><div><div class="name">Kaleidocode</div><p>VS Code themes in Figma</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><img src="/regulator.png" alt=""><div><div class="name">Regulator</div><p>Bulk rename color styles</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank"><img src="/variables.png" alt=""><div><div class="name">Variables Generator</div><p>Figma variables via JSON</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank"><img src="/chroma.png" alt=""><div><div class="name">Chroma Colors</div><p>Bulk color styles in Figma</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank"><img src="/colorizer.png" alt=""><div><div class="name">Colorizer</div><p>Sort colors by hue</p></div></a>
+        <a class="v9-card" href="https://kaleidocode.com/" target="_blank"><img src="/kaleidocode.png" alt=""><div><div class="name">Kaleidocode</div><p>VS Code themes in Figma</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank"><img src="/regulator.png" alt=""><div><div class="name">Regulator</div><p>Bulk rename color styles</p></div></a>
+      </div>
+      <div class="v9-track reverse">
+        <a class="v9-card" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><img src="/navigator.png" alt=""><div><div class="name">Navigator</div><p>Find color styles</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><img src="/codicons.png" alt=""><div><div class="name">VS Code Icons</div><p>VS Code icons in Figma</p></div></a>
+        <a class="v9-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><img src="/fluent.png" alt=""><div><div class="name">Fluent Icons</div><p>Product icon theme</p></div></a>
+        <a class="v9-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><img src="/min.png" alt=""><div><div class="name">Min</div><p>Minimal VS Code theme</p></div></a>
+        <a class="v9-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><img src="/symbols.png" alt=""><div><div class="name">Symbols</div><p>File icon theme</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank"><img src="/navigator.png" alt=""><div><div class="name">Navigator</div><p>Find color styles</p></div></a>
+        <a class="v9-card" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank"><img src="/codicons.png" alt=""><div><div class="name">VS Code Icons</div><p>VS Code icons in Figma</p></div></a>
+        <a class="v9-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank"><img src="/fluent.png" alt=""><div><div class="name">Fluent Icons</div><p>Product icon theme</p></div></a>
+        <a class="v9-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank"><img src="/min.png" alt=""><div><div class="name">Min</div><p>Minimal VS Code theme</p></div></a>
+        <a class="v9-card" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank"><img src="/symbols.png" alt=""><div><div class="name">Symbols</div><p>File icon theme</p></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="variation" id="v10">
+    <p class="var-label">Variation 10</p>
+    <h2 class="var-title">Editorial Spread</h2>
+    <p class="var-note">A magazine-style layout with a sticky serif intro (Libre Baskerville, already loaded on the site) beside a numbered ledger with expanded descriptions.</p>
+    <div class="v10">
+      <aside class="v10-aside">
+        <p class="serif">Tools I've made for the communities I design in.</p>
+        <div class="rule"></div>
+        <p>Ten shipped side projects across the Figma and VS Code ecosystems — mostly born from friction in my own workflow, released free for everyone.</p>
+      </aside>
+      <div class="v10-entries">
+        <div class="v10-entry"><img src="/variables.png" alt=""><div><a class="name" href="https://www.figma.com/community/plugin/1319728928151105267/variables-generator" target="_blank">Variables Generator</a><p>Skip the manual setup — paste a JSON payload and generate an entire Figma variables collection, modes and all, in one click.</p></div></div>
+        <div class="v10-entry"><img src="/chroma.png" alt=""><div><a class="name" href="https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors" target="_blank">Chroma Colors</a><p>Turn a list of hex values into published Figma color styles in bulk, instead of creating them one by one.</p></div></div>
+        <div class="v10-entry"><img src="/colorizer.png" alt=""><div><a class="name" href="https://www.figma.com/community/plugin/816889819624434639/Colorizer" target="_blank">Colorizer</a><p>Reorder a messy palette by hue so your color styles read like a spectrum, not a junk drawer.</p></div></div>
+        <div class="v10-entry"><img src="/kaleidocode.png" alt=""><div><a class="name" href="https://kaleidocode.com/" target="_blank">Kaleidocode</a><p>Design a full VS Code color theme visually in Figma, then export it ready to publish to the marketplace.</p></div></div>
+        <div class="v10-entry"><img src="/regulator.png" alt=""><div><a class="name" href="https://www.figma.com/community/plugin/772054917007268360/Regulator" target="_blank">Regulator</a><p>Find-and-replace for color style names — restructure an entire naming scheme across a library in seconds.</p></div></div>
+        <div class="v10-entry"><img src="/navigator.png" alt=""><div><a class="name" href="https://www.figma.com/community/plugin/739558587628004077/Navigator" target="_blank">Navigator</a><p>Search and preview every color style in a document, even the ones buried deep in nested libraries.</p></div></div>
+        <div class="v10-entry"><img src="/codicons.png" alt=""><div><a class="name" href="https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons" target="_blank">VS Code Icons</a><p>Drop any of the official VS Code codicons into your Figma mockups without leaving the canvas.</p></div></div>
+        <div class="v10-entry"><img src="/fluent.png" alt=""><div><a class="name" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons" target="_blank">Fluent Icons</a><p>A product icon theme that reskins VS Code's entire UI iconography with Microsoft's Fluent design language.</p></div></div>
+        <div class="v10-entry"><img src="/min.png" alt=""><div><a class="name" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme" target="_blank">Min</a><p>A minimal light and dark theme that strips syntax highlighting down to the essentials so the code takes center stage.</p></div></div>
+        <div class="v10-entry"><img src="/symbols.png" alt=""><div><a class="name" href="https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols" target="_blank">Symbols</a><p>A friendly, geometric file icon theme for VS Code covering hundreds of file types — my most popular extension.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

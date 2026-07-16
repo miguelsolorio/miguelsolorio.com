@@ -3,9 +3,10 @@
   "configurations": [
     {
       "name": "hugo-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "develop"],
-      "port": 1313
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "hugo server -D --port \"$PORT\""],
+      "port": 1313,
+      "autoPort": true
     }
   ]
 }

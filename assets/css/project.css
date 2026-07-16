@@ -9,7 +9,17 @@
   .project {
     @apply relative block w-full h-96 overflow-hidden no-underline;
     background-color: #cfc6e8;
+    border-radius: 1rem;
     isolation: isolate;
+  }
+  .project::before {
+    content: '';
+    @apply absolute inset-0 z-10 pointer-events-none;
+    background-color: rgba(255, 255, 255, .2);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity .35s ease;
   }
   .project-media {
     @apply absolute inset-0 z-0 overflow-hidden;
@@ -48,8 +58,8 @@
     border: 0;
   }
   .project-meta {
-    @apply absolute left-0 right-0 z-10 text-center;
-    top: 44%;
+    @apply absolute left-0 right-0 z-10 flex justify-center text-center;
+    top: 50%;
     padding: 0 1rem;
     box-sizing: border-box;
     pointer-events: none;
@@ -57,14 +67,14 @@
     transition: transform .5s cubic-bezier(.2,.8,.2,1);
   }
   .project .title {
-    @apply m-0 text-center font-extrabold text-primary;
+    @apply m-0 inline-block text-center font-extrabold text-primary;
     font-size: clamp(3.25rem, 9vw, 7.375rem);
     letter-spacing: -.045em;
     line-height: .92;
     color: transparent;
     -webkit-text-stroke: 2px #2A25FF;
     overflow-wrap: anywhere;
-    transition: color .35s ease;
+    transition: color .35s ease, transform .35s ease;
     mix-blend-mode: multiply;
   }
   .project .title svg {
@@ -86,6 +96,11 @@
   .project:hover .title,
   .project:focus-visible .title {
     color: #2A25FF;
+    transform: scale(1.05);
+  }
+  .project:hover::before,
+  .project:focus-visible::before {
+    opacity: 1;
   }
   .project:focus-visible {
     outline: 3px solid #2A25FF;
@@ -101,6 +116,7 @@
   @media (prefers-reduced-motion: reduce) {
     .project-media,
     .project .title,
+    .project::before,
     .project-meta {
       transition: none;
     }
@@ -108,32 +124,72 @@
     .project:focus-visible .project-media {
       transform: none;
     }
+    .project:hover .title,
+    .project:focus-visible .title {
+      transform: none;
+    }
   }
 
   /* Side Projects */
   #side-projects {
-    @apply grid gap-x-20 gap-y-10 mt-10 grid-cols-2;
+    @apply grid gap-4 mt-10;
+    overflow-x: clip;
+    overflow-y: visible;
   }
-
-  #side-projects .side-project {
-    @apply flex flex-row items-center;
+  .marquee-track {
+    @apply flex gap-4;
+    width: max-content;
+    animation: marquee-scroll 36s linear infinite;
   }
-
+  .marquee-track.reverse {
+    animation-direction: reverse;
+  }
+  #side-projects:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  .side-project {
+    @apply flex flex-row items-center bg-white no-underline whitespace-nowrap;
+    gap: .875rem;
+    border: 1px solid #e2e8f0;
+    border-radius: .875rem;
+    padding: .875rem 1.5rem .875rem 1rem;
+    transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
+  }
+  .side-project:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -8px rgba(52,41,255,.45);
+  }
   #side-projects img {
-    @apply w-16 h-16 rounded-lg mr-5 shadow-sm hover:shadow-lg hover:scale-110 hover:cursor-pointer transition duration-200 ease-in-out;
+    @apply w-9 h-9 rounded-lg m-0;
   }
-
   .side-project-title {
-    @apply flex items-center font-bold w-fit;
+    @apply flex items-center font-bold text-slate-800 m-0;
+    font-size: .9375rem;
+    gap: .3rem;
   }
   .side-project-title svg {
-    @apply w-5 h-5 ml-1 -translate-x-2 opacity-0 transition duration-150 ease-in;
+    @apply w-3.5 h-3.5 text-primary -translate-x-1 opacity-0 transition duration-150 ease-in;
   }
-  .side-project-title:hover svg {
+  .side-project:hover .side-project-title svg {
     @apply translate-x-0 opacity-100;
+  }
+  .side-project-description {
+    @apply m-0 text-slate-500;
+    font-size: .8125rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+    #side-projects {
+      overflow-x: clip;
+      overflow-y: visible;
+    }
   }
 
   /* Background */
+
   #split {
     @apply flex flex-row md:gap-20;
   }
@@ -162,4 +218,10 @@
     @apply mt-0;
   }
 
+}
+
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
 }

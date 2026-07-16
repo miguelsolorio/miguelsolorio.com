@@ -38,8 +38,8 @@
         display: block;
         box-sizing: border-box;
         width: 100%;
-        margin-top: 6rem;
-        margin-bottom: 10rem;
+        margin-top: 2rem;
+        margin-bottom: 6rem;
         padding: 0;
     }
 
@@ -63,7 +63,7 @@
     .home-hero h1 {
         max-width: none;
         margin: 0;
-        color: #334155;
+        @apply text-primary;
         font-size: clamp(3.5rem, 6.8vw, 5.5rem);
         font-weight: 700;
         line-height: .96;
@@ -148,7 +148,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        height: 21rem;
+        height: auto;
         padding: .875rem .875rem .75rem;
         overflow: hidden;
     }
@@ -156,7 +156,8 @@
     .home-hero-terminal-output {
         display: block;
         min-height: 0;
-        flex: 1 1 auto;
+        flex: 0 1 auto;
+        max-height: 21rem;
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-color: var(--t-light) transparent;
@@ -194,6 +195,7 @@
         position: relative;
         min-width: 0;
         flex: 1 1 auto;
+        align-items: center;
         margin-left: .375rem;
         overflow: hidden;
     }
@@ -219,16 +221,13 @@
         opacity: .8;
     }
 
-    .home-hero-terminal-input:focus::placeholder {
-        opacity: 0;
-    }
-
     .home-hero-terminal-caret-layer {
         position: absolute;
         top: 0;
         left: 0;
         z-index: 1;
-        display: block;
+        display: flex;
+        align-items: center;
         width: max-content;
         min-width: 100%;
         overflow: visible;
@@ -242,8 +241,8 @@
     .home-hero-terminal-caret {
         display: inline-block;
         visibility: hidden;
-        width: .65em;
-        height: 1.05em;
+        width: .55em;
+        height: 1.3em;
         background: var(--t-green);
         vertical-align: -.16em;
     }
@@ -268,64 +267,75 @@
     .home-hero-terminal-suggestions {
         position: absolute;
         right: 0;
-        bottom: calc(100% + .375rem);
+        bottom: calc(100% + .5rem);
         left: 0;
         z-index: 2;
         max-height: 11rem;
         margin: 0;
-        padding: .25rem;
+        padding: .3125rem;
         overflow-y: auto;
         list-style: none;
         border: 1px solid var(--t-line);
-        border-radius: .375rem;
+        border-radius: .5rem;
+        /* Solid fallback first; browsers with color-mix get the frosted panel. */
         background: var(--t-bg);
-        box-shadow: 0 .75rem 1.5rem -1rem var(--t-shadow);
+        background: color-mix(in srgb, var(--t-bg) 88%, transparent);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        box-shadow:
+            0 .25rem .625rem -.375rem var(--t-shadow),
+            0 1rem 2rem -.75rem var(--t-shadow);
     }
 
     .home-hero-terminal-suggestion {
         display: flex;
         width: 100%;
         align-items: baseline;
-        gap: .75rem;
-        padding: .3rem .45rem;
+        gap: .625rem;
+        padding: .3125rem .5rem;
         border: 0;
-        border-radius: .2rem;
+        border-radius: .3125rem;
         background: transparent;
         color: var(--t-text);
         font: inherit;
         text-align: left;
         cursor: pointer;
+        transition: background-color .1s ease, color .1s ease;
     }
 
-    .home-hero-terminal-suggestion:hover,
-    .home-hero-terminal-suggestion.is-active {
+    .home-hero-terminal-suggestion + .home-hero-terminal-suggestion {
+        margin-top: .0625rem;
+    }
+
+    .home-hero-terminal-suggestion:hover {
         background: var(--t-bar);
         color: var(--t-bright);
     }
 
     .home-hero-terminal-suggestion.is-active {
-        background: var(--t-green);
-        box-shadow: inset .2rem 0 0 var(--t-bright);
-        color: var(--t-bg);
+        background: color-mix(in srgb, var(--t-cyan) 12%, transparent);
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--t-cyan) 28%, transparent);
+        color: var(--t-bright);
     }
 
+    /* Longest command is 8 chars ≈ 3.7rem at the terminal's 12px mono, so
+       4.25rem lines the descriptions up in a single column. */
     .home-hero-terminal-suggestion-name {
         flex: 0 0 auto;
-        padding-left: .125rem;
+        min-width: 4.25rem;
         color: var(--t-cyan);
     }
 
     .home-hero-terminal-suggestion-description {
-        margin-left: .25rem;
         overflow: hidden;
         color: var(--t-dim);
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .home-hero-terminal-suggestion.is-active .home-hero-terminal-suggestion-name,
+    .home-hero-terminal-suggestion:hover .home-hero-terminal-suggestion-description,
     .home-hero-terminal-suggestion.is-active .home-hero-terminal-suggestion-description {
-        color: var(--t-bg);
+        color: var(--t-text);
     }
 
     .home-hero-terminal-confirmation {
@@ -403,6 +413,13 @@
 
     .home-hero-current .t-deleted {
         color: var(--t-red);
+    }
+
+    .home-hero-current .t-deleted-file {
+        color: var(--t-red);
+        text-decoration-line: line-through;
+        text-decoration-thickness: .08em;
+        text-decoration-color: currentColor;
     }
 
     .home-hero-current .t-error {
@@ -487,7 +504,8 @@
     }
 
     .home-hero-terminal-body {
-        height: 19rem;
+        height: auto;
+        max-height: none;
         padding: .875rem .75rem .875rem;
     }
 

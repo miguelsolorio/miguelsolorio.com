@@ -6,7 +6,7 @@
 
   {{ partial "intro" . }}
 
-
+  <p class="section">Featured Work</p>
   <div id="selected-work">
     {{ range where .Pages "Params.project" "==" "large" }}
           {{ $thumbnail := .Params.thumbnail | default (printf "%s.png" (lower .Title)) }}
@@ -35,15 +35,36 @@
   <p class="section">Side Projects</p>
   <div id="side-projects">
     {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
-    {{ range $smallProjects }}
-    <div class="side-project">
-      <a href="{{.Params.Link}}" class="thumb" target="_blank"><img src="{{ .Params.Thumbnail }}" alt="{{.Title}}" /></a>
-      <div>
-        <a href="{{.Params.Link}}" class="side-project-title" target="_blank">{{.Title}} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg></a>
-        <p class="side-project-description">{{.Description}}</p>
-      </div>
+    {{ $count := len $smallProjects }}
+    {{ $half := add (div $count 2) (mod $count 2) }}
+    {{ $rowA := first $half $smallProjects }}
+    {{ $rowB := after $half $smallProjects }}
+    <div class="marquee-track">
+      {{ range seq 2 }}
+        {{ range $rowA }}
+        <a class="side-project" href="{{ .Params.Link }}" target="_blank">
+          <img src="{{ .Params.Thumbnail | relURL }}" alt="" />
+          <div>
+            <p class="side-project-title">{{ .Title }} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>
+            <p class="side-project-description">{{ .Description }}</p>
+          </div>
+        </a>
+        {{ end }}
+      {{ end }}
     </div>
-    {{ end }}
+    <div class="marquee-track reverse">
+      {{ range seq 2 }}
+        {{ range $rowB }}
+        <a class="side-project" href="{{ .Params.Link }}" target="_blank">
+          <img src="{{ .Params.Thumbnail | relURL }}" alt="" />
+          <div>
+            <p class="side-project-title">{{ .Title }} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>
+            <p class="side-project-description">{{ .Description }}</p>
+          </div>
+        </a>
+        {{ end }}
+      {{ end }}
+    </div>
   </div>
 
 

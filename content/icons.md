@@ -9,7 +9,7 @@ weight: 2
 
 As the lead designer, I created a cohesive iconography style that could be seamlessly applied across our various products and platforms.
 
-{{< image src="intro.png" >}}
+{{< iframe src="/icons/spiral-animation.html" height="640" title="A slowly rotating spiral field made from product icons" >}}
 
 # Background
 
