@@ -6,8 +6,8 @@
   <title>Icon spiral</title>
   <style>
     :root {
-      --background: #1f1f1f;
-      --icon: #c8c8c8;
+      --background: #cfc6e8;
+      --icon: #4c1d95;
     }
 
     * { box-sizing: border-box; }
@@ -87,6 +87,7 @@
       const total = document.querySelectorAll('symbol[id^="icon-"]').length;
       const goldenAngle = 137.508;
       const sizes = [14, 14, 16, 18, 18, 20, 22, 24, 28, 32];
+      const colors = ['#4c1d95', '#6d28d9', '#7c3aed'];
 
       function shuffle(values) {
         for (let i = values.length - 1; i > 0; i -= 1) {
@@ -122,12 +123,13 @@
         };
       }
 
-      function createIcon(id, size) {
+      function createIcon(id, size, color) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.classList.add('icon');
         svg.setAttribute('aria-hidden', 'true');
         svg.setAttribute('width', size);
         svg.setAttribute('height', size);
+        svg.style.color = color;
         svg.style.setProperty('--size', size);
 
         const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
@@ -157,7 +159,8 @@
           arm.style.setProperty('--angle', angle.toFixed(1) + 'deg');
           arm.style.setProperty('--radius', radius.toFixed(1) + 'px');
 
-          const icon = createIcon(nextIcon(), size);
+          const color = colors[(index - 1) % colors.length];
+          const icon = createIcon(nextIcon(), size, color);
           icon.style.opacity = (0.92 - edge * 0.56).toFixed(2);
           arm.appendChild(icon);
           galaxy.appendChild(arm);

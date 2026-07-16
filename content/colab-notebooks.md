@@ -5,7 +5,7 @@ date: 2026-06-04T10:00:00-07:00
 draft: false
 project: "large"
 thumbnail: "agentic-notebooks.png"
-card_animation: "/notebooks/cell-animation.html"
+card_animation: "/colab-notebooks/cell-animation.html"
 weight: 1
 ---
 

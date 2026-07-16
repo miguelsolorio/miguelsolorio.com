@@ -59,7 +59,14 @@
       overflow: hidden;
       color: var(--icon);
     }
-    .stage svg.i { display: block; flex: none; }
+    .stage svg.i {
+      display: block;
+      flex: none;
+      --swap-opacity: 1;
+      filter: opacity(var(--swap-opacity));
+      transition: filter 450ms ease-in-out;
+    }
+    .stage svg.i.is-swapping { --swap-opacity: 0; }
 
     /* Shared: size-varied grid field. Each cell centers one icon. */
     .field { position: absolute; inset: 0; display: grid; place-content: center; }
@@ -140,6 +147,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .stage svg.i, .v1-ring, .v5-galaxy { animation: none !important; }
+      .stage svg.i { filter: none; transition: none; }
       .v2-stage .cell svg.i, .v3-stage .cell svg.i { opacity: .55; }
     }
   </style>
@@ -384,6 +392,61 @@
         decorate(el) {
           el.style.setProperty('--d', -(Math.random() * PERIOD).toFixed(2) + 's');
         },
+      });
+    })();
+
+    /* Shared icon swapping: each glyph fades to a different random icon on
+       its own schedule so replacements stay scattered across every stage. */
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const FADE_MS = 450;
+      const FIRST_SWAP_MIN_MS = 4000;
+      const FIRST_SWAP_MAX_MS = 22000;
+      const NEXT_SWAP_MIN_MS = 18000;
+      const NEXT_SWAP_MAX_MS = 36000;
+
+      function randomDelay(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      function nextIconId(currentId) {
+        if (TOTAL < 2) return currentId;
+        let nextId = currentId;
+        while (nextId === currentId) {
+          nextId = Math.floor(Math.random() * TOTAL);
+        }
+        return nextId;
+      }
+
+      function swapIcon(svg) {
+        const use = svg.querySelector('use');
+        const currentHref = use.getAttribute('href') || '';
+        const currentId = Number(currentHref.replace('#icon-', ''));
+        const replacementId = nextIconId(currentId);
+
+        svg.classList.add('is-swapping');
+        window.setTimeout(() => {
+          use.setAttribute('href', '#icon-' + replacementId);
+          window.requestAnimationFrame(() => {
+            svg.classList.remove('is-swapping');
+          });
+        }, FADE_MS);
+      }
+
+      function scheduleSwap(svg, firstSwap) {
+        const delay = firstSwap
+          ? randomDelay(FIRST_SWAP_MIN_MS, FIRST_SWAP_MAX_MS)
+          : randomDelay(NEXT_SWAP_MIN_MS, NEXT_SWAP_MAX_MS);
+
+        window.setTimeout(() => {
+          swapIcon(svg);
+          scheduleSwap(svg, false);
+        }, delay);
+      }
+
+      document.querySelectorAll('.stage svg.i').forEach((svg) => {
+        scheduleSwap(svg, true);
       });
     })();
   })();

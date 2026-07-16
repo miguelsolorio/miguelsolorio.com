@@ -4,12 +4,13 @@ description: "Open sourcing the design process"
 date: 2023-03-26T14:12:15-07:00
 draft: false
 project: "large"
+card_animation: "/icons/spiral-animation.html"
 weight: 2
 ---
 
 As the lead designer, I created a cohesive iconography style that could be seamlessly applied across our various products and platforms.
 
-{{< iframe src="/icons/spiral-animation.html" height="640" title="A slowly rotating spiral field made from product icons" >}}
+{{< image src="intro.png" >}}
 
 # Background
 
