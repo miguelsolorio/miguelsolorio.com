@@ -32,16 +32,22 @@
   </div>
 
 
-  <h2 class="section section--work section--side-projects">Side Projects</h2>
+  <h2 class="section section--work section--side-projects">Projects</h2>
   <div id="side-projects">
     {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
     {{ $count := len $smallProjects }}
-    {{ $half := add (div $count 2) (mod $count 2) }}
-    {{ $rowA := first $half $smallProjects }}
-    {{ $rowB := after $half $smallProjects }}
-    <div class="marquee-track">
-      {{ range seq 2 }}
-        {{ range $rowA }}
+    {{/* Balanced thirds, e.g. 10 projects -> 4 / 3 / 3. */}}
+    {{ $sizeA := div (add $count 2) 3 }}
+    {{ $rest := sub $count $sizeA }}
+    {{ $sizeB := div (add $rest 1) 2 }}
+    {{ $rowA := first $sizeA $smallProjects }}
+    {{ $rowB := first $sizeB (after $sizeA $smallProjects) }}
+    {{ $rowC := after (add $sizeA $sizeB) $smallProjects }}
+    {{ range $index, $row := (slice $rowA $rowB $rowC) }}
+    <div class="marquee-track{{ if eq (mod $index 2) 1 }} reverse{{ end }}">
+      {{/* Four copies keep the -50% loop seamless even for short rows. */}}
+      {{ range seq 4 }}
+        {{ range $row }}
         <a class="side-project" href="{{ .Params.Link }}" target="_blank">
           <img src="{{ .Params.Thumbnail | relURL }}" alt="" />
           <div>
@@ -52,19 +58,7 @@
         {{ end }}
       {{ end }}
     </div>
-    <div class="marquee-track reverse">
-      {{ range seq 2 }}
-        {{ range $rowB }}
-        <a class="side-project" href="{{ .Params.Link }}" target="_blank">
-          <img src="{{ .Params.Thumbnail | relURL }}" alt="" />
-          <div>
-            <p class="side-project-title">{{ .Title }} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>
-            <p class="side-project-description">{{ .Description }}</p>
-          </div>
-        </a>
-        {{ end }}
-      {{ end }}
-    </div>
+    {{ end }}
   </div>
 
 

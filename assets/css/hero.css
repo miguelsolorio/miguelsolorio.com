@@ -51,7 +51,7 @@
         padding: 0;
     }
 
-    /* Aurora Wash sits in its own stacking layer, so it adds atmosphere
+    /* Undercurrent sits in its own stacking layer, so it adds atmosphere
        without changing the terminal's existing syntax or theme tokens. */
     .home-hero-ambient {
         position: absolute;
@@ -61,7 +61,9 @@
         width: 100vw;
         height: calc(100% + 11rem);
         overflow: hidden;
-        background: linear-gradient(180deg, #f2f0ff 0%, #f8f7ff 42%, rgba(248, 250, 252, 0) 100%);
+        /* Fade in from transparent at the top so the element's top edge is
+           invisible against the page background. */
+        background: linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f2f0ff 18%, #f8f7ff 45%, #f5f5f5 75%, rgba(245, 245, 245, 0) 100%);
         -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
         mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
         pointer-events: none;
@@ -78,54 +80,14 @@
         mix-blend-mode: soft-light;
     }
 
-    .home-hero-ambient i {
+    /* Undercurrent canvas: curl-noise particle trails drawn by scripts.js in
+       the same purple/violet/coral family the aurora blobs used. The parent's
+       mask still fades everything out toward the page content below. */
+    .home-hero-flow {
         position: absolute;
-        display: block;
-        border-radius: 50%;
-        filter: blur(4rem);
-        will-change: transform;
-    }
-
-    .home-hero-ambient i:nth-child(1) {
-        top: -22%;
-        left: -10%;
-        width: 58%;
-        height: 70%;
-        background: #8b7cff;
-        opacity: .24;
-        animation: home-hero-aurora-left 14s ease-in-out infinite alternate;
-    }
-
-    .home-hero-ambient i:nth-child(2) {
-        top: -30%;
-        right: -12%;
-        width: 58%;
-        height: 76%;
-        background: #ff8f70;
-        opacity: .22;
-        animation: home-hero-aurora-right 17s ease-in-out infinite alternate;
-    }
-
-    .home-hero-ambient i:nth-child(3) {
-        top: 2%;
-        left: 30%;
-        width: 40%;
-        height: 48%;
-        background: #c4b5fd;
-        opacity: .3;
-        animation: home-hero-aurora-center 16s ease-in-out -5s infinite alternate;
-    }
-
-    @keyframes home-hero-aurora-left {
-        to { transform: translate(8%, 7%) scale(1.08); }
-    }
-
-    @keyframes home-hero-aurora-right {
-        to { transform: translate(-9%, 10%) scale(.95); }
-    }
-
-    @keyframes home-hero-aurora-center {
-        to { transform: translate(4%, 12%) scale(1.1); }
+        inset: 0;
+        width: 100%;
+        height: 100%;
     }
 
     .home-hero * {
@@ -531,8 +493,11 @@
         --t-shadow: rgba(2, 6, 23, .5);
     }
 
+    /* Fade in from transparent at the top so the element's top edge is
+       invisible against the page background, then build to the atmospheric
+       tint, then back to the page color and out. */
     .dark .home-hero-ambient {
-        background: linear-gradient(180deg, #15172d 0%, #111827 48%, rgba(15, 23, 42, 0) 100%);
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, #15172d 18%, #121a31 48%, #0f172a 75%, rgba(15, 23, 42, 0) 100%);
     }
 
     .dark .home-hero-ambient::after {
@@ -540,30 +505,16 @@
         mix-blend-mode: overlay;
     }
 
-    .dark .home-hero-ambient i:nth-child(1) {
-        background: #4338ca;
-        opacity: .32;
-    }
-
-    .dark .home-hero-ambient i:nth-child(2) {
-        background: #c2415b;
-        opacity: .23;
-    }
-
-    .dark .home-hero-ambient i:nth-child(3) {
-        background: #6d28d9;
-        opacity: .24;
-    }
-
+    /* Dark counterpart of the light hero's #3429ff highlight: the same hue
+       family lifted to indigo-400 so it reads as color, not gray. */
     .dark .home-hero h1 {
-        color: #e5e7eb;
+        color: #818cf8;
     }
 
     .dark .home-hero-summary {
         color: #9ca3af !important;
     }
 }
-
 @media (max-width: 900px) {
     .home-hero-inner {
         grid-template-columns: 1fr;
@@ -629,12 +580,5 @@
 
     .home-hero-terminal-suggestion-description {
         display: none;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .home-hero-ambient i {
-        animation: none;
-        will-change: auto;
     }
 }

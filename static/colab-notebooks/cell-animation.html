@@ -4,29 +4,119 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Notebook cell generation</title>
+<script>
+  /* Set the initial theme before paint. Embedded animations follow the site;
+     standalone and cross-origin views follow the operating system. */
+  (function () {
+    const preference = window.matchMedia("(prefers-color-scheme: dark)");
+    let dark = preference.matches;
+    try {
+      if (window.parent !== window) {
+        dark = window.parent.document.documentElement.classList.contains("dark");
+      }
+    } catch (err) {
+      /* The OS preference is already the safe cross-origin fallback. */
+    }
+    document.documentElement.classList.toggle("dark", dark);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">
 <style>
   :root {
-    --bg: #ffffff;
     --cell-bg: #f8faf9;
     --cell-bg-added: #eef8f1;
     --cell-border: #b8aebe;
     --active-border: #1a73e8;
     --highlight: #c9ecd0;
     --gutter: #9aa0a6;
+    --gutter-ran: #202124;
     --code: #202124;
     --kw: #a625a4;
     --com: #007400;
     --str: #c41a16;
     --prm: #0b5fcc;
     --gemini: #1a73e8;
+    --surface: #ffffff;
+    --surface-chat: #fafbfc;
+    --surface-input: #f8fafd;
+    --surface-hover: #f1f3f4;
+    --surface-hover-strong: #e4e6e8;
+    --action-hover: #eef3fc;
+    --surface-pressed: #d3e3fd;
+    --toolbar-border: #ececec;
+    --text: #1f1f1f;
+    --text-secondary: #444746;
+    --text-muted: #80868b;
+    --text-disabled: #c4c7c5;
+    --link: #0b57d0;
+    --spark: #4285f4;
+    --run-bg: #1f1f1f;
+    --run-icon: #ffffff;
+    --mouse-fill: #ffffff;
+    --mouse-stroke: #1f1f1f;
+    --toolbar-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+    --panel-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    --active-glow: 0 0 10px 0 #1a73e866,
+                   0 0 20px 5px rgba(11, 87, 208, 0.05),
+                   0 4px 40px 8px rgba(11, 87, 208, 0.14);
+    --input-glow: 0 0 12px 5px rgba(11, 87, 208, 0.05),
+                  0 4px 40px 8px rgba(11, 87, 208, 0.14);
+    --running-glow: 0 0 0 0.5px var(--active-border),
+                    0 0 0 5px rgba(11, 87, 208, 0.05),
+                    0 4px 40px 8px rgba(11, 87, 208, 0.14);
+  }
+
+  /* Colab-inspired dark surfaces and syntax colors. */
+  :root.dark {
+    --cell-bg: #202124;
+    --cell-bg-added: #1b3326;
+    --cell-border: #5f6368;
+    --active-border: #8ab4f8;
+    --highlight: #294936;
+    --gutter: #a8adb4;
+    --gutter-ran: #e8eaed;
+    --code: #e8eaed;
+    --kw: #c58af9;
+    --com: #81c995;
+    --str: #f28b82;
+    --prm: #8ab4f8;
+    --surface: #292a2d;
+    --surface-chat: #202124;
+    --surface-input: #292a2d;
+    --surface-hover: #3c4043;
+    --surface-hover-strong: #4b4f52;
+    --action-hover: #303f53;
+    --surface-pressed: #394f6b;
+    --toolbar-border: #5f6368;
+    --text: #e8eaed;
+    --text-secondary: #bdc1c6;
+    --text-muted: #9aa0a6;
+    --text-disabled: #6f7378;
+    --link: #8ab4f8;
+    --spark: #8ab4f8;
+    --run-bg: #e8eaed;
+    --run-icon: #202124;
+    --mouse-fill: #e8eaed;
+    --mouse-stroke: #202124;
+    --toolbar-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --panel-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+    --active-glow: 0 0 10px 0 rgba(138, 180, 248, 0.42),
+                   0 0 20px 5px rgba(138, 180, 248, 0.08),
+                   0 4px 40px 8px rgba(0, 0, 0, 0.28);
+    --input-glow: 0 0 12px 5px rgba(138, 180, 248, 0.10),
+                  0 4px 40px 8px rgba(0, 0, 0, 0.28);
+    --running-glow: 0 0 0 0.5px var(--active-border),
+                    0 0 0 5px rgba(138, 180, 248, 0.08),
+                    0 4px 40px 8px rgba(0, 0, 0, 0.28);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #cfc6e8; /* purple frame around the animation */
+    /* The embedding surface owns the backdrop: transparent on project cards,
+       and purple on the full case-study iframe. */
+    background: transparent;
     font-family: "Google Sans", "Helvetica Neue", Arial, sans-serif;
     padding: 40px;
     display: flex;
@@ -107,7 +197,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #1f1f1f;
+    background: var(--run-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,7 +205,8 @@
     margin: 1px 12px 0 0;
     opacity: 0;
     transform: scale(0.6);
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease,
+                background-color 0.3s ease;
   }
   /* Material Symbols base */
   .msym {
@@ -134,7 +225,8 @@
   }
   .run-btn .msym {
     font-size: 14px;
-    color: #fff;
+    color: var(--run-icon);
+    transition: color 0.3s ease;
     font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
   }
   .gemini-tag .msym {
@@ -172,7 +264,7 @@
   .cell-row.added .cell { background: var(--cell-bg-added); }
   .cell-row.active .cell {
     border-color: var(--active-border);
-    box-shadow: 0 0 10px 0px #1a73e866, 0 0 20px 5px rgba(11, 87, 208, 0.05), 0 4px 40px 8px rgba(11, 87, 208, 0.14);
+    box-shadow: var(--active-glow);
   }
   .cell-row.tagged .cell { border-top-left-radius: 0; }
 
@@ -183,6 +275,7 @@
     font-size: 13.5px;
     line-height: 1.65;
     color: var(--code);
+    transition: color 0.3s ease;
     overflow-x: auto;
   }
 
@@ -205,6 +298,7 @@
   .tok-com { color: var(--com); }
   .tok-str { color: var(--str); }
   .tok-prm { color: var(--prm); }
+  .tok-kw, .tok-com, .tok-str, .tok-prm { transition: color 0.3s ease; }
 
   /* streaming cursor */
   .cursor {
@@ -258,14 +352,16 @@
     z-index: 2;
     display: flex;
     align-items: center;
-    background: #fff;
-    border: 1px solid #ececec;
+    background: var(--surface);
+    border: 1px solid var(--toolbar-border);
     border-radius: 9px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    box-shadow: var(--toolbar-shadow);
     padding: 3px;
     opacity: 0;
     transform: translateY(4px);
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease,
+                background-color 0.3s ease, border-color 0.3s ease,
+                box-shadow 0.3s ease;
   }
   .cell-row.active .toolbar {
     opacity: 1;
@@ -278,10 +374,11 @@
     padding: 4px 7px;
     border-radius: 6px;
     cursor: pointer;
-    color: #444746;
+    color: var(--text-secondary);
     display: flex;
+    transition: color 0.3s ease, background-color 0.2s ease;
   }
-  .toolbar button:hover { background: #f1f3f4; }
+  .toolbar button:hover { background: var(--surface-hover); }
 
   /* ---------- chat ---------- */
   .chat {
@@ -303,9 +400,9 @@
     /* transform removed since chat is now a flow element */
   }
   .chat.open {
-    background: #fafbfc;
+    background: var(--surface-chat);
     border-color: var(--cell-border);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    box-shadow: var(--panel-shadow);
     padding: 18px 20px;
   }
   .chat-msg {
@@ -353,13 +450,18 @@
     font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
   }
   .chat-user { align-items: center; }
-  .chat-user-text { font-size: 14.5px; color: #1f1f1f; }
-  .chat-spark { flex: none; margin-top: 3px; }
+  .chat-user-text { font-size: 14.5px; color: var(--text); }
+  .chat-spark {
+    flex: none;
+    margin-top: 3px;
+    fill: var(--spark);
+    transition: fill 0.3s ease;
+  }
   .chat-ai .chat-spinner {
     display: none;
     flex: none;
     font-size: 22px;   /* matches the spark size so the swap doesn't shift */
-    color: #4285f4;
+    color: var(--spark);
     margin-top: 2px;
     transform-origin: 50% 50%;
   }
@@ -368,10 +470,13 @@
     display: block;
     animation: spin 1s linear infinite;
   }
-  .chat-ai.thinking .chat-ai-text { color: #1f1f1f; }
+  .chat-ai.thinking .chat-ai-text { color: var(--text); }
   .chat-ai-body { flex: 1; min-width: 0; }
-  .chat-ai-text { font-size: 14.5px; line-height: 1.55; color: #1f1f1f; }
-  .chat-ai-text a { color: #0b57d0; }
+  .chat-ai-text { font-size: 14.5px; line-height: 1.55; color: var(--text); }
+  .chat-ai-text a { color: var(--link); }
+  .chat-user-text, .chat-ai-text, .chat-ai-text a {
+    transition: color 0.3s ease;
+  }
   .chat-actions {
     display: none;
     gap: 10px;
@@ -393,18 +498,19 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #0b57d0;
+    color: var(--link);
     font: 500 14.5px "Google Sans", "Helvetica Neue", Arial, sans-serif;
     padding: 6px 12px;
     border-radius: 999px;
-    transition: background-color 0.2s ease, transform 0.15s ease;
+    transition: background-color 0.2s ease, color 0.3s ease,
+                transform 0.15s ease;
   }
-  .chat-actions button:hover { background: #eef3fc; }
+  .chat-actions button:hover { background: var(--action-hover); }
   .chat-actions button:active { transform: scale(0.96); }
   .chat-actions .msym { font-size: 18px; }
   .chat-input {
-    background: #f8fafd;
-    border: 1.5px solid #e4e6e8;
+    background: var(--surface-input);
+    border: 1.5px solid var(--surface-hover-strong);
     border-radius: 999px;
     padding: 12px 8px;
     transition: background-color 0.25s ease, border-color 0.25s ease,
@@ -412,32 +518,34 @@
   }
   /* bare hero state: blue border + glow */
   .chat-input.focus {
-    background: #fff;
-    border-color: #0b57d0;
-    box-shadow: 0 0 12px 5px rgba(11, 87, 208, 0.05),
-                0 4px 40px 8px rgba(11, 87, 208, 0.14);
+    background: var(--surface);
+    border-color: var(--link);
+    box-shadow: var(--input-glow);
   }
   /* grown into the card: blue border only, no glow */
   .chat.open .chat-input {
-    background: #fff;
-    border-color: #0b57d0;
+    background: var(--surface);
+    border-color: var(--link);
     box-shadow: none;
   }
   .chat-input-text {
     flex: 1;
     min-width: 0;
     font-size: 15px;
-    color: #1f1f1f;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
   }
-  .chat-input-text .placeholder { color: #80868b; }
+  .chat-input-text, .chat-input-text .placeholder {
+    transition: color 0.3s ease;
+  }
+  .chat-input-text .placeholder { color: var(--text-muted); }
   .chat-input-row {
     display: flex;
     align-items: center;
     gap: 4px;
   }
-  .chat-input-row .msym { font-size: 20px; color: #444746; cursor: pointer; }
+  .chat-input-row .msym { font-size: 20px; color: var(--text-secondary); cursor: pointer; }
   /* icon buttons: circular hover target, kept from growing the pill via -margin */
   .chat-input-row .add-btn,
   .chat-input-row .send-btn {
@@ -451,39 +559,39 @@
     border-radius: 50%;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
   }
-  .chat-input-row .add-btn:hover { background: #f1f3f4; }
+  .chat-input-row .add-btn:hover { background: var(--surface-hover); }
   .chat-input-row .add-btn:active { transform: scale(0.9); }
   .chat-input-row .model {
     display: flex;
     align-items: center;
     gap: 2px;
     font-size: 14px;
-    color: #1f1f1f;
+    color: var(--text);
     cursor: pointer;
     flex: none;
     padding: 5px 6px 5px 10px;
     margin: -5px 0;
     border-radius: 999px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.3s ease;
   }
-  .chat-input-row .model:hover { background: #f1f3f4; }
+  .chat-input-row .model:hover { background: var(--surface-hover); }
   .chat-input-row .send-btn {
-    color: #c4c7c5;          /* disabled until there is text */
+    color: var(--text-disabled);          /* disabled until there is text */
     cursor: default;
   }
   .chat-input-row .send-btn.enabled {
-    color: #444746;
+    color: var(--text-secondary);
     cursor: pointer;
   }
-  .chat-input-row .send-btn.enabled:hover { background: #f1f3f4; }
+  .chat-input-row .send-btn.enabled:hover { background: var(--surface-hover); }
   .chat-input-row .send-btn.enabled:active { transform: scale(0.9); }
   /* while the agent executes, the send button becomes a filled stop button */
   .chat-input-row .send-btn.stop {
-    color: #444746;
+    color: var(--text-secondary);
     cursor: pointer;
     font-size: 24px;
   }
-  .chat-input-row .send-btn.stop:hover { background: #f1f3f4; }
+  .chat-input-row .send-btn.stop:hover { background: var(--surface-hover); }
   .chat-input-row .send-btn.stop:active { transform: scale(0.9); }
 
   /* ---------- playback timeline ---------- */
@@ -505,15 +613,15 @@
     height: 34px;
     border-radius: 50%;
     border: 0;
-    background: #f1f3f4;
-    color: #1f1f1f;
+    background: var(--surface-hover);
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.3s ease;
   }
-  .tl-btn:hover { background: #e4e6e8; }
+  .tl-btn:hover { background: var(--surface-hover-strong); }
   .tl-btn .msym {
     font-size: 20px;
     font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
@@ -523,7 +631,8 @@
     flex: 1;
     height: 6px;
     border-radius: 3px;
-    background: #e4e6e8;
+    background: var(--surface-hover-strong);
+    transition: background-color 0.3s ease;
     cursor: pointer;
     touch-action: none;
   }
@@ -578,6 +687,11 @@
     transform-origin: 5px 4px;
     transition: transform 0.12s ease;
   }
+  .mouse path {
+    fill: var(--mouse-fill);
+    stroke: var(--mouse-stroke);
+    transition: fill 0.3s ease, stroke 0.3s ease;
+  }
   .mouse.click svg { transform: scale(0.82); }
   .mouse .ripple {
     position: absolute;
@@ -595,7 +709,7 @@
     from { opacity: 0.9; transform: scale(0.3); }
     to   { opacity: 0; transform: scale(1.4); }
   }
-  .chat-actions button.pressed { background: #d3e3fd; }
+  .chat-actions button.pressed { background: var(--surface-pressed); }
 
   /* ---------- cell execution ---------- */
   /* accepted cells lose the green diff highlight on the code */
@@ -603,16 +717,15 @@
 
   .cell-row.running .cell {
     border-color: var(--active-border);
-    box-shadow: 0 0 0 0.5px var(--active-border),
-                0 0 0 5px rgba(11, 87, 208, 0.05),
-                0 4px 40px 8px rgba(11, 87, 208, 0.14);
+    box-shadow: var(--running-glow);
   }
   /* while running, the play button becomes a plain spinner (no circle) */
   .run-btn .run-spinner {
     display: none;
     font-size: 18px;
-    color: #444746;
+    color: var(--text-secondary);
     transform-origin: 50% 50%;
+    transition: color 0.3s ease;
   }
   .cell-row.running .run-btn {
     opacity: 1;
@@ -634,7 +747,7 @@
   }
   .cell-row.ran .gutter-check { display: block; }
   .gutter .brackets { transition: color 0.3s ease; }
-  .cell-row.ran .brackets { color: var(--code); }
+  .cell-row.ran .brackets { color: var(--gutter-ran); }
 
   /* output attached to the bottom of the code cell */
   .cell-output {
@@ -649,6 +762,7 @@
     align-items: flex-start;
     padding: 12px 18px;
     border-top: 1px solid var(--cell-border);
+    transition: border-color 0.3s ease;
   }
   .out-dots {
     visibility: hidden;   /* hidden but keeps the output aligned with the code */
@@ -656,15 +770,17 @@
     width: 20px;
     margin: 2px 12px 0 0;   /* mirrors the run button column */
     font-size: 18px;
-    color: #444746;
+    color: var(--text-secondary);
     text-align: center;
+    transition: color 0.3s ease;
   }
   .cell-output pre {
     margin: 0;
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     font-size: 13px;
     line-height: 1.65;
-    color: #3c4043;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
     white-space: pre-wrap;
   }
 
@@ -677,6 +793,19 @@
   body.paused .run-spinner,
   body.paused .cursor {
     animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell, .cell-code, .line .hl, .tok-kw, .tok-com, .tok-str, .tok-prm,
+    .toolbar, .toolbar button, .chat, .chat-msg, .chat-user-text,
+    .chat-spark, .chat-ai-text, .chat-ai-text a, .chat-actions,
+    .chat-actions button, .chat-input, .chat-input-text,
+    .chat-input-text .placeholder, .chat-input-row .msym,
+    .chat-input-row .model, .tl-btn, .tl-track, .mouse path,
+    .run-btn, .run-btn .msym, .run-btn .run-spinner,
+    .gutter .brackets, .cell-output-row, .out-dots, .cell-output pre {
+      transition-duration: 0s !important;
+    }
   }
 </style>
 </head>
@@ -1270,6 +1399,34 @@ async function measure() {
   instant = false;
   seekTarget = 0;
   document.body.classList.remove("no-anim");
+}
+
+/* Follow the parent page's theme toggle when same-origin. Standalone and
+   cross-origin views follow live operating-system preference changes. */
+const themePreference = window.matchMedia("(prefers-color-scheme: dark)");
+let themeParentRoot = null;
+try {
+  if (window.parent !== window) {
+    themeParentRoot = window.parent.document.documentElement;
+  }
+} catch (err) {
+  /* Cross-origin parents cannot expose their theme; use the OS preference. */
+}
+
+function syncTheme() {
+  const dark = themeParentRoot
+    ? themeParentRoot.classList.contains("dark")
+    : themePreference.matches;
+  document.documentElement.classList.toggle("dark", dark);
+}
+syncTheme();
+if (themeParentRoot) {
+  new MutationObserver(syncTheme)
+    .observe(themeParentRoot, { attributes: true, attributeFilter: ["class"] });
+} else if (themePreference.addEventListener) {
+  themePreference.addEventListener("change", syncTheme);
+} else {
+  themePreference.addListener(syncTheme);
 }
 
 (async function init() {

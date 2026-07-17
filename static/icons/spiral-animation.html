@@ -6,8 +6,14 @@
   <title>Icon spiral</title>
   <style>
     :root {
-      --background: #cfc6e8;
-      --icon: #4c1d95;
+      /* Matches the pastel aurora family on the project cards. */
+      --background: linear-gradient(145deg, #f0ecfd 0%, #f6f4fe 45%, #fdf1ea 100%);
+      --icon: #8b7cff;
+    }
+
+    :root.dark {
+      /* Deep indigo-to-umber, mirroring the cards' dark variants. */
+      --background: linear-gradient(145deg, #23203f 0%, #1a1e33 45%, #2c2229 100%);
     }
 
     * { box-sizing: border-box; }
@@ -87,7 +93,12 @@
       const total = document.querySelectorAll('symbol[id^="icon-"]').length;
       const goldenAngle = 137.508;
       const sizes = [14, 14, 16, 18, 18, 20, 22, 24, 28, 32];
-      const colors = ['#4c1d95', '#6d28d9', '#7c3aed'];
+      const palettes = {
+        light: ['#8b7cff', '#a294f2', '#c0b2f7'],
+        dark: ['#8b7cff', '#6f63d8', '#564bb5']
+      };
+      const activeColors = () =>
+        document.documentElement.classList.contains('dark') ? palettes.dark : palettes.light;
 
       function shuffle(values) {
         for (let i = values.length - 1; i > 0; i -= 1) {
@@ -139,6 +150,7 @@
       }
 
       function render() {
+        const colors = activeColors();
         const width = stage.clientWidth;
         const height = stage.clientHeight;
         const count = Math.max(220, Math.min(360, Math.round((width * height) / 1900)));
@@ -167,8 +179,30 @@
         }
       }
 
+      // Follow the parent page's theme toggle (same-origin when embedded as
+      // the project card iframe); fall back to the OS preference standalone.
+      function syncTheme() {
+        let dark;
+        try {
+          dark = window.parent.document.documentElement.classList.contains('dark');
+        } catch (err) {
+          dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        const changed = document.documentElement.classList.contains('dark') !== dark;
+        document.documentElement.classList.toggle('dark', dark);
+        return changed;
+      }
+
+      syncTheme();
       render();
       window.addEventListener('resize', render);
+      try {
+        new MutationObserver(() => {
+          if (syncTheme()) render();
+        }).observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      } catch (err) {
+        /* cross-origin parent: stay on the initial theme */
+      }
     })();
   </script>
 </body>

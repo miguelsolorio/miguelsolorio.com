@@ -20,7 +20,15 @@
   }
   .project {
     @apply relative block w-full h-96 overflow-hidden no-underline;
-    background-color: #cfc6e8;
+    --project-aurora: linear-gradient(118deg, #e9e4fd -12%, #f3f0fe 48%, #ffeee7 112%);
+    --project-aurora-position: center;
+    --project-aurora-size: 112% 112%;
+    --project-aurora-transform: scale(1);
+    --project-aurora-hover-transform: scale(1.08);
+    background-color: #f0edf9;
+    background-image: var(--project-aurora);
+    background-position: var(--project-aurora-position);
+    background-size: var(--project-aurora-size);
     border-radius: 1rem;
     isolation: isolate;
   }
@@ -32,6 +40,127 @@
     backdrop-filter: blur(8px);
     opacity: 0;
     transition: opacity .35s ease;
+  }
+  /* The Aurora palette repeats, but its scale, focal point, and direction
+     shift per card so the work grid feels related rather than duplicated. */
+  .project::after {
+    content: '';
+    position: absolute;
+    inset: -12%;
+    z-index: 1;
+    background-image: var(--project-aurora);
+    background-position: var(--project-aurora-position);
+    background-size: var(--project-aurora-size);
+    mix-blend-mode: soft-light;
+    opacity: .3;
+    pointer-events: none;
+    transform: var(--project-aurora-transform);
+    transition: opacity .45s ease, transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .project:nth-child(6n + 1) {
+    /* Wide diagonal: violet enters low left and coral exits high right. */
+    --project-aurora: linear-gradient(118deg, #e3ddfc -18%, #f2effe 46%, #ffeadf 118%);
+    --project-aurora-size: 125% 125%;
+    --project-aurora-position: 38% 50%;
+    --project-aurora-transform: scale(1.03) rotate(-1deg);
+    --project-aurora-hover-transform: scale(1.12) rotate(1deg);
+  }
+  .project:nth-child(6n + 2) {
+    /* Oversized blooms: the color fields sit beyond opposite corners. */
+    --project-aurora:
+      radial-gradient(ellipse 78% 145% at -6% 18%, #e5e0fc 0%, rgba(229,224,252,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #ffe7dd 0%, rgba(255,231,221,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #f6f4fe 10%, #fdf3ef 90%);
+    --project-aurora-size: 118% 118%;
+    --project-aurora-position: 50% 46%;
+    --project-aurora-transform: scale(1.06);
+    --project-aurora-hover-transform: scale(1.15) translateX(-1.5%);
+  }
+  .project:nth-child(6n + 3) {
+    /* Steep band: a larger, graphic slice through the center. */
+    --project-aurora:
+      linear-gradient(154deg, #e4defc 0%, #ece8fd 31%, #f6f3fe 45%, #fdf0ea 59%, #ffe8dc 100%);
+    --project-aurora-size: 155% 155%;
+    --project-aurora-position: 36% 54%;
+    --project-aurora-transform: scale(1.08) rotate(1.5deg);
+    --project-aurora-hover-transform: scale(1.18) rotate(-1.5deg);
+  }
+  .project:nth-child(6n + 4) {
+    /* Off-center prism: color rotates around a focal point near the title. */
+    --project-aurora:
+      conic-gradient(from 218deg at 68% 34%, #e8e3fd 0deg, #f3f0fe 96deg, #fdf4ef 174deg, #ffe9df 258deg, #e8e3fd 360deg);
+    --project-aurora-size: 135% 150%;
+    --project-aurora-position: 64% 35%;
+    --project-aurora-transform: scale(1.08) rotate(-2deg);
+    --project-aurora-hover-transform: scale(1.17) rotate(2deg);
+  }
+  .project:nth-child(6n + 5) {
+    /* Vertical horizon: coral glows from above and settles into violet. */
+    --project-aurora:
+      radial-gradient(ellipse 135% 72% at 50% -14%, #ffe5da 0%, rgba(255,229,218,.55) 38%, transparent 72%),
+      linear-gradient(180deg, #fdf2ee 0%, #f1edfe 58%, #e4defc 118%);
+    --project-aurora-size: 122% 135%;
+    --project-aurora-position: 50% 35%;
+    --project-aurora-transform: scale(1.04) translateY(-1.5%);
+    --project-aurora-hover-transform: scale(1.14) translateY(2%);
+  }
+  .project:nth-child(6n + 6) {
+    /* Cross-light: violet enters high left, peach answers from the low
+       right, meeting in a quiet near-white seam across the middle. */
+    --project-aurora:
+      linear-gradient(42deg, rgba(227, 221, 252, .9) 0%, rgba(242, 239, 254, 0) 55%),
+      linear-gradient(222deg, rgba(255, 232, 220, .9) 0%, rgba(253, 240, 234, 0) 52%),
+      linear-gradient(180deg, #f4f1fe 0%, #fbf3ef 100%);
+    --project-aurora-size: 128% 128%;
+    --project-aurora-position: 45% 55%;
+    --project-aurora-transform: scale(1.05) rotate(1deg);
+    --project-aurora-hover-transform: scale(1.13) rotate(-1deg);
+  }
+  /* Dark theme: the same six compositions rebuilt from deep indigo, violet,
+     and umber, sitting one quiet step above the slate-900 page. Sizes,
+     focal points, and hover motion are inherited from the light variants. */
+  .dark .project {
+    --project-aurora: linear-gradient(118deg, #262347 -12%, #1a1e33 48%, #33252e 112%);
+    background-color: #171b2d;
+  }
+  .dark .project::before {
+    background-color: rgba(15, 23, 42, .35);
+  }
+  .dark .project .title {
+    -webkit-text-stroke-color: #a5b4fc;
+    mix-blend-mode: screen;
+  }
+  .dark .project:hover .title,
+  .dark .project:focus-visible .title {
+    color: #a5b4fc;
+  }
+  .dark .project:nth-child(6n + 1) {
+    --project-aurora: linear-gradient(118deg, #2b2754 -18%, #1c2036 46%, #38272c 118%);
+  }
+  .dark .project:nth-child(6n + 2) {
+    --project-aurora:
+      radial-gradient(ellipse 78% 145% at -6% 18%, #2c2858 0%, rgba(44, 40, 88, .5) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #3c2a2e 0%, rgba(60, 42, 46, .45) 36%, transparent 70%),
+      linear-gradient(145deg, #191d31 10%, #1f1c2c 90%);
+  }
+  .dark .project:nth-child(6n + 3) {
+    --project-aurora:
+      linear-gradient(154deg, #2b2751 0%, #241f42 31%, #1a1e33 45%, #2c2229 59%, #3a2830 100%);
+  }
+  .dark .project:nth-child(6n + 4) {
+    --project-aurora:
+      conic-gradient(from 218deg at 68% 34%, #282450 0deg, #1c2036 96deg, #2a2130 174deg, #382930 258deg, #282450 360deg);
+  }
+  .dark .project:nth-child(6n + 5) {
+    --project-aurora:
+      radial-gradient(ellipse 135% 72% at 50% -14%, #3d2a2e 0%, rgba(61, 42, 46, .5) 38%, transparent 72%),
+      linear-gradient(180deg, #241f33 0%, #1e2138 58%, #2a2652 118%);
+  }
+  .dark .project:nth-child(6n + 6) {
+    --project-aurora:
+      linear-gradient(42deg, rgba(44, 40, 88, .85) 0%, rgba(28, 32, 54, 0) 55%),
+      linear-gradient(222deg, rgba(60, 42, 46, .85) 0%, rgba(36, 31, 51, 0) 52%),
+      linear-gradient(180deg, #1b1f33 0%, #241f30 100%);
   }
   .project-media {
     @apply absolute inset-0 z-0 overflow-hidden;
@@ -56,8 +185,8 @@
     left: 50%;
   }
   .project .card-video--cli-agents {
-    width: 105%;
-    top: 0;
+    width: 65%;
+    top: 10%;
     left: 50%;
     border-radius: 0;
   }
@@ -68,6 +197,8 @@
   }
   .project .thumbnail.cell-embed {
     border: 0;
+    background: transparent;
+    color-scheme: normal;
   }
   .project-meta {
     @apply absolute left-0 right-0 z-10 flex justify-center text-center;
@@ -101,6 +232,11 @@
   .project:focus-visible .project-media {
     transform: scale(1.04);
   }
+  .project:hover::after,
+  .project:focus-visible::after {
+    opacity: .45;
+    transform: var(--project-aurora-hover-transform);
+  }
   .project:hover .project-meta,
   .project:focus-visible .project-meta {
     transform: translateY(-53%);
@@ -129,6 +265,7 @@
     .project-media,
     .project .title,
     .project::before,
+    .project::after,
     .project-meta {
       transition: none;
     }
@@ -139,6 +276,10 @@
     .project:hover .title,
     .project:focus-visible .title {
       transform: none;
+    }
+    .project:hover::after,
+    .project:focus-visible::after {
+      transform: var(--project-aurora-transform);
     }
   }
 
@@ -173,11 +314,13 @@
   .marquee-track {
     @apply flex gap-4;
     width: max-content;
-    animation: marquee-scroll 36s linear infinite;
+    animation: marquee-scroll 72s linear infinite;
   }
   .marquee-track.reverse {
     animation-direction: reverse;
   }
+  /* The third row drifts at a deliberately different, slower pace. */
+  .marquee-track:nth-child(3) { animation-duration: 96s; }
   #side-projects:hover .marquee-track {
     animation-play-state: paused;
   }

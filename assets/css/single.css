@@ -18,4 +18,12 @@
   .single h1 {
     @apply text-4xl font-bold mb-4 mt-20
   }
+  /* Backdrop behind transparent-body embeds (e.g. the notebook cell
+     animation). The dark variant matches the deep-indigo card family. */
+  .single iframe.embed-frame {
+    background: #cfc6e8;
+  }
+  .dark .single iframe.embed-frame {
+    background: #262347;
+  }
 }
