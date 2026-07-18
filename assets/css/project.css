@@ -1,4 +1,37 @@
 @layer components {
+  /* Named themes keep project artwork stable when cards are reordered and let
+     the same surface treatment frame project-page embeds. */
+  [data-project-theme="notebooks"] {
+    --project-theme-surface: #f0edf9;
+    --project-theme-artwork: linear-gradient(118deg, #e3ddfc -18%, #f2effe 46%, #ffeadf 118%);
+    --project-theme-size: 125% 125%;
+    --project-theme-position: 38% 50%;
+    --project-theme-transform: scale(1.03) rotate(-1deg);
+    --project-theme-hover-transform: scale(1.12) rotate(1deg);
+  }
+  [data-project-theme="cli"] {
+    --project-theme-surface: #eaf2fa;
+    --project-theme-artwork:
+      radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220,232,252,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228,242,248,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
+    --project-theme-size: 118% 118%;
+    --project-theme-position: 50% 46%;
+    --project-theme-transform: scale(1.06);
+    --project-theme-hover-transform: scale(1.15) translateX(-1.5%);
+  }
+  .dark [data-project-theme="notebooks"] {
+    --project-theme-surface: #171b2d;
+    --project-theme-artwork: linear-gradient(118deg, #2b2754 -18%, #1c2036 46%, #38272c 118%);
+  }
+  .dark [data-project-theme="cli"] {
+    --project-theme-surface: #161f2e;
+    --project-theme-artwork:
+      radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
+      linear-gradient(145deg, #151d2e 10%, #172430 90%);
+  }
+
   /* Projects */
   .section {
     @apply mt-32 mb-10 text-3xl font-bold;
@@ -184,25 +217,17 @@
       linear-gradient(180deg, #1b1f38 0%, #221e35 100%);
     background-color: #191a2e;
   }
-  /* CLI has a dedicated palette so its animated card matches the blue frame
-     on the project page, regardless of its position in the work grid. */
-  #cli-agents.project {
-    --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220,232,252,.55) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228,242,248,.5) 36%, transparent 70%),
-      linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
-    background-color: #eaf2fa;
-    --project-aurora-size: 118% 118%;
-    --project-aurora-position: 50% 46%;
-    --project-aurora-transform: scale(1.06);
-    --project-aurora-hover-transform: scale(1.15) translateX(-1.5%);
+  .project.project--themed {
+    --project-aurora: var(--project-theme-artwork);
+    --project-aurora-size: var(--project-theme-size);
+    --project-aurora-position: var(--project-theme-position);
+    --project-aurora-transform: var(--project-theme-transform);
+    --project-aurora-hover-transform: var(--project-theme-hover-transform);
+    background-color: var(--project-theme-surface);
   }
-  .dark #cli-agents.project {
-    --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
-      linear-gradient(145deg, #151d2e 10%, #172430 90%);
-    background-color: #161f2e;
+  .dark .project.project--themed {
+    --project-aurora: var(--project-theme-artwork);
+    background-color: var(--project-theme-surface);
   }
   .project-media {
     @apply absolute inset-0 z-0 overflow-hidden;
@@ -231,7 +256,7 @@
     top: 10%;
     left: 50%;
   }
-  .project .thumbnail.cell-embed {
+  .project--embed .project-embed-frame {
     border: 0;
     background: transparent;
     color-scheme: normal;
@@ -244,14 +269,6 @@
     pointer-events: none;
     transform: translateY(-50%);
     transition: transform .5s cubic-bezier(.2,.8,.2,1);
-  }
-  #cli-agents.project .thumbnail.cell-embed {
-    width: 70%;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 1rem;
-    box-shadow: 0 12px 28px -8px rgba(52,41,255,.45);
   }
   .project .title {
     @apply m-0 inline-block text-center font-extrabold text-primary;

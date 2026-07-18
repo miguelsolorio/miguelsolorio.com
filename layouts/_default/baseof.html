@@ -10,14 +10,18 @@
   <div id="selected-work">
     {{ range where .Pages "Params.project" "==" "large" }}
           {{ $thumbnail := .Params.thumbnail | default (printf "%s.png" (lower .Title)) }}
-          <a id="{{ .File.ContentBaseName }}" data-project-id="{{ .File.ContentBaseName }}" class="project{{ if .Params.card_animation }} project--embed{{ end }}" href="{{ .Permalink }}">
+          <a id="{{ .File.ContentBaseName }}"
+             data-project-id="{{ .File.ContentBaseName }}"
+             {{ with .Params.card_theme }}data-project-theme="{{ . }}"{{ end }}
+             class="project{{ if .Params.card_animation }} project--embed{{ end }}{{ with .Params.card_theme }} project--themed{{ end }}"
+             href="{{ .Permalink }}">
             <div class="project-media" aria-hidden="true">
               {{ if .Params.card_video }}
                 <video class="thumbnail card-video card-video--{{ .File.ContentBaseName }}" autoplay loop muted playsinline preload="metadata">
                   <source src="{{ .Params.card_video | relURL }}" type="video/mp4">
                 </video>
               {{ else if .Params.card_animation }}
-                <iframe class="thumbnail cell-embed"
+                <iframe class="thumbnail project-embed-frame"
                         src="{{ printf "%s?card=1" (.Params.card_animation | relURL) }}"
                         scrolling="no" loading="lazy" tabindex="-1"></iframe>
               {{ else }}

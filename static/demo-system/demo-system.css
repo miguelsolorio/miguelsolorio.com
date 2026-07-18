@@ -1,0 +1,179 @@
+:root {
+  color-scheme: light;
+
+  /* Naming: --demo-* tokens and .demo-* components are shared; scene styles
+     stay behind a .demo-scene--<name> root and may override semantic roles. */
+
+  /* Color roles. Scenes may override these without changing the controls. */
+  --demo-color-accent: #1a73e8;
+  --demo-color-text: #202124;
+  --demo-color-muted: #5f6368;
+  --demo-color-surface: #ffffff;
+  --demo-color-control: #f1f3f4;
+  --demo-color-control-hover: #e4e6e8;
+  --demo-color-track: #dadce0;
+
+  /* Shared layout, shape, depth, and motion tokens. */
+  --demo-space-1: 4px;
+  --demo-space-2: 8px;
+  --demo-space-3: 12px;
+  --demo-space-4: 16px;
+  --demo-space-5: 20px;
+  --demo-radius-sm: 6px;
+  --demo-radius-md: 10px;
+  --demo-radius-round: 999px;
+  --demo-shadow-control: 0 1px 4px rgb(0 0 0 / 30%);
+  --demo-motion-fast: 120ms;
+  --demo-motion-base: 200ms;
+  --demo-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --demo-control-size: 34px;
+  --demo-timeline-width: 560px;
+  --demo-timeline-gutter: 40px;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --demo-color-accent: #8ab4f8;
+  --demo-color-text: #e8eaed;
+  --demo-color-muted: #9aa0a6;
+  --demo-color-surface: #202124;
+  --demo-color-control: #3c4043;
+  --demo-color-control-hover: #4b4f52;
+  --demo-color-track: #5f6368;
+}
+
+.demo-scene {
+  margin: 0;
+  color: var(--demo-color-text);
+}
+
+.demo-timeline {
+  position: fixed;
+  z-index: 50;
+  bottom: var(--demo-space-4);
+  left: 50%;
+  display: flex;
+  width: min(
+    var(--demo-timeline-width),
+    calc(100vw - (2 * var(--demo-timeline-gutter)))
+  );
+  align-items: center;
+  gap: var(--demo-space-3);
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+.demo-timeline__button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: var(--demo-control-size);
+  height: var(--demo-control-size);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--demo-radius-round);
+  background: var(--demo-color-control);
+  color: var(--demo-color-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    color var(--demo-motion-base) var(--demo-ease-standard),
+    background-color var(--demo-motion-base) var(--demo-ease-standard);
+}
+
+.demo-timeline__button:hover {
+  background: var(--demo-color-control-hover);
+}
+
+.demo-timeline__button:focus-visible,
+.demo-timeline__track:focus-visible {
+  outline: 2px solid var(--demo-color-accent);
+  outline-offset: 3px;
+}
+
+.demo-timeline__track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: var(--demo-radius-round);
+  background: var(--demo-color-track);
+  cursor: pointer;
+  touch-action: none;
+  transition: background-color var(--demo-motion-base) var(--demo-ease-standard);
+}
+
+.demo-timeline__fill,
+.demo-timeline__thumb {
+  position: absolute;
+  left: 0;
+  background: var(--demo-color-accent);
+}
+
+.demo-timeline__fill {
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-radius: inherit;
+}
+
+.demo-timeline__thumb {
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--demo-radius-round);
+  box-shadow: var(--demo-shadow-control);
+  transform: translate(-50%, -50%);
+  transition: transform var(--demo-motion-fast) var(--demo-ease-standard);
+}
+
+.demo-timeline__track:hover .demo-timeline__thumb,
+.demo-timeline.is-dragging .demo-timeline__thumb {
+  transform: translate(-50%, -50%) scale(1.25);
+}
+
+.demo-timeline__time {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.is-card .demo-timeline {
+  display: none;
+}
+
+/* These state classes deliberately apply to the whole scene. */
+.is-paused *,
+.is-paused *::before,
+.is-paused *::after {
+  animation-play-state: paused !important;
+}
+
+.is-seeking *,
+.is-seeking *::before,
+.is-seeking *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --demo-motion-fast: 0ms;
+    --demo-motion-base: 0ms;
+  }
+
+  .demo-timeline *,
+  .demo-timeline *::before,
+  .demo-timeline *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -18,42 +18,37 @@
   .single h1 {
     @apply text-4xl font-bold mb-4 mt-20
   }
-  /* Backdrop behind transparent-body embeds (e.g. the notebook cell
-     animation). The dark variant matches the deep-indigo card family. */
-  .single iframe.embed-frame {
-    background: #cfc6e8;
-  }
-  .dark .single iframe.embed-frame {
-    background: #262347;
-  }
-  /* Inset the CLI demo in a cool-blue Aurora composition, without changing
-     the card-sized animation itself. */
-  .single .cli-animation-frame {
+  /* Project demos share one stage; data-project-theme supplies the named
+     surface defined alongside the corresponding homepage card. */
+  .single .project-embed {
     margin: 3rem 0;
     padding: clamp(1.5rem, 5vw, 3.5rem);
     border-radius: .75rem;
-    background:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220,232,252,.55) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228,242,248,.5) 36%, transparent 70%),
-      linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
+    background-color: var(--project-theme-surface);
+    background-image: var(--project-theme-artwork);
+    background-position: var(--project-theme-position);
+    background-size: var(--project-theme-size);
   }
-  .dark .single .cli-animation-frame {
-    background:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
-      linear-gradient(145deg, #151d2e 10%, #172430 90%);
-  }
-  .single .cli-animation-frame iframe.embed-frame {
+  .single .project-embed iframe.embed-frame {
     display: block;
     box-sizing: border-box;
     margin: 0;
-    background: #fff;
+    background: transparent;
     box-shadow: 0 18px 44px rgba(43, 76, 124, .18),
                 0 3px 10px rgba(43, 76, 124, .12);
   }
-  .dark .single .cli-animation-frame iframe.embed-frame {
-    background: #1f1f1f;
+  .dark .single .project-embed iframe.embed-frame {
     box-shadow: 0 18px 44px rgba(0, 0, 0, .38),
                 0 3px 10px rgba(0, 0, 0, .28);
+  }
+  /* The notebook scene has a transparent canvas and should blend directly
+     into its gradient stage instead of looking like a nested panel. */
+  .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame,
+  .dark .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame {
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+  .single .project-embed[data-project-theme="notebooks"] {
+    padding-block: clamp(1rem, 2vw, 1.5rem);
   }
 }

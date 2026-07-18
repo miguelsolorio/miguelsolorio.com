@@ -6,12 +6,13 @@ draft: false
 project: "large"
 thumbnail: "cli-agents.png"
 card_animation: "/cli-agents/cli-animation.html"
+card_theme: "cli"
 weight: 2
 ---
 
 As the lead designer, I partnered with engineering and product to bring Gemini's agentic capabilities directly into the terminal. Gemini CLI is an open-source AI agent that lets developers query codebases, manipulate files, run shell commands, and automate complex workflows — all without leaving the environment where they already work.
 
-{{< iframe src="/cli-agents/cli-animation.html" height="500" title="Gemini CLI planning and building a React todo app, with an interactive approval step" frame_class="cli-animation-frame" >}}
+{{< iframe src="/cli-agents/cli-animation.html" height="500" title="Gemini CLI planning and building a React todo app, with an interactive approval step" theme="cli" >}}
 
 # Understanding the Problem
 
