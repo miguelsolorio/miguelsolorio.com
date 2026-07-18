@@ -67,28 +67,29 @@
     --project-aurora-hover-transform: scale(1.12) rotate(1deg);
   }
   .project:nth-child(6n + 2) {
-    /* Oversized blooms: sky enters one corner, ice answers from the other. */
+    /* Dusk cross-light: peach enters high left, lavender answers from the low
+       right, meeting in a warm near-white seam across the middle. */
     --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220,232,252,.55) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228,242,248,.5) 36%, transparent 70%),
-      linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
-    background-color: #eaf2fa;
+      linear-gradient(42deg, rgba(255,224,206,.9) 0%, rgba(253,241,234,0) 55%),
+      linear-gradient(222deg, rgba(228,222,249,.85) 0%, rgba(242,238,251,0) 52%),
+      linear-gradient(180deg, #fdf1ea 0%, #f3effa 100%);
+    background-color: #f9f0ee;
+    --project-aurora-size: 128% 128%;
+    --project-aurora-position: 45% 55%;
+    --project-aurora-transform: scale(1.05) rotate(1deg);
+    --project-aurora-hover-transform: scale(1.13) rotate(-1deg);
+  }
+  .project:nth-child(6n + 3) {
+    /* Mint blooms: soft mint enters one corner, seafoam answers from the other. */
+    --project-aurora:
+      radial-gradient(ellipse 78% 145% at -6% 18%, #d6f1e2 0%, rgba(214,241,226,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #e2f6ea 0%, rgba(226,246,234,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #ecf9f1 10%, #e6f5ec 90%);
+    background-color: #e9f5ee;
     --project-aurora-size: 118% 118%;
     --project-aurora-position: 50% 46%;
     --project-aurora-transform: scale(1.06);
     --project-aurora-hover-transform: scale(1.15) translateX(-1.5%);
-  }
-  .project:nth-child(6n + 3) {
-    /* Blue-slate: cool steel pools from the corners into a quiet mid-blue seam. */
-    --project-aurora:
-      radial-gradient(ellipse 90% 150% at 8% 18%, #d4e6f6 0%, rgba(212,230,246,.55) 36%, transparent 68%),
-      radial-gradient(ellipse 80% 130% at 92% 78%, #d8dff5 0%, rgba(216,223,245,.45) 36%, transparent 68%),
-      linear-gradient(145deg, #e4f0fb 10%, #e4e8f9 90%);
-    background-color: #e6eff9;
-    --project-aurora-size: 155% 155%;
-    --project-aurora-position: 36% 54%;
-    --project-aurora-transform: scale(1.08) rotate(1.5deg);
-    --project-aurora-hover-transform: scale(1.18) rotate(-1.5deg);
   }
   .project:nth-child(6n + 4) {
     /* Off-center prism: blush rotates into rose near the title. */
@@ -147,20 +148,20 @@
     background-color: #171b2d;
   }
   .dark .project:nth-child(6n + 2) {
-    /* Sky → ice: deep navy with teal undertones. */
+    /* Peach → lavender dusk: warm umber crossing into deep violet. */
     --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
-      linear-gradient(145deg, #151d2e 10%, #172430 90%);
-    background-color: #161f2e;
+      linear-gradient(42deg, rgba(64,42,32,.85) 0%, rgba(40,32,38,0) 55%),
+      linear-gradient(222deg, rgba(52,44,84,.85) 0%, rgba(36,32,54,0) 52%),
+      linear-gradient(180deg, #251e20 0%, #201d30 100%);
+    background-color: #221d27;
   }
   .dark .project:nth-child(6n + 3) {
-    /* Blue-slate: deep navy pools from the corners into a midnight-blue base. */
+    /* Mint → seafoam: deep pine with sea-green undertones. */
     --project-aurora:
-      radial-gradient(ellipse 90% 150% at 8% 18%, #102438 0%, rgba(16,36,56,.5) 36%, transparent 68%),
-      radial-gradient(ellipse 80% 130% at 92% 78%, #141c3a 0%, rgba(20,28,58,.45) 36%, transparent 68%),
-      linear-gradient(145deg, #111c2c 10%, #131828 90%);
-    background-color: #111a29;
+      radial-gradient(ellipse 78% 145% at -6% 18%, #1d3d31 0%, rgba(29,61,49,.5) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #18342c 0%, rgba(24,52,44,.45) 36%, transparent 70%),
+      linear-gradient(145deg, #14211c 10%, #172822 90%);
+    background-color: #16211c;
   }
   .dark .project:nth-child(6n + 4) {
     /* Blush → rose: deep plum with muted rose. */
@@ -182,6 +183,26 @@
       linear-gradient(222deg, rgba(55,48,90,.85) 0%, rgba(36,32,60,0) 52%),
       linear-gradient(180deg, #1b1f38 0%, #221e35 100%);
     background-color: #191a2e;
+  }
+  /* CLI has a dedicated palette so its animated card matches the blue frame
+     on the project page, regardless of its position in the work grid. */
+  #cli-agents.project {
+    --project-aurora:
+      radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220,232,252,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228,242,248,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
+    background-color: #eaf2fa;
+    --project-aurora-size: 118% 118%;
+    --project-aurora-position: 50% 46%;
+    --project-aurora-transform: scale(1.06);
+    --project-aurora-hover-transform: scale(1.15) translateX(-1.5%);
+  }
+  .dark #cli-agents.project {
+    --project-aurora:
+      radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
+      linear-gradient(145deg, #151d2e 10%, #172430 90%);
+    background-color: #161f2e;
   }
   .project-media {
     @apply absolute inset-0 z-0 overflow-hidden;

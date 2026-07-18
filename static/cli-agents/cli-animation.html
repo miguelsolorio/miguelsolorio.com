@@ -34,8 +34,8 @@
     --surface-hover:    #e4e6e8;
     --surface-btn:      #f1f3f4;
     --warn:             #f9ab00;
-    --diff-del-bg:      rgba(220, 38, 38, 0.07);
-    --diff-add-bg:      rgba(22, 163, 74, 0.07);
+    --diff-del-bg:      #fdcccc;
+    --diff-add-bg:      #c8ead8;
     --diff-del:         #dc2626;
     --diff-add:         #16a34a;
   }
@@ -140,9 +140,9 @@
   .msg-content { flex: 1; min-width: 0; white-space: pre-wrap; word-break: break-word; }
   .msg-user .msg-prefix  { color: var(--text-muted); transition: color 0.3s ease; }
   .msg-user .msg-content { color: var(--text-muted); transition: color 0.3s ease; }
-  .msg-ai .msg-prefix    { color: var(--accent-purple); transition: color 0.3s ease; }
+  .msg-ai .msg-prefix    { color: var(--accent-purple); transition: color 0.3s ease; font-size: 20px; line-height: 10px; }
   .msg-ai .bold          { font-weight: 700; }
-  .msg-ai .hl            { color: var(--accent-blue); transition: color 0.3s ease; }
+  .msg-ai .hl            { color: var(--accent-purple); transition: color 0.3s ease; }
 
   .msg-reply { margin: 20px 0; width: fit-content; }
   .msg-reply .msg-inner {
@@ -171,9 +171,6 @@
     align-items: baseline;
     gap: 6px;
     width: fit-content;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    padding: 5px 14px;
     font-size: 13px;
     transition: border-color 0.3s ease;
   }
@@ -184,10 +181,11 @@
   /* ---------- status / spinner line ---------- */
   .status-line {
     display: none;
-    height: 1.65em;
+    height: calc(1.65em + 8px);
+    padding-top: 8px;
     font-size: 13px;
     color: var(--accent-purple);
-    margin: 8px 0;
+    margin-bottom: 6px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -214,10 +212,10 @@
     display: grid;
     grid-template-rows: 1fr;
     opacity: 1;
-    border-color: var(--accent-blue);
+    border-color: var(--border);
   }
   .tool-box-inner {
-    min-width: 320px;
+    min-width: 500px;
     min-height: 0;
     overflow: hidden;
     padding: 12px 20px 12px 16px;
@@ -227,11 +225,9 @@
     align-items: baseline;
     gap: 6px;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
     margin-bottom: 10px;
     font-size: 13px;
     overflow: hidden;
-    transition: border-color 0.3s ease;
   }
   .tool-q     { color: var(--warn); font-weight: 700; flex: none; transition: color 0.3s ease; }
   .tool-label { font-weight: 700; flex: none; }
@@ -264,17 +260,10 @@
 
   .tool-command { font-weight: 700; margin-bottom: 8px; color: var(--text); transition: color 0.3s ease; }
 
-  body.awaiting-confirm .input-box              { border-color: var(--border); }
-  body.awaiting-confirm .cursor                 { display: none; }
-  body.awaiting-confirm.focus-input .input-box  { border-color: var(--accent-blue); }
-  body.awaiting-confirm.focus-input .cursor     { display: inline-block; }
-  body.awaiting-confirm.focus-input .tool-box.show { border-color: var(--border); }
-
-  body.awaiting-shell .input-box                { border-color: var(--border); }
-  body.awaiting-shell .cursor                   { display: none; }
-  body.awaiting-shell.focus-input .input-box    { border-color: var(--accent-blue); }
-  body.awaiting-shell.focus-input .cursor       { display: inline-block; }
-  body.awaiting-shell.focus-input #shellBox.show { border-color: var(--border); }
+  body.awaiting-confirm .bottom-bar,
+  body.awaiting-shell .bottom-bar { display: none; }
+  body.awaiting-confirm .scroll-area,
+  body.awaiting-shell .scroll-area { padding-bottom: 52px; }
 
   /* ---------- diff block ---------- */
   .diff-wrap {
@@ -291,19 +280,15 @@
   .diff-file {
     font-size: 12px;
     color: var(--text-muted);
-    padding: 4px 12px;
+    padding: 12px 0 4px;
     background: transparent;
-    border: 1.5px solid var(--border);
-    border-bottom: none;
-    border-radius: 6px 6px 0 0;
-    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    transition: background 0.3s ease, color 0.3s ease;
   }
+  .diff-check { color: var(--accent-green); font-weight: 700; }
+  .diff-file .tool-label { color: var(--text); transition: color 0.3s ease; }
   .diff-body {
-    border: 1.5px solid var(--border);
-    border-top: none;
-    border-radius: 0 0 6px 6px;
+    border-radius: 6px;
     overflow: hidden;
-    transition: border-color 0.3s ease;
   }
   .diff-line {
     display: flex;
@@ -330,6 +315,9 @@
     line-height: inherit;
     text-shadow: none;
     transition: color 0.3s ease;
+  }
+  .language-css .token.string, .style .token.string, .token.entity, .token.operator, .token.url {
+    background-color: transparent;
   }
 
   /* ---------- fixed bottom bar (input + footer) ---------- */
@@ -382,7 +370,12 @@
   .footer {
     font-size: 12.5px;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
   }
+  .footer-project { color: var(--text-muted); transition: color 0.3s ease; }
+  .footer-status  { display: flex; }
   .footer-model { color: var(--accent-purple); transition: color 0.3s ease; }
   .footer-rest  { color: var(--text-muted); transition: color 0.3s ease; }
 
@@ -470,11 +463,6 @@
 
   <div class="convo-area">
   <div id="convoInner"></div>
-
-  <div class="status-line" id="statusLine">
-    <span class="spin-char" id="spinChar"></span><span id="statusText"></span>
-  </div>
-
   </div><!-- /.convo-area -->
 
   <div class="tool-box" id="confirmBox">
@@ -506,12 +494,14 @@
       </div>
     </div>
   </div>
-  <div class="diff-wrap" id="diffWrap"></div>
   <div class="scroll-end"></div>
 </div>
 
 <!-- anchored bottom: input + footer always visible -->
 <div class="bottom-bar">
+  <div class="status-line" id="statusLine">
+    <span class="spin-char" id="spinChar"></span><span id="statusText"></span>
+  </div>
   <div class="input-box" id="inputBox">
     <span class="input-prompt">&gt;</span>
     <div class="input-text">
@@ -519,7 +509,8 @@
     </div>
   </div>
   <div class="footer">
-    <span class="footer-model">Gemini 3</span><span class="footer-rest">&nbsp;/model</span>
+    <span class="footer-project">~/playground</span>
+    <span class="footer-status"><span class="footer-model">Gemini 3</span><span class="footer-rest">&nbsp;/model</span></span>
   </div>
 </div>
 
@@ -535,7 +526,7 @@
 /* ---- content ---- */
 const PROMPT1 = "create a react todo app";
 const THINKING = [
-  ["Refining Proposed Plan", "1s"],
+  "Refining Proposed Plan",
 ];
 /* AI response segments: [text, cls] — cls: ''|'bold'|'hl'|'cli-diamond' */
 const AI_RESP = [
@@ -544,7 +535,7 @@ const AI_RESP = [
   [" I'll use Vite to create a new React project named ", ""],
   ["todo-app", "hl"],
   [" in your\n     current directory (", ""],
-  ["/Users/miguelsolorio/Developer/playground", "hl"],
+  ["~/playground", "hl"],
   ["). Vite provides a fast\n     and modern development experience.\n  2. ", ""],
   ["Features:", "bold"],
   [" The app will allow you to:\n     * Add new To-Do items.\n     * Mark To-Do items as complete or incomplete.\n     * Delete To-Do items.\n     * View the list of your To-Do items.\n  3. ", ""],
@@ -561,7 +552,7 @@ const AI_SCAFFOLD = [
 ];
 
 /* ---- diff data ---- */
-const DIFF_FILE = "Edited src/App.jsx";
+const DIFF_FILE = "src/App.jsx";
 const DIFF_LINES = [
   ["ctx", "import { useState } from 'react'"],
   ["del", "import reactLogo from './assets/react.svg'"],
@@ -589,22 +580,61 @@ const DIFF_LINES = [
   ["ctx", "export default App"],
 ];
 
-function buildDiffBlock() {
-  const dw = document.getElementById("diffWrap");
-  dw.innerHTML = "";
+const DIFF_FILE_2 = "src/App.css";
+const DIFF_LINES_2 = [
+  ["del", "#root { max-width: 1280px; margin: 0 auto; padding: 2rem; }"],
+  ["del", ".App { text-align: center; }"],
+  ["add", ".todo-app {"],
+  ["add", "  max-width: 480px;"],
+  ["add", "  margin: 60px auto;"],
+  ["add", "  padding: 24px;"],
+  ["add", "}"],
+  ["ctx", ""],
+  ["add", "h1 { font-size: 28px; margin-bottom: 20px; color: #333; }"],
+  ["add", "input { width: calc(100% - 90px); padding: 8px 12px;"],
+  ["add", "        border: 1px solid #ddd; border-radius: 4px; }"],
+  ["add", "button { padding: 8px 16px; background: #646cff;"],
+  ["add", "         color: white; border: none; border-radius: 4px;"],
+  ["add", "         cursor: pointer; margin-left: 8px; }"],
+  ["ctx", ""],
+  ["add", "ul { list-style: none; padding: 0; margin-top: 16px; }"],
+  ["add", "li { display: flex; align-items: center; gap: 8px;"],
+  ["add", "     padding: 10px 0; border-bottom: 1px solid #f0f0f0; }"],
+];
+
+const AI_SUMMARY = [
+  ["Done! Your React To-Do app is ready. Here's a summary of what was built:\n\n  Files modified:\n    • ", ""],
+  ["todo-app/src/App.jsx", "hl"],
+  ["  — component with add, toggle & delete\n    • ", ""],
+  ["todo-app/src/App.css", "hl"],
+  ["  — clean, responsive styles\n\n  To start the development server:\n\n    ", ""],
+  ["cd todo-app && npm run dev", "hl"],
+  ["\n\n  Open ", ""],
+  ["http://localhost:5173", "hl"],
+  [" in your browser to see your app.", ""],
+];
+
+function buildDiffBlock(el, file, lines) {
+  el.innerHTML = "";
 
   const header = document.createElement("div");
   header.className = "diff-file";
-  header.textContent = DIFF_FILE;
-  dw.appendChild(header);
+  const editedCheck = document.createElement("span");
+  editedCheck.className = "diff-check";
+  editedCheck.textContent = "✓";
+  const editedLabel = document.createElement("span");
+  editedLabel.className = "tool-label";
+  editedLabel.textContent = "Edited";
+  header.append(editedCheck, document.createTextNode(" "), editedLabel, document.createTextNode(" " + file));
+  el.appendChild(header);
 
   const body = document.createElement("div");
   body.className = "diff-body";
-  dw.appendChild(body);
+  el.appendChild(body);
 
   let oldLineNum = 1;
   let newLineNum = 1;
-  for (const [type, text] of DIFF_LINES) {
+  for (const [type, text] of lines) {
     const line = document.createElement("div");
     line.className = "diff-line diff-line-" + type;
 
@@ -629,6 +659,15 @@ function buildDiffBlock() {
     }
     line.appendChild(code);
     body.appendChild(line);
+  }
+}
+
+function showDiff(el) {
+  if (instant) {
+    el.classList.add("show");
+    scrollToBottom();
+  } else {
+    requestAnimationFrame(() => { el.classList.add("show"); scrollToBottom(); });
   }
 }
 
@@ -667,6 +706,8 @@ const sleep = ms => {
       return gate();
     }
     setFab("playing");
+    startSpin();
+    resumeStatusTimer();
   }
   return new Promise(r => setTimeout(r, ms)).then(gate);
 };
@@ -674,6 +715,7 @@ const sleep = ms => {
 /* ---- spinner ---- */
 const SPINS = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏".split("");
 let spinIdx = 0, spinTimer = null;
+let statusTimer = null, statusLabel = "", statusSeconds = 0;
 function startSpin() {
   if (instant || spinTimer) return;
   spinTimer = setInterval(() => {
@@ -683,6 +725,30 @@ function startSpin() {
 }
 function stopSpin() {
   if (spinTimer) { clearInterval(spinTimer); spinTimer = null; }
+}
+function renderStatusTimer() {
+  document.getElementById("statusText").textContent =
+    ` ${statusLabel} (esc to cancel, ${statusSeconds}s)`;
+}
+function resumeStatusTimer() {
+  if (instant || paused || !statusLabel || statusTimer) return;
+  statusTimer = setInterval(() => {
+    if (paused) return;
+    statusSeconds++;
+    renderStatusTimer();
+  }, 1000);
+}
+function startStatusTimer(label) {
+  stopStatusTimer();
+  statusLabel = label;
+  statusSeconds = 0;
+  renderStatusTimer();
+  resumeStatusTimer();
+}
+function stopStatusTimer() {
+  if (statusTimer) { clearInterval(statusTimer); statusTimer = null; }
+  statusLabel = "";
+  statusSeconds = 0;
 }
 
 /* ---- playback controls ---- */
@@ -700,7 +766,14 @@ function setFab(s) {
 function setPaused(on) {
   paused = on;
   document.body.classList.toggle("paused", on);
-  if (on) { stopSpin(); } else { resumeQueue.forEach(r => r()); resumeQueue = []; startSpin(); }
+  if (on) {
+    stopSpin();
+  } else {
+    resumeQueue.forEach(r => r());
+    resumeQueue = [];
+    startSpin();
+    resumeStatusTimer();
+  }
   setFab(on ? "paused" : "playing");
 }
 function setProgress(p) {
@@ -887,7 +960,7 @@ async function streamRich(el, segs, id) {
 /* ---- main animation loop ---- */
 async function run() {
   const id = ++runId;
-  _seed = SEED; vt = 0; resumeQueue = []; stopSpin(); spinIdx = 0;
+  _seed = SEED; vt = 0; resumeQueue = []; stopSpin(); stopStatusTimer(); spinIdx = 0;
 
   // reset all state
   document.getElementById("scrollArea").scrollTop = 0;
@@ -897,8 +970,6 @@ async function run() {
   document.getElementById("spinChar").textContent   = "";
   document.getElementById("confirmBox").classList.remove("show");
   document.getElementById("shellBox").classList.remove("show");
-  const _dw = document.getElementById("diffWrap");
-  _dw.classList.remove("show"); _dw.innerHTML = "";
   document.getElementById("typedText").textContent  = "";
   document.getElementById("placeholder").style.display = "";
   document.body.classList.remove("awaiting-confirm", "awaiting-shell", "focus-input");
@@ -928,12 +999,13 @@ async function run() {
   for (let i = 0; i < THINKING.length; i++) {
     if (id !== runId) return;
     schar.textContent = SPINS[spinIdx];
-    stext.textContent = " " + THINKING[i][0] + " (esc to cancel, " + THINKING[i][1] + ")";
+    startStatusTimer(THINKING[i]);
     sline.classList.add("show");
     scrollToBottom();
     if (!instant) startSpin();
     await sleep(i === 0 ? 1900 : 1500);
     stopSpin();
+    stopStatusTimer();
   }
   sline.classList.remove("show");
   await sleep(180);
@@ -981,13 +1053,14 @@ async function run() {
 
   // 5b. pre-shell loading
   schar.textContent = SPINS[spinIdx];
-  stext.textContent = " Creating project structure...";
+  startStatusTimer("Creating project structure...");
   sline.classList.add("show");
   scrollToBottom();
   if (!instant) startSpin();
   await sleep(1800);
   if (id !== runId) return;
   stopSpin();
+  stopStatusTimer();
   sline.classList.remove("show");
   await sleep(200);
 
@@ -1041,31 +1114,52 @@ async function run() {
   u3.textContent = "Yes, allow always";
   await sleep(360);
 
-  // 8. npm install loading
+  // 8. persistent spinner — stays visible through all edits until summary completes
   schar.textContent = SPINS[spinIdx];
-  stext.textContent = " Installing dependencies...";
+  startStatusTimer("Installing dependencies...");
   sline.classList.add("show");
-  scrollToBottom();
   if (!instant) startSpin();
   await sleep(2000);
   if (id !== runId) return;
-  stopSpin();
-  sline.classList.remove("show");
-  await sleep(300);
 
-  // 9. diff block
-  buildDiffBlock();
-  const dw = document.getElementById("diffWrap");
-  if (instant) {
-    dw.classList.add("show");
-    scrollToBottom();
-  } else {
-    requestAnimationFrame(() => {
-      dw.classList.add("show");
-      scrollToBottom();
-    });
-  }
-  await sleep(2500);
+  // 9. spinner → editing App.jsx, then diff appears
+  startStatusTimer("Editing src/App.jsx...");
+  await sleep(600);
+  if (id !== runId) return;
+  const dw = document.createElement("div");
+  dw.className = "diff-wrap";
+  document.getElementById("convoInner").appendChild(dw);
+  buildDiffBlock(dw, DIFF_FILE, DIFF_LINES);
+  showDiff(dw);
+  await sleep(2200);
+  if (id !== runId) return;
+
+  // 10. spinner → writing styles, then diff appears
+  startStatusTimer("Writing styles...");
+  await sleep(600);
+  if (id !== runId) return;
+  const dw2 = document.createElement("div");
+  dw2.className = "diff-wrap";
+  document.getElementById("convoInner").appendChild(dw2);
+  buildDiffBlock(dw2, DIFF_FILE_2, DIFF_LINES_2);
+  showDiff(dw2);
+  await sleep(2000);
+  if (id !== runId) return;
+
+  // 11. spinner → finalizing, then summary streams in
+  startStatusTimer("Finalizing project...");
+  await sleep(800);
+  if (id !== runId) return;
+  const aiSummary = addMsg("msg-ai");
+  await streamRich(aiSummary, AI_SUMMARY, id);
+  if (id !== runId) return;
+  await sleep(400);
+
+  // spinner clears after summary
+  stopSpin();
+  stopStatusTimer();
+  sline.classList.remove("show");
+  await sleep(400);
 
   setFab("done");
 
@@ -1086,7 +1180,6 @@ async function measure() {
   // Reset visible elements before re-enabling transitions to avoid a flash on first run
   document.getElementById("confirmBox").classList.remove("show");
   document.getElementById("shellBox").classList.remove("show");
-  document.getElementById("diffWrap").classList.remove("show");
   document.body.classList.remove("no-anim");
 }
 
