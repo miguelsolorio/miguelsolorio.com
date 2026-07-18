@@ -5,7 +5,7 @@
   "author": "miguelsolorio",
   "license": "MIT",
   "scripts": {
-    "develop": "hugo server -D",
+    "develop": "hugo server -D --port 1313 --forceSyncStatic --noHTTPCache",
     "export": "hugo --minify"
   },
   "devDependencies": {

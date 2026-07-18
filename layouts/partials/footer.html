@@ -20,6 +20,19 @@
     </footer>
 
 </div>
+
+<div id="cmd-palette-overlay" aria-hidden="true">
+  <div id="cmd-palette" role="dialog" aria-label="Command palette" aria-modal="true">
+    <input id="cmd-palette-input" type="text" placeholder="Search for commands..." autocomplete="off" spellcheck="false" aria-label="Search commands" />
+    <div id="cmd-palette-results" role="listbox" aria-label="Command results"></div>
+    <div class="cmd-palette-footer" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+      <span><kbd>↵</kbd> Select</span>
+      <span><kbd>Esc</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
 <noise></noise>
 {{ $scripts := resources.Get "js/scripts.js" }}
 

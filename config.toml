@@ -3,6 +3,16 @@ languageCode = "en-us"
 title = "Miguel Solorio"
 SectionPagesMenu = "main"
 
+# Some editors save files atomically by creating a short-lived
+# `name.ext.tmp.<pid>.<id>` file and then renaming it. Exclude those files from
+# Hugo's static mount. The development command pairs this with forceSyncStatic
+# so a watcher event always reconciles the stable files instead of copying the
+# short-lived event path.
+[[module.mounts]]
+  source = "static"
+  target = "static"
+  excludeFiles = ["**/*.tmp.*"]
+
 [[menu.main]]
   name = "Work"
   weight = 1

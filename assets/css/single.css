@@ -26,4 +26,30 @@
   .dark .single iframe.embed-frame {
     background: #262347;
   }
+  /* Inset the CLI demo in the same Aurora composition used by its homepage
+     project card, without changing the card-sized animation itself. */
+  .single .cli-animation-frame {
+    margin: 3rem 0;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+    border-radius: .75rem;
+    background:
+      linear-gradient(154deg, #e4defc 0%, #ece8fd 31%, #f6f3fe 45%, #fdf0ea 59%, #ffe8dc 100%);
+  }
+  .dark .single .cli-animation-frame {
+    background:
+      linear-gradient(154deg, #2b2751 0%, #241f42 31%, #1a1e33 45%, #2c2229 59%, #3a2830 100%);
+  }
+  .single .cli-animation-frame iframe.embed-frame {
+    display: block;
+    box-sizing: border-box;
+    margin: 0;
+    background: #fff;
+    box-shadow: 0 18px 44px rgba(69, 54, 115, .18),
+                0 3px 10px rgba(69, 54, 115, .12);
+  }
+  .dark .single .cli-animation-frame iframe.embed-frame {
+    background: #1f1f1f;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .38),
+                0 3px 10px rgba(0, 0, 0, .28);
+  }
 }

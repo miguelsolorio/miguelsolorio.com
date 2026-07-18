@@ -10,7 +10,7 @@
   <div id="selected-work">
     {{ range where .Pages "Params.project" "==" "large" }}
           {{ $thumbnail := .Params.thumbnail | default (printf "%s.png" (lower .Title)) }}
-          <a class="project{{ if .Params.card_animation }} project--embed{{ end }}" href="{{ .Permalink }}">
+          <a id="{{ .File.ContentBaseName }}" data-project-id="{{ .File.ContentBaseName }}" class="project{{ if .Params.card_animation }} project--embed{{ end }}" href="{{ .Permalink }}">
             <div class="project-media" aria-hidden="true">
               {{ if .Params.card_video }}
                 <video class="thumbnail card-video card-video--{{ .File.ContentBaseName }}" autoplay loop muted playsinline preload="metadata">
@@ -46,9 +46,9 @@
     {{ range $index, $row := (slice $rowA $rowB $rowC) }}
     <div class="marquee-track{{ if eq (mod $index 2) 1 }} reverse{{ end }}">
       {{/* Four copies keep the -50% loop seamless even for short rows. */}}
-      {{ range seq 4 }}
+      {{ range $copy := seq 4 }}
         {{ range $row }}
-        <a class="side-project" href="{{ .Params.Link }}" target="_blank">
+        <a id="{{ .File.ContentBaseName }}-{{ $copy }}" data-project-id="{{ .File.ContentBaseName }}" class="side-project" href="{{ .Params.Link }}" target="_blank">
           <img src="{{ .Params.Thumbnail | relURL }}" alt="" />
           <div>
             <p class="side-project-title">{{ .Title }} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></p>

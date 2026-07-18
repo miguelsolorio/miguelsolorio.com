@@ -41,8 +41,8 @@
     opacity: 0;
     transition: opacity .35s ease;
   }
-  /* The Aurora palette repeats, but its scale, focal point, and direction
-     shift per card so the work grid feels related rather than duplicated. */
+  /* Six aurora compositions share the same softness and motion, but each
+     card gets its own hue family so the grid feels related, not duplicated. */
   .project::after {
     content: '';
     position: absolute;
@@ -60,65 +60,73 @@
   .project:nth-child(6n + 1) {
     /* Wide diagonal: violet enters low left and coral exits high right. */
     --project-aurora: linear-gradient(118deg, #e3ddfc -18%, #f2effe 46%, #ffeadf 118%);
+    background-color: #f0edf9;
     --project-aurora-size: 125% 125%;
     --project-aurora-position: 38% 50%;
     --project-aurora-transform: scale(1.03) rotate(-1deg);
     --project-aurora-hover-transform: scale(1.12) rotate(1deg);
   }
   .project:nth-child(6n + 2) {
-    /* Oversized blooms: the color fields sit beyond opposite corners. */
+    /* Oversized blooms: sky enters one corner, ice answers from the other. */
     --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #e5e0fc 0%, rgba(229,224,252,.55) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #ffe7dd 0%, rgba(255,231,221,.5) 36%, transparent 70%),
-      linear-gradient(145deg, #f6f4fe 10%, #fdf3ef 90%);
+      radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220,232,252,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228,242,248,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
+    background-color: #eaf2fa;
     --project-aurora-size: 118% 118%;
     --project-aurora-position: 50% 46%;
     --project-aurora-transform: scale(1.06);
     --project-aurora-hover-transform: scale(1.15) translateX(-1.5%);
   }
   .project:nth-child(6n + 3) {
-    /* Steep band: a larger, graphic slice through the center. */
+    /* Blue-slate: cool steel pools from the corners into a quiet mid-blue seam. */
     --project-aurora:
-      linear-gradient(154deg, #e4defc 0%, #ece8fd 31%, #f6f3fe 45%, #fdf0ea 59%, #ffe8dc 100%);
+      radial-gradient(ellipse 90% 150% at 8% 18%, #d4e6f6 0%, rgba(212,230,246,.55) 36%, transparent 68%),
+      radial-gradient(ellipse 80% 130% at 92% 78%, #d8dff5 0%, rgba(216,223,245,.45) 36%, transparent 68%),
+      linear-gradient(145deg, #e4f0fb 10%, #e4e8f9 90%);
+    background-color: #e6eff9;
     --project-aurora-size: 155% 155%;
     --project-aurora-position: 36% 54%;
     --project-aurora-transform: scale(1.08) rotate(1.5deg);
     --project-aurora-hover-transform: scale(1.18) rotate(-1.5deg);
   }
   .project:nth-child(6n + 4) {
-    /* Off-center prism: color rotates around a focal point near the title. */
+    /* Off-center prism: blush rotates into rose near the title. */
     --project-aurora:
-      conic-gradient(from 218deg at 68% 34%, #e8e3fd 0deg, #f3f0fe 96deg, #fdf4ef 174deg, #ffe9df 258deg, #e8e3fd 360deg);
+      conic-gradient(from 218deg at 68% 34%, #fce4ee 0deg, #fef2f5 96deg, #fdf0f3 174deg, #f8dde8 258deg, #fce4ee 360deg);
+    background-color: #fef0f4;
     --project-aurora-size: 135% 150%;
     --project-aurora-position: 64% 35%;
     --project-aurora-transform: scale(1.08) rotate(-2deg);
     --project-aurora-hover-transform: scale(1.17) rotate(2deg);
   }
   .project:nth-child(6n + 5) {
-    /* Vertical horizon: coral glows from above and settles into violet. */
+    /* Vertical horizon: amber glows from above and settles into cream. */
     --project-aurora:
-      radial-gradient(ellipse 135% 72% at 50% -14%, #ffe5da 0%, rgba(255,229,218,.55) 38%, transparent 72%),
-      linear-gradient(180deg, #fdf2ee 0%, #f1edfe 58%, #e4defc 118%);
+      radial-gradient(ellipse 135% 72% at 50% -14%, #fdebd4 0%, rgba(253,235,212,.55) 38%, transparent 72%),
+      linear-gradient(180deg, #fff9f2 0%, #fef6ea 58%, #fef3e4 118%);
+    background-color: #fef8f0;
     --project-aurora-size: 122% 135%;
     --project-aurora-position: 50% 35%;
     --project-aurora-transform: scale(1.04) translateY(-1.5%);
     --project-aurora-hover-transform: scale(1.14) translateY(2%);
   }
   .project:nth-child(6n + 6) {
-    /* Cross-light: violet enters high left, peach answers from the low
+    /* Cross-light: periwinkle enters high left, lilac answers from the low
        right, meeting in a quiet near-white seam across the middle. */
     --project-aurora:
-      linear-gradient(42deg, rgba(227, 221, 252, .9) 0%, rgba(242, 239, 254, 0) 55%),
-      linear-gradient(222deg, rgba(255, 232, 220, .9) 0%, rgba(253, 240, 234, 0) 52%),
-      linear-gradient(180deg, #f4f1fe 0%, #fbf3ef 100%);
+      linear-gradient(42deg, rgba(230,226,252,.9) 0%, rgba(240,237,254,0) 55%),
+      linear-gradient(222deg, rgba(221,216,248,.9) 0%, rgba(240,237,254,0) 52%),
+      linear-gradient(180deg, #f0edfe 0%, #ece8fc 100%);
+    background-color: #eeebfa;
     --project-aurora-size: 128% 128%;
     --project-aurora-position: 45% 55%;
     --project-aurora-transform: scale(1.05) rotate(1deg);
     --project-aurora-hover-transform: scale(1.13) rotate(-1deg);
   }
-  /* Dark theme: the same six compositions rebuilt from deep indigo, violet,
-     and umber, sitting one quiet step above the slate-900 page. Sizes,
-     focal points, and hover motion are inherited from the light variants. */
+  /* Dark theme: the same six compositions rebuilt in deep, muted hues that
+     mirror each light palette — one quiet step above the slate-900 page.
+     Sizes, focal points, and hover motion inherit from the light variants. */
   .dark .project {
     --project-aurora: linear-gradient(118deg, #262347 -12%, #1a1e33 48%, #33252e 112%);
     background-color: #171b2d;
@@ -136,31 +144,44 @@
   }
   .dark .project:nth-child(6n + 1) {
     --project-aurora: linear-gradient(118deg, #2b2754 -18%, #1c2036 46%, #38272c 118%);
+    background-color: #171b2d;
   }
   .dark .project:nth-child(6n + 2) {
+    /* Sky → ice: deep navy with teal undertones. */
     --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #2c2858 0%, rgba(44, 40, 88, .5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #3c2a2e 0%, rgba(60, 42, 46, .45) 36%, transparent 70%),
-      linear-gradient(145deg, #191d31 10%, #1f1c2c 90%);
+      radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
+      linear-gradient(145deg, #151d2e 10%, #172430 90%);
+    background-color: #161f2e;
   }
   .dark .project:nth-child(6n + 3) {
+    /* Blue-slate: deep navy pools from the corners into a midnight-blue base. */
     --project-aurora:
-      linear-gradient(154deg, #2b2751 0%, #241f42 31%, #1a1e33 45%, #2c2229 59%, #3a2830 100%);
+      radial-gradient(ellipse 90% 150% at 8% 18%, #102438 0%, rgba(16,36,56,.5) 36%, transparent 68%),
+      radial-gradient(ellipse 80% 130% at 92% 78%, #141c3a 0%, rgba(20,28,58,.45) 36%, transparent 68%),
+      linear-gradient(145deg, #111c2c 10%, #131828 90%);
+    background-color: #111a29;
   }
   .dark .project:nth-child(6n + 4) {
+    /* Blush → rose: deep plum with muted rose. */
     --project-aurora:
-      conic-gradient(from 218deg at 68% 34%, #282450 0deg, #1c2036 96deg, #2a2130 174deg, #382930 258deg, #282450 360deg);
+      conic-gradient(from 218deg at 68% 34%, #2e1f33 0deg, #1e1a2e 96deg, #2a2028 174deg, #382030 258deg, #2e1f33 360deg);
+    background-color: #1f1a28;
   }
   .dark .project:nth-child(6n + 5) {
+    /* Amber → cream: deep umber with warm brown. */
     --project-aurora:
-      radial-gradient(ellipse 135% 72% at 50% -14%, #3d2a2e 0%, rgba(61, 42, 46, .5) 38%, transparent 72%),
-      linear-gradient(180deg, #241f33 0%, #1e2138 58%, #2a2652 118%);
+      radial-gradient(ellipse 135% 72% at 50% -14%, #3d3020 0%, rgba(61,48,32,.5) 38%, transparent 72%),
+      linear-gradient(180deg, #2a2218 0%, #1e1c28 58%, #2a2638 118%);
+    background-color: #1f1c18;
   }
   .dark .project:nth-child(6n + 6) {
+    /* Periwinkle → lilac: deep indigo with cool violet. */
     --project-aurora:
-      linear-gradient(42deg, rgba(44, 40, 88, .85) 0%, rgba(28, 32, 54, 0) 55%),
-      linear-gradient(222deg, rgba(60, 42, 46, .85) 0%, rgba(36, 31, 51, 0) 52%),
-      linear-gradient(180deg, #1b1f33 0%, #241f30 100%);
+      linear-gradient(42deg, rgba(40,38,75,.85) 0%, rgba(28,32,54,0) 55%),
+      linear-gradient(222deg, rgba(55,48,90,.85) 0%, rgba(36,32,60,0) 52%),
+      linear-gradient(180deg, #1b1f38 0%, #221e35 100%);
+    background-color: #191a2e;
   }
   .project-media {
     @apply absolute inset-0 z-0 overflow-hidden;
@@ -184,12 +205,6 @@
     top: 12%;
     left: 50%;
   }
-  .project .card-video--cli-agents {
-    width: 65%;
-    top: 10%;
-    left: 50%;
-    border-radius: 0;
-  }
   .project .card-video--onboarding {
     width: 90%;
     top: 10%;
@@ -208,6 +223,14 @@
     pointer-events: none;
     transform: translateY(-50%);
     transition: transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  #cli-agents.project .thumbnail.cell-embed {
+    width: 70%;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 1rem;
+    box-shadow: 0 12px 28px -8px rgba(52,41,255,.45);
   }
   .project .title {
     @apply m-0 inline-block text-center font-extrabold text-primary;

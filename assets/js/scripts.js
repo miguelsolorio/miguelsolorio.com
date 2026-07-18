@@ -1003,3 +1003,301 @@ if(text){
     }
     requestAnimationFrame(flowFrame);
 })();
+
+
+// Command Palette
+(function () {
+  'use strict';
+
+  var CATEGORY_ORDER = ['Appearance', 'Navigation', 'Featured Work', 'Projects', 'Socials'];
+
+  var COMMANDS = [
+    { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Appearance' },
+    { id: 'go-home', label: 'Home', category: 'Navigation', href: '/' },
+    { id: 'go-resume', label: 'Résumé', category: 'Navigation', href: '/miguel-solorio-resume.pdf', external: true },
+    { id: 'go-kanvas', label: 'Kanvas Design System', category: 'Featured Work', href: '/kustomer-design-system/' },
+    { id: 'go-cli', label: 'CLI Agents', category: 'Featured Work', href: '/cli-agents/' },
+    { id: 'go-icons', label: 'Icons', category: 'Featured Work', href: '/icons/' },
+    { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', href: '/onboarding/' },
+    { id: 'go-notebooks', label: 'Colab Notebooks', category: 'Featured Work', href: '/colab-notebooks/' },
+    { id: 'go-chroma', label: 'Chroma Colors', category: 'Projects', href: '/chroma/', icon: '/chroma.svg' },
+    { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', href: '/code/', icon: '/code.svg' },
+    { id: 'go-codicons', label: 'VS Code Icons', category: 'Projects', href: '/codicons/', icon: '/codicons.svg' },
+    { id: 'go-colorizer', label: 'Colorizer', category: 'Projects', href: '/colorizer/', icon: '/colorizer.svg' },
+    { id: 'go-fluent', label: 'Fluent Icons', category: 'Projects', href: '/fluent/', icon: '/fluent.png' },
+    { id: 'go-kaleidocode', label: 'Kaleidocode', category: 'Projects', href: '/kaleidocode/', icon: '/kaleidocode-logo.svg' },
+    { id: 'go-min', label: 'Min Theme', category: 'Projects', href: '/min/', icon: '/min.svg' },
+    { id: 'go-navigator', label: 'Navigator', category: 'Projects', href: '/navigator/', icon: '/navigator.svg' },
+    { id: 'go-regulator', label: 'Regulator', category: 'Projects', href: '/regulator/', icon: '/regulator.svg' },
+    { id: 'go-symbols', label: 'Symbols', category: 'Projects', href: '/symbols/', icon: '/symbols.png' },
+    { id: 'go-variables', label: 'Variables Generator', category: 'Projects', href: '/variables/', icon: '/variables.png' },
+    { id: 'social-github', label: 'GitHub', category: 'Socials', href: 'https://github.com/miguelsolorio', external: true },
+    { id: 'social-linkedin', label: 'LinkedIn', category: 'Socials', href: 'https://www.linkedin.com/in/miguel-solorio-a432b021', external: true },
+    { id: 'social-twitter', label: 'Twitter', category: 'Socials', href: 'https://twitter.com/miguelsolorio_', external: true },
+    { id: 'social-adplist', label: 'ADPList', category: 'Socials', href: 'https://adplist.org/mentors/miguel-solorio', external: true },
+    { id: 'clear-recents', label: 'Clear Recents', category: 'Actions' },
+  ];
+
+  var RECENT_KEY = 'cmd-recent';
+  var MAX_RECENT = 5;
+
+  var recentIds = [];
+  var activeIndex = 0;
+  var filteredItems = [];
+  var isOpen = false;
+
+  var overlay = document.getElementById('cmd-palette-overlay');
+  var palette = document.getElementById('cmd-palette');
+  var input = document.getElementById('cmd-palette-input');
+  var results = document.getElementById('cmd-palette-results');
+
+  if (!overlay || !palette || !input || !results) return;
+
+  function loadRecent() {
+    try {
+      recentIds = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+    } catch (e) {
+      recentIds = [];
+    }
+  }
+
+  function saveRecent() {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recentIds));
+  }
+
+  function getThemeLabel() {
+    return document.documentElement.classList.contains('dark') ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+  }
+
+  function toggleThemeAction() {
+    var isDark = document.documentElement.classList.contains('dark');
+    var darkIcon = document.getElementById('theme-toggle-dark-icon');
+    var lightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('color-theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('color-theme', 'dark');
+    }
+
+    if (darkIcon) darkIcon.classList.toggle('hidden');
+    if (lightIcon) lightIcon.classList.toggle('hidden');
+  }
+
+  function clearRecents() {
+    recentIds = [];
+    saveRecent();
+    render(input.value);
+    input.focus();
+  }
+
+  function executeCommand(id) {
+    var cmd = COMMANDS.find(function (c) { return c.id === id; });
+    if (!cmd) return;
+
+    if (id === 'clear-recents') {
+      clearRecents();
+      return;
+    }
+
+    recentIds = [id].concat(recentIds.filter(function (r) { return r !== id; })).slice(0, MAX_RECENT);
+    saveRecent();
+    close();
+
+    if (id === 'toggle-theme') {
+      toggleThemeAction();
+    } else if (cmd.href) {
+      if (cmd.external) {
+        window.open(cmd.href, '_blank', 'noopener');
+      } else {
+        window.location.href = cmd.href;
+      }
+    }
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function computeFiltered(query) {
+    var q = query.trim().toLowerCase();
+
+    var items = COMMANDS.map(function (c) {
+      return Object.assign({}, c, {
+        label: c.id === 'toggle-theme' ? getThemeLabel() : c.label,
+        displayCategory: c.category
+      });
+    });
+
+    if (q) {
+      return items
+        .filter(function (c) {
+          return c.label.toLowerCase().includes(q) || c.category.toLowerCase().includes(q);
+        })
+        .sort(function (a, b) {
+          return CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category);
+        });
+    }
+
+    var recentIdSet = new Set(recentIds);
+    var recentItems = recentIds
+      .map(function (id) { return items.find(function (c) { return c.id === id; }); })
+      .filter(Boolean)
+      .map(function (c) { return Object.assign({}, c, { displayCategory: 'Recent' }); });
+
+    if (recentItems.length > 0) {
+      recentItems.push({ id: 'clear-recents', label: 'Clear Recents', category: 'Actions', displayCategory: 'Recent' });
+    }
+
+    var nonRecentItems = items.filter(function (c) {
+      return !recentIdSet.has(c.id) && c.id !== 'clear-recents';
+    });
+
+    return recentItems.concat(nonRecentItems);
+  }
+
+  function render(query) {
+    filteredItems = computeFiltered(query);
+
+    if (filteredItems.length === 0) {
+      results.innerHTML = '<p class="cmd-no-results">No results</p>';
+      activeIndex = -1;
+      return;
+    }
+
+    activeIndex = 0;
+
+    var html = '';
+    var lastCat = null;
+
+    filteredItems.forEach(function (cmd, idx) {
+      if (cmd.displayCategory !== lastCat) {
+        html += '<div class="cmd-category-header" aria-hidden="true">' + escapeHtml(cmd.displayCategory) + '</div>';
+        lastCat = cmd.displayCategory;
+      }
+      var iconHtml = cmd.icon
+        ? '<img class="cmd-item-icon" src="' + escapeHtml(cmd.icon) + '" alt="" aria-hidden="true" />'
+        : '';
+      html += '<div class="cmd-item' + (idx === activeIndex ? ' active' : '') + '"' +
+        ' role="option"' +
+        ' aria-selected="' + (idx === activeIndex ? 'true' : 'false') + '"' +
+        ' data-id="' + escapeHtml(cmd.id) + '"' +
+        ' data-index="' + idx + '">' +
+        '<span class="cmd-item-left">' + iconHtml + '<span class="cmd-item-label">' + escapeHtml(cmd.label) + '</span></span>' +
+        '<span class="cmd-item-badge">' + escapeHtml(cmd.category) + '</span>' +
+        '</div>';
+    });
+
+    results.innerHTML = html;
+
+    results.querySelectorAll('.cmd-item').forEach(function (el) {
+      el.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+      });
+      el.addEventListener('click', function () {
+        executeCommand(el.dataset.id);
+        input.focus();
+      });
+      el.addEventListener('mouseenter', function () {
+        activeIndex = parseInt(el.dataset.index, 10);
+        updateActive();
+      });
+    });
+  }
+
+  function updateActive() {
+    results.querySelectorAll('.cmd-item').forEach(function (el) {
+      var idx = parseInt(el.dataset.index, 10);
+      var active = idx === activeIndex;
+      el.classList.toggle('active', active);
+      el.setAttribute('aria-selected', active ? 'true' : 'false');
+      if (active) el.scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  function open() {
+    if (isOpen) return;
+    isOpen = true;
+    loadRecent();
+    input.value = '';
+    render('');
+    overlay.classList.add('open');
+    overlay.removeAttribute('aria-hidden');
+    requestAnimationFrame(function () { input.focus(); });
+  }
+
+  function close() {
+    if (!isOpen) return;
+    isOpen = false;
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  document.addEventListener('keyup', function (e) {
+    if (isOpen) input.focus();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var isCmdShiftP = (e.metaKey || e.ctrlKey) && e.shiftKey && (e.code === 'KeyP' || e.key === 'P' || e.key === 'p');
+    if (isCmdShiftP) {
+      e.preventDefault();
+      isOpen ? close() : open();
+      return;
+    }
+
+    if (!isOpen) return;
+
+    var isCmdK = (e.metaKey || e.ctrlKey) && (e.code === 'KeyK' || e.key === 'k' || e.key === 'K');
+    if (isCmdK) {
+      e.preventDefault();
+      clearRecents();
+      return;
+    }
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      close();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (filteredItems.length === 0) return;
+      activeIndex = (activeIndex + 1) % filteredItems.length;
+      updateActive();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (filteredItems.length === 0) return;
+      activeIndex = (activeIndex - 1 + filteredItems.length) % filteredItems.length;
+      updateActive();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (filteredItems[activeIndex]) {
+        executeCommand(filteredItems[activeIndex].id);
+      }
+    }
+  });
+
+  input.addEventListener('input', function () {
+    render(input.value);
+  });
+
+  input.addEventListener('blur', function () {
+    if (isOpen) requestAnimationFrame(function () { input.focus(); });
+  });
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) close();
+  });
+
+  palette.addEventListener('mousedown', function (e) {
+    if (e.target !== input) e.preventDefault();
+  });
+
+  palette.addEventListener('click', function (e) {
+    e.stopPropagation();
+  });
+})();

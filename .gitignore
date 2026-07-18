@@ -4,3 +4,4 @@ node_modules
 resources
 public
 docs
+*.tmp.*
