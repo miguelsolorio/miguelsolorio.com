@@ -79,6 +79,11 @@
         padding: 2rem 0;
     }
 
+    .home-hero-copy,
+    .home-hero-current {
+        min-width: 0;
+    }
+
     .home-hero h1 {
         max-width: none;
         margin: 0;
@@ -487,7 +492,7 @@
         color: #9ca3af !important;
     }
 }
-@media (max-width: 900px) {
+@media (max-width: 64rem) {
     .home-hero-inner {
         grid-template-columns: 1fr;
         gap: 4rem;
@@ -495,11 +500,12 @@
     }
 
     .home-hero-current {
+        width: min(100%, 23rem);
         max-width: 23rem;
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 40rem) {
     intro.home-hero {
         margin-top: 3rem;
         margin-bottom: 7rem;
@@ -517,7 +523,7 @@
     }
 
     .home-hero h1 {
-        font-size: clamp(3rem, 15vw, 4.25rem);
+        font-size: clamp(2.75rem, 15vw, 4.25rem);
     }
 
     .home-hero-line {
@@ -529,7 +535,8 @@
     }
 
     .home-hero-current {
-        max-width: 100%;
+        width: min(100%, 23rem);
+        max-width: 23rem;
         /* Scale the type to the viewport so the longest commit row (44 chars)
            still fits on one line down to ~320px. */
         font-size: clamp(.5rem, calc(3.6vw - 3px), .75rem);

@@ -283,7 +283,7 @@
   color: #475569;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 40rem) {
   #cmd-palette-overlay {
     padding-top: 8vh;
     align-items: flex-start;

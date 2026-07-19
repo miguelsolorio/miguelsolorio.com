@@ -10,7 +10,6 @@
   var themeSubscribers = [];
   var themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
   var parentRoot = null;
-  var themeObserver = null;
 
   try {
     if (window.parent !== window) parentRoot = window.parent.document.documentElement;
@@ -32,9 +31,11 @@
 
   /* Run immediately when this file is loaded in <head> to avoid a theme flash. */
   syncTheme();
-  if (parentRoot && window.MutationObserver) {
-    themeObserver = new MutationObserver(syncTheme);
-    themeObserver.observe(parentRoot, { attributes: true, attributeFilter: ["class"] });
+  if (parentRoot) {
+    /* common.js emits this event on every explicit theme change. Listening on
+       the parent root avoids passing a parent-document node to a child-realm
+       MutationObserver, which some embedded browsers reject. */
+    parentRoot.addEventListener("site:themechange", syncTheme);
   } else if (themeMedia.addEventListener) {
     themeMedia.addEventListener("change", syncTheme);
   } else if (themeMedia.addListener) {

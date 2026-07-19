@@ -8,16 +8,35 @@
 @import './footer.css';
 @import './command-palette.css';
 
+@layer base {
+  :root {
+    --site-max-width: 72rem;
+    --site-gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
 @layer components {
   body {
-    @apply mx-auto max-w-6xl bg-neutral-100 text-slate-700;
+    @apply bg-neutral-100 text-slate-700;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    overflow-x: hidden;
   }
 
-  * {
-    @apply box-content;
+  .site-shell {
+    width: calc(100% - var(--site-gutter) - var(--site-gutter));
+    max-width: var(--site-max-width);
+    margin-inline: auto;
   }
 
-  .container a:not(.project):not(:has(img, picture, video, canvas)) {
+  .site-content a:not(.project):not(:has(img, picture, video, canvas)) {
     @apply underline;
     margin-inline: -.2em;
     padding-inline: .2em;
@@ -31,15 +50,15 @@
     box-shadow: 0 0 0 transparent;
     transition: color .22s ease, background-size .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s cubic-bezier(.2, .8, .2, 1);
   }
-  .container a:not(.project):not(:has(img, picture, video, canvas)):hover,
-  .container a:not(.project):not(:has(img, picture, video, canvas)):focus-visible {
+  .site-content a:not(.project):not(:has(img, picture, video, canvas)):hover,
+  .site-content a:not(.project):not(:has(img, picture, video, canvas)):focus-visible {
     @apply text-white no-underline;
     background-size: 100% 100%;
     box-shadow: .2em 0 #3429ff, -.2em 0 #3429ff;
   }
 
   /* Navigation */
-  nav {
+  body > nav {
     @apply flex items-center justify-between py-6;
   }
 
@@ -107,14 +126,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .container a:not(.project):not(:has(img, picture, video, canvas)) {
+  .site-content a:not(.project):not(:has(img, picture, video, canvas)) {
     transition: none;
-  }
-}
-
-/* for mobile */
-@media (max-width: 640px) {
-  body {
-    @apply p-6;
   }
 }

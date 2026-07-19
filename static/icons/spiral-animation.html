@@ -197,9 +197,9 @@
       render();
       window.addEventListener('resize', render);
       try {
-        new MutationObserver(() => {
+        window.parent.document.documentElement.addEventListener('site:themechange', () => {
           if (syncTheme()) render();
-        }).observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        });
       } catch (err) {
         /* cross-origin parent: stay on the initial theme */
       }

@@ -128,6 +128,27 @@
     padding: 0;
   }
 
+  /* Homepage cards can be substantially narrower than the standalone demo.
+     Keep the case-study composition at its authored 720px width, while card
+     mode follows the iframe viewport and leaves a small edge around the UI. */
+  body.is-card .frame {
+    width: min(720px, calc(100vw - clamp(24px, 6vw, 64px)));
+  }
+
+  body.is-card .cell-code {
+    font-size: clamp(10px, 1.9vw, 13.5px);
+  }
+
+  body.is-card .chat-user-text,
+  body.is-card .chat-ai-text,
+  body.is-card .chat-actions button {
+    font-size: clamp(11px, 2vw, 14.5px);
+  }
+
+  body.is-card .chat-input-text {
+    font-size: clamp(11px, 2.1vw, 15px);
+  }
+
   .notebook {
     width: 100%;
     display: flex;
@@ -700,6 +721,51 @@
     color: var(--text-secondary);
     transition: color 0.3s ease;
     white-space: pre-wrap;
+  }
+
+  @media (max-width: 50rem) {
+    /* The execution gutter intentionally hangs outside the 720px notebook.
+       It would be the only horizontally cropped element in a narrow card, so
+       omit that secondary chrome and give the cell content the full width. */
+    body.is-card .gutter {
+      display: none;
+    }
+
+    body.is-card .frame,
+    body.is-card .notebook {
+      gap: clamp(12px, 3vw, 20px);
+    }
+
+    body.is-card .cell-main {
+      padding: clamp(9px, 2vw, 14px) clamp(10px, 2.5vw, 18px);
+    }
+
+    body.is-card .chat.open {
+      padding: clamp(12px, 2.5vw, 18px) clamp(12px, 3vw, 20px);
+    }
+
+    body.is-card .chat-actions {
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    body.is-card .chat-actions button {
+      padding: 5px 8px;
+    }
+  }
+
+  @media (max-width: 25rem) {
+    body.is-card .chat-input-row .model {
+      display: none;
+    }
+
+    body.is-card .toolbar {
+      right: 8px;
+    }
+
+    body.is-card .toolbar button {
+      padding-inline: 5px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -34,7 +34,9 @@
 
   /* Projects */
   .section {
-    @apply mt-32 mb-10 text-3xl font-bold;
+    @apply text-3xl font-bold;
+    margin-top: clamp(5rem, 11vw, 8rem);
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
   }
   .section--work {
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -49,10 +51,11 @@
     font-size: clamp(2.125rem, 4vw, 2.75rem);
   }
   #selected-work {
-    @apply grid grid-flow-row gap-2;
+    @apply grid grid-flow-row;
+    gap: clamp(.5rem, 1vw, .75rem);
   }
   .project {
-    @apply relative block w-full h-96 overflow-hidden no-underline;
+    @apply relative block w-full overflow-hidden no-underline;
     --project-aurora: linear-gradient(118deg, #e9e4fd -12%, #f3f0fe 48%, #ffeee7 112%);
     --project-aurora-position: center;
     --project-aurora-size: 112% 112%;
@@ -63,6 +66,8 @@
     background-position: var(--project-aurora-position);
     background-size: var(--project-aurora-size);
     border-radius: 1rem;
+    container-type: inline-size;
+    height: clamp(18rem, 33.333cqw, 24rem);
     isolation: isolate;
   }
   .project::before {
@@ -231,15 +236,20 @@
   }
   .project-media {
     @apply absolute inset-0 z-0 overflow-hidden;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
     transition: transform .6s cubic-bezier(.2,.8,.2,1);
   }
   .project .thumbnail {
     @apply absolute inset-0 w-full h-full m-0 pointer-events-none;
+    display: block;
+    min-width: 0;
+    max-width: 100%;
     object-fit: cover;
   }
   .project .thumbnail.card-video {
     height: auto;
-    max-width: none;
     right: auto;
     bottom: auto;
     object-fit: initial;
@@ -264,7 +274,7 @@
   .project-meta {
     @apply absolute left-0 right-0 z-10 flex justify-center text-center;
     top: 50%;
-    padding: 0 1rem;
+    padding: 0 clamp(.75rem, 2.5cqw, 1.75rem);
     box-sizing: border-box;
     pointer-events: none;
     transform: translateY(-50%);
@@ -272,7 +282,8 @@
   }
   .project .title {
     @apply m-0 inline-block text-center font-extrabold text-primary;
-    font-size: clamp(3.25rem, 9vw, 7.375rem);
+    max-width: 100%;
+    font-size: clamp(2.25rem, 10cqw, 7.375rem);
     letter-spacing: -.045em;
     line-height: .92;
     color: transparent;
@@ -316,12 +327,6 @@
     outline-offset: 3px;
   }
 
-  @media (max-width: 639px) {
-    .project .title {
-      font-size: clamp(2.75rem, 15vw, 4.5rem);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .project-media,
     .project .title,
@@ -346,12 +351,14 @@
 
   /* Side Projects */
   #side-projects {
-    @apply grid gap-4 mt-10;
+    @apply grid;
     --side-projects-edge-color: rgb(245 245 245);
     position: relative;
     isolation: isolate;
     overflow-x: clip;
     overflow-y: visible;
+    gap: clamp(.625rem, 2vw, 1rem);
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
   }
   #side-projects::before,
   #side-projects::after {
@@ -361,7 +368,7 @@
     z-index: 1;
     top: 0;
     bottom: 0;
-    width: 8%;
+    width: clamp(1.25rem, 8%, 5rem);
     pointer-events: none;
   }
   #side-projects::before {
@@ -373,7 +380,8 @@
     background: linear-gradient(270deg, var(--side-projects-edge-color), transparent);
   }
   .marquee-track {
-    @apply flex gap-4;
+    @apply flex;
+    gap: clamp(.625rem, 2vw, 1rem);
     width: max-content;
     animation: marquee-scroll 72s linear infinite;
   }
@@ -387,10 +395,12 @@
   }
   .side-project {
     @apply flex flex-row items-center bg-white no-underline whitespace-nowrap;
-    gap: .875rem;
+    width: auto;
+    max-width: min(22rem, 82vw);
+    gap: clamp(.625rem, 2vw, .875rem);
     border: 1px solid #e2e8f0;
     border-radius: .875rem;
-    padding: .875rem 1.5rem .875rem 1rem;
+    padding: clamp(.6875rem, 2vw, .875rem) clamp(1rem, 3vw, 1.5rem) clamp(.6875rem, 2vw, .875rem) clamp(.75rem, 2.5vw, 1rem);
     transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
   }
   .side-project:hover {
@@ -405,6 +415,10 @@
     font-size: .9375rem;
     gap: .3rem;
   }
+  .side-project > div {
+    min-width: 0;
+    overflow: hidden;
+  }
   .side-project-title svg {
     @apply w-3.5 h-3.5 text-primary -translate-x-1 opacity-0 transition duration-150 ease-in;
   }
@@ -413,7 +427,24 @@
   }
   .side-project-description {
     @apply m-0 text-slate-500;
+    overflow: hidden;
     font-size: .8125rem;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 40rem) {
+    .section--featured-work {
+      font-size: clamp(2.25rem, 11vw, 3rem);
+    }
+    .section--side-projects {
+      font-size: clamp(2rem, 10vw, 2.5rem);
+    }
+    .project {
+      border-radius: .875rem;
+    }
+    .project .thumbnail.card-video {
+      border-radius: .875rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

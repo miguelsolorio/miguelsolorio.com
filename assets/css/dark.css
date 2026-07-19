@@ -12,7 +12,7 @@
     /* Body links: the light resting blue (#241bc7) all but vanishes on
        slate-900, so rest on a light indigo instead. The hover fill (white on
        #3429ff) already passes contrast and stays shared with light mode. */
-    .dark .container a:not(.project):not(:has(img, picture, video, canvas)) {
+    .dark .site-content a:not(.project):not(:has(img, picture, video, canvas)) {
         color: #a5b4fc;
     }
 

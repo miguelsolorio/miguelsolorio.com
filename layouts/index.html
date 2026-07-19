@@ -21,7 +21,7 @@
             {{ else if .Params.card_animation }}
               <iframe
                 class="thumbnail project-embed-frame"
-                src="{{ printf "%s?card=1" (.Params.card_animation | relURL) }}"
+                src="{{ printf "%s?card=1&v=2" (.Params.card_animation | relURL) }}"
                 title=""
                 scrolling="no"
                 loading="lazy"

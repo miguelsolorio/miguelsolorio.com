@@ -71,7 +71,7 @@
   /* Card mode scales one terminal stage instead of independently sizing its
      scrolling conversation and footer regions. */
   body.is-card {
-    padding: clamp(24px, 8vh, 64px) clamp(32px, 15vw, 260px);
+    padding: clamp(16px, 8vh, 64px) clamp(16px, 10vw, 160px);
     background: transparent;
   }
   body.is-card .cli-stage {
@@ -224,6 +224,22 @@
     min-height: 0;
     overflow: hidden;
     padding: 12px 20px 12px 16px;
+  }
+
+  /* Approval panels retain their authored width in the full demo, but must
+     shrink with the terminal when it is embedded in a responsive card. */
+  body.is-card .tool-box {
+    width: 100%;
+    max-width: 100%;
+  }
+  body.is-card .tool-box-inner {
+    width: 100%;
+    min-width: 0;
+  }
+  body.is-card .tool-command,
+  body.is-card .tool-question,
+  body.is-card .tool-opt > span:last-child {
+    overflow-wrap: anywhere;
   }
   .tool-header {
     display: flex;
@@ -391,3 +407,33 @@
   .footer-status  { display: flex; }
   .footer-model { color: var(--accent-purple); transition: color 0.3s ease; }
   .footer-rest  { color: var(--text-muted); transition: color 0.3s ease; }
+
+  @media (max-width: 40rem) {
+    body.is-card {
+      font-size: clamp(10px, 3.4vw, 13px);
+    }
+
+    body.is-card .scroll-area {
+      padding: clamp(14px, 5vw, 28px) clamp(12px, 5vw, 32px) 8px;
+    }
+
+    body.is-card .bottom-bar {
+      padding-inline: clamp(12px, 5vw, 32px);
+      margin-bottom: clamp(10px, 4vh, 24px);
+    }
+
+    body.is-card .tool-box-inner {
+      padding: 10px 12px;
+    }
+
+    body.is-card .tool-body,
+    body.is-card .tool-resolved,
+    body.is-card .status-line {
+      font-size: inherit;
+    }
+
+    body.is-card .footer {
+      gap: 8px;
+      font-size: clamp(9px, 3vw, 12.5px);
+    }
+  }
