@@ -1,6 +1,4 @@
 :root {
-  color-scheme: light;
-
   /* Naming: --demo-* tokens and .demo-* components are shared; scene styles
      stay behind a .demo-scene--<name> root and may override semantic roles. */
 
@@ -32,7 +30,6 @@
 }
 
 :root.dark {
-  color-scheme: dark;
   --demo-color-accent: #8ab4f8;
   --demo-color-text: #e8eaed;
   --demo-color-muted: #9aa0a6;

@@ -4,5 +4,5 @@
 {{ $frameClass := .Get "frame_class" }}
 {{ $theme := .Get "theme" }}
 {{ if or $frameClass $theme }}<div class="{{ if $theme }}project-embed{{ end }}{{ with $frameClass }}{{ if $theme }} {{ end }}{{ . }}{{ end }}"{{ with $theme }} data-project-theme="{{ . }}"{{ end }}>{{ end }}
-<iframe class="embed-frame" src="{{ $src }}" title="{{ $title }}" height="{{ $height }}" loading="lazy" scrolling="no" style="width: 100%; border: 0; border-radius: 12px;"></iframe>
+<iframe class="embed-frame w-full border-0 rounded-xl" src="{{ $src }}" title="{{ $title }}" height="{{ $height }}" loading="lazy" scrolling="no"></iframe>
 {{ if or $frameClass $theme }}</div>{{ end }}

@@ -1,2 +1,4 @@
 {{ $src := .Get "src" }}
-<video src="{{ $src }}" controls></video>
+{{ $poster := .Get "poster" }}
+{{ $title := .Get "title" | default (.Get "alt") }}
+<video src="{{ $src }}"{{ with $poster }} poster="{{ . }}"{{ end }}{{ with $title }} aria-label="{{ . }}"{{ end }} controls preload="metadata"></video>

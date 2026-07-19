@@ -1,31 +1,31 @@
-# Miguel Solorio Site
-The code for my personal site. It's build with [Hugo](https://gohugo.io) and [Tailwind](https://tailwindcss.com).
+# Miguel Solorio's portfolio
 
-![Site](static/site.gif)
+The source for my personal site, built with [Hugo](https://gohugo.io) and [Tailwind CSS](https://tailwindcss.com).
 
-## File Structure
+## Project structure
 
-### HTML
-All pages can be found under `content` which use the default layout template found under `layouts > _default`. You can also find all partials under `layouts > partial`.
+- `content/` contains page content and front matter.
+- `layouts/` contains Hugo templates, partials, and shortcodes.
+- `assets/` contains styles and browser JavaScript processed by Hugo.
+- `static/` contains media and standalone demos copied directly to the site.
 
-### CSS
-All CSS dependencies are imported at `assets > css > main.css`, which automatically adds [Tailwind](https://tailwindcss.com).
+Generated files in `public/` and `resources/` are not committed.
 
-### JavaScript
-All JS files are part of the `assets > js > scripts.js`  array in the gulpfile.js
+## Development
 
-### Assets
-All static images are under `static`, each post has a dedicated folder for its own assets.
+Install dependencies and start the local server:
 
-## Posts
-All posts are under `content` and you can generate a new post via `hugo <post-name>.md`.
+```sh
+npm install
+npm run develop
+```
 
-## Building
+The development site runs at <http://localhost:1313> and includes draft content.
 
-### Development
-Install dependncies via `npm install`
+## Production build
 
-Run `npm run develop` or if you're using VS Code, `Cmd/Ctrl + Shift + B` to buid locally.
+```sh
+npm run export
+```
 
-### Deployment
-Run `npm run export` to export files for deployment.
+Run the production export before submitting changes.

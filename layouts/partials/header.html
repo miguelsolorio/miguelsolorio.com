@@ -1,43 +1,46 @@
-<!DOCTYPE html>
-<html id="top" class="top">
-
-<head>
-    <meta name="viewport" content="width=device-width">
+<!doctype html>
+<html id="top" class="top" lang="{{ .Site.LanguageCode | default "en" }}">
+  <head>
     <meta charset="utf-8">
-    <meta property="og:title" content="Miguel Solorio">
-    <meta property="og:description" content="Portfolio of Miguel Solorio, a product designer from Seattle, WA">
-    <meta property="og:url" content="https://miguelsolorio.com">
-    <title>{{ .Site.Title }} - {{ .Page.Title }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    {{ $styles := resources.Get "css/main.css" }}
-    {{ $styles = $styles | resources.PostCSS (dict "inlineImports" true) }}
-    <link href="{{ $styles.Permalink }}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="{{ .Title | default .Site.Title }}">
+    <meta property="og:description" content="{{ .Description | default "Portfolio of Miguel Solorio, a software designer in Seattle, WA" }}">
+    <meta property="og:url" content="{{ .Permalink }}">
+    <title>{{ if .IsHome }}{{ .Site.Title }} — {{ .Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+
+    {{ $styles := resources.Get "css/main.css" | resources.PostCSS (dict "inlineImports" true) }}
+    {{ if hugo.IsProduction }}
+      {{ $styles = $styles | minify | fingerprint }}
+    {{ end }}
+    <link href="{{ $styles.RelPermalink }}" rel="stylesheet"{{ with $styles.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}>
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
     <script>
-    if (
-        localStorage.getItem('color-theme') === 'dark' ||
-        (!('color-theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
+      (function () {
+        var storedTheme = null;
+        try {
+          storedTheme = localStorage.getItem('color-theme');
+        } catch (error) {}
+
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', storedTheme === 'dark' || (!storedTheme && prefersDark));
+      }());
     </script>
-</head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PDB3DT24E5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-PDB3DT24E5');
-</script>
-
-<body>
-
-    <nav>{{ partial "navigation" . }}</nav>
-
+    {{ with .Site.Params.googleAnalytics }}
+      {{ if hugo.IsProduction }}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '{{ . }}');
+        </script>
+      {{ end }}
+    {{ end }}
+  </head>
+  <body>
+    <nav aria-label="Primary navigation">
+      {{ partial "navigation" . }}
+    </nav>
     <div class="container">

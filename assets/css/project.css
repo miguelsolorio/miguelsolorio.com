@@ -426,36 +426,6 @@
     }
   }
 
-  /* Background */
-
-  #split {
-    @apply flex flex-row md:gap-20;
-  }
-  #split .col {
-    @apply w-full;
-  }
-  #split .company {
-    @apply font-bold mt-6;
-  }
-  #split .detail {
-    @apply flex flex-row max-w-sm;
-  }
-  #split .col:nth-child(2) .detail {
-    @apply max-w-md;
-  }
-  #split .detail p {
-    @apply w-full;
-  }
-  #split .detail .date {
-    @apply text-right;
-  }
-  #split .detail.inline {
-    @apply mt-6;
-  }
-  #split .detail.inline .company {
-    @apply mt-0;
-  }
-
 }
 
 @keyframes marquee-scroll {

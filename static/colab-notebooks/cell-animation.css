@@ -93,10 +93,15 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root,
+  :root.dark {
+    background-color: transparent !important;
+  }
+
   body {
     /* The embedding surface owns the backdrop: transparent on project cards,
        and purple on the full case-study iframe. */
-    background: transparent;
+    background: transparent !important;
     font-family: "Google Sans", "Helvetica Neue", Arial, sans-serif;
     display: flex;
     align-items: center;

@@ -1,7 +1,6 @@
-{{ $title := .Get "title" }}
 {{ $src := .Get "src" }}
 {{ $alt := .Get "alt" }}
 {{ $class := .Get "class" }}
 {{ with $src }}
-  <img src="{{ . }}" alt="{{ $alt }}" {{ with $class }}class="{{ $class }}"{{ end }}>
+  <img src="{{ . }}" alt="{{ $alt }}" loading="lazy" decoding="async"{{ with $class }} class="{{ . }}"{{ end }}>
 {{ end }}

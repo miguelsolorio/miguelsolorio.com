@@ -1,12 +1,8 @@
-{{ partial "header" . }}
-
-<div id="content" class="single">
+{{ define "main" }}
+  <main id="content" class="single">
     <p class="title">{{ .Title }}</p>
     <p class="description">{{ .Description }}</p>
-    {{/*  <h1>{{ .Title }}</h1>
-    <h2>{{ .Description }}</h2>  */}}
-    <separator></separator>
+    <hr class="separator" aria-hidden="true">
     {{ .Content }}
-</div>
-
-{{ partial "footer" . }}
+  </main>
+{{ end }}

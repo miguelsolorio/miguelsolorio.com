@@ -81,7 +81,7 @@
 
   <script>
     (async function () {
-      const spriteResponse = await fetch('../prototypes/icons-sprite.svg');
+      const spriteResponse = await fetch('icons-sprite.svg');
       const spriteHolder = document.createElement('div');
       spriteHolder.innerHTML = await spriteResponse.text();
       const sprite = spriteHolder.firstElementChild;

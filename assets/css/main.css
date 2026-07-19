@@ -1,25 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import 'dark.css';
-@import 'hero.css';
-@import 'project.css';
-@import 'single.css';
+@import './dark.css';
+@import './hero.css';
+@import './project.css';
+@import './single.css';
 @import './footer.css';
 @import './command-palette.css';
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
 
 @layer components {
   body {
-    @apply max-w-6xl mx-auto bg-neutral-100 text-slate-700;
+    @apply mx-auto max-w-6xl bg-neutral-100 text-slate-700;
   }
+
   * {
-    @apply box-content
+    @apply box-content;
   }
+
   .container a:not(.project):not(:has(img, picture, video, canvas)) {
     @apply underline;
-    padding-inline: .2em;
     margin-inline: -.2em;
+    padding-inline: .2em;
     color: #241bc7;
     background-image: linear-gradient(#3429ff, #3429ff);
     background-position: 0 100%;
@@ -39,45 +40,54 @@
 
   /* Navigation */
   nav {
-    @apply py-6 flex items-center justify-between
+    @apply flex items-center justify-between py-6;
   }
-  nav svg, #theme-toggle {
+
+  nav svg,
+  #theme-toggle {
     @apply w-5 h-5;
   }
-  .social a, #theme-toggle {
-    @apply text-slate-700 p-1.5 rounded-md transition-all duration-300
+
+  .social a,
+  #theme-toggle {
+    @apply rounded-md p-1.5 text-slate-700 transition-all duration-300;
   }
+
   .social a:hover {
-    @apply shadow-lg scale-110
+    @apply scale-110 shadow-lg;
   }
+
   .social a:hover svg path {
-    @apply fill-white
+    @apply fill-white;
   }
-  .social a svg, .social a svg path {
+
+  .social a svg,
+  .social a svg path {
     @apply fill-current text-current;
   }
-  #linkedin:hover{
+
+  #linkedin:hover {
     @apply bg-blue-700;
   }
-  #github:hover{
+
+  #github:hover {
     @apply bg-black;
   }
-  #twitter:hover{
-    @apply bg-blue-400;
-  }
+
   .social {
     @apply flex items-center text-sm gap-3;
   }
-  .social #theme-toggle{
-    @apply flex items-center justify-center transition-all duration-100 bg-transparent
+
+  .social #theme-toggle {
+    @apply flex items-center justify-center bg-transparent transition-all duration-100;
   }
 
-  nav #theme-toggle:hover{
-    @apply bg-primary fill-slate-800
+  nav #theme-toggle:hover {
+    @apply bg-primary fill-slate-800;
   }
 
   nav #theme-toggle:hover svg {
-    @apply fill-white
+    @apply fill-white;
   }
 
   #logo {
@@ -92,11 +102,8 @@
   /* Content */
 
   #content.single {
-    @apply w-full max-w-none
+    @apply w-full max-w-none;
   }
-
-
-
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -108,6 +115,6 @@
 /* for mobile */
 @media (max-width: 640px) {
   body {
-    @apply p-6
+    @apply p-6;
   }
 }

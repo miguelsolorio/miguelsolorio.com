@@ -3,9 +3,10 @@ title: "Onboarding"
 description: "A page re-design that led us to a framework"
 date: 2023-03-24T15:54:38-07:00
 draft: false
-project: "large"
-card_video: "onboarding/onboarding-concept.mp4"
 weight: 3
+project: "large"
+thumbnail: "onboarding.png"
+card_video: "onboarding/onboarding-concept.mp4"
 ---
 
 As the lead designer, I iterated through the design process to re-design VS Code's welcome page to discover a framework that could scale.

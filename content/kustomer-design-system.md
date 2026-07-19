@@ -3,10 +3,10 @@ title: "Kanvas"
 description: "Laying the foundation of a design system"
 date: 2023-03-24T15:57:19-07:00
 draft: false
+weight: 1
+project: "large"
 thumbnail: "kanvas.png"
 card_video: "kustomer-design-system/northstar-vision.mp4"
-project: "large"
-weight: 1
 ---
 
 As the design system lead, I collaborated closely with our Engineering Lead to cultivate a community-driven design system, enhancing its maturity, scalability, and overall impact. Within our small team, I played a pivotal role in creating our roadmap planning, conducting weekly reviews, mentoring, and establishing recommendations on best practices.

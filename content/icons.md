@@ -3,9 +3,10 @@ title: "Icons"
 description: "Open sourcing the design process"
 date: 2023-03-26T14:12:15-07:00
 draft: false
-project: "large"
-card_animation: "/icons/spiral-animation.html"
 weight: 2
+project: "large"
+thumbnail: "icons/intro.png"
+card_animation: "/icons/spiral-animation.html"
 ---
 
 As the lead designer, I created a cohesive iconography style that could be seamlessly applied across our various products and platforms.

@@ -3,11 +3,11 @@ title: "Notebooks"
 description: "Data science workflows via natural language"
 date: 2026-06-04T10:00:00-07:00
 draft: false
+weight: 1
 project: "large"
 thumbnail: "agentic-notebooks.png"
 card_animation: "/colab-notebooks/cell-animation.html"
 card_theme: "notebooks"
-weight: 1
 ---
 
 As the lead designer, I partnered with our engineering and product teams to reimagine Colab as an AI-first coding environment. The goal was to move beyond static AI suggestions and make Gemini an integrated and collaborative partner, one that understands your entire notebook and not just the cell in front of it.

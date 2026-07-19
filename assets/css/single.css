@@ -5,9 +5,9 @@
   .single .description {
     @apply text-xl font-medium;
   }
-  .single separator {
+  .single .separator {
     height: 1px;
-    @apply w-full block mt-8 mb-8 bg-current opacity-10
+    @apply my-8 block w-full border-0 bg-current opacity-10;
   }
   .single img, .single video, .single iframe {
     @apply rounded-lg shadow-lg mt-12 mb-12
