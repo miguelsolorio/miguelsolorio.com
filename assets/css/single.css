@@ -82,4 +82,13 @@
       border-radius: .625rem;
     }
   }
+
+  @media (max-width: 25rem) {
+    /* Wrapping the notebook's code cells makes the finished scene taller as
+       the iframe narrows. Grow only this embed enough to keep its timeline and
+       final chat input visible down to a 320px page width. */
+    .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame {
+      height: clamp(51rem, calc(97.5rem - 182vw), 61rem);
+    }
+  }
 }

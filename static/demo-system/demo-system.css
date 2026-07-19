@@ -52,7 +52,7 @@
   display: flex;
   width: min(
     var(--demo-timeline-width),
-    calc(100vw - (2 * var(--demo-timeline-gutter)))
+    calc(100vw - var(--demo-timeline-gutter) - var(--demo-timeline-gutter))
   );
   align-items: center;
   gap: var(--demo-space-3);
