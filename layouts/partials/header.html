@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{ if not hugo.IsProduction }}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{{ end }}
     <meta property="og:title" content="{{ .Title | default .Site.Title }}">
     <meta property="og:description" content="{{ .Description | default "Portfolio of Miguel Solorio, a software designer in Seattle, WA" }}">
     <meta property="og:url" content="{{ .Permalink }}">

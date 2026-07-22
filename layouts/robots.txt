@@ -1,0 +1,9 @@
+{{- if hugo.IsProduction -}}
+User-agent: *
+Allow: /
+
+Sitemap: https://miguelsolorio.com/sitemap.xml
+{{- else -}}
+User-agent: *
+Disallow: /
+{{- end -}}

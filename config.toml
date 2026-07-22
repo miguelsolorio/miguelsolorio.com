@@ -2,6 +2,7 @@ relativeURLs = true
 languageCode = "en-us"
 title = "Miguel Solorio"
 disableKinds = ["taxonomy", "term"]
+enableRobotsTXT = true
 
 [params]
   googleAnalytics = "G-PDB3DT24E5"
