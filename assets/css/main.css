@@ -62,8 +62,10 @@
     @apply flex items-center justify-between py-6;
   }
 
-  nav svg,
-  #theme-toggle {
+  /* Size the icons, not the controls: the button and the .social anchors both
+     size to their icon plus padding, which a fixed w/h would fight under
+     border-box. */
+  nav svg {
     @apply w-5 h-5;
   }
 

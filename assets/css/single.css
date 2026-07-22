@@ -1,5 +1,12 @@
 @layer components {
   .single {
+    /* Shared by every block of media so a caption can cancel exactly the
+       margin the media above it contributed. */
+    --media-gap: clamp(2rem, 6vw, 3rem);
+    /* How close a caption sits under its media. Used twice — once as the
+       caption's own top margin, once inside the negative margin that cancels
+       the media's — so both must move together. */
+    --caption-lead: .875rem;
     min-width: 0;
     overflow-wrap: anywhere;
   }
@@ -24,7 +31,7 @@
   .single img, .single video, .single iframe {
     @apply rounded-lg shadow-lg;
     max-width: 100%;
-    margin-block: clamp(2rem, 6vw, 3rem);
+    margin-block: var(--media-gap);
   }
   .single img, .single video {
     @apply w-full;
@@ -39,7 +46,7 @@
   /* Project demos share one stage; data-project-theme supplies the named
      surface defined alongside the corresponding homepage card. */
   .single .project-embed {
-    margin: clamp(2rem, 6vw, 3rem) 0;
+    margin: var(--media-gap) 0;
     padding: clamp(.75rem, 5vw, 3.5rem);
     border-radius: .75rem;
     background-color: var(--project-theme-surface);
@@ -47,6 +54,8 @@
     background-position: var(--project-theme-position);
     background-size: var(--project-theme-size);
   }
+  .single .project-embed > img,
+  .single .project-embed > video,
   .single .project-embed iframe.embed-frame {
     display: block;
     box-sizing: border-box;
@@ -58,6 +67,8 @@
     box-shadow: 0 18px 44px rgba(43, 76, 124, .18),
                 0 3px 10px rgba(43, 76, 124, .12);
   }
+  .dark .single .project-embed > img,
+  .dark .single .project-embed > video,
   .dark .single .project-embed iframe.embed-frame {
     box-shadow: 0 18px 44px rgba(0, 0, 0, .38),
                 0 3px 10px rgba(0, 0, 0, .28);
@@ -69,8 +80,58 @@
     border-radius: 0 !important;
     box-shadow: none;
   }
-  .single .project-embed[data-project-theme="notebooks"] {
+  /* The animation scene carries its own internal padding; a screenshot or
+     screencast does not, so media stages keep the symmetric padding above. */
+  .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--media) {
     padding-block: clamp(.75rem, 2vw, 1.5rem);
+  }
+
+  /* Captions read as part of the media above them, so they sit close under it
+     and carry the full gap below the pair. Paragraphs are margin-free here, so
+     the caption owns both sides of that spacing. */
+  .single .media-caption {
+    @apply text-slate-500;
+    /* Centered against left-aligned prose is what stops a caption reading as
+       another paragraph; the narrow measure keeps it under the media it
+       describes rather than spanning the full column. */
+    max-width: 34rem;
+    margin-block: var(--caption-lead) var(--media-gap);
+    margin-inline: auto;
+    font-size: .8125rem;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: .012em;
+    text-align: center;
+    text-wrap: balance;
+    /* Italic Inter leans right, so centered text sits a hair left of true
+       center. Nudge it back by roughly the slant of the final glyph. */
+    padding-left: .15em;
+  }
+  /* The caption is already italic, so emphasis inside it inverts to upright —
+     the standard nesting convention, and the only way *…* in the markdown
+     stays visible. */
+  .single .media-caption em,
+  .single .media-caption i,
+  .single .media-caption cite {
+    font-style: normal;
+  }
+  /* Titles of tools and products are the usual reason to reach for emphasis in
+     a caption; keep them quiet rather than bolding them out of the line. */
+  .single .media-caption strong {
+    font-weight: 600;
+    font-style: normal;
+  }
+  /* Only cancel the media's bottom margin when there is one to cancel; a
+     caption used on its own keeps the plain lead-in above. */
+  .single img + .media-caption,
+  .single video + .media-caption,
+  .single iframe + .media-caption,
+  .single .project-embed + .media-caption {
+    margin-top: calc(var(--caption-lead) - var(--media-gap));
+  }
+  .dark .single .media-caption {
+    @apply text-slate-400;
   }
 
   @media (max-width: 40rem) {

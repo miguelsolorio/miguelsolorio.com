@@ -1,4 +1,8 @@
 {{ $src := .Get "src" }}
 {{ $poster := .Get "poster" }}
 {{ $title := .Get "title" | default (.Get "alt") }}
+{{ $frameClass := .Get "frame_class" }}
+{{ $theme := partial "project-theme.html" (dict "theme" (.Get "theme") "gradient" (.Get "gradient") "page" .Page "name" "video") }}
+{{ if $theme }}<div class="project-embed project-embed--media{{ with $frameClass }} {{ . }}{{ end }}" data-project-theme="{{ $theme }}">{{ end }}
 <video src="{{ $src }}"{{ with $poster }} poster="{{ . }}"{{ end }}{{ with $title }} aria-label="{{ . }}"{{ end }} controls preload="metadata"></video>
+{{ if $theme }}</div>{{ end }}

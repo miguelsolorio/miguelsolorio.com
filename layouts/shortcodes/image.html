@@ -1,6 +1,10 @@
 {{ $src := .Get "src" }}
 {{ $alt := .Get "alt" }}
 {{ $class := .Get "class" }}
+{{ $frameClass := .Get "frame_class" }}
+{{ $theme := partial "project-theme.html" (dict "theme" (.Get "theme") "gradient" (.Get "gradient") "page" .Page "name" "image") }}
 {{ with $src }}
+  {{ if $theme }}<div class="project-embed project-embed--media{{ with $frameClass }} {{ . }}{{ end }}" data-project-theme="{{ $theme }}">{{ end }}
   <img src="{{ . }}" alt="{{ $alt }}" loading="lazy" decoding="async"{{ with $class }} class="{{ . }}"{{ end }}>
+  {{ if $theme }}</div>{{ end }}
 {{ end }}
