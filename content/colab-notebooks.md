@@ -28,7 +28,7 @@ We heard from our users that they wanted to stay in the flow, not copy-paste err
 
 Early exploration surfaced a fundamental tension: how do you make AI easy to invoke without cluttering a surface that people rely on for dense, focused work? Notebooks are already visually complex with cells, outputs, sidebars, toolbars — and adding a chat panel risked making things feel even heavier.
 
-{{< image src="intro.png" alt="Overview of the AI-first Colab interface with Gemini integration" gradient="true" >}}
+{{< image src="intro.png" alt="Overview of the AI-first Colab interface with Gemini integration" gradient="true" frame_class="project-embed--cutout" >}}
 {{< caption text="Variations of Colab's AI agent from code generation to explaining and fixing errors" >}}
 
 I explored a range of entry points, from inline cell overlays to a floating panel, before landing on a two-mode approach. A compact prompt box in the center toolbar handles quick requests — generate a function, fix this error, explain this output — without breaking the reading flow. A persistent side panel opens for longer conversations or when users want to iterate deeply on a problem.
@@ -37,6 +37,9 @@ I explored a range of entry points, from inline cell overlays to a floating pane
 {{< caption text="Conceptual landing page to encourage users to leverage Colab's AI" >}}
 
 The key design principle was that both surfaces should feel like the same conversation. Context carries over seamlessly — you can start a quick prompt from the toolbar and continue it in the panel without losing thread.
+
+{{< image src="composer-footer.png" alt="Overview of the AI-first Colab interface with Gemini integration" gradient="true" frame_class="project-embed--cutout" >}}
+{{< caption text="Variations of Colab's AI agent from code generation to explaining and fixing errors" >}}
 
 # Agentic UX and Trust
 

@@ -73,6 +73,20 @@
     box-shadow: 0 18px 44px rgba(0, 0, 0, .38),
                 0 3px 10px rgba(0, 0, 0, .28);
   }
+  /* Artwork that is cut out rather than a single rectangular screenshot — a
+     row of panels on transparency — needs its shadow to follow the alpha
+     channel instead of the element box, otherwise one shadow wraps the whole
+     group and the box's own rounded edge shows against the stage. */
+  .single .project-embed--cutout > img {
+    border-radius: 0;
+    box-shadow: none;
+    filter: drop-shadow(0 2px 6px rgba(43, 76, 124, .12))
+            drop-shadow(0 12px 28px rgba(43, 76, 124, .16));
+  }
+  .dark .single .project-embed--cutout > img {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .28))
+            drop-shadow(0 12px 28px rgba(0, 0, 0, .34));
+  }
   /* The notebook scene has a transparent canvas and should blend directly
      into its gradient stage instead of looking like a nested panel. */
   .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame,
