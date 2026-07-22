@@ -7,6 +7,16 @@
       "runtimeArgs": ["-c", "hugo server -D --port \"$PORT\""],
       "port": 1313,
       "autoPort": true
+    },
+    {
+      "name": "hugo-lan",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "IP=$(ipconfig getifaddr en0 || ipconfig getifaddr en1); hugo server -D --bind 0.0.0.0 --port \"$PORT\" --baseURL \"http://$IP\""
+      ],
+      "port": 1314,
+      "autoPort": true
     }
   ]
 }

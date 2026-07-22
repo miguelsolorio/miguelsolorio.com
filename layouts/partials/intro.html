@@ -1,5 +1,11 @@
 <intro class="home-hero">
-  <div class="home-hero-ambient" aria-hidden="true"><canvas class="home-hero-flow"></canvas></div>
+  {{/* Undercurrent particle trails are parked while the halftone dots are
+       evaluated on their own. The module in assets/js/home.js early-returns
+       when this canvas is absent, so dropping the element also stops its
+       animation loop and pointer listeners — nothing is left running.
+       To restore: <canvas class="home-hero-flow"></canvas> back inside. */}}
+  <div class="home-hero-ambient" aria-hidden="true"></div>
+  <div class="home-hero-dots" aria-hidden="true"><canvas></canvas></div>
   <div class="home-hero-inner">
     <div class="home-hero-copy">
       <h1><span class="home-hero-line">Designing software</span><span class="home-hero-line">for builders.</span></h1>

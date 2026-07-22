@@ -33,8 +33,8 @@ Early exploration surfaced a fundamental tension: how do you make AI easy to inv
 
 I explored a range of entry points, from inline cell overlays to a floating panel, before landing on a two-mode approach. A compact prompt box in the center toolbar handles quick requests — generate a function, fix this error, explain this output — without breaking the reading flow. A persistent side panel opens for longer conversations or when users want to iterate deeply on a problem.
 
-{{< video src="message-interactions.mp4" alt="Colab's AI agent message interactions" gradient="true" >}}
-{{< caption text="Conceptual landing page to encourage users to leverage Colab's AI" >}}
+{{< iframe src="/colab-notebooks/message-animation.html" height="710" title="Selecting code in a notebook cell to ask Gemini to modify it, then accepting and running the change" theme="notebooks" >}}
+{{< caption text="Selecting code to refine it in place, then accepting and running the change" >}}
 
 The key design principle was that both surfaces should feel like the same conversation. Context carries over seamlessly — you can start a quick prompt from the toolbar and continue it in the panel without losing thread.
 

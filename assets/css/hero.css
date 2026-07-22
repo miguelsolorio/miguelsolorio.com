@@ -21,6 +21,13 @@
         margin-top: 2rem;
         margin-bottom: 6rem;
         padding: 0;
+        /* Clicks anywhere in the hero fire shockwaves through the halftone,
+           and rapid taps double-tap into selecting the headline or summary.
+           Suppressing selection here keeps the interaction feeling tactile;
+           the terminal (below) re-enables it so command output stays
+           copyable. */
+        -webkit-user-select: none;
+        user-select: none;
     }
 
     /* Undercurrent sits in its own stacking layer, so it adds atmosphere
@@ -62,11 +69,51 @@
         height: 100%;
     }
 
+    /* Halftone portrait, centered on both axes behind the copy and the
+       terminal. The two masks below do the real work of keeping the type
+       readable: the radial one dissolves the edges of the field, and the
+       linear one thins it out toward the left, where the headline and the
+       summary sit. Peak density lands top-right, over open space. The
+       radial gradient is an ellipse — wider than tall — so the field
+       spreads laterally into the hero instead of stacking as a narrow
+       column that extends above and below the short hero band. */
+    .home-hero-dots {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 0;
+        width: min(72rem, 112%);
+        aspect-ratio: 1;
+        -webkit-mask-image:
+            radial-gradient(ellipse 58% 40% at 55% 50%, #000 42%, transparent 100%),
+            linear-gradient(68deg, rgba(0, 0, 0, .2) 18%, rgba(0, 0, 0, .55) 50%, #000 82%);
+        mask-image:
+            radial-gradient(ellipse 58% 40% at 55% 50%, #000 42%, transparent 100%),
+            linear-gradient(68deg, rgba(0, 0, 0, .2) 18%, rgba(0, 0, 0, .55) 50%, #000 82%);
+        -webkit-mask-composite: source-in;
+        mask-composite: intersect;
+        mix-blend-mode: multiply;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    .home-hero-dots canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .dark .home-hero-dots {
+        mix-blend-mode: screen;
+    }
+
     .home-hero * {
         box-sizing: border-box;
     }
 
     .home-hero-inner {
+        position: relative;
+        z-index: 1;
         display: grid;
         /* 23rem holds the log lines on one line each, but only at the
            terminal's 12px type: the longest row is 44 chars (~317px in
@@ -129,12 +176,24 @@
         overflow: hidden;
         border: 1px solid var(--t-line);
         border-radius: .625rem;
+        /* Frosted panel: 70% terminal fill so the halftone and ambient
+           wash read clearly through the glass without pulling focus off
+           the type. Solid fallback first for browsers without color-mix /
+           backdrop-filter, so the terminal stays opaque and readable if
+           the effect can't be composited. */
         background: var(--t-bg);
+        background: color-mix(in srgb, var(--t-bg) 70%, transparent);
+        -webkit-backdrop-filter: blur(18px) saturate(1.5);
+        backdrop-filter: blur(18px) saturate(1.5);
         box-shadow: 0 1.5rem 3.75rem -1.25rem var(--t-shadow);
         color: var(--t-text);
         font-family: 'JetBrains Mono', monospace;
         font-size: .75rem;
         line-height: 1.55;
+        /* Restore selection inside the terminal — output and history
+           should stay copyable even though the surrounding hero blocks it. */
+        -webkit-user-select: text;
+        user-select: text;
     }
 
     .home-hero-terminal-bar {
@@ -144,7 +203,10 @@
         min-height: 2rem;
         padding: 0 .625rem;
         border-bottom: 1px solid var(--t-line);
+        /* Match the frost — a fully opaque titlebar over a translucent body
+           looks like two stacked windows. */
         background: var(--t-bar);
+        background: color-mix(in srgb, var(--t-bar) 65%, transparent);
     }
 
     .home-hero-lights {
@@ -502,6 +564,17 @@
     .home-hero-current {
         width: min(100%, 23rem);
         max-width: 23rem;
+    }
+
+    /* Stacked layout: the copy no longer sits to one side, so the
+       left-thinning mask has nothing to protect. Even it out and pull the
+       whole field back instead. Keep the ellipse wider than tall so the
+       narrower viewports don't reintroduce the vertical stacking. */
+    .home-hero-dots {
+        width: min(48rem, 128%);
+        opacity: .7;
+        -webkit-mask-image: radial-gradient(ellipse 55% 38% at 50% 50%, #000 38%, transparent 100%);
+        mask-image: radial-gradient(ellipse 55% 38% at 50% 50%, #000 38%, transparent 100%);
     }
 }
 
