@@ -3,15 +3,16 @@ title: "Kanvas"
 description: "Laying the foundation of a design system"
 date: 2023-03-24T15:57:19-07:00
 draft: false
-weight: 1
+weight: 3
 project: "large"
 thumbnail: "kanvas.png"
-card_video: "kustomer-design-system/northstar-vision.mp4"
+card_animation: "/kustomer-design-system/northstar-animation.html"
+card_theme: "kanvas"
 ---
 
 As the design system lead, I collaborated closely with our Engineering Lead to cultivate a community-driven design system, enhancing its maturity, scalability, and overall impact. Within our small team, I played a pivotal role in creating our roadmap planning, conducting weekly reviews, mentoring, and establishing recommendations on best practices.
 
-{{< image src="hero.png" alt="Tracking updates of components in a component database" >}}
+{{< iframe src="/kustomer-design-system/northstar-animation.html" height="800" title="Kanvas customer service workspace with collapsible navigation and reorderable context panels" theme="kanvas" frame_class="northstar-project-demo" >}}
 
 # Auditing the Design System
 
@@ -29,6 +30,8 @@ In order to priotizie the work, it was crucial to secure buy-in from the leaders
 After receiving approval from leadership, we began updating our design library to match our code components. In the next four months, we not only met but exceeded our expectations and hit our yearly goals. Additionally, we started sharing our progress with the rest of the organization to demonstrate how design systems enhanced our product.
 
 {{< image src="work.png" alt="Figma updates to improve the design system" >}}
+
+{{< image src="hero.png" alt="Kanvas component library documentation for alerts, avatars, buttons, tables, inputs, pills, and tooltips" >}}
 
 # Tracking Changes
 

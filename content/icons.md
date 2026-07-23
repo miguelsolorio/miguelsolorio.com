@@ -3,7 +3,7 @@ title: "Icons"
 description: "Open sourcing the design process"
 date: 2023-03-26T14:12:15-07:00
 draft: false
-weight: 2
+weight: 4
 project: "large"
 thumbnail: "icons/intro.png"
 card_animation: "/icons/spiral-animation.html"

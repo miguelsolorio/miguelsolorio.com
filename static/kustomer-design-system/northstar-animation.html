@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kustomer North Star workspace demo</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&amp;display=block">
+<link rel="stylesheet" href="/demo-system/demo-system.css?v=2">
+<link rel="stylesheet" href="./northstar-animation.css?v=5">
+</head>
+<body class="demo-scene demo-scene--northstar" data-demo-scene="northstar">
+
+<main class="northstar-stage" data-demo-stage aria-label="Kustomer customer service workspace">
+  <div class="northstar-layout">
+    <nav class="primary-rail" id="primaryNavigation" aria-label="Primary navigation">
+      <img class="meta-logo" src="./icons/meta.svg" alt="Meta">
+      <div class="primary-actions">
+        <button class="rail-button is-active" type="button" aria-label="Inbox">
+          <span class="msym">chat_bubble</span>
+        </button>
+        <button class="rail-button" type="button" aria-label="Search conversations">
+          <span class="msym">search_insights</span>
+        </button>
+        <button class="rail-button" type="button" aria-label="Reporting">
+          <span class="msym">monitoring</span>
+        </button>
+        <button class="rail-button" type="button" aria-label="Customers">
+          <span class="msym">groups</span>
+        </button>
+      </div>
+      <div class="primary-footer">
+        <button class="rail-button" type="button" aria-label="Apps">
+          <span class="msym">account_tree</span>
+        </button>
+        <button class="rail-button" type="button" aria-label="Settings">
+          <span class="msym">settings</span>
+        </button>
+      </div>
+    </nav>
+
+    <button class="rail-button primary-collapse" id="primaryCollapse" type="button" aria-label="Minimize navigation" aria-controls="primaryNavigation" aria-expanded="true">
+      <span class="msym">left_panel_close</span>
+    </button>
+
+    <aside class="inbox-sidebar" id="inboxSidebar" aria-label="Conversation inbox">
+      <div class="inbox-clip">
+        <div class="inbox-expanded">
+          <header class="inbox-header">
+            <button type="button">Inbox <span class="msym">arrow_drop_down</span></button>
+            <button type="button">Newest <span class="msym">arrow_drop_down</span></button>
+          </header>
+
+          <div class="conversation-list">
+            <article class="conversation is-selected">
+              <img class="channel-icon" src="./icons/whatsapp.svg" alt="WhatsApp">
+              <div>
+                <div class="conversation-title"><strong>Rachel Díaz</strong><span class="msym priority priority--high">north</span><b>1m</b><i></i></div>
+                <p><span class="msym sentiment sentiment--sad">sentiment_dissatisfied</span> Delivery missing items</p>
+              </div>
+            </article>
+            <article class="conversation">
+              <img class="channel-icon" src="./icons/facebookmessenger.svg" alt="Messenger">
+              <div>
+                <div class="conversation-title"><strong>Floyd Miles</strong><span class="msym priority priority--high">north</span><b>1m</b><i></i></div>
+                <p><span class="msym typing-dots">more_horiz</span></p>
+              </div>
+            </article>
+            <article class="conversation">
+              <img class="channel-icon" src="./icons/instagram.svg" alt="Instagram">
+              <div>
+                <div class="conversation-title"><strong>Grace Jones</strong><span class="msym priority priority--medium">north_east</span><b>1m</b></div>
+                <p><span class="msym sentiment sentiment--sad">sentiment_dissatisfied</span> Where is my order?</p>
+              </div>
+            </article>
+            <article class="conversation">
+              <span class="msym channel-icon email-channel" aria-hidden="true">mail</span>
+              <div>
+                <div class="conversation-title"><strong>Ariana Grande</strong><span class="msym priority priority--low">south</span><b>1m</b></div>
+                <p><span class="msym sentiment sentiment--happy">sentiment_satisfied</span> Question about return policy</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="availability">
+            <span class="msym">check_circle</span>
+            <span>Available</span>
+            <span class="availability-meter"><i></i></span>
+            <span class="msym">arrow_drop_down</span>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <section class="workspace" aria-label="Conversation workspace">
+      <div class="global-tools" aria-label="Global tools">
+        <button type="button" aria-label="Apps"><span class="msym">apps</span></button>
+        <button type="button" aria-label="Search"><span class="msym">search</span></button>
+        <button type="button" aria-label="Notifications" class="notification"><span class="msym">notifications</span><i></i></button>
+        <button type="button" class="agent-menu" aria-label="User menu"><img src="./northstar-agent.png" alt=""><span class="msym">arrow_drop_down</span></button>
+      </div>
+
+      <div class="conversation-window">
+        <header class="conversation-header">
+          <div>
+            <h1>Laundry Missing Items <span class="msym">arrow_drop_down</span></h1>
+            <p>Active 10 min ago</p>
+          </div>
+          <div class="conversation-actions">
+            <button type="button" aria-label="More actions"><span class="msym">more_vert</span></button>
+            <button type="button" aria-label="Add customer"><span class="msym">person_add</span></button>
+            <button type="button" aria-label="Snooze"><span class="msym">schedule</span></button>
+            <button class="mark-done" id="markDone" type="button">Mark Done</button>
+          </div>
+        </header>
+
+        <div class="conversation-body">
+          <section class="message-area" aria-label="Conversation with Rachel Díaz">
+            <div class="message-content">
+              <time>Jan 12, 6:00 PM</time>
+              <div class="message-row">
+                <img class="customer-avatar" src="./northstar-rachel.png" alt="Rachel Díaz">
+                <div>
+                  <div class="message-bubble">
+                    <p>Hi my name is <strong>Rachel</strong>,</p>
+                    <p>I regularly get wash and fold services from <strong>Bubble-T Laundromat</strong>. Yesterday, I <strong>received</strong> my laundry <strong>order</strong> and it’s <strong>missing a few items</strong>, It’s super <strong>important</strong>— I need that dress <strong>by today!</strong></p>
+                  </div>
+                  <div class="message-meta"><img src="./icons/whatsapp.svg" alt="WhatsApp"><span>1min</span></div>
+                </div>
+              </div>
+            </div>
+
+            <form class="composer" id="composer">
+              <div class="composer-heading"><img src="./icons/whatsapp.svg" alt=""><strong>WhatsApp</strong><span class="msym">arrow_drop_down</span><span class="msym composer-notes">speaker_notes</span></div>
+              <label class="sr-only" for="messageInput">Message Rachel</label>
+              <input id="messageInput" type="text" placeholder="Type a message..." autocomplete="off">
+              <div class="composer-footer">
+                <div>
+                  <button type="button" aria-label="Add"><span class="msym">add_circle</span></button>
+                  <button type="button" aria-label="Emoji"><span class="msym">sentiment_satisfied</span></button>
+                  <button type="button" aria-label="Formatting"><span class="composer-aa">Aa</span></button>
+                  <button type="button" aria-label="Attach"><span class="msym">link</span></button>
+                  <button type="button" aria-label="Insert variable"><span class="composer-code">{ }</span></button>
+                </div>
+                <button class="send-button" type="submit" aria-label="Send message"><span class="msym">send</span><i></i><span class="msym">arrow_drop_down</span></button>
+              </div>
+            </form>
+          </section>
+
+          <aside class="context-panel" id="contextPanel" aria-label="Customer context">
+            <article class="context-card customer-card" data-card="customer">
+              <div class="customer-summary">
+                <img src="./northstar-rachel.png" alt="Rachel Díaz">
+                <div><h2>Rachel Díaz</h2><p>4 Open Conversations</p></div>
+                <button type="button" aria-label="Customer actions"><span class="msym">more_vert</span></button>
+              </div>
+              <div class="customer-channels">
+                <img src="./icons/whatsapp.svg" alt="WhatsApp">
+                <img src="./icons/instagram.svg" alt="Instagram">
+                <img src="./icons/facebookmessenger.svg" alt="Messenger">
+                <span></span>
+                <span class="msym">storefront</span>
+                <span class="msym">location_on</span>
+                <span class="msym channel-chevron">keyboard_arrow_down</span>
+              </div>
+            </article>
+
+            <article class="context-card details-card" data-card="details">
+              <button class="drag-handle" type="button" aria-label="Move Details above Insights"><span class="msym">drag_indicator</span></button>
+              <header><h2>Details</h2><button type="button" aria-label="Details actions"><span class="msym">more_vert</span></button></header>
+              <dl>
+                <dt>Sentiment</dt><dd><span class="msym sentiment sentiment--sad">sentiment_dissatisfied</span> Sad</dd>
+                <dt>Status</dt><dd><b class="status-open">Open</b></dd>
+                <dt>Urgency</dt><dd><span class="msym priority priority--high">north</span> High</dd>
+              </dl>
+            </article>
+
+            <article class="context-card insights-card" data-card="insights">
+              <button class="drag-handle" type="button" aria-label="Move Insights above Details"><span class="msym">drag_indicator</span></button>
+              <header><h2>Insights</h2><button type="button" aria-label="Insights actions"><span class="msym">more_vert</span></button></header>
+              <dl>
+                <dt>Business</dt><dd>Bubble-T Laundromat</dd>
+                <dt>Phone</dt><dd>508-555-1212</dd>
+                <dt>Address</dt><dd>525 9th Ave,<br>New York, NY 10018</dd>
+              </dl>
+            </article>
+
+            <article class="context-card tasks-card" data-card="tasks">
+              <header><h2>Tasks</h2><button type="button" aria-label="Task actions"><span class="msym">more_vert</span></button></header>
+              <label><input type="checkbox" checked> Back office confirmation</label>
+              <label><input type="checkbox" checked> Double check the order</label>
+            </article>
+
+            <article class="context-card timeline-card" data-card="timeline">
+              <header><h2>Timeline</h2><button type="button" aria-label="Timeline actions"><span class="msym">more_vert</span></button></header>
+              <dl><dt>Jan 13</dt><dd>Placed order</dd><dt>Jan 14</dt><dd>Order processing</dd><dt>Jan 17</dt><dd>Delivered order</dd></dl>
+            </article>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="demo-pointer" id="demoPointer" aria-hidden="true">
+    <span class="pointer-ripple"></span>
+    <span class="msym pointer-glyph">arrow_selector_tool</span>
+  </div>
+</main>
+
+<script src="./northstar-animation.js?v=3"></script>
+</body>
+</html>

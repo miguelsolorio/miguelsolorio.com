@@ -37,6 +37,15 @@
     @apply w-full;
     height: auto;
   }
+  .single .northstar-project-demo {
+    margin-block: var(--media-gap);
+  }
+  .single .northstar-project-demo iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: clamp(20rem, 69.5vw, 50rem);
+    margin: 0;
+  }
   .single h1 {
     @apply font-bold mb-4;
     margin-top: clamp(3.5rem, 9vw, 5rem);
@@ -91,6 +100,13 @@
      into its gradient stage instead of looking like a nested panel. */
   .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame,
   .dark .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame {
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+  /* Kanvas already draws the product frame inside the animation. Let that
+     single frame sit on the gradient stage without a second iframe outline. */
+  .single .project-embed[data-project-theme="kanvas"] iframe.embed-frame,
+  .dark .single .project-embed[data-project-theme="kanvas"] iframe.embed-frame {
     border-radius: 0 !important;
     box-shadow: none;
   }

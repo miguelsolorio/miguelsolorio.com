@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kanvas card gradient options</title>
+  <style>
+    :root {
+      color: #202a3a;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f7f7f8;
+    }
+
+    main {
+      width: min(1200px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 48px 0 72px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: -.045em;
+    }
+
+    .intro {
+      max-width: 620px;
+      margin: 10px 0 36px;
+      color: #627084;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .option {
+      overflow: hidden;
+      border: 1px solid rgba(46, 64, 86, .1);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 14px 38px rgba(44, 61, 86, .08);
+    }
+
+    .preview {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--gradient);
+    }
+
+    .option--animation {
+      grid-column: 1 / -1;
+    }
+
+    .preview--animation {
+      aspect-ratio: 1800 / 1104;
+      background: #e9e4ff;
+    }
+
+    .animation-reference {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      pointer-events: none;
+    }
+
+    .workspace {
+      position: absolute;
+      top: 12%;
+      right: 8%;
+      bottom: 12%;
+      left: 8%;
+      display: grid;
+      grid-template-columns: 26% 1fr 26%;
+      overflow: hidden;
+      border-radius: 9px;
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(57, 74, 109, .2);
+    }
+
+    .inbox { border-right: 1px solid #eef2f7; }
+    .conversation { border-right: 1px solid #eef2f7; }
+    .line { height: 7%; margin: 8% 12%; border-radius: 999px; background: #e9edf4; }
+    .line--selected { height: 15%; border-radius: 5px; background: #d9e5fb; }
+    .conversation .line:first-child { width: 54%; margin-top: 12%; background: #dae1ec; }
+    .message { width: 60%; height: 30%; margin: 23% auto 0; border: 1px solid #a49bff; border-radius: 8px; }
+    .context .line { margin: 10% 12%; }
+    .context .line:first-child { height: 22%; border-radius: 7px; background: #f4f7fb; }
+
+    .label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px 20px;
+    }
+
+    h2 { margin: 0; font-size: 17px; letter-spacing: -.02em; }
+    code { color: #6b7280; font-size: 12px; }
+
+    .option--a {
+      --gradient:
+        radial-gradient(circle at 16% 98%, rgba(156, 108, 255, .62), transparent 46%),
+        radial-gradient(circle at 89% 12%, rgba(67, 182, 255, .48), transparent 40%),
+        linear-gradient(135deg, #202645 0%, #293964 53%, #1f4c5b 100%);
+    }
+
+    .option--b {
+      --gradient:
+        radial-gradient(circle at 4% 8%, rgba(255, 184, 128, .52), transparent 38%),
+        radial-gradient(circle at 96% 92%, rgba(247, 126, 166, .34), transparent 41%),
+        linear-gradient(135deg, #fff1d9 0%, #fff7e9 52%, #ffe8df 100%);
+    }
+
+    .option--c {
+      --gradient:
+        radial-gradient(circle at 10% 90%, rgba(77, 205, 195, .46), transparent 43%),
+        radial-gradient(circle at 92% 4%, rgba(108, 179, 255, .47), transparent 39%),
+        linear-gradient(135deg, #d6f2f4 0%, #e0f4ff 52%, #d7fbef 100%);
+    }
+
+    .option--d {
+      --gradient:
+        radial-gradient(circle at 10% 20%, rgba(184, 219, 104, .46), transparent 37%),
+        radial-gradient(circle at 88% 86%, rgba(78, 181, 133, .36), transparent 44%),
+        linear-gradient(135deg, #eaf3c7 0%, #edf6d8 47%, #daf1df 100%);
+    }
+
+    .option--e {
+      --gradient:
+        radial-gradient(circle at 4% 85%, rgba(185, 103, 235, .52), transparent 43%),
+        radial-gradient(circle at 92% 12%, rgba(255, 145, 184, .49), transparent 39%),
+        linear-gradient(135deg, #ead7fc 0%, #f2e0f6 49%, #ffe3d7 100%);
+    }
+
+    .option--f {
+      --gradient:
+        radial-gradient(circle at 8% 84%, rgba(148, 168, 195, .34), transparent 40%),
+        radial-gradient(circle at 92% 8%, rgba(201, 212, 235, .48), transparent 43%),
+        linear-gradient(135deg, #e4e9f1 0%, #f1f4f8 51%, #e5edf1 100%);
+    }
+
+    @media (max-width: 700px) {
+      main { width: min(100% - 32px, 560px); padding-top: 32px; }
+      .options { grid-template-columns: 1fr; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Kanvas card gradient options</h1>
+    <p class="intro">Six distinct directions for framing the light product UI — from a dark editorial backdrop to warm, coastal, botanical, and neutral palettes.</p>
+    <section class="options" aria-label="Kanvas card gradient options">
+      <article class="option option--animation"><div class="preview preview--animation"><iframe class="animation-reference" src="./northstar-animation.html?card=1" title="Current North Star animation background reference"></iframe></div><div class="label"><h2>Reference. Current animation</h2><code>existing lavender, sky, and mint canvas</code></div></article>
+      <article class="option option--a"><div class="preview"><div class="workspace"><div class="inbox"><div class="line line--selected"></div><div class="line"></div><div class="line"></div></div><div class="conversation"><div class="line"></div><div class="message"></div></div><div class="context"><div class="line"></div><div class="line"></div><div class="line"></div></div></div></div><div class="label"><h2>A. Midnight bloom</h2><code>dark, editorial contrast</code></div></article>
+      <article class="option option--b"><div class="preview"><div class="workspace"><div class="inbox"><div class="line line--selected"></div><div class="line"></div><div class="line"></div></div><div class="conversation"><div class="line"></div><div class="message"></div></div><div class="context"><div class="line"></div><div class="line"></div><div class="line"></div></div></div></div><div class="label"><h2>B. Apricot paper</h2><code>warm, inviting frame</code></div></article>
+      <article class="option option--c"><div class="preview"><div class="workspace"><div class="inbox"><div class="line line--selected"></div><div class="line"></div><div class="line"></div></div><div class="conversation"><div class="line"></div><div class="message"></div></div><div class="context"><div class="line"></div><div class="line"></div><div class="line"></div></div></div></div><div class="label"><h2>C. Ocean glass</h2><code>crisp, coastal clarity</code></div></article>
+      <article class="option option--d"><div class="preview"><div class="workspace"><div class="inbox"><div class="line line--selected"></div><div class="line"></div><div class="line"></div></div><div class="conversation"><div class="line"></div><div class="message"></div></div><div class="context"><div class="line"></div><div class="line"></div><div class="line"></div></div></div></div><div class="label"><h2>D. Botanical haze</h2><code>organic, optimistic</code></div></article>
+      <article class="option option--e"><div class="preview"><div class="workspace"><div class="inbox"><div class="line line--selected"></div><div class="line"></div><div class="line"></div></div><div class="conversation"><div class="line"></div><div class="message"></div></div><div class="context"><div class="line"></div><div class="line"></div><div class="line"></div></div></div></div><div class="label"><h2>E. Plum sorbet</h2><code>creative, high energy</code></div></article>
+      <article class="option option--f"><div class="preview"><div class="workspace"><div class="inbox"><div class="line line--selected"></div><div class="line"></div><div class="line"></div></div><div class="conversation"><div class="line"></div><div class="message"></div></div><div class="context"><div class="line"></div><div class="line"></div><div class="line"></div></div></div></div><div class="label"><h2>F. Silver slate</h2><code>quiet, architectural</code></div></article>
+    </section>
+  </main>
+  <script>
+    document.querySelectorAll('.option:not(.option--animation) .preview').forEach((preview) => {
+      const frame = document.createElement('iframe');
+      frame.className = 'animation-reference';
+      frame.src = './northstar-animation.html?card=1';
+      frame.title = 'North Star animation over this gradient option';
+      preview.replaceChildren(frame);
+    });
+  </script>
+</body>
+</html>

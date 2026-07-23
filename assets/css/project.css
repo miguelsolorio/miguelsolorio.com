@@ -20,6 +20,17 @@
     --project-theme-transform: scale(1.06);
     --project-theme-hover-transform: scale(1.15) translateX(-1.5%);
   }
+  [data-project-theme="kanvas"] {
+    --project-theme-surface: #fff1d9;
+    --project-theme-artwork:
+      radial-gradient(circle at 4% 8%, rgba(255, 184, 128, .52), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(247, 126, 166, .34), transparent 41%),
+      linear-gradient(135deg, #fff1d9 0%, #fff7e9 52%, #ffe8df 100%);
+    --project-theme-size: 100% 100%;
+    --project-theme-position: 50% 50%;
+    --project-theme-transform: none;
+    --project-theme-hover-transform: none;
+  }
   .dark [data-project-theme="notebooks"] {
     --project-theme-surface: #171b2d;
     --project-theme-artwork: linear-gradient(118deg, #2b2754 -18%, #1c2036 46%, #38272c 118%);
@@ -30,6 +41,33 @@
       radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
       radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
       linear-gradient(145deg, #151d2e 10%, #172430 90%);
+  }
+  .dark [data-project-theme="kanvas"] {
+    --project-theme-surface: #33251f;
+    --project-theme-artwork:
+      radial-gradient(circle at 4% 8%, rgba(170, 92, 44, .48), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(153, 63, 84, .34), transparent 41%),
+      linear-gradient(135deg, #33251f 0%, #3a2c25 52%, #3b2427 100%);
+  }
+  /* Give the homepage card a more defined stage than the animation itself:
+     periwinkle, sky, and mint keep it in the portfolio's palette while the
+     higher-contrast field lets the light product scene stand forward. */
+  .project.project--themed[data-project-theme="kanvas"] {
+    --project-aurora:
+      radial-gradient(circle at 4% 8%, rgba(255, 184, 128, .52), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(247, 126, 166, .34), transparent 41%),
+      linear-gradient(135deg, #fff1d9 0%, #fff7e9 52%, #ffe8df 100%);
+    background-color: #fff1d9;
+  }
+  .project.project--themed[data-project-theme="kanvas"]::after {
+    display: none;
+  }
+  .dark .project.project--themed[data-project-theme="kanvas"] {
+    --project-aurora:
+      radial-gradient(circle at 4% 8%, rgba(170, 92, 44, .48), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(153, 63, 84, .34), transparent 41%),
+      linear-gradient(135deg, #33251f 0%, #3a2c25 52%, #3b2427 100%);
+    background-color: #33251f;
   }
 
   /* Projects */
