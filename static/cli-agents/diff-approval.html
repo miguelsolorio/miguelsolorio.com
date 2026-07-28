@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini CLI diff approval</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./cli-animation.css?v=2">
+<link rel="stylesheet" href="./diff-view.css?v=1">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script defer src="./diff-view.js?v=1"></script>
+</head>
+<body class="demo-scene diff-scene" data-demo-scene="cli-diff">
+
+<main class="diff-stage">
+  <div class="diff-panel diff-approval">
+    <div class="tool-header">
+      <span class="tool-q">?</span>
+      <span class="tool-label">Edit</span>
+      <span class="tool-header-sub">fibonacci.py: def inefficient_fibonacci(n):... =&gt; from functools import lru_ca&#8230;</span>
+      <span class="tool-header-arrow">&#8592;</span>
+    </div>
+
+    <div data-diff="fibonacci"></div>
+
+    <div class="tool-question">Apply this change?</div>
+    <div class="tool-body">
+      <div class="tool-opt selected"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num">1.</span> Yes, allow once</span></div>
+      <div class="tool-opt"><span class="tool-opt-bullet"> </span><span><span class="tool-opt-num">2.</span> Yes, allow always</span></div>
+      <div class="tool-opt"><span class="tool-opt-bullet"> </span><span><span class="tool-opt-num">3.</span> Modify with external editor</span></div>
+      <div class="tool-opt"><span class="tool-opt-bullet"> </span><span><span class="tool-opt-num">4.</span> No, suggest changes (esc)</span></div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

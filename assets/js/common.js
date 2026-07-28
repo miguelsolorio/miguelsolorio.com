@@ -59,6 +59,19 @@
   syncThemeControls();
   themeButton?.addEventListener('click', siteTheme.toggle);
 
+  /* Still demo embeds scale their type with the width they are given, so their
+     natural height is only knowable once they are laid out. Any same-origin
+     frame that posts its height gets sized to it; the shortcode's height
+     attribute remains the fallback. */
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin) return;
+    const height = Number(event.data?.type === 'demo:height' && event.data.height);
+    if (!height) return;
+    const frame = [...document.querySelectorAll('iframe')]
+      .find((candidate) => candidate.contentWindow === event.source);
+    if (frame) frame.style.height = `${height}px`;
+  });
+
   let scrollFrame = 0;
   function updateScrollState() {
     scrollFrame = 0;

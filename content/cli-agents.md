@@ -72,9 +72,9 @@ Because Gemini CLI is open-source, design decisions didn't stop at the spec — 
 
 **Diff view.** I filed the issue documenting how the existing diff display was inconsistent between new and existing files, and lacked syntax highlighting that developers expect from tools like VS Code or GitHub. I then shipped the fix — adding styled line numbers, colored diff characters, and a unified presentation across file types. ([#4739](https://github.com/google-gemini/gemini-cli/issues/4739), [#4747](https://github.com/google-gemini/gemini-cli/pull/4747), [#6269](https://github.com/google-gemini/gemini-cli/pull/6269))
 
-{{< image src="diffing.png" alt="Before and after of the improved diff view with syntax highlighting" >}}
+{{< iframe src="/cli-agents/diff-compare.html" height="620" title="The diff view before and after the fix: the original tinted whole lines and numbered them inconsistently, the shipped version adds line numbers, colored diff characters, and syntax highlighting" theme="cli" >}}
 
-{{< image src="diff.png" alt="Before and after of the improved diff view with syntax highlighting" >}}
+{{< iframe src="/cli-agents/diff-approval.html" height="620" title="Gemini CLI asking to apply a change to fibonacci.py, showing the full syntax-highlighted diff and four approval options" theme="cli" >}}
 
 **Input syntax highlighting.** As users type, `/commands` and `@file/paths` now highlight in real time to distinguish them from plain text. I designed the highlighting behavior — including the rule that commands should only highlight at the start of a prompt, not mid-sentence — and landed the implementation. ([#7165](https://github.com/google-gemini/gemini-cli/pull/7165), [#5323](https://github.com/google-gemini/gemini-cli/pull/5323), [#7651](https://github.com/google-gemini/gemini-cli/issues/7651))
 

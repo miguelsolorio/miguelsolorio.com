@@ -1,0 +1,320 @@
+  /* Still scenes for the diff-view case study. Layered on cli-animation.css —
+     link that first. Everything structural (.diff-line, .diff-ln, .diff-sign,
+     .tool-*) comes from there; this file only adds what a static scene needs:
+     a code palette, the panel frame, and the two hunk separators. */
+
+  :root {
+    /* Nearly every code colour is an existing terminal token, so the scenes
+       stay in the same family as the animation above them on the page. Only
+       the property/string hues are new, and both have a light and dark value
+       because the originals were sampled from a black terminal. */
+    --code-plain:    var(--text);
+    --code-comment:  var(--text-muted);
+    /* Punctuation stays at full strength. The unhighlighted "before" panel
+       renders every semicolon in the foreground colour, so muting them here
+       would make the improved panel read as the dimmer of the two. */
+    --code-punct:    var(--code-plain);
+    /* The shared --accent-* pair only reaches ~3.2:1 on white, and these are
+       the two most-used colours in the scenes, so light mode takes darker
+       values of the same hues. */
+    --code-keyword:  #1967d2;
+    --code-number:   #137333;
+    --code-property: #00737b;
+    --code-string:   #a35b00;
+    --code-line:     #6b7086;
+
+    /* The CLI outlines a pending confirmation in its warning colour. */
+    --panel-border:  color-mix(in srgb, var(--warn) 42%, transparent);
+    --diff-rule:     color-mix(in srgb, var(--text-muted) 34%, var(--bg));
+  }
+
+  :root.dark {
+    --code-keyword:  var(--accent-blue);
+    --code-number:   var(--accent-green);
+    --code-property: #a3dce9;
+    --code-string:   #f6e3aa;
+    --code-line:     #7f85a1;
+    --panel-border:  color-mix(in srgb, var(--warn) 34%, transparent);
+    --diff-rule:     color-mix(in srgb, var(--text-muted) 48%, var(--bg));
+  }
+
+  /* ---------- scene shell ---------- */
+  /* cli-animation.css pins body to the viewport so the terminal can scroll
+     inside it. A still scene wants the opposite: the document should be exactly
+     as tall as its content, so it can report that height to the parent page and
+     have the embedding frame match it. */
+  body.diff-scene {
+    height: auto;
+    overflow: visible;
+    /* The embed already sits on a stage with 3.5rem of its own padding, so the
+       scene keeps only enough to clear the panel's shadow. Every pixel spent
+       here is a character the widest diff line loses. */
+    padding: clamp(8px, 2vw, 20px);
+    /* The site's content column caps the embed at roughly 900px, so the upper
+       bound is reached there — landing on the same 13px the animation above
+       this scene uses. */
+    font-size: clamp(7.5px, 1.45vw, 13px);
+  }
+
+  .diff-stage {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ---------- panel ---------- */
+  .diff-panel {
+    position: relative;
+    overflow: hidden;
+    border: 1.5px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 1.25em 0.75em;
+    background: var(--bg);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+
+  /* Long lines run past the panel at anything below the widest embed, the same
+     way they run past a narrow terminal. Fading the last few characters into
+     the panel makes that read as a horizon rather than as a hard chop. */
+  .diff-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 2.5em;
+    background: linear-gradient(to right, transparent, var(--bg) 85%);
+    pointer-events: none;
+  }
+
+  .diff-panel .tool-header {
+    margin: 0 0 1em;
+    padding-bottom: 0;
+    font-size: inherit;
+    gap: 0.5em;
+  }
+  .diff-panel .tool-header-sub {
+    font-size: inherit;
+  }
+  /* The CLI closes the summary with a back-arrow however narrow the terminal
+     gets, so hold it out of the truncation. */
+  .diff-panel .tool-header-arrow {
+    flex: none;
+  }
+
+  /* ---------- diff rows ---------- */
+  /* A terminal paints a background only under the characters it printed, which
+     is why the change bars in the original screenshots end ragged. Rows size to
+     their content instead of filling the block. */
+  .diff-panel .diff-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 0;
+  }
+  .diff-panel .diff-line {
+    width: max-content;
+    max-width: 100%;
+    padding: 0 0.2em 0 0;
+    font-size: inherit;
+    /* Rounded run ends belong to the animation, where a run of changed lines is
+       one solid rectangle. Here rows stop at their text, so a radius would land
+       at an arbitrary x between square-cornered neighbours. */
+    border-radius: 0;
+  }
+  .diff-panel .diff-ln {
+    width: 2.2em;
+    padding-right: 0.6em;
+    font-size: inherit;
+    opacity: 1;
+    color: var(--code-line);
+  }
+  .diff-panel .diff-sign {
+    width: 1ch;
+    margin-right: 1ch;
+  }
+
+  /* The shared change tints are tuned for the animation's small inline diffs.
+     At this size, and against a panel rather than the page, the dark pair goes
+     muddy well before it reads as red and green. Deepen them here only. */
+  :root.dark .diff-panel:not(.diff-plain) .diff-line-del { background: rgba(255, 43, 43, 0.16); }
+  :root.dark .diff-panel:not(.diff-plain) .diff-line-add { background: rgba(126, 255, 43, 0.11); }
+
+  /* Rows the renderer skipped, and the hunk separator that stands in for them.
+     Both are full-width so they read as breaks in the file, not as code. */
+  .diff-hidden {
+    padding-left: 0.4em;
+    color: var(--text-muted);
+    white-space: pre;
+    line-height: 1.75;
+    transition: color 0.3s ease;
+  }
+  /* Drawn as two hairlines rather than a `double` border: at this size the
+     border keyword lands three hard 1px rows with no control over weight, which
+     reads as a railroad track cutting the panel in half. As backgrounds the
+     pair can be lightened, given room to breathe, and faded out before it
+     reaches the panel edge. */
+  .diff-gap {
+    /* Empty, so it needs stretching out of the content-width flex column that
+       keeps the code rows ragged. */
+    align-self: stretch;
+    height: 4px;
+    margin: 0.7em 0;
+    background-image:
+      linear-gradient(var(--diff-rule), var(--diff-rule)),
+      linear-gradient(var(--diff-rule), var(--diff-rule));
+    background-repeat: no-repeat;
+    background-size: 100% 1px;
+    background-position: 0 0, 0 100%;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  /* ---------- the "before" renderer ---------- */
+  /* The original diff coloured whole lines and drew no change bars, so the eye
+     had nothing to lock onto. Removing the backgrounds and the syntax palette
+     from the shared styles reproduces it exactly — this one class is the whole
+     before/after delta. */
+  .diff-plain .diff-line-del,
+  .diff-plain .diff-line-add {
+    background: none;
+  }
+  .diff-plain .diff-line-del .diff-code { color: var(--diff-del); }
+  /* Whole lines of running text, so the added green needs more weight on white
+     than the shared token — which is sized for a one-line inline marker. */
+  .diff-plain .diff-line-add .diff-code { color: #15803d; }
+  :root.dark .diff-plain .diff-line-add .diff-code { color: var(--diff-add); }
+  /* The old renderer drew its separator in the default foreground and ran it
+     wall to wall, which made the rules louder than the changes they separated.
+     Keeping it hard-edged here is the point of the comparison. */
+  .diff-plain .diff-gap {
+    --diff-rule: var(--text);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  /* ---------- code palette ---------- */
+  .diff-code {
+    color: var(--code-plain);
+  }
+  .diff-code .token.comment,
+  .diff-code .token.prolog,
+  .diff-code .token.doctype,
+  .diff-code .token.cdata {
+    color: var(--code-comment);
+  }
+  .diff-code .token.punctuation,
+  .diff-code .token.operator {
+    color: var(--code-punct);
+  }
+  .diff-code .token.keyword,
+  .diff-code .token.boolean,
+  .diff-code .token.builtin,
+  .diff-code .token.important,
+  .diff-code .token.atrule {
+    color: var(--code-keyword);
+  }
+  /* hexcode and unit-bearing numbers are added to the CSS grammar in
+     diff-view.js — Prism's core grammar has neither, which would leave every
+     value in the "after" panel the same colour as the "before" one. */
+  .diff-code .token.number,
+  .diff-code .token.hexcode,
+  .diff-code .token.unit {
+    color: var(--code-number);
+  }
+  .diff-code .token.string,
+  .diff-code .token.char,
+  .diff-code .token.triple-quoted-string,
+  .diff-code .token.attr-value,
+  .diff-code .token.selector,
+  .diff-code .token.class-name,
+  .diff-code .token.decorator {
+    color: var(--code-string);
+  }
+  .diff-code .token.property,
+  .diff-code .token.attr-name,
+  .diff-code .token.variable,
+  .diff-code .token.parameter {
+    color: var(--code-property);
+  }
+  .diff-code .token.function,
+  .diff-code .token.url {
+    color: var(--code-function);
+  }
+  /* Prism marks Python's `def name` as a plain token pair; the name should read
+     as the subject of the line, not as a keyword. */
+  .diff-code .token.function-definition {
+    color: var(--code-plain);
+  }
+
+  /* ---------- before / after comparison ---------- */
+  /* Two columns at every width. The comparison is the content — stacking it
+     would turn a glance into a scroll — so the type scales down instead and
+     long lines clip at the panel edge the way they do in a narrow terminal. */
+  .diff-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(8px, 1.2vw, 16px);
+  }
+  /* The two renderers show a different number of context lines, so the panels
+     have to be stretched to a shared height or the comparison lands crooked. */
+  .diff-column {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    margin: 0;
+  }
+  .diff-column .diff-panel {
+    flex: 1;
+  }
+  /* The labels are the framing device for the whole comparison, so they read as
+     display type rather than as a caption. Sizing them in em off the scene's
+     own font keeps them proportionally larger than the code at every width,
+     rather than crossing under it as the type scales down. */
+  .diff-label {
+    margin-bottom: clamp(8px, 1.2vw, 16px);
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .diff-label-name {
+    display: block;
+    color: var(--text);
+    font-size: 1.9em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    transition: color 0.3s ease;
+  }
+  /* Kept quiet and neutral: the panels below already carry the red and green,
+     and a tinted label would pre-judge the comparison for the reader. */
+  .diff-label-note {
+    display: block;
+    margin-top: 0.5em;
+    color: var(--text-muted);
+    font-size: 1em;
+    transition: color 0.3s ease;
+  }
+
+  /* ---------- approval scene ---------- */
+  .diff-approval .tool-question {
+    margin: 1.4em 0 0.9em 0.75em;
+    font-size: inherit;
+  }
+  .diff-approval .tool-body {
+    margin-left: 0.75em;
+    font-size: inherit;
+  }
+  .diff-approval .tool-opt {
+    /* The animation's options fill a narrow approval box; here they sit in a
+       full-width panel, where a selection bar stretching to the far edge reads
+       as a banner. Hug the text instead, like the change bars above it. */
+    width: fit-content;
+    cursor: default;
+  }
+  .diff-approval .tool-opt:not(.selected):hover {
+    background: none;
+  }
+
+  @media (max-width: 40rem) {
+    .diff-label-note {
+      display: none;
+    }
+  }

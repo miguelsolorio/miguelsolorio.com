@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini CLI diff view, before and after</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./cli-animation.css?v=2">
+<link rel="stylesheet" href="./diff-view.css?v=1">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script defer src="./diff-view.js?v=1"></script>
+</head>
+<body class="demo-scene diff-scene" data-demo-scene="cli-diff">
+
+<main class="diff-stage">
+  <div class="diff-compare">
+
+    <figure class="diff-column">
+      <figcaption class="diff-label">
+        <span class="diff-label-name">Before</span>
+        <span class="diff-label-note">Whole lines tinted, numbers out of step</span>
+      </figcaption>
+      <div class="diff-panel diff-plain">
+        <div class="tool-header">
+          <span class="tool-q">?</span>
+          <span class="tool-label">Edit</span>
+          <span class="tool-header-sub">src/App.css: .App {... =&gt; :root {...</span>
+          <span class="tool-header-arrow">&#8592;</span>
+        </div>
+        <div data-diff="app-css-before"></div>
+      </div>
+    </figure>
+
+    <figure class="diff-column">
+      <figcaption class="diff-label">
+        <span class="diff-label-name">After</span>
+        <span class="diff-label-note">Syntax highlighting and change bars</span>
+      </figcaption>
+      <div class="diff-panel">
+        <div class="tool-header">
+          <span class="tool-q">?</span>
+          <span class="tool-label">Edit</span>
+          <span class="tool-header-sub">src/App.css: .App {... =&gt; :root {...</span>
+          <span class="tool-header-arrow">&#8592;</span>
+        </div>
+        <div data-diff="app-css-after"></div>
+      </div>
+    </figure>
+
+  </div>
+</main>
+
+</body>
+</html>
