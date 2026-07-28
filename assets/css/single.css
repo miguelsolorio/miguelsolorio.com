@@ -46,6 +46,15 @@
     height: clamp(20rem, 69.5vw, 50rem);
     margin: 0;
   }
+  .single .onboarding-project-demo {
+    margin-block: var(--media-gap);
+  }
+  .single .onboarding-project-demo iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: clamp(20rem, 61.75vw, 45rem);
+    margin: 0;
+  }
   .single h1 {
     @apply font-bold mb-4;
     margin-top: clamp(3.5rem, 9vw, 5rem);
@@ -103,10 +112,12 @@
     border-radius: 0 !important;
     box-shadow: none;
   }
-  /* Kanvas already draws the product frame inside the animation. Let that
-     single frame sit on the gradient stage without a second iframe outline. */
+  /* These animations draw their own product frame and shadow. Keep the iframe
+     transparent so the themed stage remains the only outer container. */
   .single .project-embed[data-project-theme="kanvas"] iframe.embed-frame,
-  .dark .single .project-embed[data-project-theme="kanvas"] iframe.embed-frame {
+  .single .project-embed[data-project-theme="onboarding"] iframe.embed-frame,
+  .dark .single .project-embed[data-project-theme="kanvas"] iframe.embed-frame,
+  .dark .single .project-embed[data-project-theme="onboarding"] iframe.embed-frame {
     border-radius: 0 !important;
     box-shadow: none;
   }

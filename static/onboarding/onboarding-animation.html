@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VS Code onboarding concept demo</title>
+  <script src="/demo-system/demo-system.js?v=2"></script>
+  <link rel="stylesheet" href="https://microsoft.github.io/vscode-codicons/dist/codicon.css">
+  <link rel="stylesheet" href="/demo-system/demo-system.css?v=2">
+  <link rel="stylesheet" href="./onboarding-animation.css?v=10">
+</head>
+<body class="demo-scene demo-scene--onboarding onboarding-scene" data-demo-scene="onboarding">
+  <main class="onboarding-stage" data-demo-stage aria-label="VS Code onboarding walkthrough">
+    <div class="scene-canvas" id="sceneCanvas">
+      <div class="app-frame" id="appFrame" data-product-theme="light">
+        <aside class="activity-bar" aria-label="Activity bar">
+          <button class="activity-button is-active" id="activityExplorer" type="button" aria-label="Explorer">
+            <span class="codicon codicon-files" aria-hidden="true"></span>
+          </button>
+          <button class="activity-button" type="button" aria-label="Search">
+            <span class="codicon codicon-search" aria-hidden="true"></span>
+          </button>
+          <button class="activity-button" type="button" aria-label="Source control">
+            <span class="codicon codicon-source-control" aria-hidden="true"></span>
+          </button>
+          <button class="activity-button" type="button" aria-label="Run and debug">
+            <span class="codicon codicon-debug-alt" aria-hidden="true"></span>
+          </button>
+          <button class="activity-button" type="button" aria-label="Extensions">
+            <span class="codicon codicon-extensions" aria-hidden="true"></span>
+          </button>
+          <div class="activity-spacer"></div>
+          <button class="activity-button" type="button" aria-label="Accounts">
+            <span class="codicon codicon-account" aria-hidden="true"></span>
+          </button>
+          <button class="activity-button" type="button" aria-label="Settings">
+            <span class="codicon codicon-gear" aria-hidden="true"></span>
+          </button>
+        </aside>
+
+        <section class="workspace">
+          <header class="top-bar">
+            <div class="tabs">
+              <div class="tab tab--inactive">
+                <img src="/code.svg" alt="">
+                <span>Welcome</span>
+                <span class="codicon codicon-close" aria-hidden="true"></span>
+              </div>
+              <div class="tab tab--active">
+                <img src="/code.svg" alt="">
+                <span>Get Started</span>
+                <span class="codicon codicon-close" aria-hidden="true"></span>
+              </div>
+            </div>
+            <div class="window-actions" aria-hidden="true">
+              <span class="codicon codicon-layout" aria-hidden="true"></span>
+              <span class="codicon codicon-ellipsis" aria-hidden="true"></span>
+            </div>
+          </header>
+
+          <div class="page-viewport">
+            <section class="screen screen--welcome is-active" data-screen="welcome" aria-label="Welcome">
+              <div class="welcome-hero">
+                <img class="welcome-logo" src="/code.svg" alt="">
+                <h1>Welcome to Visual Studio Code</h1>
+                <p>Code editing. Redefined.</p>
+                <button class="primary-button" id="getStartedButton" type="button">Get Started</button>
+                <button class="text-button" type="button">Skip</button>
+              </div>
+              <div class="welcome-footer">
+                <div class="progress-dots" aria-hidden="true">
+                  <i class="is-active"></i><i></i><i></i><i></i><i></i>
+                </div>
+                <span><a href="#">Sign in</a> to turn on Settings Sync <span class="codicon codicon-info" aria-hidden="true"></span></span>
+              </div>
+            </section>
+
+            <section class="screen screen--themes" data-screen="themes" aria-label="Choose a theme">
+              <div class="onboarding-heading">
+                <h1>Choose a theme</h1>
+                <p>Make the editor and your code look the way you love</p>
+              </div>
+              <div class="theme-carousel">
+                <button class="carousel-arrow" type="button" aria-label="Previous theme"><span class="codicon codicon-chevron-left" aria-hidden="true"></span></button>
+                <div class="theme-options">
+                  <button class="theme-option" data-theme-choice="dark" type="button">
+                    <span class="theme-preview theme-preview--dark"><span class="preview-rail"></span><span class="preview-code"><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+                    <span>Dark</span>
+                  </button>
+                  <button class="theme-option is-selected" data-theme-choice="light" type="button">
+                    <span class="theme-preview theme-preview--light"><span class="preview-rail"></span><span class="preview-code"><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+                    <span>Light</span>
+                  </button>
+                  <button class="theme-option" data-theme-choice="quiet-light" type="button">
+                    <span class="theme-preview theme-preview--quiet"><span class="preview-rail"></span><span class="preview-code"><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+                    <span>Quiet Light</span>
+                  </button>
+                  <button class="theme-option" data-theme-choice="monokai" type="button">
+                    <span class="theme-preview theme-preview--monokai"><span class="preview-rail"></span><span class="preview-code"><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+                    <span>Monokai</span>
+                  </button>
+                </div>
+                <button class="carousel-arrow" type="button" aria-label="Next theme"><span class="codicon codicon-chevron-right" aria-hidden="true"></span></button>
+              </div>
+              <div class="screen-actions">
+                <button class="primary-button" id="themeNextButton" type="button">Next Step</button>
+                <button class="text-button" type="button">Skip</button>
+              </div>
+              <div class="screen-footer">
+                <div class="progress-dots" aria-hidden="true">
+                  <i></i><i class="is-active"></i><i></i><i></i><i></i>
+                </div>
+                <span><a href="#">Sign in</a> to turn on Settings Sync <span class="codicon codicon-info" aria-hidden="true"></span></span>
+              </div>
+            </section>
+
+            <section class="screen screen--palette" data-screen="palette" aria-label="Command palette">
+              <div class="onboarding-heading">
+                <h1>Command palette</h1>
+                <p>Find any command, open files, and search for symbols</p>
+                <div class="shortcut-keys" aria-label="Command palette shortcut"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>P</kbd></div>
+              </div>
+              <div class="command-palette">
+                <div class="palette-input"><span class="codicon codicon-chevron-right" aria-hidden="true"></span><span class="palette-caret"></span></div>
+                <div class="palette-item is-highlighted"><span>View: Toggle Tab Visibility</span><span class="palette-meta"><span>⌃</span><span>⌘</span><b>W</b><em>recently used</em><span class="codicon codicon-gear" aria-hidden="true"></span></span></div>
+                <div class="palette-item"><span>Add Browser Breakpoint</span><span class="palette-meta"><em>other commands</em></span></div>
+                <div class="palette-item"><span>Calls: Show Call Hierarchy</span><span class="palette-meta"><span>◈</span><span>⌘</span><b>K</b></span></div>
+                <div class="palette-item"><span>Calls: Show Outgoing Calls</span><span class="palette-meta"><span>◈</span><span>⌘</span><b>K</b></span></div>
+                <div class="palette-item"><span>Change End of Line Sequence</span><span class="palette-meta"><span>⌘</span><b>K</b></span></div>
+              </div>
+              <div class="screen-actions">
+                <button class="primary-button" id="paletteNextButton" type="button">Next Step</button>
+              </div>
+              <div class="screen-footer">
+                <div class="progress-dots" aria-hidden="true">
+                  <i></i><i></i><i class="is-active"></i><i></i><i></i>
+                </div>
+                <span><a href="#">Sign in</a> to turn on Settings Sync <span class="codicon codicon-info" aria-hidden="true"></span></span>
+              </div>
+            </section>
+
+            <section class="screen screen--extensions" data-screen="extensions" aria-label="Extend and customize">
+              <div class="onboarding-heading">
+                <h1>Extend and customize</h1>
+                <nav class="category-tabs" aria-label="Extension categories">
+                  <button class="is-active" data-extension-tab="data-science" type="button">Data Science</button>
+                  <button data-extension-tab="students" type="button">Students</button>
+                  <button data-extension-tab="languages" type="button">Languages</button>
+                  <button data-extension-tab="snippets" type="button">Snippets</button>
+                  <button data-extension-tab="keymaps" type="button">Keymaps</button>
+                </nav>
+              </div>
+              <div class="extension-grid" id="extensionGrid">
+                <article class="extension-card"><span class="extension-icon extension-icon--python codicon codicon-symbol-namespace" aria-hidden="true"></span><div><h2><span class="extension-title" title="Python">Python</span><small title="Microsoft">Microsoft</small></h2><p>Debugging, autocomplete, rich...</p><button type="button">Install</button></div></article>
+                <article class="extension-card"><span class="extension-icon extension-icon--map codicon codicon-map" aria-hidden="true"></span><div><h2><span class="extension-title" title="Geo Data Viewer">Geo Data Viewer</span><small title="Random Fractals Inc.">Random Fractals Inc.</small></h2><p>Geo Data Viewer w/o Py 2</p><button type="button">Install</button></div></article>
+                <article class="extension-card"><span class="extension-icon extension-icon--chart codicon codicon-graph" aria-hidden="true"></span><div><h2><span class="extension-title" title="Vega Viewer">Vega Viewer</span><small title="Random Fractals Inc.">Random Fractals Inc.</small></h2><p>VSCode extension for Interactive...</p><button type="button">Install</button></div></article>
+                <article class="extension-card"><span class="extension-icon extension-icon--notebook codicon codicon-notebook" aria-hidden="true"></span><div><h2><span class="extension-title" title="Observable JS Notebook">Observable JS Notebook</span><small title="Random Fractals Inc.">Random Fractals Inc.</small></h2><p>JS Notebook • Inspector ↗ → vscode...</p><button type="button">Install</button></div></article>
+                <article class="extension-card"><span class="extension-icon extension-icon--net">.NET</span><div><h2><span class="extension-title" title=".NET Interactive Notebooks">.NET Interactive Notebooks</span><small title="Microsoft">Microsoft</small></h2><p>.NET Interactive Notebooks for VS Code...</p><button type="button">Install</button></div></article>
+                <article class="extension-card"><span class="extension-icon extension-icon--data codicon codicon-layers" aria-hidden="true"></span><div><h2><span class="extension-title" title="Databricks VSCode">Databricks VSCode</span><small title="paiqo">paiqo</small></h2><p>Databricks Extension for VSCode</p><button type="button">Install</button></div></article>
+              </div>
+              <div class="screen-actions">
+                <button class="primary-button" id="extensionNextButton" type="button">Next Step</button>
+                <button class="text-button" type="button">Skip</button>
+              </div>
+              <div class="screen-footer">
+                <div class="progress-dots" aria-hidden="true">
+                  <i></i><i></i><i></i><i class="is-active"></i><i></i>
+                </div>
+                <span><a href="#">Sign in</a> to turn on Settings Sync <span class="codicon codicon-info" aria-hidden="true"></span></span>
+              </div>
+            </section>
+
+            <section class="screen screen--done" data-screen="done" aria-label="Onboarding complete">
+              <div class="done-hero">
+                <span class="done-check codicon codicon-pass" aria-hidden="true"></span>
+                <h1>You're good to go!</h1>
+                <p>Next, know your editor better by taking a tour of the interface</p>
+                <button class="primary-button" id="overviewButton" type="button">Interact Overview</button>
+              </div>
+              <div class="screen-footer">
+                <div class="progress-dots" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i class="is-active"></i>
+                </div>
+                <span><a href="#">Sign in</a> to turn on Settings Sync <span class="codicon codicon-info" aria-hidden="true"></span></span>
+              </div>
+            </section>
+
+            <section class="screen screen--final" data-screen="final" aria-label="VS Code welcome page">
+              <div class="final-welcome">
+                <header class="final-brand">
+                  <img src="/code.svg" alt="">
+                  <div><h1>Visual Studio Code</h1><p>Code editing redefined <a href="#">(v1.47)</a></p></div>
+                </header>
+                <div class="final-columns">
+                  <section class="final-column final-column--tasks">
+                    <h2>Get Started</h2>
+                    <div class="task-list">
+                      <button class="task-row task-row--done" type="button"><span class="codicon codicon-pass" aria-hidden="true"></span><span>Change your color theme</span><span class="task-keys">⌘ &nbsp; K &nbsp; ⌘ &nbsp; T</span></button>
+                      <button class="task-row" type="button"><span class="codicon codicon-rocket" aria-hidden="true"></span><span>Open the command palette</span><span class="task-keys">⌘ &nbsp; ⇧ &nbsp; P</span></button>
+                      <button class="task-row" type="button"><span class="codicon codicon-extensions" aria-hidden="true"></span><span>Install an extension</span><span class="task-keys">⌘ &nbsp; ⇧ &nbsp; X</span></button>
+                      <button class="task-row" type="button"><span class="codicon codicon-terminal" aria-hidden="true"></span><span>Toggle the integrated terminal</span><span class="task-keys">⌃ &nbsp; `</span></button>
+                      <button class="task-row" type="button"><span class="codicon codicon-record-keys" aria-hidden="true"></span><span>Setup a keyboard shortcut</span><span class="task-keys">⌘ &nbsp; K &nbsp; ⌘ &nbsp; S</span></button>
+                      <button class="task-row" type="button"><span class="codicon codicon-repo-clone" aria-hidden="true"></span><span>Clone a repository</span></button>
+                    </div>
+                    <button class="text-button task-skip" type="button">Skip</button>
+                  </section>
+                  <section class="final-column final-column--links">
+                    <h2>Start</h2>
+                    <a href="#"><span class="codicon codicon-new-file" aria-hidden="true"></span>New File</a>
+                    <a href="#"><span class="codicon codicon-folder-opened" aria-hidden="true"></span>Open Folder...</a>
+                    <a href="#"><span class="codicon codicon-new-folder" aria-hidden="true"></span>Add workspace folder...</a>
+                    <h2 class="help-heading">Help</h2>
+                    <a href="#"><span class="codicon codicon-lightbulb" aria-hidden="true"></span>Learn about <b>Tips and Tricks</b></a>
+                    <a href="#"><span class="codicon codicon-book" aria-hidden="true"></span>Read the product <b>Documentation</b></a>
+                    <a href="#"><span class="codicon codicon-device-camera-video" aria-hidden="true"></span>Watch our <b>Introductory Videos</b></a>
+                    <a href="#"><span class="codicon codicon-map" aria-hidden="true"></span>Start the <b>UI Tour</b></a>
+                  </section>
+                </div>
+                <div class="privacy-copy"><label><input type="checkbox" checked> Show welcome page on startup</label><p>Help improve VS Code by allowing Microsoft to collect usage data.<br>Read our <a href="#">privacy statement</a> and learn how to <a href="#">opt out</a>.</p></div>
+              </div>
+
+              <div class="tour-callout" data-tour="activity" id="tourActivity">
+                <button class="tour-close" type="button" aria-label="Close"><span class="codicon codicon-close" aria-hidden="true"></span></button>
+                <strong>ACTIVITY BAR</strong><p>This lets you switch between views and gives you additional context-specific indicators, like the number of outgoing changes when Git is enabled.</p><small>1 of 4</small><button class="tour-next" type="button">Next</button>
+              </div>
+              <div class="tour-callout" data-tour="status" id="tourStatus">
+                <button class="tour-close" type="button" aria-label="Close"><span class="codicon codicon-close" aria-hidden="true"></span></button>
+                <strong>STATUS BAR</strong><p>Information about the opened project and the files you edit.</p><small>2 of 4</small><button class="tour-next" type="button">Next</button>
+              </div>
+              <div class="tour-callout" data-tour="notifications" id="tourNotifications">
+                <button class="tour-close" type="button" aria-label="Close"><span class="codicon codicon-close" aria-hidden="true"></span></button>
+                <strong>NOTIFICATIONS</strong><p>See alerts from the editor and extensions.</p><small>3 of 4</small><button class="tour-next" type="button">Next</button>
+              </div>
+              <div class="tour-callout" data-tour="start" id="tourStart">
+                <button class="tour-close" type="button" aria-label="Close"><span class="codicon codicon-close" aria-hidden="true"></span></button>
+                <strong>START HERE</strong><p>Begin by creating a new file or opening an existing folder.</p><small>4 of 4</small><button class="tour-next" type="button">Done</button>
+              </div>
+            </section>
+          </div>
+
+          <footer class="status-bar">
+            <div><span class="codicon codicon-source-control" aria-hidden="true"></span><span>main</span><span class="codicon codicon-sync" aria-hidden="true"></span><span>0↓ 4↑</span><span class="codicon codicon-error" aria-hidden="true"></span><span>0</span><span class="codicon codicon-warning" aria-hidden="true"></span><span>0</span></div>
+            <div><span class="codicon codicon-feedback" aria-hidden="true"></span><span class="codicon codicon-bell" aria-hidden="true"></span></div>
+          </footer>
+        </section>
+
+        <div class="demo-pointer" id="demoPointer" aria-hidden="true">
+          <span class="pointer-ripple"></span>
+          <span class="codicon codicon-cursor pointer-glyph"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="./onboarding-animation.js?v=9"></script>
+</body>
+</html>

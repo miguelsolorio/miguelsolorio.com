@@ -31,6 +31,15 @@
     --project-theme-transform: none;
     --project-theme-hover-transform: none;
   }
+  [data-project-theme="onboarding"] {
+    --project-theme-surface: #fef0f4;
+    --project-theme-artwork:
+      conic-gradient(from 218deg at 68% 34%, #fce4ee 0deg, #fef2f5 96deg, #fdf0f3 174deg, #f8dde8 258deg, #fce4ee 360deg);
+    --project-theme-size: 135% 150%;
+    --project-theme-position: 64% 35%;
+    --project-theme-transform: scale(1.08) rotate(-2deg);
+    --project-theme-hover-transform: scale(1.17) rotate(2deg);
+  }
   .dark [data-project-theme="notebooks"] {
     --project-theme-surface: #171b2d;
     --project-theme-artwork: linear-gradient(118deg, #2b2754 -18%, #1c2036 46%, #38272c 118%);
@@ -48,6 +57,11 @@
       radial-gradient(circle at 4% 8%, rgba(170, 92, 44, .48), transparent 38%),
       radial-gradient(circle at 96% 92%, rgba(153, 63, 84, .34), transparent 41%),
       linear-gradient(135deg, #33251f 0%, #3a2c25 52%, #3b2427 100%);
+  }
+  .dark [data-project-theme="onboarding"] {
+    --project-theme-surface: #1f1a28;
+    --project-theme-artwork:
+      conic-gradient(from 218deg at 68% 34%, #2e1f33 0deg, #1e1a2e 96deg, #2a2028 174deg, #382030 258deg, #2e1f33 360deg);
   }
   /* Give the homepage card a more defined stage than the animation itself:
      periwinkle, sky, and mint keep it in the portfolio's palette while the

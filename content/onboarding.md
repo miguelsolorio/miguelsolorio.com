@@ -6,8 +6,11 @@ draft: false
 weight: 3
 project: "large"
 thumbnail: "onboarding.png"
-card_video: "onboarding/onboarding-concept.mp4"
+card_animation: "/onboarding/onboarding-animation.html"
+card_theme: "onboarding"
 ---
+
+{{< iframe src="/onboarding/onboarding-animation.html?v=11" height="720" title="VS Code onboarding concept walkthrough" frame_class="onboarding-project-demo" theme="onboarding" >}}
 
 As the lead designer, I iterated through the design process to re-design VS Code's welcome page to discover a framework that could scale.
 
@@ -43,7 +46,6 @@ Our ultimate goal was to make it easier for new users to get set up with VS Code
 
 One typical pattern we saw during onboarding flows was for users to be given a tour of the product, typically via a UI tour or a carousel slide. We decided to try the carousel approach and gauge the customer feedback: experimenting in the open.
 
-{{< video src="onboarding-concept.mp4" >}}
 
 Unsurprisingly, the feedback on social media was quite positive, and customers started requesting advanced experiences to learn how to use the product.
 
@@ -63,7 +65,7 @@ We returned to the drawing board with our concepts and tried an alternative meth
 
 It was clear that out of the various options we had explored, one stood out the most in terms of scalability. We wanted something that allowed us to swap out content (depending on the user’s experience) and allow extensions to leverage the same functionality.
 
-{{< video src="onboarding-demo.mp4" >}}
+{{< video src="onboarding-demo.mp4" gradient="true" >}}
 
 After rounds of testing, we noticed that the cards concept allowed us to achieve our primary goal of keeping the content on the page while also allowing extension to display different content. If experienced users weren't interested in the content, they could easily dismiss them and regain the space.
 
