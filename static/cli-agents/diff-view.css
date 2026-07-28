@@ -21,11 +21,14 @@
     --code-number:   #137333;
     --code-property: #00737b;
     --code-string:   #a35b00;
-    --code-line:     #6b7086;
+    /* The gutter is reference material, not content, so it sits well under the
+       code — but only in the shipped panel. The "before" panel overrides it back
+       to the foreground, because the old renderer had no muted tier. */
+    --code-line:     #a2a6b8;
 
     /* The CLI outlines a pending confirmation in its warning colour. */
     --panel-border:  color-mix(in srgb, var(--warn) 42%, transparent);
-    --diff-rule:     color-mix(in srgb, var(--text-muted) 34%, var(--bg));
+    --diff-rule:     color-mix(in srgb, var(--text-muted) 22%, var(--bg));
   }
 
   :root.dark {
@@ -35,7 +38,7 @@
     --code-string:   #f6e3aa;
     --code-line:     #7f85a1;
     --panel-border:  color-mix(in srgb, var(--warn) 34%, transparent);
-    --diff-rule:     color-mix(in srgb, var(--text-muted) 48%, var(--bg));
+    --diff-rule:     color-mix(in srgb, var(--text-muted) 32%, var(--bg));
   }
 
   /* ---------- scene shell ---------- */
@@ -147,25 +150,16 @@
     line-height: 1.75;
     transition: color 0.3s ease;
   }
-  /* Drawn as two hairlines rather than a `double` border: at this size the
-     border keyword lands three hard 1px rows with no control over weight, which
-     reads as a railroad track cutting the panel in half. As backgrounds the
-     pair can be lightened, given room to breathe, and faded out before it
-     reaches the panel edge. */
+  /* One hairline, well below the weight of the code it separates: the rule only
+     has to say "lines were skipped here", and anything heavier competes with the
+     change bars for the same glance. */
   .diff-gap {
     /* Empty, so it needs stretching out of the content-width flex column that
        keeps the code rows ragged. */
     align-self: stretch;
-    height: 4px;
-    margin: 0.7em 0;
-    background-image:
-      linear-gradient(var(--diff-rule), var(--diff-rule)),
-      linear-gradient(var(--diff-rule), var(--diff-rule));
-    background-repeat: no-repeat;
-    background-size: 100% 1px;
-    background-position: 0 0, 0 100%;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    height: 1px;
+    margin: 0.85em 0;
+    background-color: var(--diff-rule);
   }
 
   /* ---------- the "before" renderer ---------- */
@@ -182,13 +176,23 @@
      than the shared token — which is sized for a one-line inline marker. */
   .diff-plain .diff-line-add .diff-code { color: #15803d; }
   :root.dark .diff-plain .diff-line-add .diff-code { color: var(--diff-add); }
-  /* The old renderer drew its separator in the default foreground and ran it
-     wall to wall, which made the rules louder than the changes they separated.
-     Keeping it hard-edged here is the point of the comparison. */
+  /* The old renderer had no quiet tier at all: the line numbers and the
+     hidden-lines notice printed in the same default foreground as the code, so
+     the gutter pulled as hard as the diff did. */
+  .diff-plain .diff-ln,
+  .diff-plain .diff-hidden {
+    color: var(--text);
+  }
+  /* The old renderer printed its separator as a run of box-drawing characters in
+     the default foreground, wall to wall — two hard rules at full text weight,
+     louder than the changes they separated. Keeping that here is the point of
+     the comparison. */
   .diff-plain .diff-gap {
-    --diff-rule: var(--text);
-    -webkit-mask-image: none;
-    mask-image: none;
+    height: 4px;
+    margin: 0.7em 0;
+    background-color: transparent;
+    border-top: 1px solid var(--text);
+    border-bottom: 1px solid var(--text);
   }
 
   /* ---------- code palette ---------- */
