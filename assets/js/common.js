@@ -72,6 +72,15 @@
     if (frame) frame.style.height = `${height}px`;
   });
 
+  /* ?incognito drops the header back into the flow. The sticky bar is an
+     overlay, so it sits on top of the page in screenshots and screen
+     recordings; this hands the full viewport back for a clean capture. The
+     class goes on <html> rather than the header so other chrome can opt out
+     of a capture the same way. */
+  if (new URLSearchParams(window.location.search).has('incognito')) {
+    root.classList.add('incognito');
+  }
+
   let scrollFrame = 0;
   function updateScrollState() {
     scrollFrame = 0;

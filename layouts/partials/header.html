@@ -41,7 +41,9 @@
     {{ end }}
   </head>
   <body>
-    <nav class="site-shell site-header" aria-label="Primary navigation">
-      {{ partial "navigation" . }}
+    <nav class="site-header" aria-label="Primary navigation">
+      <div class="site-shell site-header-inner">
+        {{ partial "navigation" . }}
+      </div>
     </nav>
     <div class="site-shell site-content">

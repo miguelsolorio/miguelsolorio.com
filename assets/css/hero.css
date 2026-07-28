@@ -5,12 +5,6 @@
         @apply transition-all duration-200 ease-in
     }
 
-    /* Keep the site header above the full-viewport ambient hero layer. */
-    body > nav {
-        position: relative;
-        z-index: 2;
-    }
-
     /* Homepage intro */
     intro.home-hero {
         position: relative;

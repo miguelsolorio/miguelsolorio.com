@@ -58,8 +58,40 @@
   }
 
   /* Navigation */
-  body > nav {
+
+  /* The bar spans the viewport so its tint and blur run edge to edge, while
+     the inner shell keeps the logo and controls on the content grid. The
+     z-index also holds it above the home page's full-viewport ambient hero
+     layer, which reaches up behind the header. */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid transparent;
+    transition: background-color .3s ease, border-color .3s ease, box-shadow .3s ease;
+  }
+
+  .site-header-inner {
     @apply flex items-center justify-between py-6;
+  }
+
+  /* At rest the bar is invisible against the page; common.js drops the `top`
+     class once the page scrolls, which fades in the tint, hairline, and blur.
+     Gating the blur on that class keeps the hero's ambient art unblurred at
+     the top of the home page, where it sits directly behind the header. */
+  html:not(.top):not(.incognito) .site-header {
+    background-color: rgba(245, 245, 245, .72);
+    border-bottom-color: rgba(15, 23, 42, .08);
+    box-shadow: 0 1px 12px rgba(15, 23, 42, .05);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    backdrop-filter: blur(12px) saturate(180%);
+  }
+
+  /* ?incognito (set by common.js) returns the header to the pre-sticky
+     behaviour: it scrolls away with the page and never picks up the tint, so
+     screenshots and recordings get the whole viewport. */
+  html.incognito .site-header {
+    position: static;
   }
 
   /* Size the icons, not the controls: the button and the .social anchors both
@@ -128,7 +160,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-content a:not(.project):not(:has(img, picture, video, canvas)) {
+  .site-content a:not(.project):not(:has(img, picture, video, canvas)),
+  .site-header {
     transition: none;
   }
 }
