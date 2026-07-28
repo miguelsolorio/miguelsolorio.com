@@ -20,7 +20,7 @@ Developers who live in the terminal have always had to leave it when they need A
 
 The insight that shaped this project was simple: the terminal isn't a constraint to design around, it's where these users feel most at home. An AI agent that fits that environment - that reads your files, understands your project, and operates on your codebase directly - could remove the translation layer entirely.
 
-{{< image src="original.png" alt="Diagram showing the context-switching cost between terminal and external AI tools" gradient="true" >}}
+{{< image src="original.png" alt="Diagram showing the context-switching cost between terminal and external AI tools" gradient="true" frame_class="project-embed--cutout" >}}
 
 # Designing the Interaction Model
 

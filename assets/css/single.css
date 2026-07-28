@@ -95,13 +95,20 @@
      row of panels on transparency — needs its shadow to follow the alpha
      channel instead of the element box, otherwise one shadow wraps the whole
      group and the box's own rounded edge shows against the stage. */
-  .single .project-embed--cutout > img {
+  .single .project-embed--cutout > img,
+  .single .project-embed--cutout > video {
     border-radius: 0;
     box-shadow: none;
     filter: drop-shadow(0 2px 6px rgba(43, 76, 124, .12))
             drop-shadow(0 12px 28px rgba(43, 76, 124, .16));
   }
-  .dark .single .project-embed--cutout > img {
+  /* The .dark prefix is load-bearing here, not just for the swapped filter:
+     it's what gives this selector enough specificity to beat the dark
+     box-shadow rule above. Without repeating box-shadow: none, dark mode
+     renders both the rectangular shadow and the alpha-following one. */
+  .dark .single .project-embed--cutout > img,
+  .dark .single .project-embed--cutout > video {
+    box-shadow: none;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .28))
             drop-shadow(0 12px 28px rgba(0, 0, 0, .34));
   }
