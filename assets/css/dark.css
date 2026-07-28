@@ -34,5 +34,11 @@
     .dark .side-project-description {
         @apply text-slate-400;
     }
+    .dark .side-project-metrics {
+        @apply text-slate-400;
+    }
+    .dark .side-project-metric-separator {
+        background: #475569;
+    }
 
 }

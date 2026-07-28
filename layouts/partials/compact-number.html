@@ -1,0 +1,8 @@
+{{- $value := float . -}}
+{{- if ge $value 1000000.0 -}}
+  {{- printf "%.0fM" (div $value 1000000.0) -}}
+{{- else if ge $value 1000.0 -}}
+  {{- printf "%.0fk" (div $value 1000.0) -}}
+{{- else -}}
+  {{- printf "%.0f" $value -}}
+{{- end -}}

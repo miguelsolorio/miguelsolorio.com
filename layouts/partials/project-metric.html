@@ -1,0 +1,29 @@
+{{- $type := .type -}}
+{{- $value := .value -}}
+{{- $display := partial "compact-number.html" $value -}}
+{{- $label := $type -}}
+{{- if eq $type "rating" -}}
+  {{- $display = printf "%.1f" (float $value) -}}
+  {{- $label = "out of 5 rating" -}}
+{{- end -}}
+<span class="side-project-metric side-project-metric--{{ $type }}" aria-label="{{ $display }} {{ $label }}">
+  {{- if eq $type "users" -}}
+    <svg class="side-project-metric-icon" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="5" r="2.25"></circle>
+      <path d="M3.75 13c.35-2.1 1.76-3.25 4.25-3.25S11.9 10.9 12.25 13"></path>
+    </svg>
+  {{- else if eq $type "installs" -}}
+    <svg class="side-project-metric-icon" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M8 2.5v7m0 0 2.75-2.75M8 9.5 5.25 6.75M3 11.5v1.25c0 .69.56 1.25 1.25 1.25h7.5c.69 0 1.25-.56 1.25-1.25V11.5"></path>
+    </svg>
+  {{- else if eq $type "likes" -}}
+    <svg class="side-project-metric-icon" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M8 13.25S2.5 10.1 2.5 6.25A2.75 2.75 0 0 1 7.17 4.3L8 5.2l.83-.9a2.75 2.75 0 0 1 4.67 1.95c0 3.85-5.5 7-5.5 7Z"></path>
+    </svg>
+  {{- else if eq $type "rating" -}}
+    <svg class="side-project-metric-icon" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="m8 2.25 1.62 3.28 3.63.53-2.63 2.56.62 3.61L8 10.53l-3.24 1.7.62-3.61-2.63-2.56 3.63-.53L8 2.25Z"></path>
+    </svg>
+  {{- end -}}
+  <span aria-hidden="true">{{ $display }}</span>
+</span>

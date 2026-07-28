@@ -432,7 +432,7 @@
     animation-play-state: paused;
   }
   .side-project {
-    @apply flex flex-row items-center bg-white no-underline whitespace-nowrap;
+    @apply flex flex-row items-start bg-white no-underline;
     width: auto;
     max-width: min(22rem, 82vw);
     gap: clamp(.625rem, 2vw, .875rem);
@@ -448,26 +448,67 @@
   #side-projects img {
     @apply w-9 h-9 rounded-lg m-0;
   }
+  .side-project-heading {
+    @apply flex items-center;
+    gap: .5rem;
+  }
   .side-project-title {
     @apply flex items-center font-bold text-slate-800 m-0;
+    min-width: 0;
     font-size: .9375rem;
     gap: .3rem;
+    white-space: nowrap;
   }
   .side-project > div {
     min-width: 0;
     overflow: hidden;
   }
-  .side-project-title svg {
+  .side-project-arrow {
     @apply w-3.5 h-3.5 text-primary -translate-x-1 opacity-0 transition duration-150 ease-in;
+    flex: 0 0 auto;
   }
-  .side-project:hover .side-project-title svg {
+  .side-project:hover .side-project-arrow {
     @apply translate-x-0 opacity-100;
   }
   .side-project-description {
     @apply m-0 text-slate-500;
-    overflow: hidden;
     font-size: .8125rem;
-    text-overflow: ellipsis;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  .side-project-metrics {
+    @apply flex items-center text-slate-500;
+    flex: 0 0 auto;
+    gap: .4375rem;
+    font-size: .6875rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .side-project-metric {
+    @apply inline-flex items-center;
+    gap: .1875rem;
+  }
+  .side-project-metric-icon {
+    width: .6875rem;
+    height: .6875rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+  .side-project-metric--likes .side-project-metric-icon,
+  .side-project-metric--rating .side-project-metric-icon {
+    fill: currentColor;
+    stroke-width: 1.25;
+  }
+  .side-project-metric-separator {
+    width: 2px;
+    height: 2px;
+    border-radius: 999px;
+    background: #cbd5e1;
   }
 
   @media (max-width: 40rem) {

@@ -1,0 +1,31 @@
+name: Update project metrics
+
+on:
+  schedule:
+    - cron: "17 15 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Refresh Visual Studio Marketplace metrics
+        run: npm run update:metrics
+      - name: Commit updated metrics
+        run: |
+          if git diff --quiet -- data/project_metrics.json; then
+            echo "Project metrics are already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/project_metrics.json
+          git commit -m "Update project metrics"
+          git push

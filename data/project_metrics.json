@@ -1,0 +1,56 @@
+{
+  "chroma": {
+    "primary": { "type": "users", "value": 93100 },
+    "secondary": { "type": "likes", "value": 972 },
+    "source": "figma-manual",
+    "updated": "2026-07-20"
+  },
+  "codicons": {
+    "primary": { "type": "users", "value": 12900 },
+    "secondary": { "type": "likes", "value": 367 },
+    "source": "figma-manual",
+    "updated": "2026-07-20"
+  },
+  "colorizer": {
+    "primary": { "type": "users", "value": 18100 },
+    "secondary": { "type": "likes", "value": 123 },
+    "source": "figma-manual",
+    "updated": "2026-07-20"
+  },
+  "fluent": {
+    "primary": { "type": "installs", "value": 1796494 },
+    "secondary": { "type": "rating", "value": 5 },
+    "source": "vscode-marketplace",
+    "updated": "2026-07-20"
+  },
+  "min": {
+    "primary": { "type": "installs", "value": 612098 },
+    "secondary": { "type": "rating", "value": 4.9 },
+    "source": "vscode-marketplace",
+    "updated": "2026-07-20"
+  },
+  "navigator": {
+    "primary": { "type": "users", "value": 8000 },
+    "secondary": { "type": "likes", "value": 36 },
+    "source": "figma-manual",
+    "updated": "2026-07-20"
+  },
+  "regulator": {
+    "primary": { "type": "users", "value": 4000 },
+    "secondary": { "type": "likes", "value": 153 },
+    "source": "figma-manual",
+    "updated": "2026-07-20"
+  },
+  "symbols": {
+    "primary": { "type": "installs", "value": 888349 },
+    "secondary": { "type": "rating", "value": 4.9 },
+    "source": "vscode-marketplace",
+    "updated": "2026-07-20"
+  },
+  "variables": {
+    "primary": { "type": "users", "value": 992 },
+    "secondary": { "type": "likes", "value": 29 },
+    "source": "figma-manual",
+    "updated": "2026-07-20"
+  }
+}
