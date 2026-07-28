@@ -129,14 +129,25 @@ input:focus-visible {
   left: 0;
   transform-origin: top left;
   display: flex;
+  flex-direction: column;
   width: 1166px;
   height: 720px;
   overflow: hidden;
+  border-radius: 10px;
   background: var(--product-bg);
   color: var(--product-text);
   box-shadow: 0 24px 55px rgba(21, 34, 48, .18);
   isolation: isolate;
   transition: background-color .35s ease, color .35s ease;
+}
+
+/* Holds the activity bar + workspace side by side, above the status bar, so
+   the status bar can span the frame's full width instead of stopping at the
+   sidebar's edge. */
+.app-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
 }
 
 .app-frame[data-product-theme="light"] {
@@ -161,10 +172,10 @@ input:focus-visible {
   --product-icon-hover: #dbe8f2;
   --product-success: #2f8a57;
   --product-shadow: 0 16px 38px rgba(23, 35, 49, .16), 0 2px 8px rgba(23, 35, 49, .1);
-  --activity-bg: #292c31;
-  --activity-text: #b5bbc3;
-  --activity-active: #f1f4f7;
-  --activity-hover: rgba(255, 255, 255, .08);
+  --activity-bg: #f3f5f7;
+  --activity-text: #6b7280;
+  --activity-active: #1f2328;
+  --activity-hover: rgba(0, 0, 0, .06);
   --palette-bg: #fbfcfe;
   --palette-border: #d4dbe3;
   --palette-text: #20242a;
@@ -316,8 +327,7 @@ input:focus-visible {
   font-size: 23px;
   transition: background-color .16s ease;
 }
-.activity-button:hover .codicon,
-.activity-button.is-active .codicon { background: var(--activity-hover); }
+.activity-button:hover .codicon { background: var(--activity-hover); }
 
 .activity-spacer { flex: 1; }
 
@@ -1071,7 +1081,6 @@ body:not(.is-card) { padding-bottom: 70px; }
 body:not(.is-card) .demo-timeline { bottom: 16px; }
 
 body.is-card .app-frame { box-shadow: 0 11px 26px rgba(21, 34, 48, .18); }
-body.is-card .demo-pointer { display: none; }
 body.is-card .screen { transition-duration: .22s, .3s, .2s, .2s; }
 body.is-card .final-welcome { transform: scale(.92); transform-origin: top center; }
 

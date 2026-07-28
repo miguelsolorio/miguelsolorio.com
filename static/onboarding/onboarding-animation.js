@@ -51,16 +51,24 @@ function fitStage() {
   }
 
   const playbackSpace = 78;
+  // app-frame draws its own box-shadow (0 24px 55px). Reserve clearance
+  // proportional to the resulting scale — exactly enough that the shadow
+  // isn't clipped by the stage/canvas overflow:hidden — instead of a flat
+  // pixel margin, which either clips at small scales or wastes space at
+  // large ones.
+  const SHADOW_BLUR = 55;
+  const SHADOW_TOP_SPREAD = 31; // blur(55) - offset(24)
   const availableHeight = Math.max(220, viewportHeight - playbackSpace);
-  const widthScale = Math.max(.1, (viewportWidth - 18) / 1166);
-  const heightScale = Math.max(.1, (availableHeight - 12) / 720);
+  const widthScale = Math.max(.1, viewportWidth / (1166 + 2 * SHADOW_BLUR));
+  const heightScale = Math.max(.1, availableHeight / (720 + SHADOW_TOP_SPREAD));
 
   stageScale = Math.min(widthScale, heightScale, 1);
   const left = (viewportWidth - 1166 * stageScale) / 2;
-  const top = (viewportHeight - 720 * stageScale - playbackSpace) / 2;
+  const centeredTop = (viewportHeight - 720 * stageScale - playbackSpace) / 2;
+  const top = Math.max(SHADOW_TOP_SPREAD * stageScale, centeredTop);
 
   appFrame.style.left = `${left}px`;
-  appFrame.style.top = `${Math.max(4, top)}px`;
+  appFrame.style.top = `${top}px`;
   appFrame.style.transform = `scale(${stageScale})`;
   sceneCanvas.style.width = `${viewportWidth}px`;
   sceneCanvas.style.height = `${viewportHeight}px`;
