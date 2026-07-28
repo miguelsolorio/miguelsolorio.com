@@ -138,14 +138,6 @@
   :root.dark .diff-panel:not(.diff-plain) .diff-line-del { background: rgba(255, 43, 43, 0.16); }
   :root.dark .diff-panel:not(.diff-plain) .diff-line-add { background: rgba(126, 255, 43, 0.11); }
 
-  /* In the shipped renderer the tint starts at the diff character, leaving the
-     numbers on the panel field so the gutter reads as one continuous rail. The
-     approval dialog tints the gutter too, so this is scoped to the comparison. */
-  .diff-compare .diff-line-del .diff-ln,
-  .diff-compare .diff-line-add .diff-ln {
-    background: var(--bg);
-  }
-
   /* Rows the renderer skipped, and the hunk separator that stands in for them.
      Both are full-width so they read as breaks in the file, not as code. */
   .diff-hidden {
