@@ -9,6 +9,17 @@
         @apply text-gray-200;
     }
 
+    .dark .section,
+    .dark .single .title,
+    .dark .single h1,
+    .dark .single h2,
+    .dark .single h3,
+    .dark .single h4,
+    .dark .single h5,
+    .dark .single h6 {
+        @apply text-gray-200;
+    }
+
     /* Body links: the light resting blue (#241bc7) all but vanishes on
        slate-900, so rest on a light indigo instead. The hover fill (white on
        #3429ff) already passes contrast and stays shared with light mode. */
