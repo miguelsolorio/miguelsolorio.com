@@ -293,24 +293,47 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- approval scene ---------- */
-  .diff-approval .tool-question {
-    margin: 1.4em 0 0.9em 0.75em;
+  /* ---------- approval prompt ---------- */
+  /* Used by the standalone dialog and by both comparison panels, so the
+     question and options line up with the code above them in every panel. */
+  .diff-panel .tool-question {
+    margin: 1.4em 0 0.9em;
     font-size: inherit;
   }
-  .diff-approval .tool-body {
-    margin-left: 0.75em;
+  .diff-panel .tool-body {
     font-size: inherit;
   }
-  .diff-approval .tool-opt {
+  .diff-panel .tool-opt {
     /* The animation's options fill a narrow approval box; here they sit in a
        full-width panel, where a selection bar stretching to the far edge reads
        as a banner. Hug the text instead, like the change bars above it. */
     width: fit-content;
     cursor: default;
   }
-  .diff-approval .tool-opt:not(.selected):hover {
+  .diff-panel .tool-opt:not(.selected):hover {
     background: none;
+  }
+
+  /* The old prompt marked the highlighted option with a chevron and recoloured
+     the row in the CLI's purple, with no filled bullet and no selection pill —
+     the same "colour the whole line and hope it reads" approach the old diff
+     took. Its pending-confirmation glyph was purple too. */
+  .diff-plain {
+    --panel-border: color-mix(in srgb, var(--accent-purple) 42%, transparent);
+  }
+  :root.dark .diff-plain {
+    --panel-border: color-mix(in srgb, var(--accent-purple) 34%, transparent);
+  }
+  .diff-plain .tool-q {
+    color: var(--accent-purple);
+  }
+  .diff-plain .tool-opt.selected {
+    background: none;
+    color: var(--accent-purple);
+  }
+  .diff-plain .tool-opt.selected .tool-opt-bullet,
+  .diff-plain .tool-opt.selected .tool-opt-num {
+    color: var(--accent-purple);
   }
 
   @media (max-width: 40rem) {
