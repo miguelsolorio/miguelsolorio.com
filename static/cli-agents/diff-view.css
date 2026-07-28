@@ -25,7 +25,7 @@
 
     /* The CLI outlines a pending confirmation in its warning colour. */
     --panel-border:  color-mix(in srgb, var(--warn) 42%, transparent);
-    --diff-rule:     color-mix(in srgb, var(--text-muted) 50%, var(--bg));
+    --diff-rule:     color-mix(in srgb, var(--text-muted) 34%, var(--bg));
   }
 
   :root.dark {
@@ -35,7 +35,7 @@
     --code-string:   #f6e3aa;
     --code-line:     #7f85a1;
     --panel-border:  color-mix(in srgb, var(--warn) 34%, transparent);
-    --diff-rule:     color-mix(in srgb, var(--text-muted) 70%, var(--bg));
+    --diff-rule:     color-mix(in srgb, var(--text-muted) 48%, var(--bg));
   }
 
   /* ---------- scene shell ---------- */
@@ -147,14 +147,25 @@
     line-height: 1.75;
     transition: color 0.3s ease;
   }
+  /* Drawn as two hairlines rather than a `double` border: at this size the
+     border keyword lands three hard 1px rows with no control over weight, which
+     reads as a railroad track cutting the panel in half. As backgrounds the
+     pair can be lightened, given room to breathe, and faded out before it
+     reaches the panel edge. */
   .diff-gap {
     /* Empty, so it needs stretching out of the content-width flex column that
        keeps the code rows ragged. */
     align-self: stretch;
-    height: 0;
-    margin: 0.55em 0;
-    border-top: 3px double var(--diff-rule);
-    transition: border-color 0.3s ease;
+    height: 4px;
+    margin: 0.7em 0;
+    background-image:
+      linear-gradient(var(--diff-rule), var(--diff-rule)),
+      linear-gradient(var(--diff-rule), var(--diff-rule));
+    background-repeat: no-repeat;
+    background-size: 100% 1px;
+    background-position: 0 0, 0 100%;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   }
 
   /* ---------- the "before" renderer ---------- */
@@ -171,9 +182,14 @@
      than the shared token — which is sized for a one-line inline marker. */
   .diff-plain .diff-line-add .diff-code { color: #15803d; }
   :root.dark .diff-plain .diff-line-add .diff-code { color: var(--diff-add); }
-  /* The old renderer drew its separator in the default foreground, which made
-     the rules louder than the changes they were separating. */
-  .diff-plain .diff-gap { border-top-color: var(--text); }
+  /* The old renderer drew its separator in the default foreground and ran it
+     wall to wall, which made the rules louder than the changes they separated.
+     Keeping it hard-edged here is the point of the comparison. */
+  .diff-plain .diff-gap {
+    --diff-rule: var(--text);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 
   /* ---------- code palette ---------- */
   .diff-code {
