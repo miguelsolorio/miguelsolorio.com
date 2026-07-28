@@ -1,6 +1,6 @@
 ---
 title: "Chroma Colors"
-description: "Create bulk color styles in Figma"
+description: "Turn named Figma layers into color styles in bulk"
 date: 2021-01-01T23:46:27-08:00
 draft: false
 weight: 1

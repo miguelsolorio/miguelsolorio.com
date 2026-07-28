@@ -1,6 +1,6 @@
 ---
 title: "Variables Generator"
-description: "Create Figma variables via JSON"
+description: "Generate Figma variables from JSON to speed up design-token workflows"
 date: 2024-01-05T10:46:17-07:00
 draft: false
 weight: 1

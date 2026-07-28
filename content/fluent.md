@@ -1,6 +1,6 @@
 ---
 title: "Fluent Icons"
-description: "A product icon theme for VS Code"
+description: "A Fluent-inspired product icon theme that refreshes the VS Code interface"
 date: 2021-01-03T09:46:03-08:00
 draft: false
 weight: 9

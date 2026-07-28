@@ -1,6 +1,6 @@
 ---
 title: "VS Code Icons"
-description: "Use VS Code icons in Figma"
+description: "Browse and insert VS Code product icons directly in Figma"
 date: 2021-01-01T23:38:13-08:00
 draft: false
 weight: 6

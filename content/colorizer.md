@@ -1,6 +1,6 @@
 ---
 title: "Colorizer"
-description: "Sort colors by hue values in Figma"
+description: "Sort and organize Figma colors by hue, saturation, and lightness"
 date: 2021-01-01T22:45:04-08:00
 draft: false
 weight: 2

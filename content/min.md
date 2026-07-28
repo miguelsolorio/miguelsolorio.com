@@ -1,6 +1,6 @@
 ---
 title: "Min"
-description: "A minimal theme for VS Code"
+description: "A minimal light and dark theme built for focused coding in VS Code"
 date: 2021-01-03T09:46:03-08:00
 draft: false
 weight: 9

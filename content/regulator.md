@@ -1,6 +1,6 @@
 ---
 title: "Regulator"
-description: "Bulk rename color styles in Figma"
+description: "Rename and organize large sets of Figma color styles in one pass"
 date: 2021-01-01T23:34:18-08:00
 draft: false
 weight: 4
