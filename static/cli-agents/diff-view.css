@@ -39,6 +39,13 @@
     --code-line:     #7f85a1;
     --panel-border:  color-mix(in srgb, var(--warn) 34%, transparent);
     --diff-rule:     color-mix(in srgb, var(--text-muted) 32%, var(--bg));
+    /* The shared change tints are tuned for the animation's small inline diffs.
+       At this size, and against a panel rather than the page, the dark pair goes
+       muddy well before it reads as red and green. Deepen them for panels only.
+       Held in variables so a panel that carries its own palette — the theme
+       picker's, say — can replace them without out-specifying the rule. */
+    --diff-del-panel: rgba(255, 43, 43, 0.16);
+    --diff-add-panel: rgba(126, 255, 43, 0.11);
   }
 
   /* ---------- scene shell ---------- */
@@ -135,11 +142,8 @@
     margin-right: 1ch;
   }
 
-  /* The shared change tints are tuned for the animation's small inline diffs.
-     At this size, and against a panel rather than the page, the dark pair goes
-     muddy well before it reads as red and green. Deepen them here only. */
-  :root.dark .diff-panel:not(.diff-plain) .diff-line-del { background: rgba(255, 43, 43, 0.16); }
-  :root.dark .diff-panel:not(.diff-plain) .diff-line-add { background: rgba(126, 255, 43, 0.11); }
+  :root.dark .diff-panel:not(.diff-plain) .diff-line-del { background: var(--diff-del-panel); }
+  :root.dark .diff-panel:not(.diff-plain) .diff-line-add { background: var(--diff-add-panel); }
 
   /* Rows the renderer skipped, and the hunk separator that stands in for them.
      Both are full-width so they read as breaks in the file, not as code. */
@@ -304,14 +308,20 @@
     margin: 1.4em 0 0.9em;
     font-size: inherit;
   }
+  /* The animation's options fill a narrow approval box; here they sit in a
+     full-width panel, where a selection bar stretching to the far edge reads
+     as a banner. Size the group to its longest option instead: every row ends
+     at the same x, so the selection bar reads as one column of choices rather
+     than as either a banner or a ragged tag. */
   .diff-panel .tool-body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: fit-content;
+    max-width: 100%;
     font-size: inherit;
   }
   .diff-panel .tool-opt {
-    /* The animation's options fill a narrow approval box; here they sit in a
-       full-width panel, where a selection bar stretching to the far edge reads
-       as a banner. Hug the text instead, like the change bars above it. */
-    width: fit-content;
     cursor: default;
   }
   .diff-panel .tool-opt:not(.selected):hover {

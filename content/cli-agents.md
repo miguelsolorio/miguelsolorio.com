@@ -52,6 +52,8 @@ Because Gemini CLI is open-source, design decisions didn't stop at the spec - th
 
 **UI component polish.** Across dozens of smaller PRs, I tightened up the component layer: scrollable theme dialogs, numbered selection lists, consistent footer layout and configuration, scope settings moved into a proper dialog, shell tool call colors scoped to confirmed actions, and a Todo component refactor for readability and performance. ([#3895](https://github.com/google-gemini/gemini-cli/pull/3895), [#4320](https://github.com/google-gemini/gemini-cli/pull/4320), [#7419](https://github.com/google-gemini/gemini-cli/pull/7419), [#7836](https://github.com/google-gemini/gemini-cli/pull/7836), [#11126](https://github.com/google-gemini/gemini-cli/pull/11126), [#12238](https://github.com/google-gemini/gemini-cli/pull/12238), [#12265](https://github.com/google-gemini/gemini-cli/pull/12265))
 
+{{< iframe src="/cli-agents/theme-dialog.html" height="440" frame_class="project-embed--bare" title="Gemini CLI theme picker: pick one of six dark or four light themes from the numbered list, or step it with the scroll arrows, to preview its background, syntax, and diff colors" theme="cli" >}}
+
 # Explorations and Iterations
 
 Early concepts leaned too heavily on chat metaphors - a REPL-style interface with distinct user and agent turns, styled to look like a dialogue. Testing with terminal-native developers made it clear this felt off. They didn't want a chat window that happened to run in a terminal; they wanted something that felt like a capable collaborator embedded in their existing workflow.

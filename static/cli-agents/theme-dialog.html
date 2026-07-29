@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini CLI theme picker</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./cli-animation.css?v=2">
+<link rel="stylesheet" href="./diff-view.css?v=2">
+<link rel="stylesheet" href="./theme-dialog.css?v=7">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script defer src="./diff-view.js?v=2"></script>
+<script defer src="./theme-dialog.js?v=2"></script>
+</head>
+<body class="demo-scene diff-scene theme-scene" data-demo-scene="cli-theme">
+
+<main class="diff-stage">
+  <div class="diff-panel theme-panel" data-cli-theme="default">
+    <div class="theme-cols">
+
+      <section class="theme-list-col">
+        <div class="theme-title" id="theme-list-label">&gt; Select Theme</div>
+        <button type="button" class="theme-scroll" data-theme-step="-1" aria-label="Preview the previous theme">&#9650;</button>
+        <ul class="theme-list tool-body" role="listbox" tabindex="0" aria-labelledby="theme-list-label">
+          <li class="tool-opt theme-item" role="option" id="theme-ansi" data-cli-theme="ansi" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">1.</span> ANSI <span class="theme-type">Dark</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-atom-one" data-cli-theme="atom-one" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">2.</span> Atom One <span class="theme-type">Dark</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-ayu" data-cli-theme="ayu" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">3.</span> Ayu <span class="theme-type">Dark</span></span></li>
+          <li class="tool-opt theme-item selected" role="option" id="theme-default" data-cli-theme="default" aria-selected="true"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">4.</span> Default <span class="theme-type">Dark</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-dracula" data-cli-theme="dracula" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">5.</span> Dracula <span class="theme-type">Dark</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-github" data-cli-theme="github" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">6.</span> GitHub <span class="theme-type">Dark</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-ansi-light" data-cli-theme="ansi-light" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">7.</span> ANSI <span class="theme-type">Light</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-ayu-light" data-cli-theme="ayu-light" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">8.</span> Ayu <span class="theme-type">Light</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-default-light" data-cli-theme="default-light" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">9.</span> Default <span class="theme-type">Light</span></span></li>
+          <li class="tool-opt theme-item" role="option" id="theme-github-light" data-cli-theme="github-light" aria-selected="false"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num theme-num">10.</span> GitHub <span class="theme-type">Light</span></span></li>
+        </ul>
+        <button type="button" class="theme-scroll" data-theme-step="1" aria-label="Preview the next theme">&#9660;</button>
+      </section>
+
+      <section class="theme-preview-col">
+        <div class="theme-title">Preview</div>
+        <div class="theme-preview">
+          <div data-diff="theme-preview"></div>
+        </div>
+      </section>
+
+    </div>
+    <div class="theme-hint">(Enter to select, Tab for scope, Esc to close)</div>
+  </div>
+</main>
+
+</body>
+</html>

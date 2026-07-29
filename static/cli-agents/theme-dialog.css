@@ -1,0 +1,464 @@
+  /* The theme picker. Layered on cli-animation.css + diff-view.css — link both
+     first. The panel frame, the diff rows, and the code palette all come from
+     diff-view.css; the selection row is the animation's own approval option
+     (.tool-opt), so a highlighted theme and a highlighted approval option read
+     identically. This file adds the dialog's two-column shell, the interactive
+     list, and one palette per theme.
+
+     Every palette below is transcribed from the theme's source of truth in
+     google-gemini/gemini-cli (packages/cli/src/ui/themes/builtin/{dark,light}/*):
+     --fg/--secondary/--border/--focus/--success/--error come from the theme's
+     semantic tokens (Foreground, Gray, DarkGray, FocusColor ?? AccentGreen,
+     AccentGreen, AccentRed) and the syntax tokens from its highlight.js map.
+     Values derived with interpolateColor() are pre-computed. */
+
+  /* ---------- theme palettes ---------- */
+
+  /* Default and ANSI are the two builtins whose background is the terminal's
+     own black rather than a designed surface, so they are also the two whose
+     colours were never sampled against anything. Both take #1c1c1c — the value
+     the CLI's own getSafeLowColorBackground() substitutes for a black terminal —
+     and their change bars are mixed back into it, which is how they read in a
+     terminal: a tint under the line rather than a painted block. Every other
+     theme keeps its diff colours flat, because those were picked against the
+     theme's own background. */
+
+  /* darkTheme: the 256-colour-safe palette the CLI ships as its default.
+     Its Gray (#afafaf) and DarkGray (#878787) were picked to stay legible on a
+     256-colour terminal, and on this surface they pull as hard as the theme
+     names do — so the quiet tier and the frame are taken down until the list is
+     the only thing with weight. */
+  .theme-panel[data-cli-theme="default"] {
+    --theme-bg:        #1c1c1c;
+    --theme-fg:        #ffffff;
+    --theme-secondary: #6e6e6e;
+    --theme-border:    #3f3f3f;
+    --theme-focus:     #d7ffd7;
+    --theme-success:   #d7ffd7;
+    --theme-error:     #ff87af;
+    --theme-keyword:   #87afff;
+    --theme-string:    #ffffaf;
+    --theme-number:    #d7ffd7;
+    --theme-comment:   #afafaf;
+    --theme-title:     #ffffff;
+    --theme-builtin:   #87d7d7;
+    --theme-diff-add:  color-mix(in srgb, #005f00 62%, var(--theme-bg));
+    --theme-diff-del:  color-mix(in srgb, #5f0000 62%, var(--theme-bg));
+  }
+
+  /* ANSI paints its syntax with the sixteen terminal colours rather than with
+     hex, so the emulator decides what "blue" is. These are the xterm defaults —
+     the closest a browser can get to "whatever your terminal calls blue".
+     Its dialog chrome is the default theme's: ANSI is the one builtin that
+     passes darkSemanticColors straight through. */
+  .theme-panel[data-cli-theme="ansi"] {
+    --theme-bg:        #1c1c1c;
+    --theme-fg:        #ffffff;
+    --theme-secondary: #afafaf;
+    --theme-border:    #878787;
+    --theme-focus:     #d7ffd7;
+    --theme-success:   #d7ffd7;
+    --theme-error:     #ff87af;
+    --theme-keyword:   #2472c8;
+    --theme-string:    #e5e510;
+    --theme-number:    #0dbc79;
+    --theme-comment:   #0dbc79;
+    --theme-title:     #e5e5e5;
+    --theme-builtin:   #11a8cd;
+    --theme-diff-add:  color-mix(in srgb, #003300 62%, var(--theme-bg));
+    --theme-diff-del:  color-mix(in srgb, #4d0000 62%, var(--theme-bg));
+  }
+
+  .theme-panel[data-cli-theme="atom-one"] {
+    --theme-bg:        #282c34;
+    --theme-fg:        #abb2bf;
+    --theme-secondary: #5c6370;
+    --theme-border:    #424852;
+    --theme-focus:     #98c379;
+    --theme-success:   #98c379;
+    --theme-error:     #e06c75;
+    --theme-keyword:   #c678dd;
+    --theme-string:    #98c379;
+    --theme-number:    #e6c07b;
+    --theme-comment:   #5c6370;
+    --theme-title:     #61aeee;
+    --theme-builtin:   #e6c07b;
+    --theme-diff-add:  #39544e;
+    --theme-diff-del:  #562b2f;
+  }
+
+  /* Ayu maps neither a number nor a built-in token, so numerals and calls like
+     print() fall back to the foreground — kept here rather than "improved",
+     because that is the theme. Dracula does the same. */
+  .theme-panel[data-cli-theme="ayu"] {
+    --theme-bg:        #0b0e14;
+    --theme-fg:        #aeaca6;
+    --theme-secondary: #3d4149;
+    --theme-border:    #24282f;
+    --theme-focus:     #aad94c;
+    --theme-success:   #aad94c;
+    --theme-error:     #f26d78;
+    --theme-keyword:   #ffb454;
+    --theme-string:    #aad94c;
+    --theme-number:    #aeaca6;
+    --theme-comment:   #646a71;
+    --theme-title:     #ffb454;
+    --theme-builtin:   #aeaca6;
+    --theme-diff-add:  #293022;
+    --theme-diff-del:  #3d1215;
+  }
+
+  .theme-panel[data-cli-theme="dracula"] {
+    --theme-bg:        #282a36;
+    --theme-fg:        #a3afb7;
+    --theme-secondary: #6272a4;
+    --theme-border:    #454e6d;
+    --theme-focus:     #50fa7b;
+    --theme-success:   #50fa7b;
+    --theme-error:     #ff5555;
+    --theme-keyword:   #8be9fd;
+    --theme-string:    #fff783;
+    --theme-number:    #a3afb7;
+    --theme-comment:   #6272a4;
+    --theme-title:     #fff783;
+    --theme-builtin:   #a3afb7;
+    --theme-diff-add:  #11431d;
+    --theme-diff-del:  #6e1818;
+  }
+
+  .theme-panel[data-cli-theme="github"] {
+    --theme-bg:        #24292e;
+    --theme-fg:        #c0c4c8;
+    --theme-secondary: #6a737d;
+    --theme-border:    #474e56;
+    --theme-focus:     #85e89d;
+    --theme-success:   #85e89d;
+    --theme-error:     #f97583;
+    --theme-keyword:   #f97583;
+    --theme-string:    #9ecbff;
+    --theme-number:    #79b8ff;
+    --theme-comment:   #6a737d;
+    --theme-title:     #b392f0;
+    --theme-builtin:   #79b8ff;
+    --theme-diff-add:  #3c4636;
+    --theme-diff-del:  #502125;
+  }
+
+  /* The light half of the list. Nothing about the scene changes for them: the
+     panel is painted from --theme-bg either way, so selecting one turns the
+     dialog into a light terminal on the page's own stage. */
+
+  /* Like its dark twin, ANSI Light draws its syntax from the terminal's sixteen
+     colours and its chrome from the shared light semantic tokens. The hexes are
+     the light-terminal defaults, which are darker than the dark set — the same
+     names have to hold up against white. */
+  .theme-panel[data-cli-theme="ansi-light"] {
+    --theme-bg:        #ffffff;
+    --theme-fg:        #000000;
+    --theme-secondary: #5f5f5f;
+    --theme-border:    #5f5f5f;
+    --theme-focus:     #005f00;
+    --theme-success:   #005f00;
+    --theme-error:     #af0000;
+    --theme-keyword:   #0451a5;
+    --theme-string:    #cd3131;
+    --theme-number:    #00bc00;
+    --theme-comment:   #666666;
+    --theme-title:     #000000;
+    --theme-builtin:   #0598bc;
+    --theme-diff-add:  #e5f2e5;
+    --theme-diff-del:  #ffe5e5;
+  }
+
+  .theme-panel[data-cli-theme="ayu-light"] {
+    --theme-bg:        #f8f9fa;
+    --theme-fg:        #5c6166;
+    --theme-secondary: #a6aaaf;
+    --theme-border:    #cfd2d5;
+    --theme-focus:     #86b300;
+    --theme-success:   #86b300;
+    --theme-error:     #f07171;
+    --theme-keyword:   #f2ae49;
+    --theme-string:    #86b300;
+    --theme-number:    #a37acc;
+    --theme-comment:   #abadb1;
+    --theme-title:     #399ee6;
+    --theme-builtin:   #f07171;
+    --theme-diff-add:  #c6ead8;
+    --theme-diff-del:  #ffcccc;
+  }
+
+  /* lightTheme, the 256-colour-safe light palette — and the one theme that
+     prints comments in green, which is why the first preview line changes hue
+     rather than just darkening. */
+  .theme-panel[data-cli-theme="default-light"] {
+    --theme-bg:        #ffffff;
+    --theme-fg:        #000000;
+    --theme-secondary: #5f5f5f;
+    --theme-border:    #5f5f5f;
+    --theme-focus:     #005f00;
+    --theme-success:   #005f00;
+    --theme-error:     #af0000;
+    --theme-keyword:   #005faf;
+    --theme-string:    #af0000;
+    --theme-number:    #000000;
+    --theme-comment:   #008700;
+    --theme-title:     #af0000;
+    --theme-builtin:   #005faf;
+    --theme-diff-add:  #d7ffd7;
+    --theme-diff-del:  #ffd7d7;
+  }
+
+  /* The second builtin with its own FocusColor: GitHub's brand blue marks the
+     highlighted row while the added line keeps the theme's green. */
+  .theme-panel[data-cli-theme="github-light"] {
+    --theme-bg:        #f8f8f8;
+    --theme-fg:        #24292e;
+    --theme-secondary: #999999;
+    --theme-border:    #c9c9c9;
+    --theme-focus:     #445588;
+    --theme-success:   #008080;
+    --theme-error:     #dd1144;
+    --theme-keyword:   #24292e;
+    --theme-string:    #dd1144;
+    --theme-number:    #008080;
+    --theme-comment:   #999988;
+    --theme-title:     #990000;
+    --theme-builtin:   #0086b3;
+    --theme-diff-add:  #c6ead8;
+    --theme-diff-del:  #ffcccc;
+  }
+
+  /* ---------- theme tokens -> scene tokens ---------- */
+  /* The panel is the whole preview surface, so it takes the theme's own
+     background: a terminal window sitting in the page. That is also what keeps
+     the scene legible in the site's light mode, where a dark theme's greys have
+     no contrast against white.
+
+     Each variable below is restated rather than inherited: a custom property
+     declared on :root that references another (--code-punct: var(--code-plain))
+     resolves against :root, not against the element reading it, so an override
+     here has to be explicit or it silently keeps the site palette. */
+  .theme-panel {
+    --bg:              var(--theme-bg);
+    --text:            var(--theme-fg);
+    --text-muted:      var(--theme-secondary);
+    --border:          var(--theme-border);
+    --panel-border:    var(--theme-border);
+
+    /* The CLI fills a highlighted row with an opaque bar. On the page the
+       neighbouring approval scene marks its selection with a tint of the same
+       accent, and matching that is the point of this list, so the theme's focus
+       colour is tinted rather than used flat. */
+    --accent-green:    var(--theme-focus);
+    --accent-green-bg: color-mix(in srgb, var(--theme-focus) 14%, transparent);
+    --surface-hover:   color-mix(in srgb, var(--theme-fg) 10%, transparent);
+
+    --code-plain:      var(--theme-fg);
+    --code-punct:      var(--theme-fg);
+    --code-property:   var(--theme-fg);
+    --code-keyword:    var(--theme-keyword);
+    --code-string:     var(--theme-string);
+    --code-number:     var(--theme-number);
+    --code-comment:    var(--theme-comment);
+    --code-function:   var(--theme-title);
+    --code-line:       var(--theme-secondary);
+
+    /* Theme diff tints are opaque colours sampled against the theme's own
+       background, so they replace both the shared pair and the deepened pair
+       diff-view.css uses for dark mode. */
+    --diff-del-bg:     var(--theme-diff-del);
+    --diff-add-bg:     var(--theme-diff-add);
+    --diff-del-panel:  var(--theme-diff-del);
+    --diff-add-panel:  var(--theme-diff-add);
+    --diff-del:        var(--theme-error);
+    --diff-add:        var(--theme-success);
+  }
+  /* diff-view.css files Prism's builtin token with the keywords. highlight.js —
+     the grammar the CLI actually renders with — puts `print` and `range` in
+     built_in and reserves title.function for the name after `def`, so the two
+     take different colours per theme and the mapping has to follow suit. */
+  .theme-panel .diff-code .token.builtin {
+    color: var(--theme-builtin);
+  }
+
+  /* ---------- panel ---------- */
+  /* The panel already paints a surface — the theme's — so the scene behind it
+     must not paint a second one, or the embed shows a white plate around a black
+     dialog in the site's light mode. With the document transparent, the page's
+     own themed stage is the only outer container, and the panel carries the
+     shadow that would otherwise belong to the frame. */
+  body.theme-scene {
+    background: transparent;
+  }
+
+  /* The row text carries no colour of its own, and `color` inherits as a
+     computed value: without this it would keep whatever ink body resolved from
+     the site palette — dark grey on a dark theme in the site's light mode. */
+  .theme-panel {
+    /* diff-view.css outlines a panel because a still scene has nothing else to
+       bound it. This one is a painted surface with a shadow, so the outline only
+       draws a second edge a couple of pixels outside the first. The preview box
+       keeps its own border: that one separates two things inside the dialog. */
+    border: 0;
+    padding: 1.6em 1.4em;
+    color: var(--theme-fg);
+    /* Kept inside the scene's own padding so the blur is not clipped. */
+    box-shadow: 0 8px 22px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.2);
+  }
+  /* diff-view fades the right edge of a panel so over-long code reads as a
+     horizon. Here the right edge is the preview box's own border, and fading it
+     would look like a rendering artefact. */
+  .theme-panel::after {
+    content: none;
+  }
+
+  .theme-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(12px, 3vw, 40px);
+  }
+
+  .theme-title {
+    margin-bottom: 1.4em;
+    color: var(--theme-fg);
+    font-weight: 700;
+    line-height: 1.75;
+    transition: color 0.3s ease;
+  }
+
+  /* ---------- selection list ---------- */
+  /* The CLI brackets a clipped list with these two glyphs and dims the one that
+     has nothing left to reach. Here they step the highlight, so they keep that
+     meaning — dim means "nothing that way" — and become real controls.
+     They sit in the quiet tier: an affordance beside the list, not a peer of the
+     theme names, and hover carries them up to the accent. */
+  .theme-scroll {
+    display: block;
+    border: 0;
+    padding: 0;
+    background: none;
+    color: var(--theme-secondary);
+    font: inherit;
+    font-size: 0.85em;
+    line-height: 1.75;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  .theme-scroll:disabled {
+    color: color-mix(in srgb, var(--theme-secondary) 45%, transparent);
+    cursor: default;
+  }
+  .theme-scroll:not(:disabled):hover {
+    color: var(--theme-focus);
+  }
+  /* The buttons keep a ring, since a glyph that only changes colour on focus is
+     the same cue it already gives on hover — but the browser's default blue one
+     has no business inside a themed terminal panel. */
+  .theme-scroll:focus-visible {
+    outline: 1.5px solid var(--theme-focus);
+    outline-offset: 2px;
+  }
+
+  /* The rows fill the column rather than the longest label, so the highlight is
+     a full-width band of the list it belongs to and every row is the same, wider
+     target. The 0.45em the pill bleeds on each side lands in the grid gap.
+     Selector-matched against diff-view.css, which sizes the approval group to its
+     content — right for a still panel, wrong for a list you point at. */
+  .theme-panel .theme-list {
+    width: 100%;
+    list-style: none;
+    line-height: 1.75;
+  }
+  .theme-list:focus {
+    outline: none;
+  }
+
+  /* diff-view.css deliberately strips the cursor and the hover tint from the
+     approval options, because in a still scene they are a picture of a control
+     rather than a control. These rows are the real thing, so both come back —
+     matched selector for selector, since that is what the suppression is. */
+  .theme-panel .theme-item {
+    white-space: nowrap;
+    cursor: pointer;
+    /* The approval option pulls its background out past the text with a negative
+       block margin, which is invisible there because only one option is ever
+       tinted. Here a highlighted row and a hovered row sit next to each other, so
+       that overlap shows as two tints bleeding into one another. The pill is
+       shortened to its own line box and the leftover space becomes a gap, which
+       keeps the list's 1.75em rhythm exactly as it was. */
+    margin: 0.125em -0.45em;
+    padding: 0 0.45em;
+    line-height: 1.5;
+  }
+  .theme-panel .theme-item:not(.selected):hover {
+    background: var(--surface-hover);
+  }
+  /* The glyph holds its column on every row so the numbers stay aligned; only
+     the highlighted row shows it. */
+  .theme-item .tool-opt-bullet {
+    visibility: hidden;
+  }
+  .theme-item.selected .tool-opt-bullet {
+    visibility: visible;
+  }
+  /* Roving focus lives on the list, so the cue has to land on whichever row is
+     active. A ring would draw a second border inside a dialog that already has
+     one, so the active row deepens its own tint instead. */
+  .theme-list:focus-visible .theme-item.selected {
+    background: color-mix(in srgb, var(--theme-focus) 26%, transparent);
+  }
+  /* Right-aligned, so a two-digit list keeps its periods in one column. */
+  .theme-num {
+    display: inline-block;
+    min-width: 1.6em;
+    text-align: right;
+  }
+  /* The type is metadata about the theme rather than its name, so it stays a
+     tier below — including on the highlighted row, where only the name and its
+     marker take the accent. */
+  .theme-type {
+    color: var(--theme-secondary);
+    transition: color 0.3s ease;
+  }
+  /* The row's own metadata ends at the type: the CLI also prints a
+     "(Matches terminal)" note there, which is a fact about the reader's terminal
+     rather than about the theme, and means nothing in a page. */
+
+  /* The key hints belong to the dialog, not to the list, so they sit under both
+     columns — which is also the only way the line stays unwrapped at the widths
+     the list column alone would give it. */
+  .theme-hint {
+    margin-top: 1.6em;
+    color: var(--theme-secondary);
+    line-height: 1.75;
+    transition: color 0.3s ease;
+  }
+
+  /* ---------- preview pane ---------- */
+  /* A framed sample of the highlighted theme, so it carries the same border tier
+     as the dialog around it and no fill of its own. */
+  .theme-preview {
+    overflow: hidden;
+    border: 1.5px solid var(--theme-border);
+    border-radius: 6px;
+    padding: 1.7em 1.1em;
+    transition: border-color 0.3s ease;
+  }
+  /* Two hunks with no context between them: the sample above, the one-line
+     change below. The gutter numbers restart, which is what the CLI prints. */
+  .theme-preview .diff-gap {
+    margin: 0.9em 0;
+    background-color: transparent;
+  }
+
+  @media (max-width: 34rem) {
+    /* Below this the two columns would each be too narrow for their longest
+       line, and the preview would clip mid-token. */
+    .theme-cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .theme-preview-col {
+      margin-top: 0.6em;
+    }
+  }

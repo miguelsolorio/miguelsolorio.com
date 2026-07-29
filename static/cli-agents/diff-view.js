@@ -100,10 +100,26 @@ const FIBONACCI = [
   ["add", 17, 'print(f"Fibonacci(35): {fibonacci(35)}") # Output: 9227465'],
 ];
 
+/* The theme dialog's preview pane: a short syntax sample over a one-line
+   change, which is what the CLI shows so a theme's code palette and its diff
+   colours can both be judged before the theme is applied. */
+const THEME_PREVIEW = [
+  ["ctx", 1, "# function"],
+  ["ctx", 2, "def fibonacci(n):"],
+  ["ctx", 3, "    a, b = 0, 1"],
+  ["ctx", 4, "    for _ in range(n):"],
+  ["ctx", 5, "        a, b = b, a + b"],
+  ["ctx", 6, "    return a"],
+  ["gap"],
+  ["del", 1, 'print("Hello, " + name)'],
+  ["add", 1, 'print(f"Hello, {name}!")'],
+];
+
 const DIFF_SETS = {
   "app-css-before": { rows: APP_CSS_BEFORE, language: "css", highlight: false },
   "app-css-after": { rows: APP_CSS_AFTER, language: "css", highlight: true },
   fibonacci: { rows: FIBONACCI, language: "python", highlight: true },
+  "theme-preview": { rows: THEME_PREVIEW, language: "python", highlight: true },
 };
 
 /* Prism's core CSS grammar has no token for numbers or hex colours, so every

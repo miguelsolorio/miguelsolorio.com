@@ -123,6 +123,15 @@
     border-radius: 0 !important;
     box-shadow: none;
   }
+  /* Opt-in twin of the two rules above for scenes that draw their own panel but
+     share a theme with scenes that do not — the CLI theme picker sits beside
+     animations that still want the frame's surface, so it asks for this by
+     class instead of by theme. */
+  .single .project-embed--bare iframe.embed-frame,
+  .dark .single .project-embed--bare iframe.embed-frame {
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
   /* The animation scene carries its own internal padding; a screenshot or
      screencast does not, so media stages keep the symmetric padding above. */
   .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--media) {
