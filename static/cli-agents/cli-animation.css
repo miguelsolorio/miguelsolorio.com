@@ -69,14 +69,24 @@
   }
 
   /* Card mode scales one terminal stage instead of independently sizing its
-     scrolling conversation and footer regions. */
+     scrolling conversation and footer regions. On the home page the stage is
+     framed like the other featured cards (Kanvas, Onboarding): 85% of the card
+     width, dropped 12% from the top, and running past the bottom edge instead
+     of floating fully inset. The bleed is small enough that the input box and
+     footer — the recognizable part of the terminal — stay inside the crop. */
   body.is-card {
-    padding: clamp(16px, 8vh, 64px) clamp(16px, 10vw, 160px);
+    --cli-card-bleed: clamp(10px, 3.5vh, 24px);
+    padding: clamp(16px, 12vh, 96px) clamp(12px, 7.5vw, 112px) 0;
     background: transparent;
   }
   body.is-card .cli-stage {
+    margin-bottom: calc(var(--cli-card-bleed) * -1);
     border-radius: var(--demo-radius-md);
     box-shadow: 0 12px 28px -8px rgba(52, 41, 255, 0.45);
+  }
+  /* Keep the footer clear of the cropped edge as the bleed scales. */
+  body.is-card .bottom-bar {
+    margin-bottom: calc(var(--cli-card-bleed) + 14px);
   }
 
   /* ---------- scrollable content area ---------- */
@@ -419,7 +429,7 @@
 
     body.is-card .bottom-bar {
       padding-inline: clamp(12px, 5vw, 32px);
-      margin-bottom: clamp(10px, 4vh, 24px);
+      margin-bottom: calc(var(--cli-card-bleed) + 10px);
     }
 
     body.is-card .tool-box-inner {

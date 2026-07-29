@@ -142,6 +142,10 @@
   padding-bottom: 0;
 }
 
+.plan-box .tool-q {
+  color: var(--plan-border);
+}
+
 .plan-content {
   line-height: 1.45;
 }

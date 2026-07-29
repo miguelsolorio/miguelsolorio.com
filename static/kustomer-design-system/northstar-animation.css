@@ -107,7 +107,7 @@ button {
     radial-gradient(circle at 92% 84%, rgba(211, 255, 227, 0.82), transparent 37%),
     linear-gradient(120deg, #e9e4ff 0%, #dceeff 56%, #e6fff2 100%);
   border-radius: 16px;
-  box-shadow: var(--northstar-stage-shadow);
+  box-shadow: none;
   contain: layout paint style;
 }
 

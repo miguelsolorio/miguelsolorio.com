@@ -3,7 +3,7 @@ title: "Kanvas"
 description: "Laying the foundation of a design system"
 date: 2023-03-24T15:57:19-07:00
 draft: false
-weight: 3
+weight: 4
 project: "large"
 thumbnail: "kanvas.png"
 card_animation: "/kustomer-design-system/northstar-animation.html"
@@ -12,42 +12,42 @@ card_theme: "kanvas"
 
 As the design system lead, I collaborated closely with our Engineering Lead to cultivate a community-driven design system, enhancing its maturity, scalability, and overall impact. Within our small team, I played a pivotal role in creating our roadmap planning, conducting weekly reviews, mentoring, and establishing recommendations on best practices.
 
-{{< iframe src="/kustomer-design-system/northstar-animation.html" height="800" title="Kanvas customer service workspace with collapsible navigation and reorderable context panels" theme="kanvas" frame_class="northstar-project-demo" >}}
+{{< iframe src="/kustomer-design-system/northstar-animation.html" height="800" title="Kanvas customer service workspace with collapsible navigation and reorderable context panels" theme="kanvas" frame_class="northstar-project-demo project-embed--bare" >}}
 
 # Auditing the Design System
 
 The existing design system had been a community driven effort with no real leadership. To better understand the state of the design system, I began auditing the existing components in Code & Figma to see what was being used and what was missing.
 
-{{< image src="audit.png" alt="Google spreadsheet of a component audit" >}}
+{{< image src="audit.png" alt="Google spreadsheet of a component audit" theme="kanvas" frame_class="project-embed--cutout">}}
 
 # Influencing The Work
 In order to priotizie the work, it was crucial to secure buy-in from the leadership team. This would create alignment in establishing a solid foundation, enabling us to effectively scale for the future. Collaborating closely with the Engineering Lead, we formulated a roadmap for the entire year, meticulously outlining the scope of our projects and creating a detailed execution plan.
 
-{{< image src="roadmap.png" alt="Documents for the team's roadmap" >}}
+{{< image src="roadmap.png" alt="Documents for the team's roadmap" theme="kanvas" frame_class="project-embed--cutout" >}}
 
 # Making The Updates
 
 After receiving approval from leadership, we began updating our design library to match our code components. In the next four months, we not only met but exceeded our expectations and hit our yearly goals. Additionally, we started sharing our progress with the rest of the organization to demonstrate how design systems enhanced our product.
 
-{{< image src="work.png" alt="Figma updates to improve the design system" >}}
+{{< image src="work.png" alt="Figma updates to improve the design system" theme="kanvas" frame_class="project-embed--cutout" >}}
 
-{{< image src="hero.png" alt="Kanvas component library documentation for alerts, avatars, buttons, tables, inputs, pills, and tooltips" >}}
+{{< image src="hero.png" alt="Kanvas component library documentation for alerts, avatars, buttons, tables, inputs, pills, and tooltips" theme="kanvas" frame_class="project-embed--cutout" >}}
 
 # Tracking Changes
 
 In an effort to raise awareness of design system updates, I documented the changes within our Figma design files, and made sure to provide updates with each release so everyone knew which components were being updated.
 
-{{< image src="work-2.png" alt="Changelog of updates in Figma" >}}
+{{< image src="work-2.png" alt="Changelog of updates in Figma" theme="kanvas" frame_class="project-embed--cutout" >}}
 
 We also discovered a need to raise visiblity for our in-progress work. This led to the creation of our component tracker, which was part of our product documentation and roadmap. This made it easier for people to view the updates and see what was coming next.
 
-{{< image src="tracker.png" alt="Tracking updates of components in a component database" >}}
+{{< image src="tracker.png" alt="Tracking updates of components in a component database" theme="kanvas" frame_class="project-embed--cutout" >}}
 
 # Accessible Components
 
 In addition to having pairity between design & code components, I also ensured that we were building them with accessbility in mind. We tested each component against a set of acceessibility requirements (color contrast, keyboard navigation, themeing etc) and ensure that each component was accessible for everyone.
 
-{{< image src="accessibility.png" alt="Accessibility testing of components" >}}
+{{< image src="accessibility.png" alt="Accessibility testing of components" theme="kanvas" frame_class="project-embed--cutout" >}}
 
 # Kanvas Figma Demo
 

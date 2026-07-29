@@ -181,11 +181,9 @@
     border-radius: 0 !important;
     box-shadow: none;
   }
-  /* These animations draw their own product frame and shadow. Keep the iframe
-     transparent so the themed stage remains the only outer container. */
-  .single .project-embed[data-project-theme="kanvas"] iframe.embed-frame,
+  /* The onboarding animation draws its own product frame and shadow. Keep its
+     iframe transparent so the themed stage remains the only outer container. */
   .single .project-embed[data-project-theme="onboarding"] iframe.embed-frame,
-  .dark .single .project-embed[data-project-theme="kanvas"] iframe.embed-frame,
   .dark .single .project-embed[data-project-theme="onboarding"] iframe.embed-frame {
     border-radius: 0 !important;
     box-shadow: none;
