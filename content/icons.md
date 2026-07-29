@@ -74,6 +74,7 @@ We also shipped the icon library as an npm package for anyone wanting to use the
 During our research studies, we saw a new theme arise where customers wanted to customize the icons to match their aesthetic preferences, as not everyone liked the outline styles. After we added support for icon fonts in the source code, it was easier to use different versions of icon styles, which is where product icon themes were born. Partnering with our engineer, I helped introduce a new [API for product icon themes](https://code.visualstudio.com/api/extension-guides/product-icon-theme).
 
 {{< image src="product-icon-theme.png" >}}
+
 {{< image src="product-icon-theme2.png" >}}
 
 # Collaborators

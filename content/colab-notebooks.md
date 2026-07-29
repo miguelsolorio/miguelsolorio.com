@@ -13,6 +13,7 @@ card_theme: "notebooks"
 As the lead designer, I partnered with our engineering and product teams to reimagine Colab as an AI-first coding environment. The goal was to move beyond static AI suggestions and make Gemini an integrated and collaborative partner, one that understands your entire notebook and not just the cell in front of it.
 
 {{< iframe src="/colab-notebooks/cell-animation.html" height="740" title="Gemini generating notebook cells from a prompt, with accept and reject controls" theme="notebooks" >}}
+
 {{< caption text="A micro-interaction of Gemini in Colab" >}}
 
 # Understanding the Problem
@@ -20,6 +21,7 @@ As the lead designer, I partnered with our engineering and product teams to reim
 Colab had added AI features incrementally over the years, but the experience felt bolted on. Code generation was limited to single cells, there was no continuity across chat sessions, and users had to context-switch between writing code and asking for help in the side panel. Below is an example of the first Colab agent that shipped in 2024.
 
 {{< image src="og-dsa.png" alt="Original version of Colab's data science agent" gradient="true" >}}
+
 {{< caption text="Early conceptual design for Colab's data science agent" >}}
 
 We heard from our users that they wanted to stay in the flow, not copy-paste errors into a chat window or re-explain what they were working on every time they needed assistance. The opportunity was to make AI more fluid: always aware of where you are, what you've run, and where you're trying to go.
@@ -29,16 +31,19 @@ We heard from our users that they wanted to stay in the flow, not copy-paste err
 Early exploration surfaced a fundamental tension: how do you make AI easy to invoke without cluttering a surface that people rely on for dense, focused work? Notebooks are already visually complex with cells, outputs, sidebars, toolbars — and adding a chat panel risked making things feel even heavier.
 
 {{< image src="intro.png" alt="Overview of the AI-first Colab interface with Gemini integration" gradient="true" frame_class="project-embed--cutout" >}}
+
 {{< caption text="Variations of Colab's AI agent from code generation to explaining and fixing errors" >}}
 
 I explored a range of entry points, from inline cell overlays to a floating panel, before landing on a two-mode approach. A compact prompt box in the center toolbar handles quick requests — generate a function, fix this error, explain this output — without breaking the reading flow. A persistent side panel opens for longer conversations or when users want to iterate deeply on a problem.
 
 {{< iframe src="/colab-notebooks/message-animation.html" height="710" title="Selecting code in a notebook cell to ask Gemini to modify it, then accepting and running the change" theme="notebooks" >}}
+
 {{< caption text="Selecting code to refine it in place, then accepting and running the change" >}}
 
 The key design principle was that both surfaces should feel like the same conversation. Context carries over seamlessly — you can start a quick prompt from the toolbar and continue it in the panel without losing thread.
 
 {{< image src="composer-footer.png" alt="Overview of the AI-first Colab interface with Gemini integration" gradient="true" frame_class="project-embed--cutout" >}}
+
 {{< caption text="Variations of Colab's AI agent from code generation to explaining and fixing errors" >}}
 
 # Agentic UX and Trust

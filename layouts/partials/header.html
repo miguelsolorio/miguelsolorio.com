@@ -48,7 +48,7 @@
       {{ end }}
     {{ end }}
   </head>
-  <body>
+  <body{{ if eq .Kind "page" }} class="detail-page"{{ end }}>
     <nav class="site-header" aria-label="Primary navigation">
       <div class="site-shell site-header-inner">
         {{ partial "navigation" . }}

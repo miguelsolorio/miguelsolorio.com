@@ -7,8 +7,71 @@
        caption's own top margin, once inside the negative margin that cancels
        the media's — so both must move together. */
     --caption-lead: .875rem;
+    /* Hoisted out of .separator and h1 below so the grid corrections that
+       cancel them can subtract the same value. */
+    --rule-gap: clamp(1.5rem, 4vw, 2rem);
+    --heading-lead: clamp(3.5rem, 9vw, 5rem);
+    /* Prose gap. Tailwind's preflight zeroes paragraph margins and nothing
+       restored them, so consecutive prose blocks used to run together. */
+    --para-gap: 1.15em;
+    /* Reading measure for prose. Media escapes it via the wide track. */
+    --text-measure: 50rem;
+    /* The masthead rule and the stat row read as dividers of the prose rather
+       than part of it when they run a little past its edges, without reaching
+       the media. Both sit in the wide track and size back down to this. */
+    --rule-overhang: 2rem;
+    --wide-measure: calc(var(--text-measure) + var(--rule-overhang) + var(--rule-overhang));
+    /* Text sits in the centre track and visuals span the whole shell. Every
+       direct child lands in the text column unless it opts into the wide one,
+       so any block type markdown adds later inherits the prose measure. Below
+       the measure the 1fr side tracks collapse to zero and the two columns
+       become one, which is why there is no breakpoint for this. */
+    display: grid;
+    grid-template-columns:
+      [wide-start] minmax(0, 1fr)
+      [text-start] minmax(0, var(--text-measure)) [text-end]
+      minmax(0, 1fr) [wide-end];
     min-width: 0;
     overflow-wrap: anywhere;
+  }
+  .single > * {
+    grid-column: text;
+  }
+  .single > img,
+  .single > video,
+  .single > iframe,
+  .single > .project-embed,
+  .single > .media-caption,
+  .single > .stat-block,
+  .single > .separator {
+    grid-column: wide;
+  }
+
+  /* Grid rows do not collapse margins: a gap here is the sum of the block
+     above's bottom margin and the block below's top margin, where block flow
+     took the larger of the two. Each rule below subtracts the contribution
+     from above so the spacing matches what these pages had. The caption's own
+     version of this lives with the caption rules further down. */
+  .single > :is(img, video, iframe, .project-embed, .stat-block, .media-caption)
+    + :is(img, video, iframe, .project-embed, .stat-block) {
+    margin-top: 0;
+  }
+  .single > :is(img, video, iframe, .project-embed, .stat-block, .media-caption) + h1 {
+    margin-top: calc(var(--heading-lead) - var(--media-gap));
+  }
+  .single > .separator + :is(img, video, iframe, .project-embed, .stat-block) {
+    margin-top: calc(var(--media-gap) - var(--rule-gap));
+  }
+  .single > .separator + h1 {
+    margin-top: calc(var(--heading-lead) - var(--rule-gap));
+  }
+  /* Prose blocks get their gap on the following block's top edge, not the
+     preceding block's bottom: a bottom margin would sum onto the media gap
+     and the masthead spacing instead of collapsing into them. The exclusions
+     keep the masthead pair and captions on their own spacing. */
+  .single > :is(p, ul, ol):not(.title):not(.description):not(.media-caption)
+    + :is(p, ul, ol):not(.title):not(.description):not(.media-caption) {
+    margin-top: var(--para-gap);
   }
   .single .title {
     @apply mb-4 font-extrabold m-0 !important;
@@ -19,14 +82,18 @@
   }
   .single .description {
     @apply font-medium;
-    max-width: 48rem;
     font-size: clamp(1.0625rem, 2vw, 1.25rem);
     line-height: 1.55;
   }
   .single .separator {
     height: 1px;
-    @apply block w-full border-0 bg-current opacity-10;
-    margin-block: clamp(1.5rem, 4vw, 2rem);
+    @apply block border-0 bg-current opacity-10;
+    /* Sized off the prose rather than the track it sits in; the cap puts it on
+       the media edge once the shell is narrower than that. */
+    width: var(--wide-measure);
+    max-width: 100%;
+    margin-block: var(--rule-gap);
+    margin-inline: auto;
   }
   .single img, .single video, .single iframe {
     @apply rounded-lg shadow-lg;
@@ -57,7 +124,7 @@
   }
   .single h1 {
     @apply font-bold mb-4;
-    margin-top: clamp(3.5rem, 9vw, 5rem);
+    margin-top: var(--heading-lead);
     font-size: clamp(1.875rem, 5vw, 2.25rem);
     line-height: 1.15;
   }
@@ -202,7 +269,12 @@
      figures sit straight on the page like the prose above them, with the media
      gap doing all the separating. */
   .single .stat-block {
+    /* Shares the masthead rule's edge: wide enough to keep four figures on one
+       row, inset enough to read as part of the prose it closes. */
+    width: var(--wide-measure);
+    max-width: 100%;
     margin-block: var(--media-gap);
+    margin-inline: auto;
   }
   .single .stat-source {
     @apply text-slate-500 m-0;
@@ -260,6 +332,14 @@
     margin-top: .375rem;
     font-size: .8125rem;
     line-height: 1.35;
+  }
+
+  /* A trailing media gap used to escape the block-flow container and collapse
+     into the footer's margin; inside a grid it would add to it. Every rule
+     that sets a bottom margin on a direct child of .single ties on
+     specificity, so this reset has to stay below all of them. */
+  .single > :last-child {
+    margin-bottom: 0;
   }
 
   @media (max-width: 40rem) {

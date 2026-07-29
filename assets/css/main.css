@@ -14,6 +14,13 @@
     --site-gutter: clamp(1.25rem, 4vw, 3rem);
   }
 
+  /* Detail pages give their visuals a wider stage than the home grid. Both
+     .site-shell instances — the sticky header bar and the content column —
+     inherit this from body, so the logo, media, and footer stay on one edge. */
+  body.detail-page {
+    --site-max-width: 84rem;
+  }
+
   *,
   *::before,
   *::after {
