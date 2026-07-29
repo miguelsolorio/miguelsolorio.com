@@ -25,6 +25,14 @@
 
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.classList.toggle('dark', storedTheme === 'dark' || (!storedTheme && prefersDark));
+
+        /* ?transparent strips the gradient stage off project media so a
+           screenshot or recording captures the artwork alone. It runs here
+           rather than in common.js — which is deferred — so the stage never
+           paints and then vanishes mid-capture. */
+        if (new URLSearchParams(window.location.search).has('transparent')) {
+          document.documentElement.classList.add('transparent');
+        }
       }());
     </script>
 

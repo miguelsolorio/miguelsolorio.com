@@ -137,6 +137,18 @@
   .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--media) {
     padding-block: clamp(.75rem, 2vw, 1.5rem);
   }
+  /* ?transparent (set in the head bootstrap) reduces the themed stage to a
+     bare wrapper: no surface, no artwork, no inset — just the media against
+     the page. Media keeps its own radius and shadow.
+     The [data-project-theme] qualifier is load-bearing specificity, not
+     decoration: the notebooks padding-block rule above scores (0,4,0) and
+     would otherwise keep its inset. Every .project-embed carries the
+     attribute — the shortcodes only emit the class when a theme resolves. */
+  html.transparent .single .project-embed[data-project-theme] {
+    padding: 0;
+    background-color: transparent;
+    background-image: none;
+  }
 
   /* Captions read as part of the media above them, so they sit close under it
      and carry the full gap below the pair. Paragraphs are margin-free here, so
