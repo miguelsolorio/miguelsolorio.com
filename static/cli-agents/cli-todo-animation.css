@@ -1,87 +1,3 @@
-:root {
-  --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 16%, var(--bg));
-}
-
-:root.dark {
-  --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 24%, var(--bg));
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.input-token {
-  color: var(--accent-purple);
-  transition: color 0.3s ease;
-}
-
-/* Long JSON details on resolved rows (generate-design, send-email) truncate
-   instead of overflowing the terminal; the base sheet only ellipsizes
-   .tool-header-sub outside .tool-resolved. */
-.tool-resolved {
-  max-width: 100%;
-}
-
-.tool-resolved .tool-header-sub {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* ---------- autocomplete suggestions ---------- */
-.suggestions {
-  display: none;
-  width: 100%;
-  max-height: 13.5rem;
-  margin-bottom: 8px;
-  overflow: hidden;
-  background: var(--bg);
-  transition: background-color 0.3s ease;
-}
-
-.suggestions.show {
-  display: block;
-}
-
-.suggestion-option {
-  display: grid;
-  grid-template-columns: minmax(8rem, 0.36fr) minmax(0, 1fr);
-  gap: 18px;
-  min-width: 0;
-  padding: 3px 8px;
-  border-radius: 4px;
-  color: var(--text-muted);
-  transition: color 0.18s ease, background-color 0.18s ease;
-}
-
-/* File rows carry no description, so the name takes the whole row and stays
-   whole instead of truncating into the empty description column. */
-.suggestions[data-kind="file"] .suggestion-option {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.suggestion-option.active {
-  color: var(--accent-purple);
-  background: var(--suggestion-active-bg);
-}
-
-.suggestion-label,
-.suggestion-description {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 /* ---------- todo tray ----------
    The tray opens with a height animation instead of popping in: it lives in
@@ -194,14 +110,6 @@
 }
 
 @media (max-width: 40rem) {
-  .scroll-area {
-    padding: 18px 16px 8px;
-  }
-
-  .bottom-bar {
-    padding-inline: 16px;
-    margin-bottom: 24px;
-  }
 
   .todo-title,
   .todo-item {
@@ -215,9 +123,6 @@ body.is-card .todo-item {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cursor {
-    animation: none;
-  }
 
   .todo-tray,
   .todo-item {

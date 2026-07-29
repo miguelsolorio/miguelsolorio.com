@@ -6,21 +6,13 @@
 <title>Gemini CLI Plan Mode demo</title>
 <script src="/demo-system/demo-system.js?v=2"></script>
 <link rel="stylesheet" href="/demo-system/demo-system.css">
-<link rel="stylesheet" href="./cli-animation.css?v=3">
-<link rel="stylesheet" href="./cli-plan-animation.css?v=13">
+<link rel="stylesheet" href="./cli-animation.css?v=4">
+<link rel="stylesheet" href="./cli-plan-animation.css?v=14">
 </head>
 <body class="demo-scene demo-scene--cli" data-demo-scene="cli">
 
 <main class="cli-stage" data-demo-stage>
   <div class="scroll-area" id="scrollArea">
-    <div class="cli-header">
-      <span class="cli-diamond">✦</span>
-      <span><span class="cli-name">Gemini CLI</span> <span class="cli-version">v0.53.0</span></span>
-    </div>
-    <div class="tips"><span class="hl">/help</span> for more information<br>
-      <span class="hl">/init</span> for initializing instructions
-    </div>
-
     <div class="convo-area">
       <div id="convoInner"></div>
     </div>
@@ -69,27 +61,10 @@
     <div class="scroll-end"></div>
   </div>
 
-  <div class="bottom-bar">
-    <div class="status-line" id="statusLine">
-      <span class="spin-char" id="spinChar"></span><span id="statusText"></span>
-    </div>
-    <div class="suggestions" id="suggestions" role="listbox" aria-label="Autocomplete suggestions"></div>
-    <div class="mode-line" id="modeLine" aria-hidden="true"></div>
-    <div class="input-box" id="inputBox" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="suggestions">
-      <span class="input-prompt" id="inputPrompt">&gt;</span>
-      <div class="input-text">
-        <span id="typedText"></span><span class="cursor" id="inputCursor"></span><span class="placeholder" id="placeholder">Type your message or @path/to/file</span>
-      </div>
-    </div>
-    <div class="footer">
-      <span class="footer-project">~/command-center</span>
-      <span class="footer-status"><span class="footer-model">Gemini 3</span><span class="footer-rest" id="modeText">/model</span></span>
-    </div>
-  </div>
-
-  <div class="sr-only" id="liveRegion" aria-live="polite"></div>
+  <div class="bottom-bar"></div>
 </main>
 
-<script src="./cli-plan-animation.js?v=19"></script>
+<script src="./cli-components.js?v=1"></script>
+<script src="./cli-plan-animation.js?v=20"></script>
 </body>
 </html>

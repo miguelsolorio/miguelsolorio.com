@@ -10,23 +10,15 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
 <link rel="stylesheet" href="/demo-system/demo-system.css">
-<link rel="stylesheet" href="./cli-animation.css?v=3">
+<link rel="stylesheet" href="./cli-animation.css?v=4">
 </head>
 <body class="demo-scene demo-scene--cli" data-demo-scene="cli">
 
 <main class="cli-stage" data-demo-stage>
-<!-- scrollable content: logo → tips → conversation → status → shell box -->
 <div class="scroll-area" id="scrollArea">
-  <div class="cli-header">
-    <span class="cli-diamond">✦</span>
-    <span><span class="cli-name">Gemini CLI</span> <span class="cli-version">v0.8.0</span></span>
-  </div>
-  <div class="tips"><span class="hl">/help</span> for more information<br>
-<span class="hl">/init</span> for initializing instructions</div>
-
   <div class="convo-area">
-  <div id="convoInner"></div>
-  </div><!-- /.convo-area -->
+    <div id="convoInner"></div>
+  </div>
 
   <div class="tool-box" id="confirmBox">
     <div class="tool-box-inner">
@@ -60,24 +52,10 @@
   <div class="scroll-end"></div>
 </div>
 
-<!-- anchored bottom: input + footer always visible -->
-<div class="bottom-bar">
-  <div class="status-line" id="statusLine">
-    <span class="spin-char" id="spinChar"></span><span id="statusText"></span>
-  </div>
-  <div class="input-box" id="inputBox">
-    <span class="input-prompt">&gt;</span>
-    <div class="input-text">
-      <span id="typedText"></span><span class="cursor" id="inputCursor"></span><span class="placeholder" id="placeholder">Type your message or @path/to/file</span>
-    </div>
-  </div>
-  <div class="footer">
-    <span class="footer-project">~/playground</span>
-    <span class="footer-status"><span class="footer-model">Gemini 3</span><span class="footer-rest">&nbsp;/model</span></span>
-  </div>
-</div>
+<div class="bottom-bar"></div>
 </main>
 
-<script src="./cli-animation.js"></script>
+<script src="./cli-components.js?v=1"></script>
+<script src="./cli-animation.js?v=2"></script>
 </body>
 </html>
