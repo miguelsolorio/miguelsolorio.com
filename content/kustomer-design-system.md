@@ -63,9 +63,9 @@ After several sprints, we were able to make major strides in bringing our compon
 
 {{< stats >}}
 123 | Total components | library
-+49 | Updated, 26% → 75% | updated
-−28 | Outdated, 33% → 5% | outdated
-−24 | Missing, 41% → 17% | missing
++26% > 75% | Refreshed| updated
+−33% > 5% | Stale | outdated
+−41% > 17% | Missing | missing
 {{< /stats >}}
 
 This allowed our design team to move more efficiently in creating new features without having to worry about if our components were out of date. Our designer to developer hand off transition significantly improved since everyone was using the same terminology and referencing the same components, reducing the issues at implementation.

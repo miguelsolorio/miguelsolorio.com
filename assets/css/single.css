@@ -285,12 +285,16 @@
   .single .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    /* Start rather than stretch: once a before/after figure wraps, centring
+       each cell in the tallest one drops every single-line figure half a line
+       and the row loses its shared baseline. */
+    align-items: start;
     gap: clamp(1.25rem, 3vw, 1.75rem) 1.5rem;
     margin-top: clamp(1.25rem, 3vw, 1.75rem);
   }
   .single .stat {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: .875rem;
     min-width: 0;
   }
@@ -329,17 +333,21 @@
   .single .stat-icon--outdated { color: #e8710a; }
   .single .stat-icon--missing { color: #d3466f; }
   .single .stat-value {
-    @apply flex items-center font-extrabold text-slate-900;
-    gap: .14em;
+    @apply flex flex-wrap items-center font-extrabold text-slate-900;
+    gap: 0 .14em;
     font-size: clamp(1.75rem, 3.05vw, 2.75rem);
     font-variant-numeric: tabular-nums;
     letter-spacing: -.05em;
-    line-height: 1;
-    /* .single opts everything into overflow-wrap: anywhere so long prose tokens
-       cannot escape the measure, but a figure has to read as one number, and
-       that rule breaks "1,100" across two lines once the inset narrows the
-       column. Nothing inside a numeral is a break opportunity on its own, so
-       resetting the inherited value is enough to keep it whole. */
+    line-height: 1.06;
+  }
+  /* A before/after figure is two readings, and the column is not always wide
+     enough for both: the pair breaks between them rather than mid-number. Each
+     reading stays whole because .single opts everything into overflow-wrap:
+     anywhere so long prose tokens cannot escape the measure, and a numeral has
+     no break opportunity of its own to fall back on. */
+  .single .stat-figure {
+    display: inline-flex;
+    align-items: center;
     overflow-wrap: normal;
     word-break: normal;
     white-space: nowrap;
@@ -360,6 +368,22 @@
   }
   .single .stat-trend--up { color: #0f9d58; }
   .single .stat-trend--down { color: #dc2626; }
+  /* The mark between the two readings only has to say "becomes", so it stays
+     quiet: the coloured trend arrow above is what carries the direction, and a
+     second loud arrow would compete with it. It leads the second reading so a
+     wrap puts it at the head of the new line instead of stranding it. */
+  .single .stat-shift {
+    width: .5em;
+    height: .5em;
+    flex: 0 0 auto;
+    margin-right: .1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    @apply text-slate-400;
+  }
   .single .stat-label {
     @apply block text-slate-500;
     margin-top: .375rem;

@@ -51,8 +51,24 @@
       {{- $trend = "down" -}}
       {{- $value = strings.TrimPrefix "-" $value -}}
     {{- end -}}
+    {{- /* "before > after" splits the figure into the two readings the arrow
+           moves between. Authors may write a plain angle bracket or a real
+           arrow; either way only the second half is the outcome. */ -}}
+    {{- $from := "" -}}
+    {{- $shift := split $value ">" -}}
+    {{- if eq (len $shift) 1 -}}
+      {{- $shift = split $value "\u2192" -}}
+    {{- end -}}
+    {{- if gt (len $shift) 2 -}}
+      {{- errorf "stats shortcode in %s: %q has more than one \">\" in its value" $.Page.File.Path $line -}}
+    {{- end -}}
+    {{- if eq (len $shift) 2 -}}
+      {{- $from = strings.Trim (index $shift 0) " \t" -}}
+      {{- $value = index $shift 1 -}}
+    {{- end -}}
     {{- $rows = $rows | append (dict
           "value" (strings.Trim $value " \t")
+          "from" $from
           "trend" $trend
           "label" (strings.Trim (index $parts 1) " \t")
           "icon" $icon) -}}
@@ -78,7 +94,13 @@
           <svg class="stat-trend stat-trend--{{ . }}" viewBox="0 0 16 16" aria-hidden="true">{{ index $arrows . | safeHTML }}</svg>
           <span class="sr-only">{{ if eq . "up" }}up{{ else }}down{{ end }}</span>
           {{- end }}
-          {{ .value }}</b>
+          {{- if .from }}
+          <span class="stat-figure">{{ .from }}</span>
+          <span class="sr-only">to</span>
+          <span class="stat-figure"><svg class="stat-shift" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.8 8h8.9"/><path d="m8.4 4.6 3.4 3.4-3.4 3.4"/></svg>{{ .value }}</span>
+          {{- else }}
+          <span class="stat-figure">{{ .value }}</span>
+          {{- end }}</b>
         <span class="stat-label">{{ .label }}</span>
       </div>
     </div>
