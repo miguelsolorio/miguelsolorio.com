@@ -70,6 +70,7 @@
     {{- /* Read both ends as plain numbers so the chip can be derived. A figure
            that is not numeric gets no chip rather than a wrong one. */ -}}
     {{- $delta := "" -}}
+    {{- $unit := "" -}}
     {{- $trend := "" -}}
     {{- $before := 0.0 -}}
     {{- $after := 0.0 -}}
@@ -84,12 +85,16 @@
         {{- $gap := sub $after $before -}}
         {{- $trend = cond (gt $gap 0.0) "up" "down" -}}
         {{- $delta = printf "%.0f" (cond (lt $gap 0.0) (mul $gap -1.0) $gap) -}}
+        {{- /* Carry whatever unit the reading was written in, so a count never
+               picks up a stray percent sign. */ -}}
+        {{- $unit = replaceRE `^[^0-9]*[0-9.,]+` "" $value -}}
       {{- end -}}
     {{- end -}}
     {{- $rows = $rows | append (dict
           "value" $value
           "from" $from
           "delta" $delta
+          "unit" $unit
           "trend" $trend
           "before" $before
           "after" $after
@@ -119,12 +124,42 @@
   {{- end }}
   <p class="stat-source"><a href="https://github.com/{{ $slug }}" target="_blank" rel="noopener noreferrer">{{ $slug }}</a></p>
   {{- end }}
+  <div class="stat-grid">
+    {{- range $rows }}
+    {{- $trend := .trend }}
+    {{- $unit := .unit }}
+    <div class="stat">
+      {{- if and (not $bars) .glyph }}
+      <svg class="stat-icon" style="color:{{ .color }}" viewBox="0 0 16 16" aria-hidden="true">{{ .glyph | safeHTML }}</svg>
+      {{- end }}
+      <div class="stat-text">
+        <b class="stat-value">{{ .value }}
+          {{- with .delta }}
+          {{- /* The chip is a picture of the phrase beside it, so only one of
+                 the two goes to the accessibility tree. It says percent because
+                 that is the unit the readings were written in, though what it
+                 measures is the points between them — which is why the spoken
+                 version is the precise one. */ -}}
+          <span class="stat-pill stat-pill--{{ $trend }}" aria-hidden="true"><svg viewBox="0 0 10 10">{{ index $carets $trend | safeHTML }}</svg>{{ . }}{{ $unit }}</span>
+          <span class="sr-only">, {{ $trend }} {{ . }}{{ if eq $unit "%" }} percentage points{{ end }}</span>
+          {{- end }}
+        </b>
+        <span class="stat-label">
+          {{- /* A swatch promises a matching segment below, so only a row that
+                 actually plots gets one. */ -}}
+          {{- if and $bars .plots }}<i class="stat-key" style="background:{{ .color }}" aria-hidden="true"></i>{{ end -}}
+          {{ .label }}{{ with .from }}<span class="stat-was">, was {{ . }}</span>{{ end }}</span>
+      </div>
+    </div>
+    {{- end }}
+  </div>
   {{- if $bars }}
-  {{- /* Proportion only. Every number in here is stated below with its
-         movement attached, so labelling the segments would both duplicate the
-         badges and break the narrow ones — 5% of a bar cannot hold "5%" at any
-         width. Hidden from the accessibility tree for the same reason: it
-         would announce the same figures a second time. */ -}}
+  {{- /* Proportion only, and it follows the figures: the badges are the
+         reading and the bar is the shape behind them. Every number in here is
+         stated above with its movement attached, so labelling the segments
+         would both duplicate the badges and break the narrow ones — 5% of a
+         bar cannot hold "5%" at any width. Hidden from the accessibility tree
+         for the same reason: it would announce the figures a second time. */ -}}
   <div class="stat-chart" aria-hidden="true">
     <div class="stat-chart-row">
       <span class="stat-chart-tag">Before</span>
@@ -150,30 +185,4 @@
   <p class="stat-chart-note">{{ printf "%.0f" $rest }}% of the library stayed unclassified.</p>
   {{- end }}
   {{- end }}
-  <div class="stat-grid">
-    {{- range $rows }}
-    {{- $trend := .trend }}
-    {{- $from := .from }}
-    <div class="stat">
-      {{- if and (not $bars) .glyph }}
-      <svg class="stat-icon" style="color:{{ .color }}" viewBox="0 0 16 16" aria-hidden="true">{{ .glyph | safeHTML }}</svg>
-      {{- end }}
-      <div class="stat-text">
-        <b class="stat-value">{{ .value }}
-          {{- with .delta }}
-          {{- /* The chip is a picture of the number in the phrase beside it, so
-                 only one of the two goes to the accessibility tree. */ -}}
-          <span class="stat-pill stat-pill--{{ $trend }}" aria-hidden="true"><svg viewBox="0 0 10 10">{{ index $carets $trend | safeHTML }}</svg>{{ . }}</span>
-          <span class="sr-only">, {{ $trend }} {{ . }} points</span>
-          {{- end }}
-        </b>
-        <span class="stat-label">
-          {{- /* A swatch promises a matching segment above, so only a row that
-                 actually plots gets one. */ -}}
-          {{- if and $bars .plots }}<i class="stat-key" style="background:{{ .color }}" aria-hidden="true"></i>{{ end -}}
-          {{ .label }}{{ with .from }}<span class="stat-was">, was {{ . }}</span>{{ end }}</span>
-      </div>
-    </div>
-    {{- end }}
-  </div>
 </div>
