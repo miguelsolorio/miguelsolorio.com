@@ -86,7 +86,7 @@ Design work on VS Code, counted in the repository itself.
 {{< stats source="microsoft/vscode" >}}
 160 | Pull requests opened | pr
 147 | Pull requests merged | merge
-29 | Commits on main | commit
+1,100 | Commits on main | commit
 569 | Issues filed | issue
 {{< /stats >}}
 

@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gemini CLI contribution stats — variations</title>
+    <style>
+      /* Tokens mirror the site: neutral-100/slate-900 page, slate ink,
+         #3429ff accent in light and the indigo-300 link colour in dark. */
+      :root {
+        color-scheme: light;
+        --page: #f5f5f5;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --hairline: rgba(15, 23, 42, .10);
+        --heading: #0f172a;
+        --ink: #334155;
+        --muted: #64748b;
+        --faint: #94a3b8;
+        --accent: #3429ff;
+        --accent-ink: #241bc7;
+        --accent-soft: rgba(52, 41, 255, .09);
+        --shadow: 0 12px 28px -8px rgba(52, 41, 255, .28);
+        /* CLI project stage, lifted from assets/css/project.css */
+        --stage-surface: #eaf2fa;
+        --stage-art:
+          radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220, 232, 252, .55) 34%, transparent 68%),
+          radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228, 242, 248, .5) 36%, transparent 70%),
+          linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
+        /* Terminal palette, lifted from static/cli-agents/cli-animation.css */
+        --term-bg: #ffffff;
+        --term-text: #1f1f1f;
+        --term-muted: #5f6368;
+        --term-blue: #3d90f9;
+        --term-purple: #7f46ff;
+        --term-green: #0f9d58;
+        --term-border: #e8eaed;
+      }
+
+      html.dark {
+        color-scheme: dark;
+        --page: #0f172a;
+        --card: #1e293b;
+        --border: #334155;
+        --hairline: rgba(148, 163, 184, .18);
+        --heading: #e5e7eb;
+        --ink: #9ca3af;
+        --muted: #94a3b8;
+        --faint: #64748b;
+        --accent: #a5b4fc;
+        --accent-ink: #c7d2fe;
+        --accent-soft: rgba(165, 180, 252, .13);
+        --shadow: 0 14px 32px -10px rgba(0, 0, 0, .55);
+        --stage-surface: #161f2e;
+        --stage-art:
+          radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30, 58, 95, .5) 34%, transparent 68%),
+          radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26, 53, 72, .45) 36%, transparent 70%),
+          linear-gradient(145deg, #151d2e 10%, #172430 90%);
+        --term-bg: #1f1f1f;
+        --term-text: #e8eaed;
+        --term-muted: #9aa0a6;
+        --term-blue: #8ab4f8;
+        --term-purple: #c58af9;
+        --term-green: #81c995;
+        --term-border: #3c4043;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      main {
+        width: min(72rem, calc(100% - 2 * clamp(1.25rem, 4vw, 3rem)));
+        margin-inline: auto;
+        padding: clamp(2.5rem, 6vw, 4.5rem) 0 6rem;
+      }
+
+      .page-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+
+      h1 {
+        margin: 0;
+        color: var(--heading);
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: 800;
+        letter-spacing: -.05em;
+        line-height: .98;
+      }
+
+      .intro {
+        max-width: 44rem;
+        margin: 1.125rem 0 0;
+        font-size: 1.0625rem;
+        line-height: 1.55;
+      }
+
+      .intro code {
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: .875em;
+      }
+
+      #theme-toggle {
+        flex: 0 0 auto;
+        border: 1px solid var(--border);
+        border-radius: .625rem;
+        padding: .5rem .875rem;
+        background: var(--card);
+        color: var(--ink);
+        font: inherit;
+        font-size: .8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: border-color .2s ease, color .2s ease;
+      }
+      #theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+      .variation {
+        margin-top: clamp(2.5rem, 6vw, 4rem);
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .variation-head {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: .625rem;
+        margin-bottom: 1.5rem;
+      }
+      .variation-head .num {
+        color: var(--accent);
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: .1em;
+      }
+      .variation-head h2 {
+        margin: 0;
+        color: var(--heading);
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: -.015em;
+      }
+      .variation-head .why {
+        flex: 1 1 18rem;
+        color: var(--muted);
+        font-size: .8125rem;
+        line-height: 1.5;
+      }
+
+      /* Every stat block below is scoped to .stat-* classes prefixed by the
+         variation number, so a pick can be lifted out on its own. */
+
+      .stat-icon {
+        width: 1em;
+        height: 1em;
+        flex: 0 0 auto;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* 01 — Number band ------------------------------------------------- */
+      .v01 {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        border-top: 1px solid var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+      }
+      .v01 div {
+        padding: 1.5rem 1.25rem 1.625rem;
+        border-left: 1px solid var(--hairline);
+      }
+      .v01 div:first-child { padding-left: 0; border-left: 0; }
+      .v01 b {
+        display: block;
+        color: var(--heading);
+        font-size: clamp(2.25rem, 5vw, 3.25rem);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.055em;
+        line-height: 1;
+      }
+      .v01 span {
+        display: block;
+        margin-top: .625rem;
+        color: var(--muted);
+        font-size: .6875rem;
+        font-weight: 600;
+        letter-spacing: .09em;
+        line-height: 1.35;
+        text-transform: uppercase;
+      }
+
+      /* 02 — Terminal readout -------------------------------------------- */
+      .v02 {
+        padding: clamp(.75rem, 5vw, 3.5rem);
+        border-radius: .75rem;
+        background-color: var(--stage-surface);
+        background-image: var(--stage-art);
+        background-size: 118% 118%;
+        background-position: 50% 46%;
+      }
+      .v02-term {
+        overflow: hidden;
+        border-radius: .5rem;
+        padding: 1.25rem 1.375rem 1.5rem;
+        background: var(--term-bg);
+        box-shadow: var(--shadow);
+        color: var(--term-text);
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: clamp(.6875rem, 1.35vw, .8125rem);
+        line-height: 1.75;
+      }
+      .v02-cmd { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .v02-cmd i { color: var(--term-purple); font-style: normal; }
+      .v02-cmd b { font-weight: 600; }
+      .v02-cmd em { color: var(--term-blue); font-style: normal; }
+      .v02-rows {
+        margin-top: .75rem;
+        padding-top: .75rem;
+        border-top: 1px solid var(--term-border);
+      }
+      .v02-row { display: flex; align-items: baseline; gap: 1ch; }
+      .v02-row .k { width: 22ch; flex: 0 0 auto; color: var(--term-muted); }
+      .v02-row .bar { color: var(--term-blue); letter-spacing: -.05em; }
+      .v02-row .n { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+      .v02-row.is-merged .bar { color: var(--term-purple); }
+      .v02-row.is-closed .bar { color: var(--term-green); }
+      .v02-foot { margin-top: .75rem; color: var(--term-muted); }
+      @media (max-width: 46rem) {
+        .v02-row .k { width: 100%; }
+        .v02-row { flex-wrap: wrap; }
+        .v02-row .bar { display: none; }
+      }
+
+      /* 03 — Ledger ------------------------------------------------------- */
+      .v03 { border-top: 2px solid var(--heading); }
+      .v03-row {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        padding: .9375rem 0;
+        border-bottom: 1px solid var(--hairline);
+      }
+      .v03-row .k {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        color: var(--ink);
+        font-size: .9375rem;
+        font-weight: 500;
+      }
+      .v03-row .k .stat-icon { color: var(--faint); font-size: .9375rem; }
+      .v03-row .note { color: var(--faint); font-size: .8125rem; }
+      .v03-row .n {
+        margin-left: auto;
+        color: var(--heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.03em;
+      }
+
+      /* 04 — Metric cards -------------------------------------------------- */
+      .v04 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+        gap: .875rem;
+      }
+      .v04 article {
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1.125rem 1.125rem 1.25rem;
+        background: var(--card);
+      }
+      .v04 .stat-icon { color: var(--accent); font-size: 1.125rem; }
+      .v04 b {
+        display: block;
+        margin-top: .875rem;
+        color: var(--heading);
+        font-size: 2rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.045em;
+        line-height: 1;
+      }
+      .v04 span {
+        display: block;
+        margin-top: .375rem;
+        color: var(--muted);
+        font-size: .8125rem;
+        line-height: 1.35;
+      }
+
+      /* 05 — Ratio bars ---------------------------------------------------- */
+      .v05-row { margin-top: 1.5rem; }
+      .v05-row:first-child { margin-top: 0; }
+      .v05-row .head {
+        display: flex;
+        align-items: baseline;
+        gap: .75rem;
+        margin-bottom: .5rem;
+      }
+      .v05-row .k { color: var(--ink); font-size: .9375rem; font-weight: 600; }
+      .v05-row .n {
+        margin-left: auto;
+        color: var(--heading);
+        font-size: .9375rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+      .v05-row .n small { color: var(--faint); font-weight: 500; }
+      .v05-track {
+        height: .5rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+      }
+      .v05-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+      .v05-foot {
+        display: flex;
+        align-items: baseline;
+        gap: .5rem;
+        margin-top: 1.75rem;
+        padding-top: 1.125rem;
+        border-top: 1px solid var(--hairline);
+        color: var(--muted);
+        font-size: .9375rem;
+      }
+      .v05-foot b {
+        color: var(--heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.03em;
+      }
+
+      /* 06 — Prose line ---------------------------------------------------- */
+      .v06 {
+        max-width: 48rem;
+        color: var(--ink);
+        font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+        font-weight: 500;
+        line-height: 1.55;
+        letter-spacing: -.012em;
+      }
+      .v06 b {
+        color: var(--heading);
+        font-size: 1.35em;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.05em;
+      }
+      .v06 .src {
+        display: block;
+        margin-top: 1rem;
+        color: var(--faint);
+        font-size: .8125rem;
+        font-weight: 500;
+        letter-spacing: 0;
+      }
+
+      /* 07 — Hero plus supporting ------------------------------------------ */
+      .v07 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+        gap: clamp(1.5rem, 4vw, 3rem);
+        align-items: center;
+      }
+      .v07-hero b {
+        display: block;
+        color: var(--accent);
+        font-size: clamp(4rem, 12vw, 7.5rem);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.06em;
+        line-height: .85;
+      }
+      .v07-hero span {
+        display: block;
+        margin-top: .75rem;
+        color: var(--heading);
+        font-size: 1.0625rem;
+        font-weight: 600;
+      }
+      .v07-hero small {
+        display: block;
+        margin-top: .25rem;
+        color: var(--muted);
+        font-size: .875rem;
+      }
+      .v07-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        background: var(--hairline);
+        border: 1px solid var(--hairline);
+      }
+      .v07-grid div { padding: 1.125rem 1.25rem; background: var(--page); }
+      .v07-grid b {
+        display: block;
+        color: var(--heading);
+        font-size: 1.75rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.04em;
+        line-height: 1;
+      }
+      .v07-grid span {
+        display: block;
+        margin-top: .375rem;
+        color: var(--muted);
+        font-size: .8125rem;
+      }
+      @media (max-width: 46rem) {
+        .v07 { grid-template-columns: minmax(0, 1fr); }
+      }
+
+      /* 08 — Pills ---------------------------------------------------------- */
+      .v08 { display: flex; flex-wrap: wrap; gap: .625rem; }
+      .v08 span {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: .5rem .9375rem .5rem .8125rem;
+        background: var(--card);
+        color: var(--muted);
+        font-size: .875rem;
+      }
+      .v08 .stat-icon { color: var(--accent); font-size: .9375rem; }
+      .v08 b {
+        color: var(--heading);
+        font-size: 1rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* 09 — Stage card ------------------------------------------------------ */
+      .v09 {
+        padding: clamp(.75rem, 5vw, 3.5rem);
+        border-radius: .75rem;
+        background-color: var(--stage-surface);
+        background-image: var(--stage-art);
+        background-size: 118% 118%;
+        background-position: 50% 46%;
+      }
+      .v09-card {
+        border-radius: .625rem;
+        padding: clamp(1.25rem, 3vw, 2rem);
+        background: var(--card);
+        box-shadow: var(--shadow);
+      }
+      .v09-title {
+        display: flex;
+        align-items: baseline;
+        gap: .5rem;
+        color: var(--muted);
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: .75rem;
+      }
+      .v09-title b { color: var(--heading); font-weight: 600; }
+      .v09-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+        gap: 1.5rem 1.25rem;
+        margin-top: 1.5rem;
+      }
+      .v09-grid b {
+        display: block;
+        color: var(--heading);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.05em;
+        line-height: 1;
+      }
+      .v09-grid span {
+        display: block;
+        margin-top: .5rem;
+        color: var(--muted);
+        font-size: .8125rem;
+        line-height: 1.35;
+      }
+
+      /* 10 — Spec sheet ------------------------------------------------------- */
+      .v10 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+        gap: 1px;
+        background: var(--hairline);
+        border: 1px solid var(--hairline);
+        border-radius: .5rem;
+        overflow: hidden;
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .v10 div { padding: 1.25rem 1.25rem 1.375rem; background: var(--page); }
+      .v10 i {
+        color: var(--accent);
+        font-size: .625rem;
+        font-style: normal;
+        letter-spacing: .12em;
+      }
+      .v10 b {
+        display: block;
+        margin-top: .875rem;
+        color: var(--heading);
+        font-size: 2rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.04em;
+        line-height: 1;
+      }
+      .v10 span {
+        display: block;
+        margin-top: .5rem;
+        color: var(--muted);
+        font-size: .6875rem;
+        letter-spacing: .04em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      @media (max-width: 46rem) {
+        .v01 { grid-template-columns: repeat(2, minmax(0, 1fr)); border-bottom: 0; }
+        .v01 div { border-bottom: 1px solid var(--hairline); }
+        .v01 div:first-child { padding-left: 1.25rem; }
+        .v01 div:nth-child(odd) { border-left: 0; padding-left: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+      <defs>
+        <symbol id="i-pr" viewBox="0 0 16 16">
+          <circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6V13"/>
+          <circle cx="11.5" cy="12" r="1.6"/><path d="M11.5 10.4V3.2"/><path d="m9.6 5.1 1.9-1.9 1.9 1.9"/>
+        </symbol>
+        <symbol id="i-merge" viewBox="0 0 16 16">
+          <circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6v4.1a2.4 2.4 0 0 0 2.4 2.4h2.9"/>
+          <circle cx="11.5" cy="12.1" r="1.6"/>
+        </symbol>
+        <symbol id="i-commit" viewBox="0 0 16 16">
+          <path d="M1.6 8h3.8M10.6 8h3.8"/><circle cx="8" cy="8" r="2.6"/>
+        </symbol>
+        <symbol id="i-issue" viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="5.7"/><path d="M8 5.3v3.1"/><path d="M8 10.6h.01"/>
+        </symbol>
+        <symbol id="i-issue-closed" viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="5.7"/><path d="m5.6 8.2 1.7 1.7 3.1-3.7"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <main>
+      <header class="page-head">
+        <div>
+          <h1>Contribution stats</h1>
+          <p class="intro">
+            Ten treatments of the same five numbers for the end of <code>content/cli-agents.md</code>,
+            each built from the site's own tokens — neutral-100/slate-900 page, slate ink,
+            <code>#3429ff</code> accent, the CLI project stage, and the terminal palette from the demos.
+            Toggle dark mode; both states ship. Pick a number and it becomes the real section.
+          </p>
+        </div>
+        <button id="theme-toggle" type="button">Dark mode</button>
+      </header>
+
+      <!-- 01 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">01</span><h2>Number band</h2>
+          <p class="why">Five columns, hairline rules, no chrome. Reads as a continuation of the prose rather than a widget.</p>
+        </div>
+        <div class="v01">
+          <div><b>59</b><span>Pull requests<br>opened</span></div>
+          <div><b>39</b><span>Pull requests<br>merged</span></div>
+          <div><b>44</b><span>Commits on<br>main</span></div>
+          <div><b>22</b><span>Issues<br>filed</span></div>
+          <div><b>21</b><span>Issues<br>resolved</span></div>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">02</span><h2>Terminal readout</h2>
+          <p class="why">The numbers rendered as CLI output, on the same project stage and palette as the demos above it. Most on-theme, least neutral.</p>
+        </div>
+        <div class="v02">
+          <div class="v02-term">
+            <div class="v02-cmd"><i>$</i> <b>gemini</b> stats <em>--repo</em> google-gemini/gemini-cli <em>--author</em> miguelsolorio</div>
+            <div class="v02-rows">
+              <div class="v02-row"><span class="k">pull requests opened</span><span class="bar">████████████████████</span><span class="n">59</span></div>
+              <div class="v02-row is-merged"><span class="k">pull requests merged</span><span class="bar">█████████████░░░░░░░</span><span class="n">39</span></div>
+              <div class="v02-row"><span class="k">commits on main</span><span class="bar">███████████████░░░░░</span><span class="n">44</span></div>
+              <div class="v02-row"><span class="k">issues filed</span><span class="bar">███████░░░░░░░░░░░░░</span><span class="n">22</span></div>
+              <div class="v02-row is-closed"><span class="k">issues resolved</span><span class="bar">███████░░░░░░░░░░░░░</span><span class="n">21</span></div>
+            </div>
+            <div class="v02-foot">✓ 66% merge rate · 95% of filed issues closed</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">03</span><h2>Ledger</h2>
+          <p class="why">The reference table, tightened: one rule weight, icons for scanning, secondary detail demoted to a note instead of its own row.</p>
+        </div>
+        <div class="v03">
+          <div class="v03-row">
+            <span class="k"><svg class="stat-icon"><use href="#i-pr"/></svg>Pull requests opened</span>
+            <span class="n">59</span>
+          </div>
+          <div class="v03-row">
+            <span class="k"><svg class="stat-icon"><use href="#i-merge"/></svg>Pull requests merged <span class="note">66% of those opened</span></span>
+            <span class="n">39</span>
+          </div>
+          <div class="v03-row">
+            <span class="k"><svg class="stat-icon"><use href="#i-commit"/></svg>Commits on the default branch</span>
+            <span class="n">44</span>
+          </div>
+          <div class="v03-row">
+            <span class="k"><svg class="stat-icon"><use href="#i-issue"/></svg>Issues filed</span>
+            <span class="n">22</span>
+          </div>
+          <div class="v03-row">
+            <span class="k"><svg class="stat-icon"><use href="#i-issue-closed"/></svg>Issues resolved <span class="note">21 of 22</span></span>
+            <span class="n">21</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">04</span><h2>Metric cards</h2>
+          <p class="why">Reuses the side-project card recipe — white/slate-800 surface, 1rem radius, hairline border — so the section matches the home page grid.</p>
+        </div>
+        <div class="v04">
+          <article><svg class="stat-icon"><use href="#i-pr"/></svg><b>59</b><span>Pull requests opened</span></article>
+          <article><svg class="stat-icon"><use href="#i-merge"/></svg><b>39</b><span>Pull requests merged</span></article>
+          <article><svg class="stat-icon"><use href="#i-commit"/></svg><b>44</b><span>Commits on main</span></article>
+          <article><svg class="stat-icon"><use href="#i-issue"/></svg><b>22</b><span>Issues filed</span></article>
+          <article><svg class="stat-icon"><use href="#i-issue-closed"/></svg><b>21</b><span>Issues resolved</span></article>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">05</span><h2>Ratio bars</h2>
+          <p class="why">Leads with the story the raw counts bury: nearly everything filed got closed, two thirds of the PRs landed. Commits ride along as a footnote.</p>
+        </div>
+        <div class="v05">
+          <div class="v05-row">
+            <div class="head"><span class="k">Pull requests merged</span><span class="n">39<small> / 59</small></span></div>
+            <div class="v05-track"><div class="v05-fill" style="width:66%"></div></div>
+          </div>
+          <div class="v05-row">
+            <div class="head"><span class="k">Issues filed and resolved</span><span class="n">21<small> / 22</small></span></div>
+            <div class="v05-track"><div class="v05-fill" style="width:95%"></div></div>
+          </div>
+          <p class="v05-foot"><b>44</b> commits on the default branch</p>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">06</span><h2>Prose line</h2>
+          <p class="why">No block at all — one sentence at description scale with the counts set large. Cheapest to maintain, weakest to scan.</p>
+        </div>
+        <p class="v06">
+          <b>59</b> pull requests opened and <b>39</b> merged, <b>44</b> commits on the default branch,
+          <b>22</b> issues filed and <b>21</b> already closed.
+          <span class="src">google-gemini/gemini-cli</span>
+        </p>
+      </section>
+
+      <!-- 07 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">07</span><h2>Hero plus supporting</h2>
+          <p class="why">One number carries the claim in the accent blue at title scale; the rest sit in a quiet 2×2 beside it.</p>
+        </div>
+        <div class="v07">
+          <div class="v07-hero">
+            <b>59</b>
+            <span>pull requests opened</span>
+            <small>google-gemini/gemini-cli</small>
+          </div>
+          <div class="v07-grid">
+            <div><b>39</b><span>merged</span></div>
+            <div><b>44</b><span>commits on main</span></div>
+            <div><b>22</b><span>issues filed</span></div>
+            <div><b>21</b><span>issues resolved</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">08</span><h2>Pills</h2>
+          <p class="why">The side-project metric row, scaled up. Compact and wraps cleanly on mobile, but the numbers stay small.</p>
+        </div>
+        <div class="v08">
+          <span><svg class="stat-icon"><use href="#i-pr"/></svg><b>59</b> PRs opened</span>
+          <span><svg class="stat-icon"><use href="#i-merge"/></svg><b>39</b> merged</span>
+          <span><svg class="stat-icon"><use href="#i-commit"/></svg><b>44</b> commits</span>
+          <span><svg class="stat-icon"><use href="#i-issue"/></svg><b>22</b> issues filed</span>
+          <span><svg class="stat-icon"><use href="#i-issue-closed"/></svg><b>21</b> resolved</span>
+        </div>
+      </section>
+
+      <!-- 09 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">09</span><h2>Stage card</h2>
+          <p class="why">Sits on the CLI project stage like every embed on the page, so the stats read as one more artifact from the project rather than a page footer.</p>
+        </div>
+        <div class="v09">
+          <div class="v09-card">
+            <div class="v09-title"><b>google-gemini/gemini-cli</b> <span>· @miguelsolorio</span></div>
+            <div class="v09-grid">
+              <div><b>59</b><span>Pull requests opened</span></div>
+              <div><b>39</b><span>Pull requests merged</span></div>
+              <div><b>44</b><span>Commits on main</span></div>
+              <div><b>22</b><span>Issues filed</span></div>
+              <div><b>21</b><span>Issues resolved</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">10</span><h2>Spec sheet</h2>
+          <p class="why">Monospace, indexed cells, hairline grid — the numbers as a data table for a tool rather than a portfolio flourish.</p>
+        </div>
+        <div class="v10">
+          <div><i>01</i><b>59</b><span>PRs opened</span></div>
+          <div><i>02</i><b>39</b><span>PRs merged</span></div>
+          <div><i>03</i><b>44</b><span>Commits / main</span></div>
+          <div><i>04</i><b>22</b><span>Issues filed</span></div>
+          <div><i>05</i><b>21</b><span>Issues resolved</span></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        var button = document.getElementById('theme-toggle');
+        var root = document.documentElement;
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          root.classList.add('dark');
+        }
+        var sync = function () {
+          button.textContent = root.classList.contains('dark') ? 'Light mode' : 'Dark mode';
+        };
+        button.addEventListener('click', function () {
+          root.classList.toggle('dark');
+          sync();
+        });
+        sync();
+      }());
+    </script>
+  </body>
+</html>
