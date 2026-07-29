@@ -1,25 +1,38 @@
 {{/* Figures for the close of a project page. The inner content is one
-     "value | label | icon" row per line, so the numbers stay next to the prose
-     that frames them instead of moving into front matter. `icon` is optional
-     and names one of the glyphs below: the first five carry GitHub
-     contribution states, the rest component-library parity. `source` is also
-     optional and only applies when the figures came from a repository — it
-     takes an "owner/repo" slug and renders a link to it. */}}
-{{- $glyphs := dict
-  "pr"     `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6V13"/><circle cx="11.5" cy="12" r="1.6"/><path d="M11.5 10.4V3.2"/><path d="m9.6 5.1 1.9-1.9 1.9 1.9"/>`
-  "merge"  `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6v4.1a2.4 2.4 0 0 0 2.4 2.4h2.9"/><circle cx="11.5" cy="12.1" r="1.6"/>`
-  "commit" `<path d="M1.6 8h3.8M10.6 8h3.8"/><circle cx="8" cy="8" r="2.6"/>`
-  "issue"  `<circle cx="8" cy="8" r="5.7"/><path d="M8 5.3v3.1"/><path d="M8 10.6h.01"/>`
-  "issue-closed" `<circle cx="8" cy="8" r="5.7"/><path d="m5.6 8.2 1.7 1.7 3.1-3.7"/>`
-  "library"  `<rect x="2.4" y="2.4" width="5" height="5" rx="1.2"/><rect x="8.6" y="2.4" width="5" height="5" rx="1.2"/><rect x="2.4" y="8.6" width="5" height="5" rx="1.2"/><rect x="8.6" y="8.6" width="5" height="5" rx="1.2"/>`
-  "updated"  `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="m5.5 8.1 1.8 1.8 3.2-3.9"/>`
-  "outdated" `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="M8 5.3V8l2.2 1.6"/>`
-  "missing"  `<path d="M6.2 2.4H4.8a2.4 2.4 0 0 0-2.4 2.4v1.4"/><path d="M2.4 9.8v1.4a2.4 2.4 0 0 0 2.4 2.4h1.4"/><path d="M9.8 13.6h1.4a2.4 2.4 0 0 0 2.4-2.4V9.8"/><path d="M13.6 6.2V4.8a2.4 2.4 0 0 0-2.4-2.4H9.8"/>`
+     "value | label | tone" row per line, so the numbers stay next to the prose
+     that frames them instead of moving into front matter.
+
+     A value written as "before > after" is a movement: the badge shows where it
+     landed, a tinted chip shows how far it travelled, and the label picks up
+     where it started. The chip's number and direction are worked out from the
+     pair rather than restated by hand, so the two can never drift apart.
+
+     `tone` is optional and names a row in the table below. Each tone carries a
+     colour and a glyph; which one shows depends on `bars`.
+
+     `bars` turns the movements into a pair of stacked bars above the badges,
+     one for the before reading and one for the after. Use it only when the
+     figures are shares of a single whole, because that is what the bar claims.
+     With it on the glyphs give way to key swatches, since the bar already says
+     what each row is and a second mark would only repeat it. Left off — the
+     default, and what the contribution counts use — nothing about the existing
+     icon-led badge changes. */}}
+{{- $tones := dict
+  "pr"           (dict "color" "#3d90f9" "glyph" `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6V13"/><circle cx="11.5" cy="12" r="1.6"/><path d="M11.5 10.4V3.2"/><path d="m9.6 5.1 1.9-1.9 1.9 1.9"/>`)
+  "merge"        (dict "color" "#7f46ff" "glyph" `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6v4.1a2.4 2.4 0 0 0 2.4 2.4h2.9"/><circle cx="11.5" cy="12.1" r="1.6"/>`)
+  "commit"       (dict "color" "#0f9d58" "glyph" `<path d="M1.6 8h3.8M10.6 8h3.8"/><circle cx="8" cy="8" r="2.6"/>`)
+  "issue"        (dict "color" "#f9ab00" "glyph" `<circle cx="8" cy="8" r="5.7"/><path d="M8 5.3v3.1"/><path d="M8 10.6h.01"/>`)
+  "issue-closed" (dict "color" "#0f9d58" "glyph" `<circle cx="8" cy="8" r="5.7"/><path d="m5.6 8.2 1.7 1.7 3.1-3.7"/>`)
+  "library"      (dict "color" "#3d90f9" "glyph" `<rect x="2.4" y="2.4" width="5" height="5" rx="1.2"/><rect x="8.6" y="2.4" width="5" height="5" rx="1.2"/><rect x="2.4" y="8.6" width="5" height="5" rx="1.2"/><rect x="8.6" y="8.6" width="5" height="5" rx="1.2"/>`)
+  "updated"      (dict "color" "#1f9d6b" "glyph" `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="m5.5 8.1 1.8 1.8 3.2-3.9"/>`)
+  "outdated"     (dict "color" "#e8710a" "glyph" `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="M8 5.3V8l2.2 1.6"/>`)
+  "missing"      (dict "color" "#d3466f" "glyph" `<path d="M6.2 2.4H4.8a2.4 2.4 0 0 0-2.4 2.4v1.4"/><path d="M2.4 9.8v1.4a2.4 2.4 0 0 0 2.4 2.4h1.4"/><path d="M9.8 13.6h1.4a2.4 2.4 0 0 0 2.4-2.4V9.8"/><path d="M13.6 6.2V4.8a2.4 2.4 0 0 0-2.4-2.4H9.8"/>`)
 -}}
-{{- $arrows := dict
-  "up"   `<path d="M8 13.2V3.4"/><path d="m3.9 7.5 4.1-4.1 4.1 4.1"/>`
-  "down" `<path d="M8 2.8v9.8"/><path d="m3.9 8.5 4.1 4.1 4.1-4.1"/>`
+{{- $carets := dict
+  "up"   `<path d="M5 1.2 9.2 8.4H.8z"/>`
+  "down" `<path d="M5 8.8.8 1.6h8.4z"/>`
 -}}
+{{- $bars := in (slice "true" "1" "yes") (lower (.Get "bars" | default "")) -}}
 {{- $rows := slice -}}
 {{- range (split .Inner "\n") -}}
   {{- $line := strings.Trim . " \t\r" -}}
@@ -28,53 +41,77 @@
     {{- if lt (len $parts) 2 -}}
       {{- errorf "stats shortcode in %s: %q is missing the \"value | label\" separator" $.Page.File.Path $line -}}
     {{- end -}}
-    {{- $icon := "" -}}
+    {{- $tone := "" -}}
     {{- if ge (len $parts) 3 -}}
-      {{- $icon = strings.Trim (index $parts 2) " \t" -}}
-      {{- if not (isset $glyphs $icon) -}}
-        {{- errorf "stats shortcode in %s: unknown icon %q" $.Page.File.Path $icon -}}
+      {{- $tone = strings.Trim (index $parts 2) " \t" -}}
+      {{- if and $tone (not (isset $tones $tone)) -}}
+        {{- errorf "stats shortcode in %s: unknown tone %q" $.Page.File.Path $tone -}}
       {{- end -}}
     {{- end -}}
-    {{- /* A leading sign turns the figure into a ticker row: the arrow renders
-           the direction and the value keeps only its digits. Authors may write
-           either a hyphen or a real minus, and the sign stays in the accessible
-           name so the arrow is not the only thing carrying it. */ -}}
+    {{- /* cond evaluates both arms, so the tone is looked up only behind a
+           real branch: an absent tone must not index the table at all. */ -}}
+    {{- $meta := dict "color" "" "glyph" "" -}}
+    {{- if $tone }}{{ $meta = index $tones $tone }}{{ end -}}
     {{- $value := strings.Trim (index $parts 0) " \t" -}}
-    {{- $trend := "" -}}
-    {{- if hasPrefix $value "+" -}}
-      {{- $trend = "up" -}}
-      {{- $value = strings.TrimPrefix "+" $value -}}
-    {{- else if hasPrefix $value "\u2212" -}}
-      {{- $trend = "down" -}}
-      {{- $value = strings.TrimPrefix "\u2212" $value -}}
-    {{- else if hasPrefix $value "-" -}}
-      {{- $trend = "down" -}}
-      {{- $value = strings.TrimPrefix "-" $value -}}
-    {{- end -}}
-    {{- /* "before > after" splits the figure into the two readings the arrow
-           moves between. Authors may write a plain angle bracket or a real
-           arrow; either way only the second half is the outcome. */ -}}
+    {{- /* "before > after" is a movement. Authors may write a plain angle
+           bracket or a real arrow. */ -}}
     {{- $from := "" -}}
-    {{- $shift := split $value ">" -}}
-    {{- if eq (len $shift) 1 -}}
-      {{- $shift = split $value "\u2192" -}}
+    {{- $pair := split $value ">" -}}
+    {{- if eq (len $pair) 1 -}}
+      {{- $pair = split $value "\u2192" -}}
     {{- end -}}
-    {{- if gt (len $shift) 2 -}}
+    {{- if gt (len $pair) 2 -}}
       {{- errorf "stats shortcode in %s: %q has more than one \">\" in its value" $.Page.File.Path $line -}}
     {{- end -}}
-    {{- if eq (len $shift) 2 -}}
-      {{- $from = strings.Trim (index $shift 0) " \t" -}}
-      {{- $value = index $shift 1 -}}
+    {{- if eq (len $pair) 2 -}}
+      {{- $from = strings.Trim (index $pair 0) " \t" -}}
+      {{- $value = strings.Trim (index $pair 1) " \t" -}}
+    {{- end -}}
+    {{- /* Read both ends as plain numbers so the chip can be derived. A figure
+           that is not numeric gets no chip rather than a wrong one. */ -}}
+    {{- $delta := "" -}}
+    {{- $trend := "" -}}
+    {{- $before := 0.0 -}}
+    {{- $after := 0.0 -}}
+    {{- $plots := false -}}
+    {{- if $from -}}
+      {{- $a := replaceRE `[^0-9.]` "" $from -}}
+      {{- $b := replaceRE `[^0-9.]` "" $value -}}
+      {{- if and $a $b -}}
+        {{- $before = float $a -}}
+        {{- $after = float $b -}}
+        {{- $plots = true -}}
+        {{- $gap := sub $after $before -}}
+        {{- $trend = cond (gt $gap 0.0) "up" "down" -}}
+        {{- $delta = printf "%.0f" (cond (lt $gap 0.0) (mul $gap -1.0) $gap) -}}
+      {{- end -}}
     {{- end -}}
     {{- $rows = $rows | append (dict
-          "value" (strings.Trim $value " \t")
+          "value" $value
           "from" $from
+          "delta" $delta
           "trend" $trend
+          "before" $before
+          "after" $after
+          "plots" $plots
+          "color" $meta.color
+          "glyph" $meta.glyph
           "label" (strings.Trim (index $parts 1) " \t")
-          "icon" $icon) -}}
+          "tone" $tone) -}}
   {{- end -}}
 {{- end -}}
-<div class="stat-block">
+{{- /* The bar only makes sense if the movements are shares of one whole, so it
+       is drawn from the rows that plot and nothing else. Whatever the after
+       readings leave unspent stays visible as a remainder rather than being
+       rounded into the last segment. */ -}}
+{{- $plotted := where $rows "plots" true -}}
+{{- if and $bars (not $plotted) -}}
+  {{- errorf "stats shortcode in %s: bars=\"true\" needs at least one \"before > after\" row" $.Page.File.Path -}}
+{{- end -}}
+{{- $spent := 0.0 -}}
+{{- range $plotted -}}{{- $spent = add $spent .after -}}{{- end -}}
+{{- $rest := sub 100.0 $spent -}}
+<div class="stat-block{{ if $bars }} stat-block--charted{{ end }}">
   {{- with .Get "source" }}
   {{- $slug := strings.Trim . " \t" }}
   {{- if not (findRE `^[\w.-]+/[\w.-]+$` $slug) }}
@@ -82,26 +119,59 @@
   {{- end }}
   <p class="stat-source"><a href="https://github.com/{{ $slug }}" target="_blank" rel="noopener noreferrer">{{ $slug }}</a></p>
   {{- end }}
+  {{- if $bars }}
+  {{- /* Proportion only. Every number in here is stated below with its
+         movement attached, so labelling the segments would both duplicate the
+         badges and break the narrow ones — 5% of a bar cannot hold "5%" at any
+         width. Hidden from the accessibility tree for the same reason: it
+         would announce the same figures a second time. */ -}}
+  <div class="stat-chart" aria-hidden="true">
+    <div class="stat-chart-row">
+      <span class="stat-chart-tag">Before</span>
+      <div class="stat-chart-bar">
+        {{- range $plotted }}
+        <span class="stat-chart-seg" style="width:{{ .before }}%;background:{{ .color }}"></span>
+        {{- end }}
+      </div>
+    </div>
+    <div class="stat-chart-row">
+      <span class="stat-chart-tag">After</span>
+      <div class="stat-chart-bar">
+        {{- range $plotted }}
+        <span class="stat-chart-seg" style="width:{{ .after }}%;background:{{ .color }}"></span>
+        {{- end }}
+        {{- if gt $rest 0.5 }}
+        <span class="stat-chart-seg stat-chart-seg--rest" style="width:{{ $rest }}%"></span>
+        {{- end }}
+      </div>
+    </div>
+  </div>
+  {{- if gt $rest 0.5 }}
+  <p class="stat-chart-note">{{ printf "%.0f" $rest }}% of the library stayed unclassified.</p>
+  {{- end }}
+  {{- end }}
   <div class="stat-grid">
     {{- range $rows }}
+    {{- $trend := .trend }}
+    {{- $from := .from }}
     <div class="stat">
-      {{- with .icon }}
-      <svg class="stat-icon stat-icon--{{ . }}" viewBox="0 0 16 16" aria-hidden="true">{{ index $glyphs . | safeHTML }}</svg>
+      {{- if and (not $bars) .glyph }}
+      <svg class="stat-icon" style="color:{{ .color }}" viewBox="0 0 16 16" aria-hidden="true">{{ .glyph | safeHTML }}</svg>
       {{- end }}
       <div class="stat-text">
-        <b class="stat-value">
-          {{- with .trend }}
-          <svg class="stat-trend stat-trend--{{ . }}" viewBox="0 0 16 16" aria-hidden="true">{{ index $arrows . | safeHTML }}</svg>
-          <span class="sr-only">{{ if eq . "up" }}up{{ else }}down{{ end }}</span>
+        <b class="stat-value">{{ .value }}
+          {{- with .delta }}
+          {{- /* The chip is a picture of the number in the phrase beside it, so
+                 only one of the two goes to the accessibility tree. */ -}}
+          <span class="stat-pill stat-pill--{{ $trend }}" aria-hidden="true"><svg viewBox="0 0 10 10">{{ index $carets $trend | safeHTML }}</svg>{{ . }}</span>
+          <span class="sr-only">, {{ $trend }} {{ . }} points</span>
           {{- end }}
-          {{- if .from }}
-          <span class="stat-figure">{{ .from }}</span>
-          <span class="sr-only">to</span>
-          <span class="stat-figure"><svg class="stat-shift" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.8 8h8.9"/><path d="m8.4 4.6 3.4 3.4-3.4 3.4"/></svg>{{ .value }}</span>
-          {{- else }}
-          <span class="stat-figure">{{ .value }}</span>
-          {{- end }}</b>
-        <span class="stat-label">{{ .label }}</span>
+        </b>
+        <span class="stat-label">
+          {{- /* A swatch promises a matching segment above, so only a row that
+                 actually plots gets one. */ -}}
+          {{- if and $bars .plots }}<i class="stat-key" style="background:{{ .color }}" aria-hidden="true"></i>{{ end -}}
+          {{ .label }}{{ with .from }}<span class="stat-was">, was {{ . }}</span>{{ end }}</span>
       </div>
     </div>
     {{- end }}

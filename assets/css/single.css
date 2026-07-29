@@ -282,6 +282,51 @@
     font-size: .75rem;
     letter-spacing: -.01em;
   }
+  /* Before and after as shares of one whole. The bar is the whole claim of
+     this layout, so it goes first and the badges below read as its key. */
+  .single .stat-chart {
+    display: grid;
+    gap: .5rem;
+    margin-top: clamp(1.25rem, 3vw, 1.75rem);
+  }
+  .single .stat-chart-row {
+    display: grid;
+    grid-template-columns: 3.75rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+  }
+  .single .stat-chart-tag {
+    @apply text-slate-500;
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .single .stat-chart-bar {
+    display: flex;
+    height: clamp(2.25rem, 4vw, 2.75rem);
+    border-radius: .5rem;
+    overflow: hidden;
+  }
+  /* Bare proportion: the segments carry no text, so a two-percent sliver is
+     still legible as a sliver. */
+  .single .stat-chart-seg {
+    min-width: 0;
+  }
+  .single .stat-chart-seg--rest {
+    @apply bg-slate-200;
+  }
+  .dark .single .stat-chart-seg--rest {
+    @apply bg-slate-700;
+  }
+  /* The after readings do not always spend the whole hundred. Saying so in a
+     line of prose beats hanging a label off a segment too narrow to hold it. */
+  .single .stat-chart-note {
+    @apply text-slate-500;
+    margin: .75rem 0 0;
+    padding-left: 4.75rem;
+    font-size: .75rem;
+  }
   .single .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
@@ -315,80 +360,76 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  /* Each glyph keeps the colour the state carries in the product: blue while a
+  /* Each glyph keeps the colour its state carries in the product: blue while a
      pull request is open, purple once it merges, green for a landed commit,
-     amber for a filed issue. Values are the CLI demo palette so the section
-     and the animations above it agree. */
-  .single .stat-icon--pr { color: #3d90f9; }
-  .single .stat-icon--merge { color: #7f46ff; }
-  .single .stat-icon--commit { color: #0f9d58; }
-  .single .stat-icon--issue { color: #f9ab00; }
-  .single .stat-icon--issue-closed { color: #0f9d58; }
-  /* The component-parity glyphs mark which bucket a figure belongs to rather
-     than whether it is good news: blue for the library as a whole, green for
-     the components at parity, and the saturated forms of the Kanvas stage's
-     own orange and pink for the ones still aging or absent. */
-  .single .stat-icon--library { color: #3d90f9; }
-  .single .stat-icon--updated { color: #1f9d6b; }
-  .single .stat-icon--outdated { color: #e8710a; }
-  .single .stat-icon--missing { color: #d3466f; }
+     amber for a filed issue, and the saturated Kanvas hues for the library
+     states. One tone table in the shortcode sets it on the element, because
+     the same value has to reach a glyph, a key swatch, and a bar segment. */
   .single .stat-value {
-    @apply flex flex-wrap items-center font-extrabold text-slate-900;
-    gap: 0 .14em;
+    @apply flex flex-wrap items-baseline font-extrabold text-slate-900;
+    gap: 0 .28em;
     font-size: clamp(1.75rem, 3.05vw, 2.75rem);
     font-variant-numeric: tabular-nums;
     letter-spacing: -.05em;
     line-height: 1.06;
-  }
-  /* A before/after figure is two readings, and the column is not always wide
-     enough for both: the pair breaks between them rather than mid-number. Each
-     reading stays whole because .single opts everything into overflow-wrap:
-     anywhere so long prose tokens cannot escape the measure, and a numeral has
-     no break opportunity of its own to fall back on. */
-  .single .stat-figure {
-    display: inline-flex;
-    align-items: center;
+    /* .single opts everything into overflow-wrap: anywhere so long prose
+       tokens cannot escape the measure, but a numeral has no break
+       opportunity of its own to fall back on and would split mid-figure. */
     overflow-wrap: normal;
     word-break: normal;
-    white-space: nowrap;
   }
-  /* A ticker's direction mark: the arrow carries the sign the author wrote in
-     the shortcode, so the figure itself stays a bare number. Green up and red
-     down are read as direction of change, not as good and bad — fewer outdated
-     components is a win that still points down. */
-  .single .stat-trend {
-    width: .62em;
-    height: .62em;
+  /* How far the figure travelled, tinted by direction. It sits beside the
+     outcome rather than replacing it: the number is the headline and the chip
+     answers "and?". Green up and red down read as direction of change, not as
+     good and bad — fewer stale components is a win that still points down. */
+  .single .stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .18em;
     flex: 0 0 auto;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.9;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    padding: .2em .4em .25em;
+    border-radius: .35em;
+    font-size: .3em;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
   }
-  .single .stat-trend--up { color: #0f9d58; }
-  .single .stat-trend--down { color: #dc2626; }
-  /* The mark between the two readings only has to say "becomes", so it stays
-     quiet: the coloured trend arrow above is what carries the direction, and a
-     second loud arrow would compete with it. It leads the second reading so a
-     wrap puts it at the head of the new line instead of stranding it. */
-  .single .stat-shift {
-    width: .5em;
-    height: .5em;
-    flex: 0 0 auto;
-    margin-right: .1em;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    @apply text-slate-400;
+  .single .stat-pill svg {
+    width: .72em;
+    height: .72em;
+    fill: currentColor;
   }
+  .single .stat-pill--up {
+    color: #0f9d58;
+    background: rgb(15 157 88 / .13);
+  }
+  .single .stat-pill--down {
+    color: #dc2626;
+    background: rgb(220 38 38 / .13);
+  }
+  .dark .single .stat-pill--up { color: #34d399; background: rgb(52 211 153 / .15); }
+  .dark .single .stat-pill--down { color: #f87171; background: rgb(248 113 113 / .15); }
   .single .stat-label {
     @apply block text-slate-500;
     margin-top: .375rem;
     font-size: .8125rem;
     line-height: 1.35;
+  }
+  /* Ties the badge to its segment in the bar above, which is why the charted
+     layout drops the glyph: the swatch is already the key. */
+  .single .stat-key {
+    display: inline-block;
+    width: .625rem;
+    height: .625rem;
+    margin-right: .45rem;
+    border-radius: .1875rem;
+    vertical-align: baseline;
+  }
+  .single .stat-was {
+    @apply text-slate-400;
+  }
+  .dark .single .stat-was {
+    @apply text-slate-500;
   }
 
   /* A trailing media gap used to escape the block-flow container and collapse
