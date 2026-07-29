@@ -186,6 +186,70 @@
     @apply text-slate-400;
   }
 
+  /* Contribution counts closing a project page. No surface of their own — the
+     figures sit straight on the page like the prose above them, with the media
+     gap doing all the separating. */
+  .single .stat-block {
+    margin-block: var(--media-gap);
+  }
+  .single .stat-source {
+    @apply text-slate-500 m-0;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .75rem;
+    letter-spacing: -.01em;
+  }
+  .single .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: clamp(1.25rem, 3vw, 1.75rem) 1.5rem;
+    margin-top: clamp(1.25rem, 3vw, 1.75rem);
+  }
+  .single .stat {
+    display: flex;
+    align-items: center;
+    gap: 1.125rem;
+    min-width: 0;
+  }
+  .single .stat-text {
+    min-width: 0;
+  }
+  /* Sized to stand as tall as the figure and its label together, so the glyph
+     reads as the metric's mark rather than a bullet next to it. The stroke
+     scales with the box, so it thins as the icon grows to keep the weight
+     next to the numerals. */
+  .single .stat-icon {
+    width: clamp(2.5rem, 5.5vw, 4rem);
+    height: clamp(2.5rem, 5.5vw, 4rem);
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Each glyph keeps the colour the state carries in the product: blue while a
+     pull request is open, purple once it merges, green for a landed commit,
+     amber for a filed issue. Values are the CLI demo palette so the section
+     and the animations above it agree. */
+  .single .stat-icon--pr { color: #3d90f9; }
+  .single .stat-icon--merge { color: #7f46ff; }
+  .single .stat-icon--commit { color: #0f9d58; }
+  .single .stat-icon--issue { color: #f9ab00; }
+  .single .stat-icon--issue-closed { color: #0f9d58; }
+  .single .stat-value {
+    @apply block font-extrabold text-slate-900;
+    font-size: clamp(1.75rem, 3.6vw, 3.25rem);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.05em;
+    line-height: 1;
+  }
+  .single .stat-label {
+    @apply block text-slate-500;
+    margin-top: .375rem;
+    font-size: .8125rem;
+    line-height: 1.35;
+  }
+
   @media (max-width: 40rem) {
     .single .title {
       padding-top: 3.5rem;

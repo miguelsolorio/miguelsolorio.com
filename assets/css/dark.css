@@ -59,4 +59,19 @@
         background: #475569;
     }
 
+    .dark .single .stat-value {
+        @apply text-gray-200;
+    }
+    .dark .single .stat-label,
+    .dark .single .stat-source {
+        @apply text-slate-400;
+    }
+    /* The light glyph colours sit too saturated against slate-900; these are
+       the dark halves of the same CLI demo palette. */
+    .dark .single .stat-icon--pr { color: #8ab4f8; }
+    .dark .single .stat-icon--merge { color: #c58af9; }
+    .dark .single .stat-icon--commit { color: #81c995; }
+    .dark .single .stat-icon--issue { color: #fdd663; }
+    .dark .single .stat-icon--issue-closed { color: #81c995; }
+
 }

@@ -42,8 +42,6 @@ Because Gemini CLI is open-source, design decisions didn't stop at the spec - th
 
 {{< iframe src="/cli-agents/diff-compare.html" height="620" title="The diff view before and after the fix: the original tinted whole lines and numbered them inconsistently, the shipped version adds line numbers, colored diff characters, and syntax highlighting" theme="cli" >}}
 
-{{< iframe src="/cli-agents/diff-approval.html" height="620" title="Gemini CLI asking to apply a change to fibonacci.py, showing the full syntax-highlighted diff and four approval options" theme="cli" >}}
-
 **Input syntax highlighting.** As users type, `/commands` and `@file/paths` now highlight in real time to distinguish them from plain text. I designed the highlighting behavior - including the rule that commands should only highlight at the start of a prompt, not mid-sentence - and landed the implementation. ([#7165](https://github.com/google-gemini/gemini-cli/pull/7165), [#5323](https://github.com/google-gemini/gemini-cli/pull/5323), [#7651](https://github.com/google-gemini/gemini-cli/issues/7651))
 
 
@@ -66,4 +64,11 @@ The non-interactive script mode was an iteration that came directly from communi
 
 Gemini CLI launched on June 25, 2025, as a free, open-source agent available to any developer with a Google account. The generous free tier - powered by Gemini 2.5 Pro - made it accessible to individual developers, students, and open-source contributors without any billing setup.
 
-The project also established a shared foundation with Gemini Code Assist's agent mode in VS Code, meaning design patterns developed for the CLI - tool use conventions, MCP extensibility, GEMINI.md configuration - carried over into the editor experience. The work shaped what it means to build a trustworthy, practical AI agent for the developer workflows that matter most.
+Because the work happened in the open, the design contribution is traceable in the repository itself: **59 pull requests opened** and **39 merged**, **44 commits on main**, and **22 issues filed** to document a problem before fixing it. That work also carried past the CLI - the project established a shared foundation with Gemini Code Assist's agent mode in VS Code, so patterns developed here - tool use conventions, MCP extensibility, GEMINI.md configuration - shaped the editor experience too, and with it what it means to build a trustworthy, practical AI agent for the workflows developers already live in.
+
+{{< stats source="google-gemini/gemini-cli" >}}
+59 | Pull requests opened | pr
+39 | Pull requests merged | merge
+44 | Commits on main | commit
+22 | Issues filed | issue
+{{< /stats >}}

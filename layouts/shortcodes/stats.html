@@ -1,0 +1,55 @@
+{{/* Contribution counts for the close of a project page. The inner content is
+     one "value | label | icon" row per line, so the numbers stay next to the
+     prose that frames them instead of moving into front matter. `icon` is
+     optional and names one of the glyphs below; `source` is the "owner/repo"
+     GitHub slug the counts came from, rendered as a link to that repository. */}}
+{{- $glyphs := dict
+  "pr"     `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6V13"/><circle cx="11.5" cy="12" r="1.6"/><path d="M11.5 10.4V3.2"/><path d="m9.6 5.1 1.9-1.9 1.9 1.9"/>`
+  "merge"  `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6v4.1a2.4 2.4 0 0 0 2.4 2.4h2.9"/><circle cx="11.5" cy="12.1" r="1.6"/>`
+  "commit" `<path d="M1.6 8h3.8M10.6 8h3.8"/><circle cx="8" cy="8" r="2.6"/>`
+  "issue"  `<circle cx="8" cy="8" r="5.7"/><path d="M8 5.3v3.1"/><path d="M8 10.6h.01"/>`
+  "issue-closed" `<circle cx="8" cy="8" r="5.7"/><path d="m5.6 8.2 1.7 1.7 3.1-3.7"/>`
+-}}
+{{- $rows := slice -}}
+{{- range (split .Inner "\n") -}}
+  {{- $line := strings.Trim . " \t\r" -}}
+  {{- with $line -}}
+    {{- $parts := split . "|" -}}
+    {{- if lt (len $parts) 2 -}}
+      {{- errorf "stats shortcode in %s: %q is missing the \"value | label\" separator" $.Page.File.Path $line -}}
+    {{- end -}}
+    {{- $icon := "" -}}
+    {{- if ge (len $parts) 3 -}}
+      {{- $icon = strings.Trim (index $parts 2) " \t" -}}
+      {{- if not (isset $glyphs $icon) -}}
+        {{- errorf "stats shortcode in %s: unknown icon %q" $.Page.File.Path $icon -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $rows = $rows | append (dict
+          "value" (strings.Trim (index $parts 0) " \t")
+          "label" (strings.Trim (index $parts 1) " \t")
+          "icon" $icon) -}}
+  {{- end -}}
+{{- end -}}
+<div class="stat-block">
+  {{- with .Get "source" }}
+  {{- $slug := strings.Trim . " \t" }}
+  {{- if not (findRE `^[\w.-]+/[\w.-]+$` $slug) }}
+    {{- errorf "stats shortcode in %s: source %q must be an \"owner/repo\" GitHub slug" $.Page.File.Path $slug }}
+  {{- end }}
+  <p class="stat-source"><a href="https://github.com/{{ $slug }}" target="_blank" rel="noopener noreferrer">{{ $slug }}</a></p>
+  {{- end }}
+  <div class="stat-grid">
+    {{- range $rows }}
+    <div class="stat">
+      {{- with .icon }}
+      <svg class="stat-icon stat-icon--{{ . }}" viewBox="0 0 16 16" aria-hidden="true">{{ index $glyphs . | safeHTML }}</svg>
+      {{- end }}
+      <div class="stat-text">
+        <b class="stat-value">{{ .value }}</b>
+        <span class="stat-label">{{ .label }}</span>
+      </div>
+    </div>
+    {{- end }}
+  </div>
+</div>
