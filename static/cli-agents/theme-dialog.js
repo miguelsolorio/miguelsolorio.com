@@ -8,14 +8,18 @@
 const panel = document.querySelector(".theme-panel");
 const list = panel.querySelector(".theme-list");
 const options = Array.from(list.querySelectorAll(".theme-item"));
+const optionGroups = Array.from(list.querySelectorAll(".theme-list-group"), (group) =>
+  Array.from(group.querySelectorAll(".theme-item")),
+);
 const steppers = Array.from(panel.querySelectorAll("[data-theme-step]"));
 
-let active = Math.max(0, options.findIndex((option) => option.classList.contains("selected")));
+const initialTheme = document.documentElement.classList.contains("dark") ? "default" : "default-light";
+let active = options.findIndex((option) => option.dataset.cliTheme === initialTheme);
+if (active < 0) active = 0;
 
 function select(index) {
-  /* Clamped rather than wrapped, so the two arrows can say "nothing that way"
-     the way the CLI's dimmed glyphs do. */
-  active = Math.min(Math.max(index, 0), options.length - 1);
+  /* Wrapped so moving past either end continues through the ordered list. */
+  active = (index + options.length) % options.length;
 
   options.forEach((option, i) => {
     const on = i === active;
@@ -26,10 +30,6 @@ function select(index) {
   const option = options[active];
   panel.dataset.cliTheme = option.dataset.cliTheme;
   list.setAttribute("aria-activedescendant", option.id);
-  steppers.forEach((stepper) => {
-    const step = Number(stepper.dataset.themeStep);
-    stepper.disabled = step < 0 ? active === 0 : active === options.length - 1;
-  });
 }
 
 options.forEach((option, index) => {
@@ -48,16 +48,27 @@ steppers.forEach((stepper) => {
 /* Roving focus stays on the list and the active row is named by
    aria-activedescendant, so the keys have to be handled here. Enter and Space
    are deliberately absent: the highlighted theme is already applied. */
-const KEY_STEPS = {
+const SEQUENCE_STEPS = {
   ArrowDown: 1,
   ArrowUp: -1,
+};
+const GROUP_STEPS = {
   ArrowRight: 1,
   ArrowLeft: -1,
 };
 
-/* Typed digits accumulate, the way the CLI's own numeric selection does: with
-   ten themes on the list, "1" alone can no longer mean "the last one", so a
-   digit that could still be a prefix waits briefly for its partner. */
+function jumpGroup(direction) {
+  const option = options[active];
+  const groupIndex = optionGroups.findIndex((group) => group.includes(option));
+  const rowIndex = optionGroups[groupIndex].indexOf(option);
+  const targetIndex = (groupIndex + direction + optionGroups.length) % optionGroups.length;
+  const targetGroup = optionGroups[targetIndex];
+  return options.indexOf(targetGroup[Math.min(rowIndex, targetGroup.length - 1)]);
+}
+
+/* Typed digits accumulate, the way the CLI's own numeric selection does: "1"
+   selects the first theme immediately but stays buffered briefly so 10–12 can
+   follow. */
 const DIGIT_WINDOW = 700;
 let digits = "";
 let digitTimer = 0;
@@ -74,7 +85,7 @@ function selectByDigits(key) {
   if (!couldGrow) digits = "";
 }
 
-list.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", (event) => {
   if (/^\d$/.test(event.key)) {
     event.preventDefault();
     selectByDigits(event.key);
@@ -82,7 +93,8 @@ list.addEventListener("keydown", (event) => {
   }
 
   let next = null;
-  if (event.key in KEY_STEPS) next = active + KEY_STEPS[event.key];
+  if (event.key in SEQUENCE_STEPS) next = active + SEQUENCE_STEPS[event.key];
+  else if (event.key in GROUP_STEPS) next = jumpGroup(GROUP_STEPS[event.key]);
   else if (event.key === "Home") next = 0;
   else if (event.key === "End") next = options.length - 1;
 

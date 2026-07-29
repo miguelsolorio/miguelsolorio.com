@@ -195,7 +195,7 @@
     --theme-bg:        #ffffff;
     --theme-fg:        #000000;
     --theme-secondary: #5f5f5f;
-    --theme-border:    #5f5f5f;
+    --theme-border:    #d4d4d4;
     --theme-focus:     #005f00;
     --theme-success:   #005f00;
     --theme-error:     #af0000;
@@ -227,6 +227,46 @@
     --theme-builtin:   #0086b3;
     --theme-diff-add:  #c6ead8;
     --theme-diff-del:  #ffcccc;
+  }
+
+  /* Google Code keeps the original compact web-code palette: navy keywords,
+     green strings, red comments, and purple declarations on white. */
+  .theme-panel[data-cli-theme="google-code"] {
+    --theme-bg:        #ffffff;
+    --theme-fg:        #444444;
+    --theme-secondary: #5f5f5f;
+    --theme-border:    #afafaf;
+    --theme-focus:     #008800;
+    --theme-success:   #008800;
+    --theme-error:     #880000;
+    --theme-keyword:   #000088;
+    --theme-string:    #008800;
+    --theme-number:    #006666;
+    --theme-comment:   #880000;
+    --theme-title:     #660066;
+    --theme-builtin:   #660066;
+    --theme-diff-add:  #c6ead8;
+    --theme-diff-del:  #fedede;
+  }
+
+  /* Solarized Light uses its canonical warm base and low-contrast chrome while
+     keeping blue, cyan, green, and yellow syntax accents distinct. */
+  .theme-panel[data-cli-theme="solarized-light"] {
+    --theme-bg:        #fdf6e3;
+    --theme-fg:        #657b83;
+    --theme-secondary: #93a1a1;
+    --theme-border:    #eee8d5;
+    --theme-focus:     #859900;
+    --theme-success:   #859900;
+    --theme-error:     #dc322f;
+    --theme-keyword:   #268bd2;
+    --theme-string:    #d0b000;
+    --theme-number:    #859900;
+    --theme-comment:   #93a1a1;
+    --theme-title:     #657b83;
+    --theme-builtin:   #2aa198;
+    --theme-diff-add:  #d7f2d7;
+    --theme-diff-del:  #f2d7d7;
   }
 
   /* ---------- theme tokens -> scene tokens ---------- */
@@ -319,10 +359,12 @@
 
   .theme-cols {
     display: grid;
+    --theme-column-gap: clamp(12px, 3vw, 40px);
+    --theme-list-offset: clamp(20px, 3vw, 40px);
     /* The two columns run edge to edge inside the panel; the narrowing lives on
        the panel itself. */
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(12px, 3vw, 40px);
+    gap: var(--theme-column-gap);
   }
 
   .theme-title {
@@ -334,11 +376,10 @@
   }
 
   /* ---------- selection list ---------- */
-  /* The CLI brackets a clipped list with these two glyphs and dims the one that
-     has nothing left to reach. Here they step the highlight, so they keep that
-     meaning — dim means "nothing that way" — and become real controls.
-     They sit in the quiet tier: an affordance beside the list, not a peer of the
-     theme names, and hover carries them up to the accent. */
+  /* The CLI brackets a clipped list with these two glyphs. Here they step the
+     highlight and wrap at both ends, so both controls stay available. They sit
+     in the quiet tier: an affordance beside the list, not a peer of the theme
+     names, and hover carries them up to the accent. */
   .theme-scroll {
     display: block;
     border: 0;
@@ -351,11 +392,7 @@
     cursor: pointer;
     transition: color 0.3s ease;
   }
-  .theme-scroll:disabled {
-    color: color-mix(in srgb, var(--theme-secondary) 45%, transparent);
-    cursor: default;
-  }
-  .theme-scroll:not(:disabled):hover {
+  .theme-scroll:hover {
     color: var(--theme-focus);
   }
   /* The buttons keep a ring, since a glyph that only changes colour on focus is
@@ -372,9 +409,27 @@
      Selector-matched against diff-view.css, which sizes the approval group to its
      content — right for a still panel, wrong for a list you point at. */
   .theme-panel .theme-list {
-    width: 100%;
-    list-style: none;
+    display: grid;
+    width: calc(100% - var(--theme-list-offset));
+    margin-left: var(--theme-list-offset);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--theme-column-gap);
     line-height: 1.75;
+  }
+  .theme-list-group {
+    min-width: 0;
+  }
+  .theme-group-options {
+    list-style: none;
+  }
+  .theme-group-title {
+    margin-bottom: 0.35em;
+    /* 14px bullet + 6px flex gap + 3ch number column + one text space. */
+    margin-left: calc(20px + 4ch);
+    color: var(--theme-secondary);
+    font-weight: 700;
+    line-height: 1.75;
+    transition: color 0.3s ease;
   }
   .theme-list:focus {
     outline: none;
@@ -417,19 +472,9 @@
   /* Right-aligned, so a two-digit list keeps its periods in one column. */
   .theme-num {
     display: inline-block;
-    min-width: 1.6em;
+    min-width: 3ch;
     text-align: right;
   }
-  /* The type is metadata about the theme rather than its name, so it stays a
-     tier below — including on the highlighted row, where only the name and its
-     marker take the accent. */
-  .theme-type {
-    color: var(--theme-secondary);
-    transition: color 0.3s ease;
-  }
-  /* The row's own metadata ends at the type: the CLI also prints a
-     "(Matches terminal)" note there, which is a fact about the reader's terminal
-     rather than about the theme, and means nothing in a page. */
 
   /* The key hints belong to the dialog, not to the list, so they sit under both
      columns — which is also the only way the line stays unwrapped at the widths
