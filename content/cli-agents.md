@@ -60,6 +60,8 @@ A second direction explored rich terminal UI - colors, panels, progress bars, in
 
 The non-interactive script mode was an iteration that came directly from community feedback during early access. Developers wanted to use Gemini CLI as a building block in larger automation pipelines - triggered by CI, called from Makefiles, chained with other tools. Designing for that use case without compromising the interactive experience required careful work on output formatting and exit code conventions.
 
+{{< iframe src="/cli-agents/cli-todo-animation.html" height="600" title="Gemini CLI reading a research plan, writing a four-item todo list, and completing each task with its matching tool call" theme="cli" >}}
+
 # Impact
 
 Gemini CLI launched on June 25, 2025, as a free, open-source agent available to any developer with a Google account. The generous free tier - powered by Gemini 2.5 Pro - made it accessible to individual developers, students, and open-source contributors without any billing setup.

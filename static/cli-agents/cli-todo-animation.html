@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini CLI todo tool demo</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./cli-animation.css?v=3">
+<link rel="stylesheet" href="./cli-todo-animation.css?v=3">
+</head>
+<body class="demo-scene demo-scene--cli" data-demo-scene="cli">
+
+<main class="cli-stage" data-demo-stage>
+  <div class="scroll-area" id="scrollArea">
+    <div class="cli-header">
+      <span class="cli-diamond">✦</span>
+      <span><span class="cli-name">Gemini CLI</span> <span class="cli-version">v0.53.0</span></span>
+    </div>
+    <div class="tips"><span class="hl">/help</span> for more information<br>
+      <span class="hl">/init</span> for initializing instructions
+    </div>
+
+    <div class="convo-area">
+      <div id="convoInner"></div>
+    </div>
+    <div class="scroll-end"></div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="status-line" id="statusLine">
+      <span class="spin-char" id="spinChar"></span><span id="statusText"></span>
+    </div>
+    <section class="todo-tray" id="todoTray" aria-label="Todo list">
+      <div class="todo-title">
+        <span class="todo-emoji" aria-hidden="true">📝</span>
+        <span class="todo-name">Todo</span>
+        <span class="todo-score" id="todoScore">0/4 (ctrl+t to toggle)</span>
+      </div>
+      <ul class="todo-list" id="todoList"></ul>
+    </section>
+    <div class="suggestions" id="suggestions" role="listbox" aria-label="Autocomplete suggestions"></div>
+    <div class="input-box" id="inputBox" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="suggestions">
+      <span class="input-prompt">&gt;</span>
+      <div class="input-text">
+        <span id="typedText"></span><span class="cursor" id="inputCursor"></span><span class="placeholder" id="placeholder">Type your message or @path/to/file</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="footer-project">~/market-research</span>
+      <span class="footer-status"><span class="footer-model">Gemini 3 </span><span class="footer-rest"> /model</span></span>
+    </div>
+  </div>
+
+  <div class="sr-only" id="liveRegion" aria-live="polite"></div>
+</main>
+
+<script src="./cli-todo-animation.js?v=3"></script>
+</body>
+</html>
