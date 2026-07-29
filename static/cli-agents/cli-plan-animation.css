@@ -1,0 +1,289 @@
+:root {
+  --plan-border: var(--accent-green);
+  --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 16%, var(--bg));
+}
+
+:root.dark {
+  --plan-border: var(--accent-green);
+  --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 24%, var(--bg));
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.bottom-bar {
+  position: relative;
+}
+
+.input-token {
+  color: var(--accent-purple);
+  transition: color 0.3s ease;
+}
+
+.input-box.mode-plan {
+  border-color: var(--accent-green);
+}
+
+.input-box.mode-plan .input-prompt {
+  color: var(--accent-green);
+}
+
+.input-box.mode-auto {
+  border-color: var(--warn);
+}
+
+.input-box.mode-auto .input-prompt {
+  color: var(--warn);
+}
+
+.mode-line {
+  display: none;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.mode-line.show {
+  display: block;
+}
+
+.mode-line.mode-plan {
+  color: var(--accent-green);
+}
+
+.mode-line.mode-auto {
+  color: var(--warn);
+}
+
+.mode-hint {
+  color: var(--text-muted);
+}
+
+.footer-rest {
+  margin-left: 8px;
+}
+
+.suggestions {
+  display: none;
+  width: 100%;
+  max-height: 13.5rem;
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: var(--bg);
+  transition: background-color 0.3s ease;
+}
+
+.suggestions.show {
+  display: block;
+}
+
+.suggestion-option {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.36fr) minmax(0, 1fr);
+  gap: 18px;
+  min-width: 0;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+/* File rows carry no description, so the name takes the whole row and stays
+   whole instead of truncating into the empty description column. */
+.suggestions[data-kind="file"] .suggestion-option {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.suggestion-option.active {
+  color: var(--accent-purple);
+  background: var(--suggestion-active-bg);
+}
+
+.suggestion-label,
+.suggestion-description {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plan-box {
+  display: none;
+  width: min(100%, 760px);
+  margin: 16px 0;
+  border: 1.5px solid var(--plan-border);
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(8px);
+  background: var(--bg);
+  transition: opacity 0.3s ease 0.07s, transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.plan-box.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.plan-box-inner {
+  padding: 14px 16px;
+}
+
+.plan-box .tool-header {
+  margin-bottom: 8px;
+  padding-bottom: 0;
+}
+
+.plan-content {
+  line-height: 1.45;
+}
+
+.plan-content h2 {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.plan-content h3 {
+  margin: 10px 0 4px;
+  font-size: 13px;
+}
+
+.plan-content ol {
+  padding-left: 2.2em;
+}
+
+.plan-content li {
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+}
+
+.plan-files {
+  padding-left: 1.4em;
+  list-style: none;
+  color: var(--accent-purple);
+}
+
+.plan-files li::before {
+  content: "• ";
+  color: var(--text-muted);
+}
+
+.plan-options {
+  margin-top: 12px;
+}
+
+.plan-option {
+  display: flex;
+  gap: 6px;
+  margin: 0 -6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+}
+
+.plan-option > input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.plan-option.selected {
+  color: var(--accent-green);
+  background: var(--accent-green-bg);
+}
+
+.plan-option-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.plan-option-copy small {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.plan-option.selected .tool-opt-num,
+.plan-option.selected .tool-opt-bullet {
+  color: var(--accent-green);
+}
+
+.plan-hints {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}
+
+
+body.awaiting-confirm .bottom-bar {
+  display: none;
+}
+
+body.awaiting-confirm .scroll-area {
+  padding-bottom: 52px;
+}
+
+@media (max-width: 40rem) {
+  .scroll-area {
+    padding: 18px 16px 8px;
+  }
+
+  .bottom-bar {
+    padding-inline: 16px;
+    margin-bottom: 24px;
+  }
+
+  .suggestion-option {
+    grid-template-columns: minmax(6rem, 0.32fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .plan-box-inner {
+    padding: 12px;
+  }
+
+  .plan-content {
+    font-size: 11.5px;
+  }
+
+}
+
+body.is-card .plan-box {
+  width: 100%;
+  max-width: 100%;
+}
+
+body.is-card .plan-content,
+body.is-card .plan-options,
+body.is-card .plan-hints {
+  font-size: clamp(9px, 1.8vw, 13px);
+}
+
+body.is-card .plan-option-copy small {
+  font-size: 0.88em;
+}
+
+body.is-card .suggestions {
+  max-height: 9.2rem;
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+
+}

@@ -49,6 +49,7 @@
   --radius-control: 7px;
   --radius-surface: 8px;
   --radius-small: 5px;
+  --app-frame-shadow-color: rgb(138 55 103 / 30%);
 }
 
 :root.dark {
@@ -59,6 +60,7 @@
   --demo-color-track: #555e68;
   --pointer-color: #f2f5f8;
   --pointer-stroke: #111315;
+  --app-frame-shadow-color: rgb(138 55 103 / 48%);
 }
 
 * { box-sizing: border-box; }
@@ -136,7 +138,7 @@ input:focus-visible {
   border-radius: 10px;
   background: var(--product-bg);
   color: var(--product-text);
-  box-shadow: 0 24px 55px rgba(21, 34, 48, .18);
+  box-shadow: 0 24px 55px var(--app-frame-shadow-color);
   isolation: isolate;
   transition: background-color .35s ease, color .35s ease;
 }
@@ -1080,7 +1082,7 @@ input:focus-visible {
 body:not(.is-card) { padding-bottom: 70px; }
 body:not(.is-card) .demo-timeline { bottom: 16px; }
 
-body.is-card .app-frame { box-shadow: 0 11px 26px rgba(21, 34, 48, .18); }
+body.is-card .app-frame { box-shadow: 0 11px 26px var(--app-frame-shadow-color); }
 body.is-card .screen { transition-duration: .22s, .3s, .2s, .2s; }
 body.is-card .final-welcome { transform: scale(.92); transform-origin: top center; }
 

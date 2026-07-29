@@ -31,7 +31,7 @@
     --mouse-fill: #ffffff;
     --mouse-stroke: #1f1f1f;
     --toolbar-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-    --panel-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    --panel-shadow: 0 6px 24px rgb(91 63 224 / 22%);
     --active-glow: 0 0 10px 0 #1a73e866,
                    0 0 20px 5px rgba(11, 87, 208, 0.05),
                    0 4px 40px 8px rgba(11, 87, 208, 0.14);
@@ -80,7 +80,7 @@
     --mouse-fill: #e8eaed;
     --mouse-stroke: #202124;
     --toolbar-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-    --panel-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+    --panel-shadow: 0 8px 28px rgb(91 63 224 / 45%);
     --active-glow: 0 0 10px 0 rgba(138, 180, 248, 0.42),
                    0 0 20px 5px rgba(138, 180, 248, 0.08),
                    0 4px 40px 8px rgba(0, 0, 0, 0.28);
@@ -722,7 +722,7 @@
 
   @media (max-width: 50rem) {
     :root {
-      --panel-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.18);
+      --panel-shadow: 0 6px 16px -10px rgb(91 63 224 / 45%);
       --active-glow: 0 0 0 3px rgba(26, 115, 232, 0.08),
                      0 6px 16px -10px rgba(11, 87, 208, 0.55);
       --input-glow: 0 0 0 3px rgba(26, 115, 232, 0.07),
@@ -733,7 +733,7 @@
     }
 
     :root.dark {
-      --panel-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.65);
+      --panel-shadow: 0 6px 16px -10px rgb(91 63 224 / 75%);
       --active-glow: 0 0 0 3px rgba(138, 180, 248, 0.1),
                      0 6px 16px -10px rgba(0, 0, 0, 0.8);
       --input-glow: 0 0 0 3px rgba(138, 180, 248, 0.09),

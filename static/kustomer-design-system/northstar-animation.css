@@ -7,6 +7,8 @@
   --northstar-line: #dce8f3;
   --northstar-card: #ffffff;
   --northstar-shadow: 0 2px 6px rgba(16, 69, 111, 0.13), 0 14px 36px rgba(75, 115, 151, 0.08);
+  --northstar-stage-shadow: 0 20px 60px rgb(180 85 44 / 26%);
+  --northstar-stage-shadow-card: 0 2px 6px rgb(180 85 44 / 24%), 0 14px 36px rgb(180 85 44 / 20%);
   --demo-color-accent: var(--northstar-blue);
   --demo-color-text: var(--northstar-text);
   --demo-color-control: #ffffff;
@@ -23,6 +25,8 @@
   --northstar-line: #344557;
   --northstar-card: #17222e;
   --northstar-shadow: 0 2px 7px rgba(0, 0, 0, 0.34), 0 18px 42px rgba(0, 0, 0, 0.26);
+  --northstar-stage-shadow: 0 20px 60px rgb(180 85 44 / 42%);
+  --northstar-stage-shadow-card: 0 2px 7px rgb(180 85 44 / 40%), 0 18px 42px rgb(180 85 44 / 34%);
   --demo-color-accent: #6ab7ff;
   --demo-color-text: #edf4fb;
   --demo-color-control: #263543;
@@ -103,7 +107,7 @@ button {
     radial-gradient(circle at 92% 84%, rgba(211, 255, 227, 0.82), transparent 37%),
     linear-gradient(120deg, #e9e4ff 0%, #dceeff 56%, #e6fff2 100%);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(45, 82, 126, 0.14);
+  box-shadow: var(--northstar-stage-shadow);
   contain: layout paint style;
 }
 
@@ -981,7 +985,7 @@ button {
 }
 
 .is-card .northstar-stage {
-  box-shadow: var(--northstar-shadow);
+  box-shadow: var(--northstar-stage-shadow-card);
 }
 
 /* North Star dark theme. DemoSystem mirrors the portfolio theme onto the
@@ -991,7 +995,6 @@ button {
     radial-gradient(circle at 8% 50%, rgba(112, 58, 132, 0.34), transparent 36%),
     radial-gradient(circle at 92% 84%, rgba(36, 116, 92, 0.3), transparent 38%),
     linear-gradient(120deg, #171526 0%, #152536 56%, #122b29 100%);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
 }
 
 :root.dark .primary-rail,

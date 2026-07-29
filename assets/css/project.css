@@ -8,6 +8,10 @@
     --project-theme-position: 38% 50%;
     --project-theme-transform: scale(1.03) rotate(-1deg);
     --project-theme-hover-transform: scale(1.12) rotate(1deg);
+    /* Pigment for anything elevated on this stage — the demo frame and the
+       screenshots beside it — so a themed surface never carries a neutral
+       shadow. Space-separated so alpha can vary per placement. */
+    --project-theme-shadow-tint: 91 63 224;
   }
   [data-project-theme="cli"] {
     --project-theme-surface: #eaf2fa;
@@ -19,6 +23,7 @@
     --project-theme-position: 50% 46%;
     --project-theme-transform: scale(1.06);
     --project-theme-hover-transform: scale(1.15) translateX(-1.5%);
+    --project-theme-shadow-tint: 52 41 255;
   }
   [data-project-theme="kanvas"] {
     --project-theme-surface: #fff1d9;
@@ -30,6 +35,7 @@
     --project-theme-position: 50% 50%;
     --project-theme-transform: none;
     --project-theme-hover-transform: none;
+    --project-theme-shadow-tint: 180 85 44;
   }
   [data-project-theme="onboarding"] {
     --project-theme-surface: #fef0f4;
@@ -39,6 +45,7 @@
     --project-theme-position: 64% 35%;
     --project-theme-transform: scale(1.08) rotate(-2deg);
     --project-theme-hover-transform: scale(1.17) rotate(2deg);
+    --project-theme-shadow-tint: 138 55 103;
   }
   .dark [data-project-theme="notebooks"] {
     --project-theme-surface: #171b2d;

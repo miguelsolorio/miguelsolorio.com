@@ -71,6 +71,17 @@
     background-image: var(--project-theme-artwork);
     background-position: var(--project-theme-position);
     background-size: var(--project-theme-size);
+    /* Shadow pigment for everything standing on this stage — animation frame,
+       screenshot, or cutout art — so the stills cast the same colored shadow
+       as the demo above them. Only the alpha changes between themes; the hue
+       stays put instead of degrading to black in dark mode. */
+    --embed-shadow-tint: var(--project-theme-shadow-tint, 43 76 124);
+    --embed-shadow-far: .26;
+    --embed-shadow-near: .18;
+  }
+  .dark .single .project-embed {
+    --embed-shadow-far: .42;
+    --embed-shadow-near: .3;
   }
   .single .project-embed > img,
   .single .project-embed > video,
@@ -82,14 +93,8 @@
     max-width: 100%;
     margin: 0;
     background: transparent;
-    box-shadow: 0 18px 44px rgba(43, 76, 124, .18),
-                0 3px 10px rgba(43, 76, 124, .12);
-  }
-  .dark .single .project-embed > img,
-  .dark .single .project-embed > video,
-  .dark .single .project-embed iframe.embed-frame {
-    box-shadow: 0 18px 44px rgba(0, 0, 0, .38),
-                0 3px 10px rgba(0, 0, 0, .28);
+    box-shadow: 0 18px 44px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)),
+                0 3px 10px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near));
   }
   /* Artwork that is cut out rather than a single rectangular screenshot — a
      row of panels on transparency — needs its shadow to follow the alpha
@@ -99,18 +104,8 @@
   .single .project-embed--cutout > video {
     border-radius: 0;
     box-shadow: none;
-    filter: drop-shadow(0 2px 6px rgba(43, 76, 124, .12))
-            drop-shadow(0 12px 28px rgba(43, 76, 124, .16));
-  }
-  /* The .dark prefix is load-bearing here, not just for the swapped filter:
-     it's what gives this selector enough specificity to beat the dark
-     box-shadow rule above. Without repeating box-shadow: none, dark mode
-     renders both the rectangular shadow and the alpha-following one. */
-  .dark .single .project-embed--cutout > img,
-  .dark .single .project-embed--cutout > video {
-    box-shadow: none;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .28))
-            drop-shadow(0 12px 28px rgba(0, 0, 0, .34));
+    filter: drop-shadow(0 2px 6px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
+            drop-shadow(0 12px 28px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
   }
   /* The notebook scene has a transparent canvas and should blend directly
      into its gradient stage instead of looking like a nested panel. */

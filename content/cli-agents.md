@@ -28,6 +28,8 @@ Bringing conversational AI to the terminal required rethinking what "conversatio
 
 I worked to establish interaction patterns that felt native to the CLI rather than imported from a chat UI. Streaming responses give immediate feedback so users know the agent is working. Multi-step reasoning is surfaced progressively - each action the agent takes (reading a file, running a command, searching the web) is logged visibly as it happens, so the process is legible rather than opaque.
 
+{{< iframe src="/cli-agents/cli-plan-animation.html" height="600" title="Gemini CLI autocompleting a Plan Mode command and file path, drafting a keyboard navigation plan, and starting implementation" theme="cli" >}}
+
 The turn structure needed to support both quick one-shot prompts and sustained back-and-forth sessions. A single invocation can handle a self-contained task; a session persists context across turns so users can refine, redirect, or expand on what the agent has already done. The 1 million token context window made it practical to keep an entire codebase in scope across a long session.
 
 # Shipping in the Open
@@ -43,6 +45,7 @@ Because Gemini CLI is open-source, design decisions didn't stop at the spec - th
 {{< iframe src="/cli-agents/diff-approval.html" height="620" title="Gemini CLI asking to apply a change to fibonacci.py, showing the full syntax-highlighted diff and four approval options" theme="cli" >}}
 
 **Input syntax highlighting.** As users type, `/commands` and `@file/paths` now highlight in real time to distinguish them from plain text. I designed the highlighting behavior - including the rule that commands should only highlight at the start of a prompt, not mid-sentence - and landed the implementation. ([#7165](https://github.com/google-gemini/gemini-cli/pull/7165), [#5323](https://github.com/google-gemini/gemini-cli/pull/5323), [#7651](https://github.com/google-gemini/gemini-cli/issues/7651))
+
 
 **Identity and branding.** I replaced the default text logo with a custom ASCII mark, added a visual indicator distinguishing nightly builds from stable releases, and updated the `/help` page to be a genuine entry point - linking to docs, MCP tools, and available commands rather than just listing slash commands. ([#958](https://github.com/google-gemini/gemini-cli/pull/958), [#3701](https://github.com/google-gemini/gemini-cli/pull/3701), [#1119](https://github.com/google-gemini/gemini-cli/pull/1119))
 

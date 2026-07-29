@@ -10,7 +10,7 @@ card_animation: "/onboarding/onboarding-animation.html"
 card_theme: "onboarding"
 ---
 
-{{< iframe src="/onboarding/onboarding-animation.html?v=11" height="720" title="VS Code onboarding concept walkthrough" frame_class="onboarding-project-demo" theme="onboarding" >}}
+{{< iframe src="/onboarding/onboarding-animation.html?v=12" height="720" title="VS Code onboarding concept walkthrough" frame_class="onboarding-project-demo" theme="onboarding" >}}
 
 As the lead designer, I iterated through the design process to re-design VS Code's welcome page to discover a framework that could scale.
 
