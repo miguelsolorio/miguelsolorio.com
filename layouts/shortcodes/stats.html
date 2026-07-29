@@ -16,6 +16,10 @@
   "outdated" `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="M8 5.3V8l2.2 1.6"/>`
   "missing"  `<path d="M6.2 2.4H4.8a2.4 2.4 0 0 0-2.4 2.4v1.4"/><path d="M2.4 9.8v1.4a2.4 2.4 0 0 0 2.4 2.4h1.4"/><path d="M9.8 13.6h1.4a2.4 2.4 0 0 0 2.4-2.4V9.8"/><path d="M13.6 6.2V4.8a2.4 2.4 0 0 0-2.4-2.4H9.8"/>`
 -}}
+{{- $arrows := dict
+  "up"   `<path d="M8 13.2V3.4"/><path d="m3.9 7.5 4.1-4.1 4.1 4.1"/>`
+  "down" `<path d="M8 2.8v9.8"/><path d="m3.9 8.5 4.1 4.1 4.1-4.1"/>`
+-}}
 {{- $rows := slice -}}
 {{- range (split .Inner "\n") -}}
   {{- $line := strings.Trim . " \t\r" -}}
@@ -31,8 +35,25 @@
         {{- errorf "stats shortcode in %s: unknown icon %q" $.Page.File.Path $icon -}}
       {{- end -}}
     {{- end -}}
+    {{- /* A leading sign turns the figure into a ticker row: the arrow renders
+           the direction and the value keeps only its digits. Authors may write
+           either a hyphen or a real minus, and the sign stays in the accessible
+           name so the arrow is not the only thing carrying it. */ -}}
+    {{- $value := strings.Trim (index $parts 0) " \t" -}}
+    {{- $trend := "" -}}
+    {{- if hasPrefix $value "+" -}}
+      {{- $trend = "up" -}}
+      {{- $value = strings.TrimPrefix "+" $value -}}
+    {{- else if hasPrefix $value "\u2212" -}}
+      {{- $trend = "down" -}}
+      {{- $value = strings.TrimPrefix "\u2212" $value -}}
+    {{- else if hasPrefix $value "-" -}}
+      {{- $trend = "down" -}}
+      {{- $value = strings.TrimPrefix "-" $value -}}
+    {{- end -}}
     {{- $rows = $rows | append (dict
-          "value" (strings.Trim (index $parts 0) " \t")
+          "value" (strings.Trim $value " \t")
+          "trend" $trend
           "label" (strings.Trim (index $parts 1) " \t")
           "icon" $icon) -}}
   {{- end -}}
@@ -52,7 +73,12 @@
       <svg class="stat-icon stat-icon--{{ . }}" viewBox="0 0 16 16" aria-hidden="true">{{ index $glyphs . | safeHTML }}</svg>
       {{- end }}
       <div class="stat-text">
-        <b class="stat-value">{{ .value }}</b>
+        <b class="stat-value">
+          {{- with .trend }}
+          <svg class="stat-trend stat-trend--{{ . }}" viewBox="0 0 16 16" aria-hidden="true">{{ index $arrows . | safeHTML }}</svg>
+          <span class="sr-only">{{ if eq . "up" }}up{{ else }}down{{ end }}</span>
+          {{- end }}
+          {{ .value }}</b>
         <span class="stat-label">{{ .label }}</span>
       </div>
     </div>

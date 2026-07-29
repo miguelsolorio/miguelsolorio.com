@@ -291,7 +291,7 @@
   .single .stat {
     display: flex;
     align-items: center;
-    gap: 1.125rem;
+    gap: .875rem;
     min-width: 0;
   }
   .single .stat-text {
@@ -302,8 +302,8 @@
      scales with the box, so it thins as the icon grows to keep the weight
      next to the numerals. */
   .single .stat-icon {
-    width: clamp(2.5rem, 5.5vw, 4rem);
-    height: clamp(2.5rem, 5.5vw, 4rem);
+    width: clamp(2.25rem, 4.4vw, 3.5rem);
+    height: clamp(2.25rem, 4.4vw, 3.5rem);
     flex: 0 0 auto;
     fill: none;
     stroke: currentColor;
@@ -329,12 +329,37 @@
   .single .stat-icon--outdated { color: #e8710a; }
   .single .stat-icon--missing { color: #d3466f; }
   .single .stat-value {
-    @apply block font-extrabold text-slate-900;
-    font-size: clamp(1.75rem, 3.6vw, 3.25rem);
+    @apply flex items-center font-extrabold text-slate-900;
+    gap: .14em;
+    font-size: clamp(1.75rem, 3.05vw, 2.75rem);
     font-variant-numeric: tabular-nums;
     letter-spacing: -.05em;
     line-height: 1;
+    /* .single opts everything into overflow-wrap: anywhere so long prose tokens
+       cannot escape the measure, but a figure has to read as one number, and
+       that rule breaks "1,100" across two lines once the inset narrows the
+       column. Nothing inside a numeral is a break opportunity on its own, so
+       resetting the inherited value is enough to keep it whole. */
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: nowrap;
   }
+  /* A ticker's direction mark: the arrow carries the sign the author wrote in
+     the shortcode, so the figure itself stays a bare number. Green up and red
+     down are read as direction of change, not as good and bad — fewer outdated
+     components is a win that still points down. */
+  .single .stat-trend {
+    width: .62em;
+    height: .62em;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .single .stat-trend--up { color: #0f9d58; }
+  .single .stat-trend--down { color: #dc2626; }
   .single .stat-label {
     @apply block text-slate-500;
     margin-top: .375rem;
