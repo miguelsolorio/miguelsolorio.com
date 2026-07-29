@@ -47,11 +47,9 @@
     --project-theme-hover-transform: scale(1.17) rotate(2deg);
     --project-theme-shadow-tint: 138 55 103;
   }
-  /* Dark halves of the named themes. Deep hues read far more saturated
-     against slate-900 than their light counterparts do against white, so
-     every stop keeps its hue but drops ~40% of its chroma, and the accent
-     blooms sit closer in lightness to the field they wash over — a tint on
-     the surface rather than a glow on top of it. */
+  /* Dark halves of the named themes. Pull gradient stops toward each theme
+     surface and reduce bloom opacity so the hues remain distinct without
+     reading as illuminated fields. */
   .dark [data-project-theme="notebooks"] {
     --project-theme-surface: #191c28;
     --project-theme-artwork: linear-gradient(118deg, #282741 -18%, #1e212e 46%, #312629 118%);
@@ -59,21 +57,21 @@
   .dark [data-project-theme="cli"] {
     --project-theme-surface: #191f2a;
     --project-theme-artwork:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #223248 0%, rgba(34,50,72,.5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #21303b 0%, rgba(33,48,59,.45) 36%, transparent 70%),
-      linear-gradient(145deg, #171d29 10%, #1b242c 90%);
+      radial-gradient(ellipse 78% 145% at -6% 18%, #1f2b3e 0%, rgba(31,43,62,.34) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #1e2a35 0%, rgba(30,42,53,.30) 36%, transparent 70%),
+      linear-gradient(145deg, #181e29 10%, #1a222b 90%);
   }
   .dark [data-project-theme="kanvas"] {
     --project-theme-surface: #2f2623;
     --project-theme-artwork:
-      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
-      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
+      radial-gradient(circle at 4% 8%, rgba(96, 66, 50, .32), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(89, 55, 59, .23), transparent 41%),
+      linear-gradient(135deg, #2f2623 0%, #342b27 52%, #332727 100%);
   }
   .dark [data-project-theme="onboarding"] {
     --project-theme-surface: #1e1b24;
     --project-theme-artwork:
-      conic-gradient(from 218deg at 68% 34%, #29202c 0deg, #1e1b28 96deg, #262025 174deg, #30212b 258deg, #29202c 360deg);
+      conic-gradient(from 218deg at 68% 34%, #251e29 0deg, #1e1b27 96deg, #231e25 174deg, #2a1f29 258deg, #251e29 360deg);
   }
   /* Give the homepage card a more defined stage than the animation itself:
      periwinkle, sky, and mint keep it in the portfolio's palette while the
@@ -90,9 +88,9 @@
   }
   .dark .project.project--themed[data-project-theme="kanvas"] {
     --project-aurora:
-      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
-      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
+      radial-gradient(circle at 4% 8%, rgba(96, 66, 50, .32), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(89, 55, 59, .23), transparent 41%),
+      linear-gradient(135deg, #2f2623 0%, #342b27 52%, #332727 100%);
     background-color: #2f2623;
   }
 
