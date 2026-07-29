@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Font pairings on the home page</title>
+<style>
+  :root {
+    --page:#f5f5f5; --surface:#fff; --surface-2:#fafafa;
+    --ink:#1e293b; --muted:#64748b; --faint:#94a3b8;
+    --border:#e2e8f0; --hairline:#eef2f6; --brand:#3429ff;
+    --dot:#cbd5e1;
+  }
+  html.dark {
+    --page:#0f172a; --surface:#1e293b; --surface-2:#111c30;
+    --ink:#e5e7eb; --muted:#94a3b8; --faint:#64748b;
+    --border:#334155; --hairline:#26344a; --brand:#a5b4fc;
+    --dot:#475569;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: auto; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  p { margin: 0; }
+
+  /* ---------- page chrome ---------- */
+  .page-head {
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 56px 0 24px;
+  }
+  .page-head h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -.03em; }
+  .page-head .intro { margin-top: 8px; max-width: 62ch; font-size: .875rem; color: var(--muted); }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 20px; }
+  .control-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .controls button, .controls select {
+    padding: 7px 12px;
+    font: inherit;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .controls button:hover, .controls select:hover { border-color: var(--faint); }
+  .controls button[aria-pressed="true"] { color: var(--brand); border-color: var(--brand); }
+  .controls select { border-radius: 8px; font-weight: 600; max-width: 15rem; }
+  .control-sep { width: 1px; align-self: stretch; background: var(--border); }
+
+  .active { margin-top: 18px; display: grid; gap: 4px; }
+  .active-stack { font-size: .8125rem; font-weight: 700; letter-spacing: -.01em; }
+  .active-stack .active-num { color: var(--faint); font-weight: 700; }
+  .active-stack .active-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: #fff;
+    font-size: .625rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    vertical-align: 1px;
+  }
+  .active-note { max-width: 78ch; font-size: .8125rem; line-height: 1.55; color: var(--muted); }
+  .active-hint { font-size: .75rem; color: var(--faint); }
+
+  main { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 24px 0 64px; }
+  .frame-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #preview {
+    display: block;
+    width: 100%;
+    height: 82vh;
+    min-height: 620px;
+    margin: 0 auto;
+    border: 0;
+    background: var(--surface);
+  }
+
+  @media (max-width: 640px) {
+    .page-head { padding-top: 32px; }
+    main { padding-bottom: 32px; }
+  }
+</style>
+</head>
+<body>
+<header class="page-head">
+  <h1>Font pairings on the home page</h1>
+  <p class="intro">The live home page below, with a pairing injected over it — hero, section headings, and the wordmark take the display face, prose and cards the body face, the terminal the monospace. Only the faces (and their weight and variable axes) are swapped: sizes, tracking, and the hero's hard-coded line breaks stay exactly as the site sets them, so a wider face shows itself by running long rather than by being re-typeset. Nothing is mocked up — it is <code>/</code> in a frame, so it stays current as the page changes. Shortlisted: 02, 07, 15.</p>
+  <div class="controls">
+    <div class="control-group" id="shortlist" role="group" aria-label="Shortlisted pairings"></div>
+    <div class="control-sep" aria-hidden="true"></div>
+    <select id="more" aria-label="Every other pairing"></select>
+    <div class="control-sep" aria-hidden="true"></div>
+    <div class="control-group" role="group" aria-label="Preview width">
+      <button type="button" id="width-desktop" data-width="100%" aria-pressed="true">Desktop</button>
+      <button type="button" id="width-mobile" data-width="390px" aria-pressed="false">Mobile</button>
+    </div>
+    <button type="button" id="theme-toggle">Dark</button>
+  </div>
+  <div class="active">
+    <p class="active-stack" id="active-stack"></p>
+    <p class="active-note" id="active-note"></p>
+    <p class="active-hint" id="active-hint"></p>
+  </div>
+</header>
+<main>
+  <div class="frame-wrap">
+    <iframe id="preview" src="/" title="Home page preview"></iframe>
+  </div>
+</main>
+<script>
+(function () {
+  'use strict';
+
+  /* The preview document needs its own @font-face rules — a parent stylesheet
+     does not reach into a child document. */
+  var FONT_CSS = [
+    'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,400..700;1,400&family=Atkinson+Hyperlegible+Next:ital,wght@0,400..700;1,400&family=Azeret+Mono:ital,wght@0,300..700;1,400&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Cascadia+Code:ital,wght@0,300..700;1,400&family=Cormorant+Garamond:ital,wght@0,300..700;1,400&family=EB+Garamond:ital,wght@0,400..700;1,400&family=Familjen+Grotesk:ital,wght@0,400..700;1,400&family=Fragment+Mono:ital@0;1&family=Fraunces:SOFT,WONK,opsz,wght@0..100,0..1,9..144,100..900&family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,400&display=swap',
+    'https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300..700&family=Geist:wght@300..800&family=Hanken+Grotesk:ital,wght@0,300..800;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400..700;1,400&family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400&family=Instrument+Serif:ital@0;1&family=Inter+Tight:ital,wght@0,300..800;1,400&family=JetBrains+Mono:ital,wght@0,300..700;1,400&family=Jost:ital,wght@0,300..700;1,400&family=Literata:ital,opsz,wght@0,7..72,300..700;1,7..72,400&family=Manrope:wght@300..800&family=Martian+Mono:wdth,wght@75..112.5,300..800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,400&family=Onest:wght@300..800&family=Public+Sans:ital,wght@0,300..800;1,400&family=Recursive:CASL,MONO,slnt,wght@0..1,0..1,-15..0,300..900&family=Rethink+Sans:ital,wght@0,400..800;1,400&family=Schibsted+Grotesk:ital,wght@0,400..800;1,400&family=Sora:wght@300..800&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Spectral:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Syne:wght@400..800&family=Unbounded:wght@300..800&family=Young+Serif:wght@400&display=swap'
+  ];
+
+  var SANS = ', ui-sans-serif, system-ui, sans-serif';
+  var SERIF = ', ui-serif, Georgia, serif';
+  var MONO = ', ui-monospace, SFMono-Regular, Menlo, monospace';
+
+  function face(name, tail, opts) {
+    var slot = { family: '"' + name + '"' + tail, familyName: name, weight: 400, tracking: 'normal', varset: 'normal' };
+    for (var key in opts) { if (Object.prototype.hasOwnProperty.call(opts, key)) { slot[key] = opts[key]; } }
+    return slot;
+  }
+  function sans(name, opts) { return face(name, SANS, opts); }
+  function serif(name, opts) { return face(name, SERIF, opts); }
+  function mono(name, opts) { return face(name, MONO, opts); }
+
+  /* Ten developer-facing pairings first (dev: true — the mono is part of the
+     pairing: a superfamily sibling, a chosen neutral counterpart, or the face
+     carrying the headline or body), then ten display/text pairings whose mono is
+     a companion for the terminal. All twenty draw on the same ten mono families. */
+  var PAIRINGS = [
+    { n: '01', name: 'Tightened default', dev: true,
+      note: "The site's current voice, tightened — Inter Tight replaces Inter for headings so display sizes lose the airiness Inter keeps at 3rem+. Lowest-risk change on the page.",
+      display: sans('Inter Tight', { weight: 800, tracking: '-.035em' }),
+      body: sans('Inter Tight', { tracking: '-.005em' }),
+      code: mono('JetBrains Mono') },
+
+    { n: '02', name: 'Geist system', dev: true,
+      note: "Vercel's OSS superfamily. Sans and mono share skeletons and metrics, so the terminal reads as the same voice as the page instead of an inset quote.",
+      display: sans('Geist', { weight: 700, tracking: '-.03em' }),
+      body: sans('Geist', { tracking: '-.005em' }),
+      code: mono('Geist Mono') },
+
+    { n: '03', name: 'Plex superfamily', dev: true,
+      note: 'Humanist and faintly quirky (the tailed l, the flag on 1). Most "engineering document" pairing here; ages well, excites nobody.',
+      display: sans('IBM Plex Sans', { weight: 600, tracking: '-.02em' }),
+      body: sans('IBM Plex Sans'),
+      code: mono('IBM Plex Mono') },
+
+    { n: '04', name: 'Space siblings', dev: true,
+      note: 'Shared quirks — flat-topped a, sheared terminals — with a typewriter mono. Loud and wide; Space Mono&#39;s 0 and O are the weak point in dense terminal output.',
+      display: sans('Space Grotesk', { weight: 700, tracking: '-.03em' }),
+      body: sans('Space Grotesk'),
+      code: mono('Space Mono') },
+
+    { n: '05', name: 'Wide mono headline', dev: true,
+      note: 'Mono carries the headline. Public Sans (US Web Design System) deliberately stays invisible underneath. The terminal drops to the 75 width axis or lines overflow.',
+      display: mono('Martian Mono', { weight: 700, tracking: '.02em', varset: '"wdth" 100', transform: 'uppercase' }),
+      body: sans('Public Sans'),
+      code: mono('Martian Mono', { varset: '"wdth" 75' }) },
+
+    { n: '06', name: 'Expressive grotesque + neutral mono', dev: true,
+      note: 'One variable family spans display and text through its optical-size axis, so headings get the wonky wide forms and paragraphs get the sober ones. Fragment Mono (Helvetica-derived) adds zero personality on purpose.',
+      display: sans('Bricolage Grotesque', { weight: 800, tracking: '-.02em', varset: '"opsz" 72, "wdth" 100' }),
+      body: sans('Bricolage Grotesque', { varset: '"opsz" 14, "wdth" 100' }),
+      code: mono('Fragment Mono') },
+
+    { n: '07', name: 'Editorial + mechanical', dev: true,
+      note: "The inversion — mono is the body face, so cards and prose run mechanical and only the headline is editorial. Azeret's low contrast and generous counters survive at paragraph length, but it sets ~15% wider per character, so copy wraps sooner.",
+      display: serif('Newsreader', { weight: 500, tracking: '-.015em', varset: '"opsz" 60' }),
+      body: mono('Azeret Mono', { tracking: '-.02em' }),
+      code: mono('Azeret Mono') },
+
+    { n: '08', name: 'Recursive, one family', dev: true,
+      note: 'One variable font covers sans and mono via the MONO axis, with CASL warming the prose and dialed to 0 for the terminal. One download, entire type system — the cheapest option here by bytes.',
+      display: sans('Recursive', { weight: 800, tracking: '-.02em', varset: '"MONO" 0, "CASL" 0.4, "slnt" 0' }),
+      body: sans('Recursive', { varset: '"MONO" 0, "CASL" 0.5, "slnt" 0' }),
+      code: mono('Recursive', { varset: '"MONO" 1, "CASL" 0, "slnt" 0' }) },
+
+    { n: '09', name: 'Geometric + Cascadia', dev: true,
+      note: "Sora's geometric caps against Microsoft's editor mono. Familiar to anyone who has opened VS Code, which is most of this site's audience.",
+      display: sans('Sora', { weight: 700, tracking: '-.03em' }),
+      body: sans('Sora'),
+      code: mono('Cascadia Code') },
+
+    { n: '10', name: 'Hyperlegible siblings', dev: true,
+      note: 'Braille Institute family engineered for low vision — unambiguous il1/O0 across both faces without the clinical look of DIN-derived accessibility fonts.',
+      display: sans('Atkinson Hyperlegible Next', { weight: 700, tracking: '-.02em' }),
+      body: sans('Atkinson Hyperlegible Next'),
+      code: mono('Atkinson Hyperlegible Mono') },
+
+    { n: '11', name: 'Soft serif display',
+      note: "WONK swaps in Fraunces' eccentric alternates only at display size; SOFT rounds the terminals. Manrope's geometric evenness stops the page tipping into whimsy, and Geist Mono keeps the terminal neutral.",
+      display: serif('Fraunces', { weight: 700, tracking: '-.02em', varset: '"opsz" 120, "SOFT" 60, "WONK" 1' }),
+      body: sans('Manrope', { tracking: '-.01em' }),
+      code: mono('Geist Mono') },
+
+    { n: '12', name: 'Didone editorial',
+      note: 'Extreme hairline-to-stem contrast, only viable at large sizes — the optical-size axis is doing real work here. Onest is a neutral modern grotesque that refuses to compete, and Helvetica-derived Fragment Mono is equally unwilling.',
+      display: serif('Bodoni Moda', { weight: 600, tracking: '-.01em', varset: '"opsz" 96' }),
+      body: sans('Onest'),
+      code: mono('Fragment Mono') },
+
+    { n: '13', name: 'Art-institution',
+      note: 'Syne widens as it gets heavier, so bold caps read like exhibition signage. Spectral at 300 keeps long copy light enough to sit under it, and Azeret Mono carries the same art-school register into the terminal.',
+      display: sans('Syne', { weight: 800, transform: 'uppercase' }),
+      body: serif('Spectral', { weight: 300 }),
+      code: mono('Azeret Mono') },
+
+    { n: '14', name: 'Heavy geometric',
+      note: 'Unbounded is display-only by temperament — flat, wide, closed apertures. It needs a quiet workhorse beneath it or the whole page shouts. Martian Mono on the 75 width axis echoes that width in the terminal without overflowing it.',
+      display: sans('Unbounded', { weight: 700, tracking: '-.01em', transform: 'uppercase' }),
+      body: sans('Hanken Grotesk'),
+      code: mono('Martian Mono', { varset: '"wdth" 75' }) },
+
+    { n: '15', name: 'Instrument pair',
+      note: 'Released as a set. The serif ships one weight, so size — not weight — carries hierarchy; that constraint is why it looks expensive at hero scale and thin at card scale. JetBrains Mono adds the utilitarian counterweight a one-weight serif cannot.',
+      display: serif('Instrument Serif', { tracking: '-.02em' }),
+      body: sans('Instrument Sans', { varset: '"wdth" 100' }),
+      code: mono('JetBrains Mono') },
+
+    { n: '16', name: 'Newsroom',
+      note: "Scandinavian news grotesque over Google's screen-tuned reading serif. The most readable long-form pairing here; the least surprising. IBM Plex Mono keeps the terminal reading as document type rather than console output.",
+      display: sans('Schibsted Grotesk', { weight: 700, tracking: '-.03em' }),
+      body: serif('Literata', { varset: '"opsz" 16' }),
+      code: mono('IBM Plex Mono') },
+
+    { n: '17', name: 'Nordic + old-style',
+      note: "Tall-x-height grotesque against Garamond's small one — expect the card copy to read a size smaller than it measures. Space Mono is the typewriter answer to Garamond's bookishness.",
+      display: sans('Familjen Grotesk', { weight: 700, tracking: '-.025em' }),
+      body: serif('EB Garamond'),
+      code: mono('Space Mono') },
+
+    { n: '18', name: 'Fashion',
+      note: 'Light Cormorant at hero scale with geometric Jost for supporting text. Fragile at anything under ~2.5rem — the strokes vanish — so it lives or dies on the hero. Recursive on the MONO axis stays geometric enough to sit beside Jost.',
+      display: serif('Cormorant Garamond', { weight: 300 }),
+      body: sans('Jost', { tracking: '.01em' }),
+      code: mono('Recursive', { varset: '"MONO" 1, "CASL" 0, "slnt" 0' }) },
+
+    { n: '19', name: 'Funnel pair',
+      note: '2024 sibling release; the display cut is rounder and tighter than the text cut, so hierarchy comes free. The safest contemporary-product choice that is not Inter. Cascadia Code matches the rounded terminals.',
+      display: sans('Funnel Display', { weight: 700, tracking: '-.03em' }),
+      body: sans('Funnel Sans'),
+      code: mono('Cascadia Code') },
+
+    { n: '20', name: 'Chunky slab-ish serif',
+      note: "Young Serif's single heavy weight is the personality — slabbed, high-waisted, no light cut to retreat to. Rethink Sans at 500 gives the body enough weight not to look starved under it, and Atkinson Hyperlegible Mono answers that heft with unambiguous letterforms.",
+      display: serif('Young Serif', { tracking: '-.01em' }),
+      body: sans('Rethink Sans', { weight: 500 }),
+      code: mono('Atkinson Hyperlegible Mono') }
+  ];
+
+  var SHORTLIST = ['02', '07', '15'];
+
+  var CURRENT = {
+    n: '00', name: 'Current',
+    note: 'The site as it ships: Tailwind&#39;s system sans stack for the hero, prose, and cards, Inter for section headings and the wordmark, JetBrains Mono in the terminal. Nothing is injected in this mode.',
+    stack: 'system sans · Inter · JetBrains Mono'
+  };
+
+  /* Which elements belong to which face, measured off the live page rather than
+     guessed: hero lines and section headings are display, the terminal is mono,
+     everything else inherits the body face from <body>. */
+  var DISPLAY_SEL = '.home-hero-line, .title, .section--work, #logo';
+  var MONO_SEL = '.home-hero-terminal-title, .home-hero-terminal-body, .home-hero-terminal-body *, .t-ps1, body code, body pre';
+  var BODY_WEIGHT_SEL = '.home-hero-summary, .side-project-description, .site-footer-copyright, .footer-link';
+
+  /* Tracking is never injected: the site's own tracking is size-tuned and the
+     hero line breaks are hard-coded, so re-tracking would re-typeset the page
+     instead of testing the face. What each pairing wants is reported instead. */
+  function trackingHint(pair) {
+    var parts = [];
+    [['display', pair.display], ['body', pair.body], ['mono', pair.code]].forEach(function (entry) {
+      var tracking = entry[1].tracking;
+      if (tracking && tracking !== 'normal') { parts.push(entry[0] + ' ' + tracking); }
+    });
+    return parts.length
+      ? 'Wants, if adopted: ' + parts.join(', ') + ' tracking — not applied here.'
+      : 'No tracking adjustment wanted.';
+  }
+
+  function overrideCss(pair) {
+    var d = pair.display, b = pair.body, m = pair.code;
+    return [
+      'body, body * {',
+      '  font-family: ' + b.family + ' !important;',
+      '  font-variation-settings: ' + b.varset + ' !important;',
+      '}',
+      BODY_WEIGHT_SEL + ' { font-weight: ' + b.weight + ' !important; }',
+      DISPLAY_SEL + ' {',
+      '  font-family: ' + d.family + ' !important;',
+      '  font-weight: ' + d.weight + ' !important;',
+      '  font-variation-settings: ' + d.varset + ' !important;',
+      '  text-transform: ' + (d.transform || 'none') + ' !important;',
+      '}',
+      MONO_SEL + ' {',
+      '  font-family: ' + m.family + ' !important;',
+      '  font-variation-settings: ' + m.varset + ' !important;',
+      '}'
+    ].join('\n');
+  }
+
+  function stackFor(pair) {
+    var names = [];
+    [pair.display, pair.body].forEach(function (slot) {
+      if (names.indexOf(slot.familyName) === -1) { names.push(slot.familyName); }
+    });
+    var stack = names.join(' · ');
+    if (names.indexOf(pair.code.familyName) > -1) { return stack; }
+    /* On a dev pairing the mono is part of the pairing; elsewhere it is a
+       companion picked for the terminal, and says so. */
+    return pair.dev
+      ? stack + ' · ' + pair.code.familyName
+      : stack + ' + ' + pair.code.familyName + ' in the terminal';
+  }
+
+  var frame = document.getElementById('preview');
+  var stackEl = document.getElementById('active-stack');
+  var noteEl = document.getElementById('active-note');
+  var hintEl = document.getElementById('active-hint');
+  var shortlistEl = document.getElementById('shortlist');
+  var moreEl = document.getElementById('more');
+  var toggle = document.getElementById('theme-toggle');
+  var active = null;   /* null = ship-as-is */
+
+  function frameDoc() {
+    try { return frame.contentDocument; } catch (error) { return null; }
+  }
+
+  function ensureFonts(doc) {
+    if (doc.querySelector('link[data-pair-font]')) { return; }
+    FONT_CSS.forEach(function (href) {
+      var link = doc.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.setAttribute('data-pair-font', '');
+      doc.head.appendChild(link);
+    });
+  }
+
+  /* Re-applied on every frame load, so navigating inside the preview or
+     reloading it never drops the pairing. */
+  function paint() {
+    var doc = frameDoc();
+    if (!doc || !doc.head) { return; }
+    doc.documentElement.classList.toggle('dark', document.documentElement.classList.contains('dark'));
+    var style = doc.getElementById('pair-override');
+    if (!style) {
+      style = doc.createElement('style');
+      style.id = 'pair-override';
+      doc.head.appendChild(style);
+    }
+    if (!active) { style.textContent = ''; return; }
+    ensureFonts(doc);
+    style.textContent = overrideCss(active);
+  }
+
+  function select(pair) {
+    active = pair;
+    var meta = pair || CURRENT;
+    stackEl.innerHTML = '<span class="active-num">' + meta.n + '</span> ' + meta.name +
+      (pair ? (pair.dev ? '<span class="active-badge">Dev</span>' : '') : '') +
+      ' — ' + (pair ? stackFor(pair) : CURRENT.stack);
+    noteEl.innerHTML = meta.note;
+    hintEl.textContent = pair ? trackingHint(pair) : '';
+    Array.prototype.forEach.call(shortlistEl.children, function (button) {
+      button.setAttribute('aria-pressed', String(button.dataset.n === (pair ? pair.n : '00')));
+    });
+    moreEl.value = (pair && SHORTLIST.indexOf(pair.n) === -1) ? pair.n : '';
+    paint();
+  }
+
+  function button(n, label) {
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.dataset.n = n;
+    el.textContent = label;
+    el.setAttribute('aria-pressed', 'false');
+    shortlistEl.appendChild(el);
+    return el;
+  }
+
+  var byNumber = {};
+  PAIRINGS.forEach(function (pair) { byNumber[pair.n] = pair; });
+
+  button('00', CURRENT.name);
+  SHORTLIST.forEach(function (n) { button(n, n + ' · ' + byNumber[n].name); });
+  shortlistEl.addEventListener('click', function (event) {
+    var n = event.target.dataset && event.target.dataset.n;
+    if (n) { select(n === '00' ? null : byNumber[n]); }
+  });
+
+  moreEl.appendChild(new Option('Every other pairing…', ''));
+  PAIRINGS.forEach(function (pair) {
+    if (SHORTLIST.indexOf(pair.n) === -1) {
+      moreEl.appendChild(new Option(pair.n + ' · ' + pair.name, pair.n));
+    }
+  });
+  moreEl.addEventListener('change', function () {
+    if (moreEl.value) { select(byNumber[moreEl.value]); }
+  });
+
+  var widthButtons = [document.getElementById('width-desktop'), document.getElementById('width-mobile')];
+  widthButtons.forEach(function (el) {
+    el.addEventListener('click', function () {
+      frame.style.width = el.dataset.width;
+      widthButtons.forEach(function (other) { other.setAttribute('aria-pressed', String(other === el)); });
+    });
+  });
+
+  toggle.addEventListener('click', function () {
+    var dark = document.documentElement.classList.toggle('dark');
+    toggle.textContent = dark ? 'Light' : 'Dark';
+    paint();
+  });
+
+  frame.addEventListener('load', paint);
+  select(null);
+}());
+</script>
+</body>
+</html>
