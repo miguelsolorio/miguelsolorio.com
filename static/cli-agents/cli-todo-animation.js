@@ -1,45 +1,54 @@
 const GOAL = "implemnet the research plan and todos in @research.md";
 const INTRO = "Reading research.md now. I'll track the plan as todos and work through them one at a time.";
 
-const TODOS = [
-  "Search and perform competitive market analysis",
-  "Summarize the findings into a concise report",
-  "Visualize the findings into a chart using Canva extension",
-  "Email the report and visualization to the team",
+/* Each step: todo label, spinner label, agent message streamed before the work,
+   the resolved tool row printed when it lands, and how long the "work" takes. */
+const TODO_GROUPS = [
+  {
+    label: "Research & synthesis",
+    items: [
+      {
+        label: "Search and perform competitive market analysis",
+        status: "Searching the Web",
+        message: "Starting with the market research - searching for current competitive data.",
+        duration: 2200,
+        tool: "GoogleSearch",
+        detail: 'Searching the web for: "shoe sales competitive market analysis"',
+      },
+      {
+        label: "Summarize the findings into a concise report",
+        status: "Summarizing Findings",
+        message: "Search done. Summarizing the findings into a concise report.",
+        duration: 2000,
+        tool: "WriteFile",
+        detail: "docs/shoe-market-report.md",
+      },
+    ],
+  },
+  {
+    label: "Create & share",
+    items: [
+      {
+        label: "Visualize the findings into a chart using Canva extension",
+        status: "Constructing the Chart",
+        message: "Report written. Generating a chart with the Canva extension.",
+        duration: 2400,
+        tool: "generate-design (canva MCP Server)",
+        detail: '{"user_intent":"Visualize the findings of a shoe market analysis in a chart"}',
+      },
+      {
+        label: "Email the report and visualization to the team",
+        status: "Sending the Report",
+        message: "Chart looks good. Emailing the report and visualization to the team.",
+        duration: 2000,
+        tool: "send-email (gmail MCP Server)",
+        detail: '{"to":"design-team@example.com","subject":"Shoe market analysis + chart"}',
+      },
+    ],
+  },
 ];
 
-/* Each step: spinner label, agent message streamed before the work, the
-   resolved tool row printed when it lands, and how long the "work" takes. */
-const STEPS = [
-  {
-    status: "Searching the Web",
-    message: "Starting with the market research - searching for current competitive data.",
-    duration: 2200,
-    tool: "GoogleSearch",
-    detail: 'Searching the web for: "shoe sales competitive market analysis"',
-  },
-  {
-    status: "Summarizing Findings",
-    message: "Search done. Summarizing the findings into a concise report.",
-    duration: 2000,
-    tool: "WriteFile",
-    detail: "docs/shoe-market-report.md",
-  },
-  {
-    status: "Constructing the Chart",
-    message: "Report written. Generating a chart with the Canva extension.",
-    duration: 2400,
-    tool: "generate-design (canva MCP Server)",
-    detail: '{"user_intent":"Visualize the findings of a shoe market analysis in a chart"}',
-  },
-  {
-    status: "Sending the Report",
-    message: "Chart looks good. Emailing the report and visualization to the team.",
-    duration: 2000,
-    tool: "send-email (gmail MCP Server)",
-    detail: '{"to":"design-team@example.com","subject":"Shoe market analysis + chart"}',
-  },
-];
+const STEPS = TODO_GROUPS.flatMap((group) => group.items);
 
 const FINAL_REPLY = "Sent the report and chart to the team:";
 const FINAL_BULLETS = [
@@ -65,33 +74,56 @@ const todoTray = document.getElementById("todoTray");
 const todoScore = document.getElementById("todoScore");
 const todoList = document.getElementById("todoList");
 const liveRegion = ui.refs.liveRegion;
-let todoStatuses = TODOS.map(() => "pending");
+let todoStatuses = STEPS.map(() => "pending");
 
 /* ---------- todo tray ---------- */
 function renderTodos() {
   todoList.replaceChildren();
   let completed = 0;
-  TODOS.forEach((label, index) => {
-    const status = todoStatuses[index];
-    if (status === "completed") completed += 1;
-    const item = document.createElement("li");
-    item.className = "todo-item";
-    item.dataset.status = status;
-    const glyph = document.createElement("span");
-    glyph.className = "todo-glyph";
-    glyph.setAttribute("aria-hidden", "true");
-    glyph.textContent = GLYPHS[status];
-    const text = document.createElement("span");
-    text.className = "todo-label";
-    text.textContent = label;
-    item.append(glyph, text);
-    todoList.appendChild(item);
+  let leafIndex = 0;
+
+  TODO_GROUPS.forEach((group) => {
+    const groupItem = document.createElement("li");
+    groupItem.className = "todo-group";
+
+    const groupLabel = document.createElement("div");
+    groupLabel.className = "todo-group-label";
+    groupLabel.textContent = group.label;
+
+    const children = document.createElement("ul");
+    children.className = "todo-children";
+
+    group.items.forEach((step) => {
+      const status = todoStatuses[leafIndex];
+      if (status === "completed") completed += 1;
+
+      const item = document.createElement("li");
+      item.className = "todo-item";
+      item.dataset.status = status;
+
+      const glyph = document.createElement("span");
+      glyph.className = "todo-glyph";
+      glyph.setAttribute("aria-hidden", "true");
+      glyph.textContent = GLYPHS[status];
+
+      const text = document.createElement("span");
+      text.className = "todo-label";
+      text.textContent = step.label;
+
+      item.append(glyph, text);
+      children.appendChild(item);
+      leafIndex += 1;
+    });
+
+    groupItem.append(groupLabel, children);
+    todoList.appendChild(groupItem);
   });
-  todoScore.textContent = `${completed}/${TODOS.length} (ctrl+t to toggle)`;
+
+  todoScore.textContent = `${completed}/${STEPS.length} (ctrl+t to toggle)`;
 }
 
 function showTodoTray() {
-  todoStatuses = TODOS.map(() => "pending");
+  todoStatuses = STEPS.map(() => "pending");
   renderTodos();
   todoTray.classList.add("show");
 }
@@ -99,14 +131,14 @@ function showTodoTray() {
 function setTodoStatus(index, status) {
   todoStatuses[index] = status;
   renderTodos();
-  liveRegion.textContent = `${TODOS[index]} ${status === "completed" ? "completed" : "in progress"}`;
+  liveRegion.textContent = `${STEPS[index].label} ${status === "completed" ? "completed" : "in progress"}`;
 }
 
 
 async function run(context) {
   const id = ui.beginRun(context);
   ui.reset();
-  todoStatuses = TODOS.map(() => "pending");
+  todoStatuses = STEPS.map(() => "pending");
   renderTodos();
   todoTray.classList.remove("show");
   await context.sleep(800);
@@ -138,7 +170,7 @@ async function run(context) {
   ui.addResolvedNote("ReadFile", "research.md");
   await context.sleep(500);
   if (!ui.isCurrent(id)) return;
-  ui.addResolvedNote("WriteTodos", "Tracking 4 tasks");
+  ui.addResolvedNote("WriteTodos", "Tracking 4 tasks in 2 groups");
   showTodoTray();
   await context.sleep(700);
 

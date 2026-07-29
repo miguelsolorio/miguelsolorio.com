@@ -43,17 +43,60 @@
   transition: color 0.3s ease;
 }
 
-.todo-list {
+.todo-list,
+.todo-children {
   list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-list {
   margin-top: 10px;
 }
 
+.todo-group-label {
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.todo-group + .todo-group {
+  margin-top: 4px;
+}
+
+.todo-children {
+  margin-left: 0.5ch;
+  padding-left: 2ch;
+}
+
 .todo-item {
+  position: relative;
   display: flex;
   align-items: baseline;
   gap: 8px;
   line-height: 1.55;
-  transition: color 0.3s ease, opacity 0.25s ease;
+  transition: color 0.3s ease;
+}
+
+.todo-item::before {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+  left: -2ch;
+  top: -0.775em;
+  width: 1.2ch;
+  height: 1.55em;
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.todo-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: -2ch;
+  top: 0.775em;
+  bottom: -0.775em;
+  border-left: 1px solid var(--border);
 }
 
 .todo-glyph {
@@ -66,9 +109,6 @@
   color: var(--text);
 }
 
-.todo-item[data-status="pending"] .todo-glyph {
-  color: var(--text-muted);
-}
 
 .todo-item[data-status="in_progress"] {
   color: var(--accent-purple);
@@ -78,14 +118,12 @@
   color: var(--accent-purple);
 }
 
-/* Completed rows dim so the active and remaining work read first. */
 .todo-item[data-status="completed"] {
-  color: var(--text-muted);
-  opacity: 0.75;
+  color: var(--accent-green);
 }
 
-.todo-item[data-status="completed"] .todo-glyph {
-  color: var(--accent-green);
+.todo-item[data-status="completed"] .todo-label {
+  text-decoration: line-through;
 }
 
 /* ---------- summary bullets ---------- */
@@ -112,12 +150,14 @@
 @media (max-width: 40rem) {
 
   .todo-title,
+  .todo-group-label,
   .todo-item {
     font-size: 11.5px;
   }
 }
 
 body.is-card .todo-title,
+body.is-card .todo-group-label,
 body.is-card .todo-item {
   font-size: clamp(9px, 1.8vw, 13px);
 }
