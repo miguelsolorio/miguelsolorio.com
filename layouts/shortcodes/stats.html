@@ -106,16 +106,11 @@
   {{- end -}}
 {{- end -}}
 {{- /* The bar only makes sense if the movements are shares of one whole, so it
-       is drawn from the rows that plot and nothing else. Whatever the after
-       readings leave unspent stays visible as a remainder rather than being
-       rounded into the last segment. */ -}}
+       is drawn from the rows that plot and nothing else. */ -}}
 {{- $plotted := where $rows "plots" true -}}
 {{- if and $bars (not $plotted) -}}
   {{- errorf "stats shortcode in %s: bars=\"true\" needs at least one \"before > after\" row" $.Page.File.Path -}}
 {{- end -}}
-{{- $spent := 0.0 -}}
-{{- range $plotted -}}{{- $spent = add $spent .after -}}{{- end -}}
-{{- $rest := sub 100.0 $spent -}}
 <div class="stat-block{{ if $bars }} stat-block--charted{{ end }}">
   {{- with .Get "source" }}
   {{- $slug := strings.Trim . " \t" }}
@@ -128,6 +123,7 @@
     {{- range $rows }}
     {{- $trend := .trend }}
     {{- $unit := .unit }}
+    {{- $from := .from }}
     <div class="stat">
       {{- if and (not $bars) .glyph }}
       <svg class="stat-icon" style="color:{{ .color }}" viewBox="0 0 16 16" aria-hidden="true">{{ .glyph | safeHTML }}</svg>
@@ -141,48 +137,51 @@
                  measures is the points between them — which is why the spoken
                  version is the precise one. */ -}}
           <span class="stat-pill stat-pill--{{ $trend }}" aria-hidden="true"><svg viewBox="0 0 10 10">{{ index $carets $trend | safeHTML }}</svg>{{ . }}{{ $unit }}</span>
-          <span class="sr-only">, {{ $trend }} {{ . }}{{ if eq $unit "%" }} percentage points{{ end }}</span>
+          <span class="sr-only">, {{ $trend }} {{ . }}{{ if eq $unit "%" }} percentage points{{ end }}{{ with $from }} from {{ . }}{{ end }}</span>
           {{- end }}
         </b>
         <span class="stat-label">
           {{- /* A swatch promises a matching segment below, so only a row that
                  actually plots gets one. */ -}}
           {{- if and $bars .plots }}<i class="stat-key" style="background:{{ .color }}" aria-hidden="true"></i>{{ end -}}
-          {{ .label }}{{ with .from }}<span class="stat-was">, was {{ . }}</span>{{ end }}</span>
+          {{ .label }}</span>
       </div>
     </div>
     {{- end }}
   </div>
   {{- if $bars }}
-  {{- /* Proportion only, and it follows the figures: the badges are the
-         reading and the bar is the shape behind them. Every number in here is
-         stated above with its movement attached, so labelling the segments
-         would both duplicate the badges and break the narrow ones — 5% of a
-         bar cannot hold "5%" at any width. Hidden from the accessibility tree
-         for the same reason: it would announce the figures a second time. */ -}}
+  {{- /* The bar follows the figures: the badges are the reading and this is
+         the shape behind them. Hidden from the accessibility tree because
+         every number in it is announced above with its movement attached.
+
+         Each bar is scaled to its own total so it runs the full width. The
+         readings need not add to a hundred — rounding, or a state nobody
+         classified — and a bar left short of its track would put weight on a
+         quantity nobody measured. So the widths are shares of what was
+         classified while the labels stay the readings as written; where the
+         two part company it is by a point or two.
+
+         A segment is only as wide as its share, so a narrow one cannot hold a
+         label at every size — five percent of this bar is about twenty pixels
+         on a phone. The label stays inside the segment regardless; it is the
+         width that gives way, so below twelve percent the label waits for a
+         viewport wide enough to seat it and the badge above says it in the
+         meantime. */ -}}
   <div class="stat-chart" aria-hidden="true">
+    {{- range $side := slice "before" "after" }}
+    {{- $total := 0.0 }}
+    {{- range $plotted }}{{ $total = add $total (index . $side) }}{{ end }}
+    {{- if le $total 0.0 }}{{ $total = 100.0 }}{{ end }}
     <div class="stat-chart-row">
-      <span class="stat-chart-tag">Before</span>
+      <span class="stat-chart-tag">{{ $side }}</span>
       <div class="stat-chart-bar">
         {{- range $plotted }}
-        <span class="stat-chart-seg" style="width:{{ .before }}%;background:{{ .color }}"></span>
+        {{- $pct := mul (div (index . $side) $total) 100.0 }}
+        <span class="stat-chart-seg{{ if lt $pct 12.0 }} stat-chart-seg--tight{{ end }}" style="width:{{ $pct }}%;background:{{ .color }}"><span>{{ cond (eq $side "before") .from .value }}</span></span>
         {{- end }}
       </div>
     </div>
-    <div class="stat-chart-row">
-      <span class="stat-chart-tag">After</span>
-      <div class="stat-chart-bar">
-        {{- range $plotted }}
-        <span class="stat-chart-seg" style="width:{{ .after }}%;background:{{ .color }}"></span>
-        {{- end }}
-        {{- if gt $rest 0.5 }}
-        <span class="stat-chart-seg stat-chart-seg--rest" style="width:{{ $rest }}%"></span>
-        {{- end }}
-      </div>
-    </div>
+    {{- end }}
   </div>
-  {{- if gt $rest 0.5 }}
-  <p class="stat-chart-note">{{ printf "%.0f" $rest }}% of the library stayed unclassified.</p>
-  {{- end }}
   {{- end }}
 </div>

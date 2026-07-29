@@ -282,11 +282,11 @@
     font-size: .75rem;
     letter-spacing: -.01em;
   }
-  /* Before and after as shares of one whole. The bar is the whole claim of
-     this layout, so it goes first and the badges below read as its key. */
+  /* Before and after as shares of one whole, sitting under the badges that
+     read them. */
   .single .stat-chart {
     display: grid;
-    gap: .5rem;
+    gap: .625rem;
     margin-top: clamp(1.25rem, 3vw, 1.75rem);
   }
   .single .stat-chart-row {
@@ -308,24 +308,24 @@
     border-radius: .5rem;
     overflow: hidden;
   }
-  /* Bare proportion: the segments carry no text, so a two-percent sliver is
-     still legible as a sliver. */
   .single .stat-chart-seg {
+    display: grid;
+    place-content: center;
     min-width: 0;
-  }
-  .single .stat-chart-seg--rest {
-    @apply bg-slate-200;
-  }
-  .dark .single .stat-chart-seg--rest {
-    @apply bg-slate-700;
-  }
-  /* The after readings do not always spend the whole hundred. Saying so in a
-     line of prose beats hanging a label off a segment too narrow to hold it. */
-  .single .stat-chart-note {
-    @apply text-slate-500;
-    margin: .75rem 0 0;
-    padding-left: 4.75rem;
+    color: #fff;
     font-size: .75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.01em;
+  }
+  /* A slice this narrow only clears its label on a roomy viewport — five
+     percent of the bar is about thirteen pixels on a phone, which no type size
+     rescues. The label never leaves the bar: it waits for the width, and the
+     badge above is the one saying the number until then. */
+  @media (max-width: 35rem) {
+    .single .stat-chart-seg--tight > span {
+      display: none;
+    }
   }
   .single .stat-grid {
     display: grid;
@@ -424,12 +424,6 @@
     margin-right: .45rem;
     border-radius: .1875rem;
     vertical-align: baseline;
-  }
-  .single .stat-was {
-    @apply text-slate-400;
-  }
-  .dark .single .stat-was {
-    @apply text-slate-500;
   }
 
   /* A trailing media gap used to escape the block-flow container and collapse

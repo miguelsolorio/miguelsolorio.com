@@ -69,9 +69,3 @@ After several sprints, we were able to make major strides in bringing our compon
 {{< /stats >}}
 
 This allowed our design team to move more efficiently in creating new features without having to worry about if our components were out of date. Our designer to developer hand off transition significantly improved since everyone was using the same terminology and referencing the same components, reducing the issues at implementation.
-
-# Collaborators
-- Bree Chapin - Design Manager
-- Brandon Nydell - Engineer
-- Naing Htet - Engineer
-- William Frohn - Designer
