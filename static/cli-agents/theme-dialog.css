@@ -301,6 +301,10 @@
        draws a second edge a couple of pixels outside the first. The preview box
        keeps its own border: that one separates two things inside the dialog. */
     border: 0;
+    /* A dialog, not a full-bleed transcript: it sits inset from the stage and
+       centred, so both columns stay flush with its own edges. */
+    width: 85%;
+    margin: 0 auto;
     padding: 1.6em 1.4em;
     color: var(--theme-fg);
     /* Kept inside the scene's own padding so the blur is not clipped. */
@@ -315,6 +319,8 @@
 
   .theme-cols {
     display: grid;
+    /* The two columns run edge to edge inside the panel; the narrowing lives on
+       the panel itself. */
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(12px, 3vw, 40px);
   }
@@ -451,10 +457,21 @@
     margin: 0.9em 0;
     background-color: transparent;
   }
+  /* diff-view sizes a row to its text so a change bar ends where the terminal
+     stopped printing. This preview is a colour sample, not a transcript: the
+     two bars are the theme's add/remove pair, and they only read as a pair if
+     they share an edge. */
+  .theme-panel .theme-preview .diff-line {
+    width: 100%;
+  }
 
   @media (max-width: 34rem) {
     /* Below this the two columns would each be too narrow for their longest
-       line, and the preview would clip mid-token. */
+       line, and the preview would clip mid-token. The panel gives up its
+       narrowing at the same point — a quarter off a phone is dead space. */
+    .theme-panel {
+      width: 100%;
+    }
     .theme-cols {
       grid-template-columns: minmax(0, 1fr);
     }
