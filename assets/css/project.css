@@ -47,28 +47,33 @@
     --project-theme-hover-transform: scale(1.17) rotate(2deg);
     --project-theme-shadow-tint: 138 55 103;
   }
+  /* Dark halves of the named themes. Deep hues read far more saturated
+     against slate-900 than their light counterparts do against white, so
+     every stop keeps its hue but drops ~40% of its chroma, and the accent
+     blooms sit closer in lightness to the field they wash over — a tint on
+     the surface rather than a glow on top of it. */
   .dark [data-project-theme="notebooks"] {
-    --project-theme-surface: #171b2d;
-    --project-theme-artwork: linear-gradient(118deg, #2b2754 -18%, #1c2036 46%, #38272c 118%);
+    --project-theme-surface: #191c28;
+    --project-theme-artwork: linear-gradient(118deg, #282741 -18%, #1e212e 46%, #312629 118%);
   }
   .dark [data-project-theme="cli"] {
-    --project-theme-surface: #161f2e;
+    --project-theme-surface: #191f2a;
     --project-theme-artwork:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30,58,95,.5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #1a3548 0%, rgba(26,53,72,.45) 36%, transparent 70%),
-      linear-gradient(145deg, #151d2e 10%, #172430 90%);
+      radial-gradient(ellipse 78% 145% at -6% 18%, #223248 0%, rgba(34,50,72,.5) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #21303b 0%, rgba(33,48,59,.45) 36%, transparent 70%),
+      linear-gradient(145deg, #171d29 10%, #1b242c 90%);
   }
   .dark [data-project-theme="kanvas"] {
-    --project-theme-surface: #33251f;
+    --project-theme-surface: #2f2623;
     --project-theme-artwork:
-      radial-gradient(circle at 4% 8%, rgba(170, 92, 44, .48), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(153, 63, 84, .34), transparent 41%),
-      linear-gradient(135deg, #33251f 0%, #3a2c25 52%, #3b2427 100%);
+      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
+      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
   }
   .dark [data-project-theme="onboarding"] {
-    --project-theme-surface: #1f1a28;
+    --project-theme-surface: #1e1b24;
     --project-theme-artwork:
-      conic-gradient(from 218deg at 68% 34%, #2e1f33 0deg, #1e1a2e 96deg, #2a2028 174deg, #382030 258deg, #2e1f33 360deg);
+      conic-gradient(from 218deg at 68% 34%, #29202c 0deg, #1e1b28 96deg, #262025 174deg, #30212b 258deg, #29202c 360deg);
   }
   /* Give the homepage card a more defined stage than the animation itself:
      periwinkle, sky, and mint keep it in the portfolio's palette while the
@@ -85,10 +90,10 @@
   }
   .dark .project.project--themed[data-project-theme="kanvas"] {
     --project-aurora:
-      radial-gradient(circle at 4% 8%, rgba(170, 92, 44, .48), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(153, 63, 84, .34), transparent 41%),
-      linear-gradient(135deg, #33251f 0%, #3a2c25 52%, #3b2427 100%);
-    background-color: #33251f;
+      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
+      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
+    background-color: #2f2623;
   }
 
   /* Projects */
@@ -224,10 +229,13 @@
   }
   /* Dark theme: the same six compositions rebuilt in deep, muted hues that
      mirror each light palette — one quiet step above the slate-900 page.
-     Sizes, focal points, and hover motion inherit from the light variants. */
+     Chroma is held low on purpose: at these lightnesses a hue that looks
+     tasteful on white turns lurid on slate, so each stop trades saturation
+     for hue identity. Sizes, focal points, and hover motion inherit from
+     the light variants. */
   .dark .project {
-    --project-aurora: linear-gradient(118deg, #262347 -12%, #1a1e33 48%, #33252e 112%);
-    background-color: #171b2d;
+    --project-aurora: linear-gradient(118deg, #242338 -12%, #1c1f2b 48%, #2d2429 112%);
+    background-color: #191c28;
   }
   .dark .project::before {
     background-color: rgba(15, 23, 42, .35);
@@ -241,45 +249,45 @@
     color: #a5b4fc;
   }
   .dark .project:nth-child(6n + 1) {
-    --project-aurora: linear-gradient(118deg, #2b2754 -18%, #1c2036 46%, #38272c 118%);
-    background-color: #171b2d;
+    --project-aurora: linear-gradient(118deg, #282741 -18%, #1e212e 46%, #312629 118%);
+    background-color: #191c28;
   }
   .dark .project:nth-child(6n + 2) {
     /* Peach → lavender dusk: warm umber crossing into deep violet. */
     --project-aurora:
-      linear-gradient(42deg, rgba(64,42,32,.85) 0%, rgba(40,32,38,0) 55%),
-      linear-gradient(222deg, rgba(52,44,84,.85) 0%, rgba(36,32,54,0) 52%),
-      linear-gradient(180deg, #251e20 0%, #201d30 100%);
-    background-color: #221d27;
+      linear-gradient(42deg, rgba(54,41,35,.85) 0%, rgba(37,32,36,0) 55%),
+      linear-gradient(222deg, rgba(46,43,66,.85) 0%, rgba(35,33,46,0) 52%),
+      linear-gradient(180deg, #231f20 0%, #201e2b 100%);
+    background-color: #211e25;
   }
   .dark .project:nth-child(6n + 3) {
     /* Mint → seafoam: deep pine with sea-green undertones. */
     --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #1d3d31 0%, rgba(29,61,49,.5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #18342c 0%, rgba(24,52,44,.45) 36%, transparent 70%),
-      linear-gradient(145deg, #14211c 10%, #172822 90%);
-    background-color: #16211c;
+      radial-gradient(ellipse 78% 145% at -6% 18%, #22332c 0%, rgba(34,51,44,.5) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #1f2f2a 0%, rgba(31,47,42,.45) 36%, transparent 70%),
+      linear-gradient(145deg, #17201c 10%, #1b2723 90%);
+    background-color: #18201d;
   }
   .dark .project:nth-child(6n + 4) {
     /* Blush → rose: deep plum with muted rose. */
     --project-aurora:
-      conic-gradient(from 218deg at 68% 34%, #2e1f33 0deg, #1e1a2e 96deg, #2a2028 174deg, #382030 258deg, #2e1f33 360deg);
-    background-color: #1f1a28;
+      conic-gradient(from 218deg at 68% 34%, #29202c 0deg, #1e1b28 96deg, #262025 174deg, #30212b 258deg, #29202c 360deg);
+    background-color: #1e1b24;
   }
   .dark .project:nth-child(6n + 5) {
     /* Amber → cream: deep umber with warm brown. */
     --project-aurora:
-      radial-gradient(ellipse 135% 72% at 50% -14%, #3d3020 0%, rgba(61,48,32,.5) 38%, transparent 72%),
-      linear-gradient(180deg, #2a2218 0%, #1e1c28 58%, #2a2638 118%);
-    background-color: #1f1c18;
+      radial-gradient(ellipse 135% 72% at 50% -14%, #352d24 0%, rgba(53,45,36,.5) 38%, transparent 72%),
+      linear-gradient(180deg, #28231c 0%, #1e1d25 58%, #2a2733 118%);
+    background-color: #1e1c19;
   }
   .dark .project:nth-child(6n + 6) {
     /* Periwinkle → lilac: deep indigo with cool violet. */
     --project-aurora:
-      linear-gradient(42deg, rgba(40,38,75,.85) 0%, rgba(28,32,54,0) 55%),
-      linear-gradient(222deg, rgba(55,48,90,.85) 0%, rgba(36,32,60,0) 52%),
-      linear-gradient(180deg, #1b1f38 0%, #221e35 100%);
-    background-color: #191a2e;
+      linear-gradient(42deg, rgba(38,38,60,.85) 0%, rgba(30,33,46,0) 55%),
+      linear-gradient(222deg, rgba(49,46,71,.85) 0%, rgba(35,34,50,0) 52%),
+      linear-gradient(180deg, #1d2031 0%, #221f2f 100%);
+    background-color: #1a1b28;
   }
   .project.project--themed {
     --project-aurora: var(--project-theme-artwork);
