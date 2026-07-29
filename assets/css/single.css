@@ -265,7 +265,7 @@
     @apply text-slate-400;
   }
 
-  /* Contribution counts closing a project page. No surface of their own — the
+  /* Figures closing a project page. No surface of their own — the
      figures sit straight on the page like the prose above them, with the media
      gap doing all the separating. */
   .single .stat-block {
@@ -320,6 +320,14 @@
   .single .stat-icon--commit { color: #0f9d58; }
   .single .stat-icon--issue { color: #f9ab00; }
   .single .stat-icon--issue-closed { color: #0f9d58; }
+  /* The component-parity glyphs mark which bucket a figure belongs to rather
+     than whether it is good news: blue for the library as a whole, green for
+     the components at parity, and the saturated forms of the Kanvas stage's
+     own orange and pink for the ones still aging or absent. */
+  .single .stat-icon--library { color: #3d90f9; }
+  .single .stat-icon--updated { color: #1f9d6b; }
+  .single .stat-icon--outdated { color: #e8710a; }
+  .single .stat-icon--missing { color: #d3466f; }
   .single .stat-value {
     @apply block font-extrabold text-slate-900;
     font-size: clamp(1.75rem, 3.6vw, 3.25rem);

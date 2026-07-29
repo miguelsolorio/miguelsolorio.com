@@ -1,14 +1,20 @@
-{{/* Contribution counts for the close of a project page. The inner content is
-     one "value | label | icon" row per line, so the numbers stay next to the
-     prose that frames them instead of moving into front matter. `icon` is
-     optional and names one of the glyphs below; `source` is the "owner/repo"
-     GitHub slug the counts came from, rendered as a link to that repository. */}}
+{{/* Figures for the close of a project page. The inner content is one
+     "value | label | icon" row per line, so the numbers stay next to the prose
+     that frames them instead of moving into front matter. `icon` is optional
+     and names one of the glyphs below: the first five carry GitHub
+     contribution states, the rest component-library parity. `source` is also
+     optional and only applies when the figures came from a repository — it
+     takes an "owner/repo" slug and renders a link to it. */}}
 {{- $glyphs := dict
   "pr"     `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6V13"/><circle cx="11.5" cy="12" r="1.6"/><path d="M11.5 10.4V3.2"/><path d="m9.6 5.1 1.9-1.9 1.9 1.9"/>`
   "merge"  `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6v4.1a2.4 2.4 0 0 0 2.4 2.4h2.9"/><circle cx="11.5" cy="12.1" r="1.6"/>`
   "commit" `<path d="M1.6 8h3.8M10.6 8h3.8"/><circle cx="8" cy="8" r="2.6"/>`
   "issue"  `<circle cx="8" cy="8" r="5.7"/><path d="M8 5.3v3.1"/><path d="M8 10.6h.01"/>`
   "issue-closed" `<circle cx="8" cy="8" r="5.7"/><path d="m5.6 8.2 1.7 1.7 3.1-3.7"/>`
+  "library"  `<rect x="2.4" y="2.4" width="5" height="5" rx="1.2"/><rect x="8.6" y="2.4" width="5" height="5" rx="1.2"/><rect x="2.4" y="8.6" width="5" height="5" rx="1.2"/><rect x="8.6" y="8.6" width="5" height="5" rx="1.2"/>`
+  "updated"  `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="m5.5 8.1 1.8 1.8 3.2-3.9"/>`
+  "outdated" `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="M8 5.3V8l2.2 1.6"/>`
+  "missing"  `<path d="M6.2 2.4H4.8a2.4 2.4 0 0 0-2.4 2.4v1.4"/><path d="M2.4 9.8v1.4a2.4 2.4 0 0 0 2.4 2.4h1.4"/><path d="M9.8 13.6h1.4a2.4 2.4 0 0 0 2.4-2.4V9.8"/><path d="M13.6 6.2V4.8a2.4 2.4 0 0 0-2.4-2.4H9.8"/>`
 -}}
 {{- $rows := slice -}}
 {{- range (split .Inner "\n") -}}

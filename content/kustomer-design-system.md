@@ -61,11 +61,12 @@ Over the course of the next 6 months, I helped bring our Figma library up to pai
 
 After several sprints, we were able to make major strides in bringing our component to pairity:
 
-- Updated components improved from 26% to 75%
-- Outdated components decreased from 33% to 5%
-- Missing components decreased from 41% to 17%
-
-{{< image src="impact.png" alt="Visuals of impact" >}}
+{{< stats >}}
+123 | Total components | library
+75% | Updated, up from 26% | updated
+5% | Outdated, down from 33% | outdated
+17% | Missing, down from 41% | missing
+{{< /stats >}}
 
 This allowed our design team to move more efficiently in creating new features without having to worry about if our components were out of date. Our designer to developer hand off transition significantly improved since everyone was using the same terminology and referencing the same components, reducing the issues at implementation.
 
