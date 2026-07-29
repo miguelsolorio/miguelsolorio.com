@@ -45,50 +45,40 @@
 
     <h2 class="section section--work section--side-projects">Projects</h2>
     <div id="side-projects">
-      {{ $smallProjects := where .Site.RegularPages "Params.project" "==" "small" }}
-      {{ $count := len $smallProjects }}
-      {{/* Balanced thirds, e.g. 10 projects -> 4 / 3 / 3. */}}
-      {{ $sizeA := div (add $count 2) 3 }}
-      {{ $rest := sub $count $sizeA }}
-      {{ $sizeB := div (add $rest 1) 2 }}
-      {{ $rowA := first $sizeA $smallProjects }}
-      {{ $rowB := first $sizeB (after $sizeA $smallProjects) }}
-      {{ $rowC := after (add $sizeA $sizeB) $smallProjects }}
-      {{ range $index, $row := (slice $rowA $rowB $rowC) }}
-        <div class="marquee-track{{ if eq (mod $index 2) 1 }} reverse{{ end }}">
-          {{/* Four copies keep the -50% loop seamless even for short rows. */}}
-          {{ range $copy := seq 4 }}
-            {{ range $row }}
-              {{ $metrics := index .Site.Data.project_metrics .File.ContentBaseName }}
-              <a
-                id="{{ .File.ContentBaseName }}-{{ $copy }}"
-                data-project-id="{{ .File.ContentBaseName }}"
-                class="side-project"
-                href="{{ .Params.link }}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img src="{{ .Params.thumbnail | relURL }}" alt="">
-                <div>
-                  <div class="side-project-heading">
-                    <p class="side-project-title">{{ .Title }}</p>
-                    {{ with $metrics }}
-                      <div class="side-project-metrics">
-                        {{ partial "project-metric.html" .primary }}
-                        <span class="side-project-metric-separator" aria-hidden="true"></span>
-                        {{ partial "project-metric.html" .secondary }}
-                      </div>
-                    {{ end }}
-                    <svg class="side-project-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-                    </svg>
-                  </div>
-                  <p class="side-project-description">{{ .Description }}</p>
-                </div>
-              </a>
+      {{/* Reach lives in data/project_metrics.json, not front matter, so pair each
+           page with its count before sorting. Figma "users" and Marketplace
+           "installs" rank together — they render as one download metric. Projects
+           with no entry (reach 0) fall to the end. */}}
+      {{ $ranked := slice }}
+      {{ range where .Site.RegularPages "Params.project" "==" "small" }}
+        {{ $metrics := index $.Site.Data.project_metrics .File.ContentBaseName }}
+        {{ $reach := 0 }}
+        {{ with $metrics }}{{ $reach = .primary.value }}{{ end }}
+        {{ $ranked = $ranked | append (dict "page" . "metrics" $metrics "reach" $reach) }}
+      {{ end }}
+      {{ range sort $ranked "reach" "desc" }}
+        {{ $metrics := .metrics }}
+        {{ with .page }}
+          <a
+            id="{{ .File.ContentBaseName }}"
+            data-project-id="{{ .File.ContentBaseName }}"
+            class="side-project"
+            href="{{ .Params.link }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="{{ .Params.thumbnail | relURL }}" alt="">
+            <p class="side-project-title">{{ .Title }}</p>
+            <p class="side-project-description">{{ .Description }}</p>
+            {{ with $metrics }}
+              <div class="side-project-metrics">
+                {{ partial "project-metric.html" .primary }}
+                <span class="side-project-metric-separator" aria-hidden="true"></span>
+                {{ partial "project-metric.html" .secondary }}
+              </div>
             {{ end }}
-          {{ end }}
-        </div>
+          </a>
+        {{ end }}
       {{ end }}
     </div>
   </div>

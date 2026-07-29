@@ -45,9 +45,6 @@
         @apply bg-slate-800;
         border-color: #334155;
     }
-    .dark #side-projects {
-        --side-projects-edge-color: rgb(15 23 42);
-    }
     .dark .side-project-title {
         @apply text-gray-200;
     }
@@ -56,6 +53,7 @@
     }
     .dark .side-project-metrics {
         @apply text-slate-400;
+        border-top-color: #334155;
     }
     .dark .side-project-metric-separator {
         background: #475569;

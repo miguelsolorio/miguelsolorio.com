@@ -1,8 +1,19 @@
+{{- /* Compact metric label at three significant figures, so 1,796,494 reads
+       "1.8M" rather than rounding a whole 200k away as "2M". A decimal is only
+       added while the scaled value is under 100 (1.8M, 12.9k), and a trailing
+       ".0" is dropped so round numbers stay clean (4k, not 4.0k). */ -}}
 {{- $value := float . -}}
+{{- $unit := "" -}}
+{{- $scaled := $value -}}
 {{- if ge $value 1000000.0 -}}
-  {{- printf "%.0fM" (div $value 1000000.0) -}}
+  {{- $unit = "M" -}}
+  {{- $scaled = div $value 1000000.0 -}}
 {{- else if ge $value 1000.0 -}}
-  {{- printf "%.0fk" (div $value 1000.0) -}}
-{{- else -}}
-  {{- printf "%.0f" $value -}}
+  {{- $unit = "k" -}}
+  {{- $scaled = div $value 1000.0 -}}
 {{- end -}}
+{{- $display := printf "%.0f" $scaled -}}
+{{- if and (ne $unit "") (lt $scaled 100.0) -}}
+  {{- $display = strings.TrimSuffix ".0" (printf "%.1f" $scaled) -}}
+{{- end -}}
+{{- printf "%s%s" $display $unit -}}

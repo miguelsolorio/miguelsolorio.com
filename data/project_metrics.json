@@ -18,16 +18,22 @@
     "updated": "2026-07-20"
   },
   "fluent": {
-    "primary": { "type": "installs", "value": 1796494 },
-    "secondary": { "type": "rating", "value": 5 },
+    "primary": { "type": "installs", "value": 1800992 },
+    "secondary": { "type": "rating", "value": 5, "count": 31 },
     "source": "vscode-marketplace",
-    "updated": "2026-07-20"
+    "updated": "2026-07-28"
+  },
+  "kaleidocode": {
+    "primary": { "type": "users", "value": 2900 },
+    "secondary": { "type": "likes", "value": 111 },
+    "source": "figma-manual",
+    "updated": "2026-07-28"
   },
   "min": {
-    "primary": { "type": "installs", "value": 612098 },
-    "secondary": { "type": "rating", "value": 4.9 },
+    "primary": { "type": "installs", "value": 614115 },
+    "secondary": { "type": "rating", "value": 4.87, "count": 30 },
     "source": "vscode-marketplace",
-    "updated": "2026-07-20"
+    "updated": "2026-07-28"
   },
   "navigator": {
     "primary": { "type": "users", "value": 8000 },
@@ -42,10 +48,10 @@
     "updated": "2026-07-20"
   },
   "symbols": {
-    "primary": { "type": "installs", "value": 888349 },
-    "secondary": { "type": "rating", "value": 4.9 },
+    "primary": { "type": "installs", "value": 892824 },
+    "secondary": { "type": "rating", "value": 4.91, "count": 43 },
     "source": "vscode-marketplace",
-    "updated": "2026-07-20"
+    "updated": "2026-07-28"
   },
   "variables": {
     "primary": { "type": "users", "value": 992 },

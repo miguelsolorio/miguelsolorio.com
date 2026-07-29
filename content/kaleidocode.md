@@ -6,5 +6,5 @@ draft: false
 weight: 3
 project: "small"
 thumbnail: "kaleidocode.png"
-link: "https://kaleidocode.com/"
+link: "https://www.figma.com/community/plugin/736060893363678891/theme-importer-for-visual-studio-code"
 ---
