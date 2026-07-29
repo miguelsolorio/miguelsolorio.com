@@ -80,7 +80,7 @@
     --mouse-fill: #e8eaed;
     --mouse-stroke: #202124;
     --toolbar-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-    --panel-shadow: 0 8px 28px rgb(91 63 224 / 45%);
+    --panel-shadow: 0 8px 28px rgb(54 42 111 / 45%);
     --active-glow: 0 0 10px 0 rgba(138, 180, 248, 0.42),
                    0 0 20px 5px rgba(138, 180, 248, 0.08),
                    0 4px 40px 8px rgba(0, 0, 0, 0.28);
@@ -733,7 +733,7 @@
     }
 
     :root.dark {
-      --panel-shadow: 0 6px 16px -10px rgb(91 63 224 / 75%);
+      --panel-shadow: 0 6px 16px -10px rgb(54 42 111 / 75%);
       --active-glow: 0 0 0 3px rgba(138, 180, 248, 0.1),
                      0 6px 16px -10px rgba(0, 0, 0, 0.8);
       --input-glow: 0 0 0 3px rgba(138, 180, 248, 0.09),

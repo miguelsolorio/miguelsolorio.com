@@ -25,8 +25,8 @@
   --northstar-line: #344557;
   --northstar-card: #17222e;
   --northstar-shadow: 0 2px 7px rgba(0, 0, 0, 0.34), 0 18px 42px rgba(0, 0, 0, 0.26);
-  --northstar-stage-shadow: 0 20px 60px rgb(180 85 44 / 42%);
-  --northstar-stage-shadow-card: 0 2px 7px rgb(180 85 44 / 40%), 0 18px 42px rgb(180 85 44 / 34%);
+  --northstar-stage-shadow: 0 20px 60px rgb(96 54 36 / 42%);
+  --northstar-stage-shadow-card: 0 2px 7px rgb(96 54 36 / 40%), 0 18px 42px rgb(96 54 36 / 34%);
   --demo-color-accent: #6ab7ff;
   --demo-color-text: #edf4fb;
   --demo-color-control: #263543;

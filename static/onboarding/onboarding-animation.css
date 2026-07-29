@@ -60,7 +60,7 @@
   --demo-color-track: #555e68;
   --pointer-color: #f2f5f8;
   --pointer-stroke: #111315;
-  --app-frame-shadow-color: rgb(138 55 103 / 48%);
+  --app-frame-shadow-color: rgb(83 40 65 / 48%);
 }
 
 * { box-sizing: border-box; }

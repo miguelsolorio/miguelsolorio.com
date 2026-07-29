@@ -103,6 +103,9 @@
     border-radius: var(--demo-radius-md);
     box-shadow: 0 12px 28px -8px rgba(52, 41, 255, 0.45);
   }
+  :root.dark body.is-card .cli-stage {
+    box-shadow: 0 12px 28px -8px rgb(36 32 111 / 0.55);
+  }
   /* Keep the footer clear of the cropped edge as the bleed scales. */
   body.is-card .bottom-bar {
     margin-bottom: calc(var(--cli-card-bleed) + 14px);
