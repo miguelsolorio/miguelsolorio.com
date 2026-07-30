@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini CLI settings dialog</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./cli-animation.css?v=5">
+<link rel="stylesheet" href="./diff-view.css?v=3">
+<link rel="stylesheet" href="./theme-dialog.css?v=16">
+<link rel="stylesheet" href="./settings-dialog.css?v=5">
+<script defer src="./settings-dialog.js?v=1"></script>
+</head>
+<body class="demo-scene diff-scene theme-scene settings-scene" data-demo-scene="cli-settings">
+
+<main class="diff-stage">
+  <div class="diff-panel theme-panel settings-panel" data-cli-theme="default">
+    <div class="theme-title">&gt; Settings</div>
+
+    <div class="settings-search" aria-hidden="true">
+      <span class="settings-query"></span><span class="settings-cursor">S</span><span class="settings-placeholder">earch to filter</span>
+    </div>
+
+    <div class="settings-tabs" role="tablist" aria-label="Settings sections">
+      <button type="button" class="settings-tab" role="tab" id="settings-tab-general" data-section="general" aria-selected="true">General</button>
+      <button type="button" class="settings-tab" role="tab" id="settings-tab-display" data-section="display" aria-selected="false">Display</button>
+      <button type="button" class="settings-tab" role="tab" id="settings-tab-advanced" data-section="advanced" aria-selected="false">Advanced</button>
+    </div>
+
+    <button type="button" class="theme-scroll" data-settings-step="-1" aria-label="Highlight the previous setting">&#9650;</button>
+    <ul class="settings-list" role="listbox" tabindex="0" aria-label="Settings">
+      <li class="tool-opt settings-item" role="option" id="setting-vim-mode" data-section="general" data-default="false" data-value="false" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Vim Mode</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable Vim keybindings</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-enable-auto-update" data-section="general" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Enable Auto Update</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable automatic updates.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-enable-notifications" data-section="general" data-default="false" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Enable Notifications</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable terminal run-event notifications for action-required prompts and session completion.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-debug-keystroke-logging" data-section="general" data-default="false" data-value="false" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Debug Keystroke Logging</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable debug logging of keystrokes to the console.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-plan-mode" data-section="general" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Plan Mode</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable Plan Mode for read-only safety during planning.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-enable-session-cleanup" data-section="general" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Enable Session Cleanup</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable automatic session cleanup</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-hide-window-title" data-section="display" data-default="false" data-value="false" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Hide Window Title</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Hide the window title bar</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-hide-tips" data-section="display" data-default="false" data-value="false" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Hide Tips</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Hide helpful tips in the UI</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-hide-banner" data-section="display" data-default="false" data-value="false" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Hide Banner</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Hide the application banner</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-show-memory-usage" data-section="display" data-default="false" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Show Memory Usage</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Display memory usage information in the UI</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-show-line-numbers" data-section="display" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Show Line Numbers</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Show line numbers in the chat.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-show-citations" data-section="display" data-default="false" data-value="false" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Show Citations</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Show citations for generated text in the chat.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-use-ripgrep" data-section="advanced" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Use Ripgrep</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Use ripgrep for file content search instead of the fallback implementation.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-enable-interactive-shell" data-section="advanced" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Enable Interactive Shell</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Use node-pty for an interactive shell experience.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-ide-mode" data-section="advanced" data-default="false" data-value="false" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">IDE Mode</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable IDE integration mode.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-skip-next-speaker-check" data-section="advanced" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Skip Next Speaker Check</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Skip the next speaker check.</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-usage-statistics" data-section="advanced" data-default="true" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Usage Statistics</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable collection of usage statistics</span>
+        </span>
+      </li>
+      <li class="tool-opt settings-item" role="option" id="setting-checkpointing" data-section="advanced" data-default="false" data-value="true" aria-selected="false">
+        <span class="tool-opt-bullet">&#9679;</span>
+        <span class="settings-item-main">
+          <span class="settings-item-top"><span class="settings-item-label">Checkpointing</span><span class="settings-item-value"></span></span>
+          <span class="settings-item-desc">Enable session checkpointing for recovery</span>
+        </span>
+      </li>
+    </ul>
+    <button type="button" class="theme-scroll" data-settings-step="1" aria-label="Highlight the next setting">&#9660;</button>
+
+    <div class="theme-hint">(Use Enter to toggle, Tab to change section, Esc to clear search)</div>
+  </div>
+</main>
+
+</body>
+</html>

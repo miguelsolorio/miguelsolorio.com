@@ -23,8 +23,10 @@
     --code-string:   #a35b00;
     /* The gutter is reference material, not content, so it sits well under the
        code — but only in the shipped panel. The "before" panel overrides it back
-       to the foreground, because the old renderer had no muted tier. */
-    --code-line:     #a2a6b8;
+       to the foreground, because the old renderer had no muted tier. Light mode
+       reads the animation's shared gutter token, so every embed's line numbers
+       land on the same colour; dark keeps its own bluish value below. */
+    --code-line:     var(--diff-gutter);
 
     /* The CLI outlines a pending confirmation in its warning colour. */
     --panel-border:  color-mix(in srgb, var(--warn) 42%, transparent);

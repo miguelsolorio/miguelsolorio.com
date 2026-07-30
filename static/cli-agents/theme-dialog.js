@@ -17,7 +17,7 @@ const initialTheme = document.documentElement.classList.contains("dark") ? "defa
 let active = options.findIndex((option) => option.dataset.cliTheme === initialTheme);
 if (active < 0) active = 0;
 
-function select(index) {
+function select(index, broadcast = true) {
   /* Wrapped so moving past either end continues through the ordered list. */
   active = (index + options.length) % options.length;
 
@@ -30,6 +30,24 @@ function select(index) {
   const option = options[active];
   panel.dataset.cliTheme = option.dataset.cliTheme;
   list.setAttribute("aria-activedescendant", option.id);
+  if (broadcast && channel) channel.postMessage({ type: "theme", theme: option.dataset.cliTheme });
+}
+
+/* The settings dialog on the same page repaints with whatever theme is picked
+   here. BroadcastChannel never echoes to the posting context, so the only loop
+   this guards against is cross-context ping-pong via the broadcast flag. */
+const channel = typeof BroadcastChannel === "undefined" ? null : new BroadcastChannel("cli-theme");
+if (channel) {
+  channel.addEventListener("message", (event) => {
+    const data = event.data || {};
+    if (data.type === "get") {
+      channel.postMessage({ type: "theme", theme: options[active].dataset.cliTheme });
+      return;
+    }
+    if (data.type !== "theme" || data.theme === options[active].dataset.cliTheme) return;
+    const index = options.findIndex((option) => option.dataset.cliTheme === data.theme);
+    if (index >= 0) select(index, false);
+  });
 }
 
 options.forEach((option, index) => {

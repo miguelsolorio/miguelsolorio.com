@@ -283,6 +283,9 @@
     --bg:              var(--theme-bg);
     --text:            var(--theme-fg);
     --text-muted:      var(--theme-secondary);
+    /* The quiet tier: the list numbers and the preview gutter. Light palettes
+       remix it below; dark palettes read their secondary as-is. */
+    --theme-quiet:     var(--theme-secondary);
     --border:          var(--theme-border);
     --panel-border:    var(--theme-border);
 
@@ -302,7 +305,7 @@
     --code-number:     var(--theme-number);
     --code-comment:    var(--theme-comment);
     --code-function:   var(--theme-title);
-    --code-line:       var(--theme-secondary);
+    --code-line:       var(--theme-quiet);
 
     /* Theme diff tints are opaque colours sampled against the theme's own
        background, so they replace both the shared pair and the deepened pair
@@ -313,6 +316,14 @@
     --diff-add-panel:  var(--theme-diff-add);
     --diff-del:        var(--theme-error);
     --diff-add:        var(--theme-success);
+  }
+  /* On the light palettes the secondary tier lands close to body text —
+     #5f5f5f on white reads nearly as loud as the theme names — so the quiet
+     tier steps back toward the surface. Keyed on the palette, not the site
+     theme, so a dark preview under a light page keeps its greys as-is. */
+  .theme-panel[data-cli-theme$="-light"],
+  .theme-panel[data-cli-theme="google-code"] {
+    --theme-quiet: color-mix(in srgb, var(--theme-secondary) 38%, var(--theme-bg));
   }
   /* diff-view.css files Prism's builtin token with the keywords. highlight.js —
      the grammar the CLI actually renders with — puts `print` and `range` in
@@ -459,6 +470,10 @@
      the highlighted row shows it. */
   .theme-item .tool-opt-bullet {
     visibility: hidden;
+    /* Never visible unselected, so it takes the selected colour outright —
+       the base blue in cli-animation.css would otherwise animate blue-to-green
+       the instant a row is highlighted, a visible flash. */
+    color: var(--accent-green);
   }
   .theme-item.selected .tool-opt-bullet {
     visibility: visible;
@@ -469,11 +484,14 @@
   .theme-list:focus-visible .theme-item.selected {
     background: color-mix(in srgb, var(--theme-focus) 26%, transparent);
   }
-  /* Right-aligned, so a two-digit list keeps its periods in one column. */
+  /* Right-aligned, so a two-digit list keeps its periods in one column. The
+     quiet colour loses to the higher-specificity selected rule, so the
+     highlighted row's number keeps its green. */
   .theme-num {
     display: inline-block;
     min-width: 3ch;
     text-align: right;
+    color: var(--theme-quiet);
   }
 
   /* The key hints belong to the dialog, not to the list, so they sit under both

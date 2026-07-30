@@ -15,6 +15,11 @@
     --diff-add-bg:      #c8ead8;
     --diff-del:         #dc2626;
     --diff-add:         #16a34a;
+    /* The gutter's quiet tier. In light mode diff-view.css panels read this
+       token and the theme picker's list numbers match its recipe, so every
+       embed's line numbers land on the same colour; dark palettes keep their
+       own designed values. */
+    --diff-gutter:      color-mix(in srgb, var(--text-muted) 38%, var(--bg));
     --demo-color-accent: var(--accent-blue);
     --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 16%, var(--bg));
     --demo-color-text: var(--text);
@@ -40,6 +45,8 @@
     --diff-add-bg:      rgba(34, 197, 94, 0.12);
     --diff-del:         #f87171;
     --diff-add:         #4ade80;
+    /* 45% keeps the exact composite the old `opacity: .45` gutter produced. */
+    --diff-gutter:      color-mix(in srgb, var(--text-muted) 45%, var(--bg));
     --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 24%, var(--bg));
   }
 
@@ -371,7 +378,7 @@
     border-bottom-right-radius: 6px;
     border-bottom-left-radius: 6px;
   }
-  .diff-ln   { flex: none; width: 26px; text-align: right; padding-right: 10px; color: var(--text-muted); opacity: 0.45; user-select: none; font-size: 11px; transition: color 0.3s ease; }
+  .diff-ln   { flex: none; width: 26px; text-align: right; padding-right: 10px; color: var(--diff-gutter); user-select: none; font-size: 11px; transition: color 0.3s ease; }
   .diff-sign { flex: none; width: 12px; margin-right: 8px; user-select: none; }
   .diff-line-del .diff-sign { color: var(--diff-del); }
   .diff-line-add .diff-sign { color: var(--diff-add); }
