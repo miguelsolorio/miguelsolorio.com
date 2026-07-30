@@ -3,24 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notebook message interactions</title>
+<title>Notebook plan mode</title>
 <script src="/demo-system/demo-system.js?v=2"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=block">
 <link rel="stylesheet" href="/demo-system/demo-system.css?v=2">
 <link rel="stylesheet" href="./cell-animation.css?v=8">
-<link rel="stylesheet" href="./message-animation.css?v=8">
+<link rel="stylesheet" href="./message-animation.css?v=7">
+<link rel="stylesheet" href="./plan-animation.css?v=6">
 </head>
 <body class="demo-scene demo-scene--notebook" data-demo-scene="notebook">
 
 <div class="frame">
 <div class="notebook" id="notebook"></div>
-
-<div class="sel-actions" id="selActions">
-  <button id="chatBtn"><span class="msym">chat_paste_go</span>Chat</button>
-  <button id="modifyBtn"><span class="msym">edit_note</span>Modify</button>
-  <button id="explainBtn"><span class="msym">help</span>Explain</button>
-</div>
 
 <div class="chat" id="chat">
   <!-- the landing starts open: run() removes and re-adds .show in one task, so
@@ -32,9 +27,24 @@
   </div>
   <div class="chat-log" id="chatLog"></div>
   <div class="chat-input" id="chatInput">
-    <div class="chat-chip" id="chatChip">
-      <span class="msym chat-chip-icon">code</span>
-      <span class="chat-chip-label" id="chatChipLabel"></span>
+    <!-- anchored above the composer; typing "/" reveals it -->
+    <div class="slash-menu" id="slashMenu">
+      <button id="menuPlan">
+        <span class="msym">checklist</span>
+        <span class="slash-text"><span class="slash-label">Plan</span><span class="slash-desc">Generate a plan</span></span>
+      </button>
+      <button id="menuLearn">
+        <span class="msym">school</span>
+        <span class="slash-text"><span class="slash-label">Learn</span><span class="slash-desc">Guided learning</span></span>
+      </button>
+      <button id="menuViz">
+        <span class="msym">monitoring</span>
+        <span class="slash-text"><span class="slash-label">Visualize</span><span class="slash-desc">Create visualizations</span></span>
+      </button>
+    </div>
+    <div class="chat-chip chat-chip--mode" id="chatChip">
+      <span class="msym chat-chip-icon">checklist</span>
+      <span class="chat-chip-label" id="chatChipLabel">Plan</span>
       <span class="msym chat-chip-close">close</span>
     </div>
     <div class="chat-input-row">
@@ -60,6 +70,6 @@
   </svg>
 </div>
 
-<script src="./message-animation.js?v=6"></script>
+<script src="./plan-animation.js?v=5"></script>
 </body>
 </html>

@@ -25,6 +25,16 @@
     --hero-name: #a9b6f0;
   }
 
+  /* ---------- Gemini accent ---------- */
+  /* The nameplate and the border of the cell it tags are one accent, and on
+     light surfaces cell-animation.css's --gemini reads as a second blue beside
+     the links and the selection underline. Pull both to --link. Dark keeps the
+     inherited fill: white nameplate text needs the darker blue behind it, and
+     there --active-border is already the link colour. */
+  :root { --active-border: var(--link); }
+  .gemini-tag { background: var(--link); }
+  :root.dark .gemini-tag { background: var(--gemini); }
+
   /* ---------- first paint ---------- */
   /* Nothing here is presentable until two things have happened: the icon font
      has resolved, since every Material Symbols ligature lays out at the width

@@ -18,62 +18,23 @@ As the lead designer, I partnered with our engineering and product teams to reim
 
 # Understanding the Problem
 
-Colab had added AI features incrementally over the years, but the experience felt bolted on. Code generation was limited to single cells, there was no continuity across chat sessions, and users had to context-switch between writing code and asking for help in the side panel. Below is an example of the first Colab agent that shipped in 2024.
+Colab's AI features were added incrementally over the years and like an afterthought. Code generation was limited to a single cell, there was no continuity across chat sessions, and users had to context-switch between writing code in the notebook canvas and asking for help in the side panel.
 
 {{< image src="og-dsa.png" alt="Original version of Colab's data science agent" gradient="true" >}}
 
 {{< caption text="Early conceptual design for Colab's data science agent" >}}
 
-We heard from our users that they wanted to stay in the flow, not copy-paste errors into a chat window or re-explain what they were working on every time they needed assistance. The opportunity was to make AI more fluid: always aware of where you are, what you've run, and where you're trying to go.
+We heard from our users that they wanted to stay in the flow, not copy-paste errors into a chat window or re-explain what they were working on. The opportunity was to make AI more fluid and seamless that's aware of where you are, what you've run, and where you're trying to go.
 
 # Designing the Interaction Model
 
-Early exploration surfaced a fundamental tension: how do you make AI easy to invoke without cluttering a surface that people rely on for dense, focused work? Notebooks are already visually complex with cells, outputs, sidebars, toolbars — and adding a chat panel risked making things feel even heavier.
+Early exploration surfaced a fundamental tension: how do you make AI easy to invoke without adding more noise? Notebooks are already visually complex with cells, outputs,  toolbars, and adding a chat panel risked making things feel even heavier.
 
-{{< image src="intro.png" alt="Overview of the AI-first Colab interface with Gemini integration" gradient="true" frame_class="project-embed--cutout" >}}
+{{< iframe src="/colab-notebooks/plan-animation.html" height="710" title="Choosing Plan mode from the composer slash menu, reviewing Gemini's analysis plan, then auto-running it cell by cell" theme="notebooks" >}}
+{{< caption text="Plan mode: Gemini proposes a multi-step analysis plan to execute cell by cell" >}}
 
-{{< caption text="Variations of Colab's AI agent from code generation to explaining and fixing errors" >}}
-
-I explored a range of entry points, from inline cell overlays to a floating panel, before landing on a two-mode approach. A compact prompt box in the center toolbar handles quick requests — generate a function, fix this error, explain this output — without breaking the reading flow. A persistent side panel opens for longer conversations or when users want to iterate deeply on a problem.
-
-{{< iframe src="/colab-notebooks/message-animation.html" height="710" title="Selecting code in a notebook cell to ask Gemini to modify it, then accepting and running the change" theme="notebooks" >}}
-
-{{< caption text="Selecting code to refine it in place, then accepting and running the change" >}}
-
-The key design principle was that both surfaces should feel like the same conversation. Context carries over seamlessly — you can start a quick prompt from the toolbar and continue it in the panel without losing thread.
-
-{{< image src="composer-footer.png" alt="Overview of the AI-first Colab interface with Gemini integration" gradient="true" frame_class="project-embed--cutout" >}}
-
-{{< caption text="Variations of Colab's AI agent from code generation to explaining and fixing errors" >}}
-
-# Agentic UX and Trust
-
-One of the hardest problems was earning trust with power users. Experienced developers are rightly skeptical of AI that silently rewrites their code. We needed a pattern that made proposed changes transparent and easy to accept, reject, or refine.
-
-The solution was a diff view surfaced inline before any change is applied. Gemini proposes modifications as a clearly marked before/after comparison; the user reviews and accepts or discards each suggestion individually. Nothing runs without explicit confirmation.
-
-I also worked to establish guardrails around destructive operations — deleting cells, overwriting outputs, or running untested code. The pattern distinguishes read-only analysis from actions with side effects, and surfaces confirmations only where the stakes are real. The goal was minimal friction for safe operations, clear checkpoints for risky ones.
-
-# Data Science Agent
-
-The Data Science Agent presented a different design challenge: how do you show an AI doing multi-step work — cleaning data, running analysis, evaluating results — in a way that keeps users oriented and in control rather than watching a black box run?
-
-I designed an execution view that surfaces the agent's plan upfront before it runs any code, so users can understand the intent and redirect early if it's heading the wrong direction. As the agent executes, each step appears with its status, making progress legible. At any point, the user can interrupt and provide feedback that steers the remaining steps.
-
-The output format also required careful thinking. Rather than dumping raw results, the agent synthesizes findings into a readable summary with supporting visualizations — publication-ready charts generated automatically from the analysis. I worked closely with engineering to define the handoff between agent output and the notebook's cell structure so results felt native rather than imported.
-
-# Explorations and Iterations
-
-The project went through several significant pivots. An early direction treated the AI as a dedicated sidebar — always visible, always ready. User testing showed this felt intrusive for users who weren't using AI features, and it competed for attention with the notebook content itself.
-
-A second direction embedded prompting directly into each cell, surfacing a small AI icon on hover. This tested well for discoverability but made it harder to maintain context across cells — every interaction felt isolated.
-
-The final two-mode model emerged from synthesizing those learnings: lightweight entry for quick tasks, a richer surface for sustained collaboration. The side panel in particular benefited from treating it as a conversation log rather than a command interface — scrollable, persistent, and aware of the full session history.
-
-Feedback from the Google Labs beta shaped several late-stage decisions, including the addition of the interactive feedback loop within the Data Science Agent and clearer labeling for when Gemini is acting versus waiting for input.
+We knew that users needed to have their focus on the notebook canvas and they didn't like context switching between panels, so we opted to place the AI agent directly into the notebook canvas. A small window sits in the canvas for quick prompts, while a richer side panel is available for displaying higher density information.
 
 # Impact
 
 The redesigned experience launched at Google I/O 2025 and became available to all users on June 24, 2025. Earlier Gemini integrations in Colab had already shown over 2x efficiency gains in coding workflows — the AI-first redesign extended that across the full data science lifecycle, from initial exploration through model evaluation.
-
-The project established a repeatable pattern for agentic notebook UX: ambient context awareness, diff-based transparency, and layered control that scales from a quick prompt to a fully autonomous analytical run.
