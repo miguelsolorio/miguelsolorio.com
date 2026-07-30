@@ -63,6 +63,17 @@
     overflow-wrap: anywhere;
   }
 
+  /* The generated cells carry the same green pending-diff highlight as the
+     other notebook scenes. Where those switch a finished cell to .accepted,
+     this one lands every cell as .added and clears that flag on the first
+     accept, so the line highlight follows .added instead.
+
+     The child combinator matters: streamDiff builds its own .hl inside a slot
+     for the second turn, and that one is green on its own terms, long after
+     .added has gone. Only the wrapper the line itself owns is switched here. */
+  .line > .hl { background: transparent; }
+  .cell-row.added .line > .hl { background: var(--highlight); }
+
   /* ---------- landing hero ---------- */
   /* The greeting and the suggestion chips bracket the composer pill in its
      empty state, then collapse away once the first prompt is sent. Both use

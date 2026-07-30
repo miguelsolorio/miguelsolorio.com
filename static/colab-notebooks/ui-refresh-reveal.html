@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colab UI refresh, before and after</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./ui-refresh-reveal.css?v=2">
+</head>
+<body class="demo-scene demo-scene--reveal" data-demo-scene="ui-refresh-reveal">
+
+<!-- Both shots are stacked at full size and the original is clipped over the
+     refreshed one, so the divider wipes rather than cross-fades. The images
+     carry the alt text; the tags repeat it visually, so they stay out of the
+     accessibility tree instead of being announced twice. -->
+<main class="reveal" id="reveal" style="--pos: 50%">
+
+  <img class="reveal-shot" id="shotAfter" src="./ui-refresh-after.png"
+       alt="Colab's refreshed interface">
+  <span class="reveal-tag reveal-tag--after" aria-hidden="true">After</span>
+
+  <!-- The Before tag lives inside the clipped layer on purpose: when the
+       divider runs to the left edge the label is wiped away with the shot it
+       names, so a tag can never sit over the wrong screenshot. -->
+  <div class="reveal-clip">
+    <img class="reveal-shot" id="shotBefore" src="./ui-refresh-before.png"
+         alt="Colab's interface before the refresh">
+    <span class="reveal-tag reveal-tag--before" aria-hidden="true">Before</span>
+  </div>
+
+  <div class="reveal-divider" aria-hidden="true"></div>
+
+  <div class="reveal-handle" id="handle"
+       role="slider" tabindex="0"
+       aria-label="Reveal the refreshed interface"
+       aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
+       aria-valuetext="Half original, half refreshed">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M10 8.5 6.5 12l3.5 3.5"/>
+      <path d="M14 8.5 17.5 12 14 15.5"/>
+    </svg>
+  </div>
+</main>
+
+<script src="./ui-refresh-reveal.js?v=3"></script>
+</body>
+</html>

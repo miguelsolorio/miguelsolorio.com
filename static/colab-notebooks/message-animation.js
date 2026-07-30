@@ -157,6 +157,15 @@ function buildCell(cellLines) {
   for (const tokens of cellLines) {
     const line = document.createElement("div");
     line.className = "line on";
+    /* Tokens hang off an .hl wrapper rather than off the line itself, the same
+       way cell-animation.js builds them, so a generated cell reads as a pending
+       diff until it is accepted. Empty lines are left bare: a wrapper with no
+       text in it would paint a green sliver in the gap. */
+    const host = tokens.length ? document.createElement("span") : null;
+    if (host) {
+      host.className = "hl";
+      line.appendChild(host);
+    }
     for (const [text, cls, id] of tokens) {
       const span = document.createElement("span");
       if (cls) span.className = "tok-" + cls;
@@ -170,7 +179,7 @@ function buildCell(cellLines) {
       } else {
         span.textContent = text;
       }
-      line.appendChild(span);
+      host.appendChild(span);
     }
     code.appendChild(line);
   }

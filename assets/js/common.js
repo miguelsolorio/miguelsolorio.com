@@ -337,4 +337,26 @@
   palette.addEventListener('mousedown', (event) => {
     if (event.target !== input) event.preventDefault();
   });
+
+  /* Poster videos: the big play button is the only affordance until first
+     playback, then the browser's own controls take over. Markup keeps the
+     controls attribute so the video stays playable without JS. */
+  document.querySelectorAll('.video-play-button').forEach((button) => {
+    const video = button.parentElement?.querySelector('video');
+    if (!video) return;
+    video.removeAttribute('controls');
+    const beginPlayback = () => {
+      if (button.hidden) return;
+      button.hidden = true;
+      video.controls = true;
+      video.play();
+      video.focus({ preventScroll: true });
+    };
+    button.addEventListener('click', beginPlayback);
+    video.addEventListener('click', beginPlayback);
+    video.addEventListener('play', () => {
+      button.hidden = true;
+      video.controls = true;
+    });
+  });
 })();

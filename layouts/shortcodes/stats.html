@@ -8,7 +8,10 @@
      pair rather than restated by hand, so the two can never drift apart.
 
      `tone` is optional and names a row in the table below. Each tone carries a
-     colour and a glyph; which one shows depends on `bars`.
+     colour and a glyph; which one shows depends on `bars`. The table is grouped
+     by the kind of figure it describes — contributions to a repository, the
+     state of a component library, then product outcomes — because a glyph only
+     reads as the right one next to the sort of number it was drawn for.
 
      `bars` turns the movements into a pair of stacked bars above the badges,
      one for the before reading and one for the after. Use it only when the
@@ -27,6 +30,8 @@
   "updated"      (dict "color" "#1f9d6b" "glyph" `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="m5.5 8.1 1.8 1.8 3.2-3.9"/>`)
   "outdated"     (dict "color" "#e8710a" "glyph" `<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.4"/><path d="M8 5.3V8l2.2 1.6"/>`)
   "missing"      (dict "color" "#d3466f" "glyph" `<path d="M6.2 2.4H4.8a2.4 2.4 0 0 0-2.4 2.4v1.4"/><path d="M2.4 9.8v1.4a2.4 2.4 0 0 0 2.4 2.4h1.4"/><path d="M9.8 13.6h1.4a2.4 2.4 0 0 0 2.4-2.4V9.8"/><path d="M13.6 6.2V4.8a2.4 2.4 0 0 0-2.4-2.4H9.8"/>`)
+  "speed"        (dict "color" "#3d90f9" "glyph" `<path d="M2.94 11.4a5.6 5.6 0 1 1 10.12 0"/><path d="M8 11.4 10.5 7.1"/><circle cx="8" cy="11.4" r="1.1"/>`)
+  "satisfaction" (dict "color" "#1f9d6b" "glyph" `<circle cx="8" cy="8" r="5.7"/><path d="M5.6 9.3a3 3 0 0 0 4.8 0"/><path d="M6.2 6.4h.01"/><path d="M9.8 6.4h.01"/>`)
 -}}
 {{- $carets := dict
   "up"   `<path d="M5 1.2 9.2 8.4H.8z"/>`

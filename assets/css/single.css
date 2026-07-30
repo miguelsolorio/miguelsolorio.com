@@ -121,6 +121,18 @@
     height: clamp(20rem, 61.75vw, 45rem);
     margin: 0;
   }
+  /* A scene that is nothing but two screenshots wants the screenshots' own
+     proportions, not a height guessed in viewport units: the ratio below is the
+     shots' (1728x931), so the frame meets them exactly at every width and the
+     scene never letterboxes or clips. Swapping in a differently shaped pair
+     means changing this one ratio. */
+  .single .project-embed--reveal iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: 1728 / 931;
+  }
   .single h1 {
     @apply font-bold mb-4;
     margin-top: var(--heading-lead);
@@ -172,6 +184,54 @@
     box-shadow: none;
     filter: drop-shadow(0 2px 6px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
             drop-shadow(0 12px 28px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
+  }
+  /* Poster videos show one large play affordance instead of the browser's
+     control bar (common.js swaps them at first play), so the poster reads as
+     a designed thumbnail rather than a chrome-heavy player. The stage has
+     equal padding on all sides, so centering in it centers on the video. */
+  .single .project-embed--media {
+    position: relative;
+  }
+  .single .video-play-button {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: clamp(4.5rem, 10vw, 6rem);
+    height: clamp(4.5rem, 10vw, 6rem);
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / .25);
+    border-radius: 9999px;
+    background-color: rgb(0 0 0 / .55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    cursor: pointer;
+    transition: transform .18s ease, background-color .18s ease;
+  }
+  .single .video-play-button:hover,
+  .single .video-play-button:focus-visible {
+    background-color: rgb(0 0 0 / .72);
+    transform: scale(1.06);
+  }
+  .single .video-play-button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+  .single .video-play-button[hidden] {
+    display: none;
+  }
+  /* Optical centering lives in the glyph itself — Material's play_arrow
+     path is drawn right of its viewBox center — so the svg needs no nudge. */
+  .single .video-play-button svg {
+    width: 46%;
+    height: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .single .video-play-button {
+      transition: none;
+    }
   }
   /* The notebook scene has a transparent canvas and should blend directly
      into its gradient stage instead of looking like a nested panel. */

@@ -20,9 +20,9 @@ As the lead designer, I partnered with our engineering and product teams to reim
 
 Colab's AI features were added incrementally over the years and like an afterthought. Code generation was limited to a single cell, there was no continuity across chat sessions, and users had to context-switch between writing code in the notebook canvas and asking for help in the side panel.
 
-{{< image src="og-dsa.png" alt="Original version of Colab's data science agent" gradient="true" >}}
+{{< image src="colab-original.png" alt="Original version of Colab's per-cell generative feature" gradient="true" >}}
 
-{{< caption text="Early conceptual design for Colab's data science agent" >}}
+{{< caption text="Original version of Colab's per-cell generative feature" >}}
 
 We heard from our users that they wanted to stay in the flow, not copy-paste errors into a chat window or re-explain what they were working on. The opportunity was to make AI more fluid and seamless that's aware of where you are, what you've run, and where you're trying to go.
 
@@ -35,6 +35,27 @@ Early exploration surfaced a fundamental tension: how do you make AI easy to inv
 
 We knew that users needed to have their focus on the notebook canvas and they didn't like context switching between panels, so we opted to place the AI agent directly into the notebook canvas. A small window sits in the canvas for quick prompts, while a richer side panel is available for displaying higher density information.
 
+# Refreshing the Interface
+
+Designing for the agent kept surfacing the limits of UI patterns that hadn't changed in years, so I drove a refresh alongside the agent work — one that felt lightweight and easy to use, and aligned closer to Google's Workspace suite of products (Docs, Sheets, Slides, etc). I authored and owned the design spec, running review sessions over several months that folded in feedback from across the team, then paired it with a phased rollout so engineering could ship changes incrementally. That document became the single source of truth for the refresh and fed directly into the team's roadmap and OKRs.
+
+{{< iframe src="/colab-notebooks/ui-refresh-reveal.html" height="580" title="Drag the divider to wipe between Colab's original interface and the refreshed one" theme="notebooks" frame_class="project-embed--reveal" >}}
+
+{{< caption text="Drag the divider to compare the two directly" >}}
+
+# Google I/O
+
+We shipped Colab's AI-first redesign at Google I/O 2025 and it became available to all users on June 24, 2025. Across the full data science lifecycle, the agentic workflow increased user efficiency by 4.9x and earned an 82% user satisfaction rating.
+
+{{< video src="ai-video-May2026.mp4" poster="ai-video-May2026-poster.png" alt="Launch video walking through the agentic Colab experience" gradient="true" >}}
+
+{{< caption text="The launch video announcing the agentic experience" >}}
+
 # Impact
 
-The redesigned experience launched at Google I/O 2025 and became available to all users on June 24, 2025. Earlier Gemini integrations in Colab had already shown over 2x efficiency gains in coding workflows — the AI-first redesign extended that across the full data science lifecycle, from initial exploration through model evaluation.
+Shipping this meant giving direction to a genuinely ambiguous problem. The team held diverging ideas about what an AI-first notebook should be, so I helped create the vision that aimed at improving the very issues our users kept describing to us. You can read the feedback from our users to see how they felt about the big changes.
+
+{{< stats >}}
+4.9x | Increase in user efficiency | speed
+82% | User satisfaction rating | satisfaction
+{{< /stats >}}
