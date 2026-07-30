@@ -16,9 +16,9 @@
     --para-gap: 1.15em;
     /* Reading measure for prose. Media escapes it via the wide track. */
     --text-measure: 50rem;
-    /* The masthead rule and the stat row read as dividers of the prose rather
-       than part of it when they run a little past its edges, without reaching
-       the media. Both sit in the wide track and size back down to this. */
+    /* The masthead rule reads as a divider of the prose rather than part of
+       it when it runs a little past its edges, without reaching the media. It
+       sits in the wide track and sizes back down to this. */
     --rule-overhang: 2rem;
     --wide-measure: calc(var(--text-measure) + var(--rule-overhang) + var(--rule-overhang));
     /* Text sits in the centre track and visuals span the whole shell. Every
@@ -42,7 +42,6 @@
   .single > iframe,
   .single > .project-embed,
   .single > .media-caption,
-  .single > .stat-block,
   .single > .separator {
     grid-column: wide;
   }
@@ -267,12 +266,9 @@
      figures sit straight on the page like the prose above them, with the media
      gap doing all the separating. */
   .single .stat-block {
-    /* Shares the masthead rule's edge: wide enough to keep four figures on one
-       row, inset enough to read as part of the prose it closes. */
-    width: var(--wide-measure);
-    max-width: 100%;
+    /* Sits on the prose measure so the figures align with the text they
+       close; four figures still fit one row inside it. */
     margin-block: var(--media-gap);
-    margin-inline: auto;
   }
   .single .stat-source {
     @apply text-slate-500 m-0;
