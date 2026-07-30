@@ -6,13 +6,13 @@ draft: false
 weight: 1
 project: "large"
 thumbnail: "agentic-notebooks.png"
-card_animation: "/colab-notebooks/cell-animation.html"
+card_animation: "/colab-notebooks/message-animation.html"
 card_theme: "notebooks"
 ---
 
 As the lead designer, I partnered with our engineering and product teams to reimagine Colab as an AI-first coding environment. The goal was to move beyond static AI suggestions and make Gemini an integrated and collaborative partner, one that understands your entire notebook and not just the cell in front of it.
 
-{{< iframe src="/colab-notebooks/cell-animation.html" height="740" title="Gemini generating notebook cells from a prompt, with accept and reject controls" theme="notebooks" >}}
+{{< iframe src="/colab-notebooks/message-animation.html" height="710" title="Selecting code in a notebook cell to ask Gemini to modify it, then accepting and running the change" theme="notebooks" >}}
 
 {{< caption text="A micro-interaction of Gemini in Colab" >}}
 

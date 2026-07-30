@@ -124,6 +124,26 @@
   .chat-chips button.hover { background: var(--action-hover); }
   .chat-chips button.pressed { background: var(--surface-pressed); }
 
+  /* The homepage card lays its own outlined project title across the middle of
+     the frame, so the greeting reads as a second heading competing with it.
+     Drop the hero there and let the composer be what the card centres on.
+     Centring the pill takes more than removing the hero: the landing collapses
+     the notebook to nothing, so the chat is the whole frame, and body's flex
+     centring would land on the pill and its suggestions as a group — leaving
+     the pill sitting high by half the chips. Taking the chips out of flow makes
+     the pill the chat's only laid-out row, so the centre falls on the pill
+     itself. They are absolute only through the landing; the collapse that ends
+     it puts them back to display:none for the rest of the scene. */
+  body.is-card .hero { display: none; }
+  body.is-card .chat { position: relative; }
+  body.is-card .chat-chips {
+    position: absolute;
+    top: calc(100% + 16px);   /* the .chat flex gap they no longer take part in */
+    left: 0;
+    right: 0;
+    margin-top: 0;
+  }
+
   /* ---------- code selection ---------- */
   /* Split into two spans so the drag can grow one while the tail shrinks,
      keeping the line's character positions fixed while the selection sweeps. */

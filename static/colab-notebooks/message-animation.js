@@ -680,7 +680,8 @@ async function run(context) {
    than it renders. */
 function start() {
   /* No cardStartMs: unlike cell-animation this scene opens on the landing
-     hero, which is the hook, so card mode plays from the top. */
+     composer, which is the hook, so card mode plays from the top. (The card
+     hides the greeting above it — see the card-mode block in the stylesheet.) */
   window.messageDemo = DemoSystem.createPlayer({
     run,
     cardLoopDelay: 3000,
