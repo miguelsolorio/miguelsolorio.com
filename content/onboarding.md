@@ -105,6 +105,10 @@ Since each walkthrough displayed different content, we introduced a new abstract
 
 {{< image src="theme2.png" >}}
 
+# Impact
+
+
+
 {{< stats source="microsoft/vscode" >}}
 160 | Pull requests opened | pr
 147 | Pull requests merged | merge
