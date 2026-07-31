@@ -32,7 +32,7 @@
     /* Body links: the light resting blue (#241bc7) all but vanishes on
        slate-900, so rest on a light indigo instead. The hover fill (white on
        #3429ff) already passes contrast and stays shared with light mode. */
-    .dark .site-content a:not(.project):not(:has(img, picture, video, canvas)) {
+    .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)) {
         color: #a5b4fc;
     }
 
@@ -73,5 +73,38 @@
     .dark .single .stat-icon--commit { color: #81c995; }
     .dark .single .stat-icon--issue { color: #fdd663; }
     .dark .single .stat-icon--issue-closed { color: #81c995; }
+
+    .dark .single .quote-card {
+        @apply bg-slate-800;
+        border-color: #334155;
+    }
+    /* The indigo glow vanishes against slate-900; plain depth instead. */
+    .dark .single a.quote-card:hover,
+    .dark .single a.quote-card:focus-visible {
+        box-shadow: 0 10px 24px -12px rgb(0 0 0 / .6);
+    }
+    .dark .single a.quote-card:focus-visible {
+        outline-color: #818cf8;
+    }
+    .dark .single .quote-name {
+        @apply text-gray-200;
+    }
+    .dark .single .quote-handle {
+        @apply text-slate-400;
+    }
+    .dark .single .quote-logo {
+        color: #f8fafc;
+    }
+    .dark .single .quote-avatar--fallback {
+        color: #64748b;
+        background: #334155;
+    }
+    .dark .single .quote-text {
+        @apply text-slate-200;
+    }
+    .dark .single .quote-text mark {
+        color: #a5b4fc;
+        background: rgb(129 140 248 / .16);
+    }
 
 }

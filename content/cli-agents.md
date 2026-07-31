@@ -65,6 +65,32 @@ The non-interactive script mode was an iteration that came directly from communi
 
 Gemini CLI launched on June 25, 2025, as a free, open-source agent available to any developer with a Google account. The generous free tier - powered by Gemini 2.5 Pro - made it accessible to individual developers, students, and open-source contributors without any billing setup.
 
+The reaction was immediate. Within days, developers were sharing workflows built around the free tier and the 1M-token context window - and as the UI work landed over the following months, the polish itself started showing up in the feedback.
+
+{{< quotes >}}
+
+    {{< quote name="Santiago" handle="@svpino" avatar="avatars/svpino.jpg" source="twitter" link="https://x.com/svpino/status/1940858081786937643" >}}
+    I started using the Gemini CLI today, and ==I don’t want to go to sleep.==
+    {{< /quote >}}
+
+    {{< quote name="elvis" handle="@omarsar0" avatar="avatars/omarsar0.jpg" source="twitter" link="https://x.com/omarsar0/status/1942418143609033115" >}}
+    Gemini CLI with MCP servers is ==a match made in heaven!== It's amazing for coding use cases.
+    {{< /quote >}}
+
+{{< quote name="kache" handle="@yacineMTB" avatar="avatars/yacinemtb.jpg" source="twitter" link="https://x.com/yacineMTB/status/1938045272900120639" >}}
+==i honestly can't believe gemini cli is free==...that's actually just going to slaughter everyone
+{{< /quote >}}
+{{< quote name="asadm" source="hackernews" link="https://news.ycombinator.com/item?id=44377180" >}}
+I have been using this for about a month and ==it's a beast== … I have thrown very large codebases at this and it has been able to navigate and learn them effortlessly.
+{{< /quote >}}
+{{< quote name="DoggishOrphan" handle="r/GeminiAI" source="reddit" link="https://www.reddit.com/r/GeminiAI/comments/1lnz4rf/using_gemini_cli_is_fucking_awesome_im_having_a/" >}}
+==I'm having a blast== building my personal AI's brain from the command line.
+{{< /quote >}}
+{{< quote name="williamtkelley" handle="r/GeminiCLI" source="reddit" link="https://www.reddit.com/r/GeminiCLI/comments/1owk1em/major_ui_improvements_to_gemini_cli/nor1k4y/" >}}
+==The UI improvements are nice== and the future UI roadmap looks good too.
+{{< /quote >}}
+{{< /quotes >}}
+
 Because the work happened in the open, the design contribution is traceable in the repository itself: **59 pull requests opened** and **39 merged**, **44 commits on main**, and **22 issues filed** to document a problem before fixing it. That work also carried past the CLI - the project established a shared foundation with Gemini Code Assist's agent mode in VS Code, so patterns developed here - tool use conventions, MCP extensibility, GEMINI.md configuration - shaped the editor experience too, and with it what it means to build a trustworthy, practical AI agent for the workflows developers already live in.
 
 {{< stats source="google-gemini/gemini-cli" >}}

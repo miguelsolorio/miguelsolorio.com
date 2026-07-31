@@ -1,0 +1,16 @@
+{{/* Lays quote cards out side by side instead of stacked: wrap two or more
+     {{< quote >}} calls and they share rows, up to three across on the full
+     text measure - two or three share one row, more wrap into rows of three
+     - falling back to a single column once a card would drop under a
+     readable width. The cards in a row stretch to the tallest of them, so a
+     short remark next to a long one still reads as a pair.
+
+     The wrapper carries the block's media-gap margin and zeroes the cards'
+     own, the same trade the stat grid makes, so a run of quotes spaces like
+     one block rather than several. */}}
+{{- if not (strings.Trim .Inner " \t\r\n") -}}
+  {{- errorf "quotes shortcode in %s: needs {{< quote >}} calls between its opening and closing tags" $.Page.File.Path -}}
+{{- end -}}
+<div class="quote-grid">
+{{ .Inner }}
+</div>

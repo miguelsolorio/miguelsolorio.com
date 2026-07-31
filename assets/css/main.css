@@ -43,7 +43,7 @@
     margin-inline: auto;
   }
 
-  .site-content a:not(.project):not(:has(img, picture, video, canvas)) {
+  .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)) {
     @apply underline;
     margin-inline: -.2em;
     padding-inline: .2em;
@@ -57,8 +57,8 @@
     box-shadow: 0 0 0 transparent;
     transition: color .22s ease, background-size .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s cubic-bezier(.2, .8, .2, 1);
   }
-  .site-content a:not(.project):not(:has(img, picture, video, canvas)):hover,
-  .site-content a:not(.project):not(:has(img, picture, video, canvas)):focus-visible {
+  .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)):hover,
+  .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)):focus-visible {
     @apply text-white no-underline;
     background-size: 100% 100%;
     box-shadow: .2em 0 #3429ff, -.2em 0 #3429ff;

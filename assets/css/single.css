@@ -41,6 +41,7 @@
   .single > video,
   .single > iframe,
   .single > .project-embed,
+  .single > .quote-grid,
   .single > .media-caption,
   .single > .separator {
     grid-column: wide;
@@ -51,14 +52,14 @@
      took the larger of the two. Each rule below subtracts the contribution
      from above so the spacing matches what these pages had. The caption's own
      version of this lives with the caption rules further down. */
-  .single > :is(img, video, iframe, .project-embed, .stat-block, .media-caption)
-    + :is(img, video, iframe, .project-embed, .stat-block) {
+  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .media-caption)
+    + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid) {
     margin-top: 0;
   }
-  .single > :is(img, video, iframe, .project-embed, .stat-block, .media-caption) + h1 {
+  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .media-caption) + h1 {
     margin-top: calc(var(--heading-lead) - var(--media-gap));
   }
-  .single > .separator + :is(img, video, iframe, .project-embed, .stat-block) {
+  .single > .separator + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid) {
     margin-top: calc(var(--media-gap) - var(--rule-gap));
   }
   .single > .separator + h1 {
@@ -511,6 +512,177 @@
     margin-right: .45rem;
     border-radius: .1875rem;
     vertical-align: baseline;
+  }
+
+  /* A testimonial as the card it was said in. White like the side-project
+     tiles in light, slate in dark; only the linked kind lifts, and less than
+     those tiles do — it is a citation, not a destination. */
+  .single .quote-card {
+    @apply block bg-white no-underline;
+    margin-block: var(--media-gap);
+    max-width: 700px;
+    margin-inline: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: clamp(1.25rem, 3.5vw, 1.875rem);
+  }
+  .single a.quote-card {
+    transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease;
+  }
+  .single a.quote-card:hover,
+  .single a.quote-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -12px rgba(52, 41, 255, .35);
+  }
+  .single a.quote-card:focus-visible {
+    outline: 2px solid #3429ff;
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .single a.quote-card { transition: none; }
+    .single a.quote-card:hover,
+    .single a.quote-card:focus-visible { transform: none; }
+  }
+  .single .quote-header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .875rem;
+  }
+  /* .single's img rules reach descendants too — full width, media margins,
+     radius, shadow. Every one of those is taken back for the avatar. */
+  .single .quote-avatar {
+    width: 3rem;
+    height: 3rem;
+    margin: 0;
+    border-radius: 9999px;
+    box-shadow: none;
+    object-fit: cover;
+  }
+  .single .quote-avatar--fallback {
+    color: #94a3b8;
+    background: #f1f5f9;
+  }
+  .single .quote-byline {
+    display: grid;
+    gap: .125rem;
+    min-width: 0;
+  }
+  /* .single opts prose into overflow-wrap: anywhere; a name or handle has no
+     good break point, same reasoning as .stat-value. */
+  .single .quote-name {
+    @apply text-slate-800;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .single .quote-handle {
+    @apply text-slate-500;
+    font-size: .875rem;
+    line-height: 1.2;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  /* Ink for currentColor marks and the wordmark lettering. */
+  .single .quote-logo {
+    display: inline-flex;
+    color: #24292f;
+  }
+  .single .quote-logo svg {
+    height: 1.5rem;
+    width: auto;
+  }
+  .single .quote-text {
+    @apply text-slate-700;
+    margin-top: clamp(1rem, 2.5vw, 1.25rem);
+    font-size: clamp(1rem, 2vw, 1.1875rem);
+    font-weight: 500;
+    line-height: 1.55;
+    letter-spacing: -.01em;
+  }
+  .single .quote-text p { margin: 0; }
+  .single .quote-text p + p { margin-top: var(--para-gap); }
+  /* The lifted phrase: a tinted pill of the site accent, cloned across line
+     breaks the same way the body links clone their fill. Tailwind's preflight
+     leaves <mark> alone, so both colour and background are set here or the
+     browser default yellow would show. */
+  .single .quote-text mark {
+    color: #241bc7;
+    background: rgb(52 41 255 / .1);
+    padding: .06em .25em;
+    margin-inline: -.06em;
+    border-radius: .3em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    font-weight: 600;
+  }
+  /* Quotes wrapped in the quotes shortcode sit inline: up to three to a row,
+     every card the same size, the full width shared equally. A run of two or
+     three keeps to one row; a longer run wraps into rows of three, stretch
+     holding each row's cards to the tallest among them. Below the fold width
+     any run becomes a stack. The wrapper carries the media-gap margin and
+     the cards give up their own, so a run of quotes spaces like one block. */
+  .single .quote-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: clamp(.875rem, 2vw, 1.25rem);
+    margin-block: var(--media-gap);
+    /* A shade in from the media edge: text cards read better a touch
+       narrower than a full-bleed image. The definite width keeps a strip of
+       short quotes from shrink-wrapping under the cap, so every strip on a
+       page lands on the same width. */
+    width: 100%;
+    max-width: 66rem;
+    margin-inline: auto;
+  }
+  /* The column flow above would lay a fourth card into a fourth track and
+     keep going; past three, trade it for row flow on a three-track template
+     so the cap holds however many cards the run carries. */
+  .single .quote-grid:has(> :nth-child(4)) {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @media (max-width: 48rem) {
+    .single .quote-grid,
+    .single .quote-grid:has(> :nth-child(4)) {
+      grid-auto-flow: row;
+      grid-auto-columns: auto;
+      grid-template-columns: none;
+    }
+  }
+  /* Cards sharing a row tighten their chrome so short remarks read as a
+     strip: less padding, smaller avatar and source mark, and text held at
+     the clamp floor. */
+  .single .quote-grid .quote-card {
+    /* The standalone card's auto inline margins would shrink-wrap a grid
+       item to its content; zero them (and the width cap) so every card
+       stretches to its equal share of the row. */
+    margin: 0;
+    max-width: none;
+    padding: 1.25rem;
+  }
+  .single .quote-grid .quote-header {
+    gap: .75rem;
+  }
+  .single .quote-grid .quote-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .single .quote-grid .quote-logo svg {
+    height: 1.25rem;
+  }
+  .single .quote-grid .quote-name {
+    font-size: .9375rem;
+  }
+  .single .quote-grid .quote-handle {
+    font-size: .8125rem;
+  }
+  .single .quote-grid .quote-text {
+    margin-top: .875rem;
+    font-size: 1rem;
   }
 
   /* A trailing media gap used to escape the block-flow container and collapse

@@ -49,11 +49,37 @@ One typical pattern we saw during onboarding flows was for users to be given a t
 
 Unsurprisingly, the feedback on social media was quite positive, and customers started requesting advanced experiences to learn how to use the product.
 
-{{< image src="feedback2.png" >}}
+{{< quotes >}}
+{{< quote name="John" handle="@JohnDavidFive" source="twitter" >}}
+Awesome! This looks great. One thing I wish I understood more was some of the more ==advanced topics== like how to use .code-workspace files and how powerful they can be for teams.
+{{< /quote >}}
+
+{{< quote name="Yan" handle="@eskibear" source="github" >}}
+It's nice and modern. It would be more helpful if UI tour ==functionality is exposed to extensions==. E.g. In Java extensions, we would be able to point first-time Java users to the right place of their desired features.
+{{< /quote >}}
+
+{{< quote name="Orta" handle="@orta" source="github" >}}
+I love it. Depending on how much friction you want to offer on the onboarding, that command palette page could ==require the user to run an action== in the command palette. e.g The "Next Step" button could turn to "Unlock via the palette".
+{{< /quote >}}
+{{< /quotes >}}
 
 However, we were stunned at the response once we started to test our concept in our research studies. Users either skipped the carousel completely (consciously or unconsciously) and couldn't complete their tasks, which were mentioned in the carousel, defeating the entire purpose of the concept.
 
-{{< image src="feedback3.png" >}}
+{{< quotes >}}
+
+{{< quote name="Participant 3" source="usertesting" >}}
+==Where== is the terminal?
+{{< /quote >}}
+
+{{< quote name="Participant 8" source="usertesting" >}}
+==What== is a command palette?
+{{< /quote >}}
+
+{{< quote name="Participant 14" source="usertesting" >}}
+This ==needs a lot of work==...it needs more relevant and useful content.
+{{< /quote >}}
+
+{{< /quotes >}}
 
 # Pivoting…Again!
 
@@ -79,21 +105,9 @@ Since each walkthrough displayed different content, we introduced a new abstract
 
 {{< image src="theme2.png" >}}
 
-# By the Numbers
-
-Design work on VS Code, counted in the repository itself.
-
 {{< stats source="microsoft/vscode" >}}
 160 | Pull requests opened | pr
 147 | Pull requests merged | merge
 1,100 | Commits on main | commit
 569 | Issues filed | issue
 {{< /stats >}}
-
-# Collaborators
-- Jackson Kearl - Engineering
-- Harald Kirschner - Product Management
-- Steven Clarke - User research
-- David Dossett - Design
-- Lydia Chung - Design
-- Lee Murray - Design Operations
