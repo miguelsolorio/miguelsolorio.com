@@ -7,6 +7,19 @@
   const lightIcon = document.getElementById('theme-toggle-light-icon');
   const themeStorageKey = 'color-theme';
 
+  /* A manual theme choice only holds for the rest of the local calendar day,
+     so the stored value carries the day it was made: 'dark|YYYY-MM-DD'. The
+     matching parse-and-expire logic lives in the pre-paint inline script in
+     layouts/partials/header.html, which runs before any deferred file and so
+     cannot share this code — keep the two in sync. Built by hand because
+     toISOString() reports UTC, and the reset should happen at the visitor's
+     own midnight. */
+  function localDayStamp() {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  }
+
   const storage = {
     get(key) {
       try {
@@ -41,7 +54,7 @@
   function setTheme(theme, persist = true) {
     const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
     root.classList.toggle('dark', normalizedTheme === 'dark');
-    if (persist) storage.set(themeStorageKey, normalizedTheme);
+    if (persist) storage.set(themeStorageKey, `${normalizedTheme}|${localDayStamp()}`);
     syncThemeControls(normalizedTheme);
     root.dispatchEvent(new CustomEvent('site:themechange', { detail: { theme: normalizedTheme } }));
     return normalizedTheme;

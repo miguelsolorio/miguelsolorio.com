@@ -18,9 +18,26 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
     <script>
       (function () {
+        /* A manual theme choice is stored as 'dark|YYYY-MM-DD' (local date)
+           and honored only on the day it was made; the next day — or for a
+           legacy undated value — the key is dropped and the OS preference
+           takes over again. The stamp format is shared with localDayStamp()
+           in assets/js/common.js, which writes it; keep the two in sync. */
         var storedTheme = null;
         try {
-          storedTheme = localStorage.getItem('color-theme');
+          var rawTheme = localStorage.getItem('color-theme');
+          if (rawTheme) {
+            var themeParts = rawTheme.split('|');
+            var now = new Date();
+            var today = now.getFullYear() + '-' +
+              ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+              ('0' + now.getDate()).slice(-2);
+            if (themeParts[1] === today && (themeParts[0] === 'dark' || themeParts[0] === 'light')) {
+              storedTheme = themeParts[0];
+            } else {
+              localStorage.removeItem('color-theme');
+            }
+          }
         } catch (error) {}
 
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
