@@ -383,6 +383,13 @@
   .diff-line-del .diff-sign { color: var(--diff-del); }
   .diff-line-add .diff-sign { color: var(--diff-add); }
   .diff-line-ctx .diff-sign { color: transparent; }
+  /* Changed rows lift their gutter number out of the quiet tier — the sign
+     already carries the red/green, the number just steps up so the whole row
+     reads as content. Mixed a step back toward the surface rather than full
+     text strength, so it holds contrast on the change tint without competing
+     with the code. */
+  .diff-line-del .diff-ln,
+  .diff-line-add .diff-ln { color: color-mix(in srgb, var(--text) 75%, var(--bg)); }
   .diff-code {
     color: var(--text);
     background: transparent;

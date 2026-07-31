@@ -143,6 +143,15 @@
     width: 1ch;
     margin-right: 1ch;
   }
+  /* Restates the shared changed-row gutter lift at panel specificity, or the
+     .diff-panel .diff-ln recolour above would win. --code-plain rather than
+     --text so the theme panels' numbers step toward their own foreground, and
+     the panel's --bg (the theme's own surface there) as the mixing base. The
+     "before" renderer is excluded: it has no quiet tier to step up from. */
+  .diff-panel:not(.diff-plain) .diff-line-del .diff-ln,
+  .diff-panel:not(.diff-plain) .diff-line-add .diff-ln {
+    color: color-mix(in srgb, var(--code-plain) 75%, var(--bg));
+  }
 
   :root.dark .diff-panel:not(.diff-plain) .diff-line-del { background: var(--diff-del-panel); }
   :root.dark .diff-panel:not(.diff-plain) .diff-line-add { background: var(--diff-add-panel); }
@@ -320,6 +329,7 @@
     flex-direction: column;
     align-items: stretch;
     width: fit-content;
+    min-width: 280px;
     max-width: 100%;
     font-size: inherit;
   }

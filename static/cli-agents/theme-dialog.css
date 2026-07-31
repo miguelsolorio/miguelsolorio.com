@@ -309,13 +309,56 @@
 
     /* Theme diff tints are opaque colours sampled against the theme's own
        background, so they replace both the shared pair and the deepened pair
-       diff-view.css uses for dark mode. */
+       diff-view.css uses for dark mode. The synced default pair hands these
+       back to the site — see the block after this one. */
     --diff-del-bg:     var(--theme-diff-del);
     --diff-add-bg:     var(--theme-diff-add);
     --diff-del-panel:  var(--theme-diff-del);
     --diff-add-panel:  var(--theme-diff-add);
     --diff-del:        var(--theme-error);
     --diff-add:        var(--theme-success);
+  }
+
+  /* ---------- synced default themes ---------- */
+  /* Both dialogs open on the CLI default that matches the site's mode, on a
+     page whose every other embed paints the shared tokens. In that synced state
+     the panel hands its palette back to the site, so its selected row and its
+     diff read exactly like the approval scene's rather than a shade off it.
+
+     The handback replaces the --theme-* sources rather than the tokens mapped
+     from them above, so everything downstream follows in one step: the
+     selection pill and its bullet, the settings tabs, the focus rings, and both
+     diff pairs. The aliases are computed at :root, before the panel remap
+     overrides the originals; var()-ing those directly here would be a cycle. */
+  :root {
+    --site-accent:      var(--accent-green);
+    --site-accent-bg:   var(--accent-green-bg);
+    --site-diff-del:    var(--diff-del);
+    --site-diff-add:    var(--diff-add);
+    --site-diff-del-bg: var(--diff-del-bg);
+    --site-diff-add-bg: var(--diff-add-bg);
+  }
+  /* Panels deepen their dark tints past the animation's inline pair, so the
+     dark aliases read the panel pair. */
+  :root.dark {
+    --site-diff-del-bg: var(--diff-del-panel);
+    --site-diff-add-bg: var(--diff-add-panel);
+  }
+  /* Only the synced pairings. Cross-mode — Default Dark previewed on the light
+     site, or Default Light on the dark — the panel is a foreign surface like
+     any other theme's and keeps its sampled palette; the light site's opaque
+     pastel tints would sit under white code text on a near-black panel. */
+  :root:not(.dark) .theme-panel[data-cli-theme="default-light"],
+  :root.dark .theme-panel[data-cli-theme="default"] {
+    --theme-focus:     var(--site-accent);
+    --theme-success:   var(--site-diff-add);
+    --theme-error:     var(--site-diff-del);
+    --theme-diff-add:  var(--site-diff-add-bg);
+    --theme-diff-del:  var(--site-diff-del-bg);
+    /* The mapping tints the focus colour to 14% for the resting pill; the
+       shared token is the flat 10% the approval scene paints, so the selection
+       tint is handed back as a value rather than left to the mix. */
+    --accent-green-bg: var(--site-accent-bg);
   }
   /* On the light palettes the secondary tier lands close to body text —
      #5f5f5f on white reads nearly as loud as the theme names — so the quiet
