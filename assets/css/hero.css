@@ -76,7 +76,12 @@
         top: 50%;
         left: 50%;
         z-index: 0;
-        width: min(72rem, 112%);
+        /* The viewport term keeps the centered square from reaching past the
+           screen edges: the spill is mask-faded to invisible, but it still
+           counted as scrollable width on phones. Hero center == viewport
+           center (symmetric shell gutters), so 100vw lands exactly on the
+           screen. */
+        width: min(72rem, 112%, 100vw);
         aspect-ratio: 1;
         -webkit-mask-image:
             radial-gradient(ellipse 58% 40% at 55% 50%, #000 42%, transparent 100%),
@@ -565,7 +570,7 @@
        whole field back instead. Keep the ellipse wider than tall so the
        narrower viewports don't reintroduce the vertical stacking. */
     .home-hero-dots {
-        width: min(48rem, 128%);
+        width: min(48rem, 128%, 100vw);
         opacity: .7;
         -webkit-mask-image: radial-gradient(ellipse 55% 38% at 50% 50%, #000 38%, transparent 100%);
         mask-image: radial-gradient(ellipse 55% 38% at 50% 50%, #000 38%, transparent 100%);

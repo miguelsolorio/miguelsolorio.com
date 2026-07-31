@@ -26,6 +26,18 @@
   *::after {
     box-sizing: border-box;
   }
+
+  /* The horizontal clamp lives on html, not body: a body-only guard is the
+     configuration iOS Safari ignores when panning into overflowing content.
+     `clip` clamps without creating a scroll container; `hidden` is the
+     fallback for browsers that don't know clip yet. Body must NOT carry
+     `overflow-x: hidden` alongside this — once html has its own overflow,
+     body's would stop propagating to the viewport and would turn body into
+     a scroll container, silently unsticking the .site-header. */
+  html {
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
 }
 
 @layer components {
@@ -34,7 +46,8 @@
     width: 100%;
     min-width: 0;
     margin: 0;
-    overflow-x: hidden;
+    /* clip, never hidden — see the html rule above for why. */
+    overflow-x: clip;
   }
 
   .site-shell {
