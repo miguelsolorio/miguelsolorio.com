@@ -637,6 +637,69 @@
     height: 100%;
   }
   .single .quote-avatar--gen .qa-dark { display: none; }
+  /* Generated avatars live on two clocks. From page load the pattern
+     wanders inside its disc: the two nested groups each run a slow
+     translate loop — x on one, y plus a slight tilt on the other — whose
+     periods, dealt per avatar by quote-avatars.js (--qa-dx/--qa-dy, with
+     negative --qa-px/--qa-py starting each mid-phase), never match, so the
+     combined path is a drifting wander that takes minutes to repeat and no
+     two avatars move in step. The baked scale overscans the pattern past
+     the clip so the drift never exposes the rim.
+
+     The draw-in waits for .qa-in (scroll into view): --d staggers the
+     elements — halftone dots along the ramp, truchet tiles in reading
+     order — and --qa-ind cascades avatars that arrive together. After it,
+     a gentle shimmer on the avatar's own period (--qa-amb, offset by
+     --qa-off) keeps the surface alive. Base state is fully drawn, and the
+     entrance hides elements only via backwards fill — so reduced motion
+     (and no-JS, which never adds .qa-in) simply shows the finished
+     drawing. */
+  .single .quote-avatar--gen .qa-float,
+  .single .quote-avatar--gen .qa-anim {
+    transform-box: view-box;
+    transform-origin: center;
+  }
+  .single .quote-avatar--gen .qa-float {
+    animation: qa-drift-y var(--qa-dy, 13s) ease-in-out var(--qa-py, 0s) infinite;
+  }
+  .single .quote-avatar--gen .qa-anim {
+    animation: qa-drift-x var(--qa-dx, 9s) ease-in-out var(--qa-px, 0s) infinite;
+  }
+  .single .quote-avatar--gen .qa-anim circle {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .single .quote-avatar--gen .qa-anim path {
+    stroke-dasharray: 1;
+  }
+  .single .qa-in .qa-anim circle {
+    animation:
+      qa-pop .45s cubic-bezier(.2, .8, .2, 1) calc(var(--qa-ind, 0s) + var(--d, 0s)) backwards,
+      qa-pulse var(--qa-amb, 5s) ease-in-out calc(.45s + var(--qa-ind, 0s) + var(--d, 0s) + var(--qa-off, 0s)) infinite;
+  }
+  .single .qa-in .qa-anim path {
+    animation:
+      qa-draw .5s ease-out calc(var(--qa-ind, 0s) + var(--d, 0s)) backwards,
+      qa-breathe var(--qa-amb, 5s) ease-in-out calc(.5s + var(--qa-ind, 0s) + var(--d, 0s) + var(--qa-off, 0s)) infinite;
+  }
+  @keyframes qa-drift-x {
+    0%, 100% { transform: translateX(-4px) scale(1.15); }
+    50% { transform: translateX(4px) scale(1.15); }
+  }
+  @keyframes qa-drift-y {
+    0%, 100% { transform: translateY(-4px) rotate(-2.5deg); }
+    50% { transform: translateY(4px) rotate(2.5deg); }
+  }
+  @keyframes qa-pop { from { transform: scale(0); } to { transform: scale(1); } }
+  @keyframes qa-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  @keyframes qa-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes qa-breathe { 0%, 100% { opacity: 1; } 50% { opacity: .72; } }
+  @media (prefers-reduced-motion: reduce) {
+    .single .quote-avatar--gen .qa-float,
+    .single .quote-avatar--gen .qa-anim,
+    .single .qa-in .qa-anim circle,
+    .single .qa-in .qa-anim path { animation: none; }
+  }
   .single .quote-byline {
     display: grid;
     gap: .125rem;

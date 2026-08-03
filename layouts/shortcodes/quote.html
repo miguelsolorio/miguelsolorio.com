@@ -21,15 +21,14 @@
      never applies — main.css and dark.css exclude .quote-card by class.
 
      `avatar` resolves like the image shortcode's src (page-relative into
-     static/<page>/). Left out, a generated pattern avatar stands in — one
-     of the forty halftone-and-truchet drawings baked into
-     data/quote_avatars.json by scripts/generate-quote-avatars.mjs. The
-     pick hashes name and handle, so a person keeps their pattern across
-     builds and pages; slots already used on the page are probed past, so
-     two anonymous participants never match. Each entry carries a light and
-     a dark drawing and the theme shows one, the same concession the site
-     accent makes. Should the data file ever go missing, the old neutral
-     disc returns rather than a broken build. */}}
+     static/<page>/). Left out, the neutral disc below renders and
+     assets/js/quote-avatars.js (loaded by the footer whenever a page uses
+     this shortcode) swaps it for a freshly generated halftone or truchet
+     pattern drawing on every page load — random per visit, styles
+     alternating down the page and seeds tracked per page, so no two
+     generated avatars on a page repeat. Each swap carries a light and a
+     dark drawing and the theme shows one, the same concession the site
+     accent makes. The disc is the no-JS (and pre-swap) fallback. */}}
 {{- $logos := dict
   "twitter" (dict "label" "Twitter" "svg" `<svg viewBox="0 0 24 24"><path fill="#1DA1F2" d="M23.953 4.57a10 10 0 0 1-2.825.775 4.958 4.958 0 0 0 2.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 0 0-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 0 0-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 0 1-2.228-.616v.06a4.923 4.923 0 0 0 3.946 4.827 4.996 4.996 0 0 1-2.212.085 4.936 4.936 0 0 0 4.604 3.417 9.867 9.867 0 0 1-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0 0 7.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0 0 24 4.59z"/></svg>`)
   "usertesting" (dict "label" "UserTesting" "svg" `<svg viewBox="0 0 138 34"><path fill="#4353FF" d="M8 2h44a8 8 0 0 1 8 8v10a8 8 0 0 1-8 8H22l-10 6 2-6H8a8 8 0 0 1-8-8V10a8 8 0 0 1 8-8Z"/><text x="30" y="21.5" text-anchor="middle" fill="#fff" font-family="Inter, ui-sans-serif, sans-serif" font-size="15" font-weight="700">User</text><text x="64" y="21.5" fill="currentColor" font-family="Inter, ui-sans-serif, sans-serif" font-size="15" font-weight="700">Testing</text></svg>`)
@@ -81,30 +80,7 @@
     {{- if $avatar }}
     <img class="quote-avatar" src="{{ $avatar }}" alt="" loading="lazy" decoding="async">
     {{- else }}
-    {{- $pool := (site.Data.quote_avatars | default dict).avatars -}}
-    {{- if $pool -}}
-    {{- /* The hash is a digit sum over the md5 hex of name plus handle —
-           Hugo cannot parse hex into an int directly, and thirty-two summed
-           nibbles spread mod forty about as evenly. The probe walks forward
-           past slots the page has already used (tracked in Scratch), so a
-           collision costs a neighbour, never a duplicate. */ -}}
-    {{- $hex := dict "0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5 "6" 6 "7" 7 "8" 8 "9" 9 "a" 10 "b" 11 "c" 12 "d" 13 "e" 14 "f" 15 -}}
-    {{- $sum := 0 -}}
-    {{- range split (md5 (printf "%s|%s" $name (default "" $handle))) "" -}}
-      {{- $sum = add $sum (index $hex .) -}}
-    {{- end -}}
-    {{- $n := len $pool -}}
-    {{- $i := mod $sum $n -}}
-    {{- $used := default (slice) ($.Page.Scratch.Get "quoteAvatarsUsed") -}}
-    {{- range seq 1 $n -}}
-      {{- if in $used $i }}{{ $i = mod (add $i 1) $n }}{{ end -}}
-    {{- end -}}
-    {{- $.Page.Scratch.Set "quoteAvatarsUsed" ($used | append $i) -}}
-    {{- $gen := index $pool $i }}
-    <span class="quote-avatar quote-avatar--gen" aria-hidden="true">{{ $gen.light | safeHTML }}{{ $gen.dark | safeHTML }}</span>
-    {{- else }}
-    <svg class="quote-avatar quote-avatar--fallback" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="19" r="8.5" fill="currentColor"/><path fill="currentColor" d="M24 31c-8.4 0-14.4 5-15.6 12.2A23.9 23.9 0 0 0 24 48c5.9 0 11.3-2.1 15.6-4.8C38.4 36 32.4 31 24 31Z"/></svg>
-    {{- end }}
+    <svg class="quote-avatar quote-avatar--fallback" data-gen-avatar viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="19" r="8.5" fill="currentColor"/><path fill="currentColor" d="M24 31c-8.4 0-14.4 5-15.6 12.2A23.9 23.9 0 0 0 24 48c5.9 0 11.3-2.1 15.6-4.8C38.4 36 32.4 31 24 31Z"/></svg>
     {{- end }}
     <span class="quote-byline">
       <b class="quote-name">{{ $name }}</b>
