@@ -4,16 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Icon spiral</title>
+  <!-- Mirrors the parent site's theme onto this document's root, and follows the
+       OS preference when the file is opened on its own. Runs in <head> to avoid
+       a theme flash. Only the sync runs — the player is opt-in. -->
+  <script src="/demo-system/demo-system.js?v=2"></script>
   <style>
     :root {
       /* Matches the pastel aurora family on the project cards. */
       --background: linear-gradient(145deg, #f0ecfd 0%, #f6f4fe 45%, #fdf1ea 100%);
       --icon: #8b7cff;
+      /* The field is dealt in three tiers of the same violet. Kept here rather
+         than in the script so a theme change is a style recalculation: the
+         icons recolour in place instead of the galaxy being rebuilt. */
+      --icon-1: #8b7cff;
+      --icon-2: #a294f2;
+      --icon-3: #c0b2f7;
     }
 
     :root.dark {
       /* Deep indigo-to-umber, mirroring the cards' dark variants. */
       --background: linear-gradient(145deg, #23203f 0%, #1a1e33 45%, #2c2229 100%);
+      --icon-2: #6f63d8;
+      --icon-3: #564bb5;
     }
 
     * { box-sizing: border-box; }
@@ -61,6 +73,10 @@
       animation: spin 60s linear infinite reverse;
     }
 
+    .icon--1 { color: var(--icon-1); }
+    .icon--2 { color: var(--icon-2); }
+    .icon--3 { color: var(--icon-3); }
+
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -93,12 +109,8 @@
       const total = document.querySelectorAll('symbol[id^="icon-"]').length;
       const goldenAngle = 137.508;
       const sizes = [14, 14, 16, 18, 18, 20, 22, 24, 28, 32];
-      const palettes = {
-        light: ['#8b7cff', '#a294f2', '#c0b2f7'],
-        dark: ['#8b7cff', '#6f63d8', '#564bb5']
-      };
-      const activeColors = () =>
-        document.documentElement.classList.contains('dark') ? palettes.dark : palettes.light;
+      /* Colour tiers are CSS classes, not values — see --icon-1..3 above. */
+      const TIERS = 3;
 
       function shuffle(values) {
         for (let i = values.length - 1; i > 0; i -= 1) {
@@ -134,13 +146,12 @@
         };
       }
 
-      function createIcon(id, size, color) {
+      function createIcon(id, size, tier) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.classList.add('icon');
+        svg.classList.add('icon', 'icon--' + tier);
         svg.setAttribute('aria-hidden', 'true');
         svg.setAttribute('width', size);
         svg.setAttribute('height', size);
-        svg.style.color = color;
         svg.style.setProperty('--size', size);
 
         const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
@@ -150,7 +161,6 @@
       }
 
       function render() {
-        const colors = activeColors();
         const width = stage.clientWidth;
         const height = stage.clientHeight;
         const count = Math.max(220, Math.min(360, Math.round((width * height) / 1900)));
@@ -171,38 +181,18 @@
           arm.style.setProperty('--angle', angle.toFixed(1) + 'deg');
           arm.style.setProperty('--radius', radius.toFixed(1) + 'px');
 
-          const color = colors[(index - 1) % colors.length];
-          const icon = createIcon(nextIcon(), size, color);
+          const icon = createIcon(nextIcon(), size, ((index - 1) % TIERS) + 1);
           icon.style.opacity = (0.92 - edge * 0.56).toFixed(2);
           arm.appendChild(icon);
           galaxy.appendChild(arm);
         }
       }
 
-      // Follow the parent page's theme toggle (same-origin when embedded as
-      // the project card iframe); fall back to the OS preference standalone.
-      function syncTheme() {
-        let dark;
-        try {
-          dark = window.parent.document.documentElement.classList.contains('dark');
-        } catch (err) {
-          dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        }
-        const changed = document.documentElement.classList.contains('dark') !== dark;
-        document.documentElement.classList.toggle('dark', dark);
-        return changed;
-      }
-
-      syncTheme();
+      // Theme changes need no render: demo-system.js flips .dark on the root and
+      // the tier classes repoint at the other palette on their own. Only a
+      // resize changes the field, because only it changes the geometry.
       render();
       window.addEventListener('resize', render);
-      try {
-        window.parent.document.documentElement.addEventListener('site:themechange', () => {
-          if (syncTheme()) render();
-        });
-      } catch (err) {
-        /* cross-origin parent: stay on the initial theme */
-      }
     })();
   </script>
 </body>
