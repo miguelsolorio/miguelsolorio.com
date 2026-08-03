@@ -42,6 +42,7 @@
   .single > iframe,
   .single > .project-embed,
   .single > .quote-grid,
+  .single > .donut-board,
   .single > .media-caption,
   .single > .separator {
     grid-column: wide;
@@ -52,14 +53,14 @@
      took the larger of the two. Each rule below subtracts the contribution
      from above so the spacing matches what these pages had. The caption's own
      version of this lives with the caption rules further down. */
-  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .media-caption)
-    + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid) {
+  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board, .media-caption)
+    + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board) {
     margin-top: 0;
   }
-  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .media-caption) + h1 {
+  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board, .media-caption) + h1 {
     margin-top: calc(var(--heading-lead) - var(--media-gap));
   }
-  .single > .separator + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid) {
+  .single > .separator + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board) {
     margin-top: calc(var(--media-gap) - var(--rule-gap));
   }
   .single > .separator + h1 {
@@ -376,7 +377,8 @@
   .single video + .media-caption,
   .single iframe + .media-caption,
   .single .project-embed + .media-caption,
-  .single .feedback-board-embed + .media-caption {
+  .single .feedback-board-embed + .media-caption,
+  .single .donut-board + .media-caption {
     margin-top: calc(var(--caption-lead) - var(--media-gap));
   }
   .dark .single .media-caption {
@@ -590,6 +592,17 @@
     color: #94a3b8;
     background: #f1f5f9;
   }
+  /* The generated stand-in ships a light and a dark drawing in one span and
+     the theme shows one — a pattern tuned for white cannot also sit on
+     slate-800, the same concession the site accent makes. The span, not the
+     svg, is the grid child, so the header's three columns hold. */
+  .single .quote-avatar--gen { display: block; }
+  .single .quote-avatar--gen svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .single .quote-avatar--gen .qa-dark { display: none; }
   .single .quote-byline {
     display: grid;
     gap: .125rem;
@@ -710,6 +723,90 @@
   .single .quote-grid .quote-text {
     margin-top: .875rem;
     font-size: 1rem;
+  }
+
+  /* Two donut share charts — the data figure the onboarding page used to
+     carry as a dark PNG, redrawn as markup so it rides the theme and the
+     viewport. No surface of their own: like the figures that close a project
+     page, the charts sit straight on the page and the media gap does all the
+     separating. Only the ink is set here — the ring's hole and the divisions
+     between its segments are unpainted, so the page shows through them.
+     Segment fills are picked per index by the donut shortcode through
+     --donut-seg-N on the tone class. The SVG's text lives in viewBox units,
+     so the whole figure scales as one drawing, the way the image did. */
+  .single .donut-board {
+    --donut-label-ink: #334155;
+    --donut-line: #94a3b8;
+    display: grid;
+    /* Side by side on the media measure, stacking once a chart would drop
+       under the width its callout columns need. */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin-block: var(--media-gap);
+  }
+  .single .donut--teal {
+    --donut-seg-0: #12897b;
+    --donut-seg-1: #d9efe9;
+    --donut-seg-2: #b5e3d9;
+    --donut-seg-3: #8ad2c4;
+    --donut-seg-4: #4fbba9;
+    --donut-seg-5: #2aa892;
+    --donut-value: #0c7568;
+  }
+  .single .donut--blue {
+    --donut-seg-0: #2f6bef;
+    --donut-seg-1: #dce7fb;
+    --donut-seg-2: #bcd2f8;
+    --donut-seg-3: #93b5f4;
+    --donut-seg-4: #6892f0;
+    --donut-seg-5: #4677ed;
+    --donut-value: #1f56dd;
+  }
+  /* A rank below the h1 that introduces the section, on the same family and
+     weight as every other heading on the page. */
+  .single .donut-title {
+    @apply font-bold text-slate-900;
+    margin: 0 0 clamp(.5rem, 1.5vw, 1rem);
+    font-size: clamp(1.25rem, 2.4vw, 1.625rem);
+    line-height: 1.15;
+    text-align: center;
+    text-wrap: balance;
+  }
+  /* The width/height attributes give the svg an intrinsic ratio; height:auto
+     then tracks the viewBox at every width. */
+  .single .donut-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .single .donut-svg text {
+    fill: var(--donut-label-ink);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: .01em;
+  }
+  .single .donut-svg .donut-value {
+    fill: var(--donut-value);
+    font-weight: 700;
+  }
+  .single .donut-seg {
+    fill: none;
+  }
+  .single .donut-lead {
+    fill: none;
+    stroke: var(--donut-line);
+    stroke-width: 1.5;
+  }
+  .single .donut-dot {
+    fill: var(--donut-line);
+  }
+  .single .donut-caption {
+    @apply text-slate-500;
+    grid-column: 1 / -1;
+    margin: .25rem 0 0;
+    font-size: .8125rem;
+    font-style: italic;
+    text-align: center;
   }
 
   /* A trailing media gap used to escape the block-flow container and collapse

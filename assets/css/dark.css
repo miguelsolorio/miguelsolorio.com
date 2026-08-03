@@ -99,12 +99,43 @@
         color: #64748b;
         background: #334155;
     }
+    .dark .single .quote-avatar--gen .qa-light { display: none; }
+    .dark .single .quote-avatar--gen .qa-dark { display: block; }
     .dark .single .quote-text {
         @apply text-slate-200;
     }
     .dark .single .quote-text mark {
         color: #a5b4fc;
         background: rgb(129 140 248 / .16);
+    }
+
+    /* The donut charts keep the original figure's palette: the main hue at
+       full strength and the small slices as pale tints of it, which hold up
+       on slate-900 as they did on the image's near-black. */
+    .dark .single .donut-board {
+        --donut-label-ink: #f1f5f9;
+        --donut-line: #9ca3af;
+    }
+    .dark .single .donut-title {
+        @apply text-gray-200;
+    }
+    .dark .single .donut--teal {
+        --donut-seg-0: #1e9e8e;
+        --donut-seg-1: #f0faf7;
+        --donut-seg-2: #cfeee7;
+        --donut-seg-3: #a5e0d5;
+        --donut-seg-4: #62c6b6;
+        --donut-seg-5: #35b09d;
+        --donut-value: #7fd8cb;
+    }
+    .dark .single .donut--blue {
+        --donut-seg-0: #2f6bef;
+        --donut-seg-1: #eef4fd;
+        --donut-seg-2: #cdddf9;
+        --donut-seg-3: #a3c2f5;
+        --donut-seg-4: #6f9cf1;
+        --donut-seg-5: #4c82ee;
+        --donut-value: #85acf7;
     }
 
 }

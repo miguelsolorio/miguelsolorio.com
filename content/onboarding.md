@@ -20,7 +20,22 @@ As the lead designer, I iterated through the design process to re-design VS Code
 
 As I started looking at ways to improve the page, I began looking at the data to better understand our customer's tasks. After retrieving the data, I mapped out the actions based on two segments of users: new and current. This provided exciting insights as the segments had distinct yet overlapping tasks.
 
-{{< image src="data.png" alt="Two donut charts comparing top welcome-page actions: new users mostly install extensions (84%), while current users mostly open a recent folder (80%)" gradient="true" caption="New users install extensions; current users reach for recent folders" >}}
+{{< donuts alt="The product with the top most actions for new and existing users" caption="New users install extensions; current users reach for recent folders" >}}
+{{< donut title="New Users" tone="teal" >}}
+Install Extensions | 84%
+Install Keymap | 6%
+New File | 4%
+Open Folder | 3%
+Other | 2% | right
+{{< /donut >}}
+{{< donut title="Current Users" tone="blue" >}}
+Recent Folder | 80%
+Install Extension | 15%
+Install Keymap | 3%
+Open Folder | 2%
+Other | 1% | right
+{{< /donut >}}
+{{< /donuts >}}
 
 # Early Explorations
 
