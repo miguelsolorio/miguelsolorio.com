@@ -3,6 +3,8 @@
 {{ $title := .Get "title" }}
 {{ $frameClass := .Get "frame_class" }}
 {{ $theme := .Get "theme" }}
+{{ $caption := .Get "caption" }}
 {{ if or $frameClass $theme }}<div class="{{ if $theme }}project-embed{{ end }}{{ with $frameClass }}{{ if $theme }} {{ end }}{{ . }}{{ end }}"{{ with $theme }} data-project-theme="{{ . }}"{{ end }}>{{ end }}
 <iframe class="embed-frame w-full border-0 rounded-xl" src="{{ $src }}" title="{{ $title }}" height="{{ $height }}" loading="lazy" scrolling="no"></iframe>
 {{ if or $frameClass $theme }}</div>{{ end }}
+{{ with $caption }}<p class="media-caption">{{ $.Page.RenderString . }}</p>{{ end }}

@@ -368,7 +368,8 @@
   .single img + .media-caption,
   .single video + .media-caption,
   .single iframe + .media-caption,
-  .single .project-embed + .media-caption {
+  .single .project-embed + .media-caption,
+  .single .feedback-board-embed + .media-caption {
     margin-top: calc(var(--caption-lead) - var(--media-gap));
   }
   .dark .single .media-caption {

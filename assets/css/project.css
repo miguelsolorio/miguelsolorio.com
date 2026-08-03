@@ -47,35 +47,60 @@
     --project-theme-hover-transform: scale(1.17) rotate(2deg);
     --project-theme-shadow-tint: 138 55 103;
   }
-  /* Dark halves of the named themes. Pull gradient stops toward each theme
-     surface and reduce bloom opacity so the hues remain distinct without
-     reading as illuminated fields. */
+  /* Amber horizon shared with the icons homepage card (grid slot 6n+5), so
+     the post's embeds stand on the same stage the card establishes. */
+  [data-project-theme="icons"] {
+    --project-theme-surface: #fef8f0;
+    --project-theme-artwork:
+      radial-gradient(ellipse 135% 72% at 50% -14%, #fdebd4 0%, rgba(253,235,212,.55) 38%, transparent 72%),
+      linear-gradient(180deg, #fff9f2 0%, #fef6ea 58%, #fef3e4 118%);
+    --project-theme-size: 122% 135%;
+    --project-theme-position: 50% 35%;
+    --project-theme-transform: scale(1.04) translateY(-1.5%);
+    --project-theme-hover-transform: scale(1.14) translateY(2%);
+    --project-theme-shadow-tint: 172 108 48;
+  }
+  /* Dark halves of the named themes. Deep hues read far more saturated
+     against slate-900 than their light counterparts do against white, so
+     every stop keeps its hue but drops ~40% of its chroma, and the accent
+     blooms sit closer in lightness to the field they wash over — a tint on
+     the surface rather than a glow on top of it. */
   .dark [data-project-theme="notebooks"] {
     --project-theme-surface: #191c28;
-    --project-theme-artwork: linear-gradient(118deg, #232236 -18%, #1d202c 46%, #292326 118%);
+    --project-theme-artwork: linear-gradient(118deg, #282741 -18%, #1e212e 46%, #312629 118%);
     --project-theme-shadow-tint: 54 42 111;
   }
+  /* The cli hues are blue-on-slate: at the muted chroma the other themes use,
+     the stage disappears into the navy page. This theme alone keeps richer
+     blue and teal blooms so the artwork still reads as color in dark mode. */
   .dark [data-project-theme="cli"] {
-    --project-theme-surface: #191f2a;
+    --project-theme-surface: #1a2233;
     --project-theme-artwork:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #1d2737 0%, rgba(29,39,55,.30) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #1c2630 0%, rgba(28,38,48,.26) 36%, transparent 70%),
-      linear-gradient(145deg, #181e29 10%, #1a222b 90%);
+      radial-gradient(ellipse 78% 145% at -6% 18%, #2c4a85 0%, rgba(44,74,133,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #1f4d5c 0%, rgba(31,77,92,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #182238 10%, #1b2836 90%);
     --project-theme-shadow-tint: 36 32 111;
   }
   .dark [data-project-theme="kanvas"] {
-    --project-theme-surface: #26201c;
+    --project-theme-surface: #2f2623;
     --project-theme-artwork:
-      radial-gradient(circle at 4% 8%, rgba(96, 66, 50, .22), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(89, 55, 59, .16), transparent 41%),
-      linear-gradient(135deg, #26201c 0%, #2a2420 52%, #292120 100%);
+      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
+      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
     --project-theme-shadow-tint: 96 54 36;
   }
   .dark [data-project-theme="onboarding"] {
     --project-theme-surface: #1e1b24;
     --project-theme-artwork:
-      conic-gradient(from 218deg at 68% 34%, #231d26 0deg, #1d1b25 96deg, #211d23 174deg, #262025 258deg, #231d26 360deg);
+      conic-gradient(from 218deg at 68% 34%, #29202c 0deg, #1e1b28 96deg, #262025 174deg, #30212b 258deg, #29202c 360deg);
     --project-theme-shadow-tint: 83 40 65;
+  }
+  .dark [data-project-theme="icons"] {
+    --project-theme-surface: #1e1c19;
+    --project-theme-artwork:
+      radial-gradient(ellipse 135% 72% at 50% -14%, #352d24 0%, rgba(53,45,36,.5) 38%, transparent 72%),
+      linear-gradient(180deg, #28231c 0%, #1e1d25 58%, #2a2733 118%);
+    --project-theme-shadow-tint: 96 70 36;
   }
   /* Give the homepage card a more defined stage than the animation itself:
      periwinkle, sky, and mint keep it in the portfolio's palette while the
@@ -92,10 +117,10 @@
   }
   .dark .project.project--themed[data-project-theme="kanvas"] {
     --project-aurora:
-      radial-gradient(circle at 4% 8%, rgba(96, 66, 50, .22), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(89, 55, 59, .16), transparent 41%),
-      linear-gradient(135deg, #26201c 0%, #2a2420 52%, #292120 100%);
-    background-color: #26201c;
+      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
+      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
+      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
+    background-color: #2f2623;
   }
 
   /* Projects */
