@@ -737,12 +737,18 @@
   .single .donut-board {
     --donut-label-ink: #334155;
     --donut-line: #94a3b8;
-    display: grid;
-    /* Side by side on the media measure, stacking once a chart would drop
-       under the width its callout columns need. */
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    gap: clamp(1.5rem, 4vw, 3rem);
+    --donut-gap: clamp(1.5rem, 4vw, 3rem);
     margin-block: var(--media-gap);
+  }
+  /* Side by side on the media measure, stacking once a chart would drop under
+     the width its callout columns need. Only the charts are in here: auto-fit
+     collapses a track no item occupies, and anything spanning 1 / -1 occupies
+     all of them — a caption inside the row would hold open a column the charts
+     do not fill and shove the pair off centre. */
+  .single .donut-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--donut-gap);
   }
   .single .donut--teal {
     --donut-seg-0: #12897b;
@@ -802,8 +808,8 @@
   }
   .single .donut-caption {
     @apply text-slate-500;
-    grid-column: 1 / -1;
-    margin: .25rem 0 0;
+    /* Outside the row now, so the gap the grid used to supply is its own. */
+    margin: calc(var(--donut-gap) + .25rem) 0 0;
     font-size: .8125rem;
     font-style: italic;
     text-align: center;
