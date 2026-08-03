@@ -1,0 +1,28 @@
+{{- /* Sine of an angle given in degrees. This Hugo (0.127) predates math.Sin
+       (added in 0.130), so the value is computed by hand: wrap into [0, 360)
+       with a floor-based float modulo (mod is integer-only), fold into the
+       first quadrant with the half-turn symmetries, then a five-term Taylor
+       series in radians. Worst-case error is ~4e-6 — invisible at SVG scale.
+       Cosine is the sine of the angle plus ninety; callers add the 90
+       themselves. Usage: {{ $s := partial "sine.html" 152.7 }} */ -}}
+{{- $deg := float . -}}
+{{- $deg = sub $deg (mul 360.0 (math.Floor (div $deg 360.0))) -}}
+{{- $sign := 1.0 -}}
+{{- if gt $deg 180.0 -}}
+  {{- $sign = -1.0 -}}
+  {{- $deg = sub $deg 180.0 -}}
+{{- end -}}
+{{- if gt $deg 90.0 -}}
+  {{- $deg = sub 180.0 $deg -}}
+{{- end -}}
+{{- $x := div (mul $deg 3.14159265358979) 180.0 -}}
+{{- $x2 := mul $x $x -}}
+{{- $x3 := mul $x $x2 -}}
+{{- $x5 := mul $x3 $x2 -}}
+{{- $x7 := mul $x5 $x2 -}}
+{{- $x9 := mul $x7 $x2 -}}
+{{- $sin := sub $x (div $x3 6.0) -}}
+{{- $sin = add $sin (div $x5 120.0) -}}
+{{- $sin = sub $sin (div $x7 5040.0) -}}
+{{- $sin = add $sin (div $x9 362880.0) -}}
+{{- return (mul $sign $sin) -}}

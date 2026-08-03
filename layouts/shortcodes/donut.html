@@ -1,0 +1,180 @@
+{{/* One donut share chart: a title over a ring of segments with callout
+     labels joined by leader lines — the figure the onboarding data image
+     carried, redrawn from markup so it rides the theme and the viewport.
+
+     Inner lines are "Label | 84%" segments in clockwise order from
+     12 o'clock. An optional third field forces the label column
+     ("Other | 2% | right") when the automatic split — right of the ring for
+     midpoints before 6 o'clock, left after — reads wrong. The value keeps its
+     suffix for display while its numeric part drives the geometry, normalized
+     by the actual sum, so readings that total 99 or 101 still close the ring.
+
+     All coordinates are computed here at build time in viewBox units: the
+     chart is one scalable drawing with no script behind it. The ring is drawn
+     as stroke alone — its hole is simply unpainted, and the divisions between
+     segments are breaks in the dash rather than lines laid over them — so the
+     figure carries no surface and whatever sits behind it shows through.
+     Colors stay in the stylesheet: the template only names each segment's
+     slot through --donut-seg-N on the tone class, and single.css/dark.css
+     decide what the slots hold in each theme. The palette table below records
+     only how many steps each tone carries, so a chart with more segments than
+     colors fails the build instead of wrapping the ramp.
+
+     Callouts: dots sit mid-band at each segment's angular midpoint. Each
+     column is laid out from its lowest dot upward — that label sits level
+     with its dot and the ones above pull up under a minimum row gap — so
+     every leader runs level or descends and lines never cross. A leader
+     starts at the column edge, underlines its label, then breaks 45 degrees
+     to the dot; a level pair degenerates to one straight line.
+
+     Meant to sit inside {{< donuts >}}, which pairs the charts up. */}}
+{{- $palettes := dict "teal" 6 "blue" 6 -}}
+{{- $title := "" -}}
+{{- with .Get "title" }}{{ $title = strings.Trim . " \t" }}{{ end -}}
+{{- if not $title -}}
+  {{- errorf "donut shortcode in %s: missing required \"title\" param" $.Page.File.Path -}}
+{{- end -}}
+{{- $tone := lower (.Get "tone" | default "teal") -}}
+{{- $steps := 0 -}}
+{{- if isset $palettes $tone -}}
+  {{- $steps = index $palettes $tone -}}
+{{- else -}}
+  {{- $names := slice -}}
+  {{- range $name, $_ := $palettes }}{{ $names = $names | append $name }}{{ end -}}
+  {{- errorf "donut shortcode in %s: unknown tone %q (have: %s)" $.Page.File.Path $tone (delimit (sort $names) ", ") -}}
+{{- end -}}
+{{- $rows := slice -}}
+{{- $spoken := slice -}}
+{{- range split .Inner "\n" -}}
+  {{- $line := strings.Trim . " \t\r" -}}
+  {{- with $line -}}
+    {{- $parts := split . "|" -}}
+    {{- if lt (len $parts) 2 -}}
+      {{- errorf "donut shortcode in %s: %q is missing the \"Label | value\" separator" $.Page.File.Path $line -}}
+    {{- else if gt (len $parts) 3 -}}
+      {{- errorf "donut shortcode in %s: %q has more than two \"|\" separators" $.Page.File.Path $line -}}
+    {{- else -}}
+      {{- $label := strings.Trim (index $parts 0) " \t" -}}
+      {{- $display := strings.Trim (index $parts 1) " \t" -}}
+      {{- $number := replaceRE `[^0-9.]` "" $display -}}
+      {{- $side := "" -}}
+      {{- if eq (len $parts) 3 -}}
+        {{- $side = lower (strings.Trim (index $parts 2) " \t") -}}
+      {{- end -}}
+      {{- if not $label -}}
+        {{- errorf "donut shortcode in %s: %q has an empty label" $.Page.File.Path $line -}}
+      {{- else if not (findRE `^[0-9]+(\.[0-9]+)?$` $number) -}}
+        {{- errorf "donut shortcode in %s: %q has no numeric value" $.Page.File.Path $line -}}
+      {{- else if and $side (not (in (slice "left" "right") $side)) -}}
+        {{- errorf "donut shortcode in %s: side must be \"left\" or \"right\", got %q in %q" $.Page.File.Path $side $line -}}
+      {{- else -}}
+        {{- $rows = $rows | append (dict "label" $label "display" $display "num" (float $number) "side" $side) -}}
+        {{- $spoken = $spoken | append (printf "%s %s" $label $display) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if lt (len $rows) 2 -}}
+  {{- errorf "donut shortcode in %s: needs at least two \"Label | value\" lines" $.Page.File.Path -}}
+{{- end -}}
+{{- if and $steps (gt (len $rows) $steps) -}}
+  {{- errorf "donut shortcode in %s: %d segments but the %q palette has %d steps" $.Page.File.Path (len $rows) $tone $steps -}}
+{{- end -}}
+{{- /* The drawing frame. The static 360 236 in the rotate pivot below restates
+       $cx/$cy, so the two must move together. The box is cut close around the
+       ring and its callouts: with no surface behind it, dead space inside the
+       viewBox would read as a gap in the page rather than as margin. */ -}}
+{{- $cx := 360.0 -}}
+{{- $cy := 196.0 -}}
+{{- $rOut := 144.0 -}}
+{{- $rIn := 66.0 -}}
+{{- $rMid := div (add $rOut $rIn) 2.0 -}}
+{{- $band := sub $rOut $rIn -}}
+{{- /* Division between segments, in the same hundred the shares are counted
+       in — a touch over two units of arc at this radius. Taken out of the
+       dash so the break is real; a segment thinner than the division keeps a
+       sliver rather than inverting. */ -}}
+{{- $gap := 0.4 -}}
+{{- $total := 0.0 -}}
+{{- range $rows }}{{ $total = add $total .num }}{{ end -}}
+{{- if le $total 0.0 -}}
+  {{- errorf "donut shortcode in %s: values sum to zero" $.Page.File.Path -}}
+  {{- $total = 100.0 -}}
+{{- end -}}
+{{- $segs := slice -}}
+{{- $cum := 0.0 -}}
+{{- range $i, $row := $rows -}}
+  {{- $share := div $row.num $total -}}
+  {{- $mid := mul (add $cum (div $share 2.0)) 360.0 -}}
+  {{- $sinMid := partial "sine.html" $mid -}}
+  {{- $cosMid := partial "sine.html" (add $mid 90.0) -}}
+  {{- $side := $row.side -}}
+  {{- if not $side -}}
+    {{- $side = "left" -}}
+    {{- if lt $mid 180.0 }}{{ $side = "right" }}{{ end -}}
+  {{- end -}}
+  {{- $dash := math.Max (sub (mul $share 100.0) $gap) 0.15 -}}
+  {{- /* The dash pattern sums to the whole hundred, so the offset may be
+         wound forward a full turn to stay positive. */ -}}
+  {{- $offset := sub (mul (sub 1.0 $cum) 100.0) (div $gap 2.0) -}}
+  {{- if lt $offset 0.0 }}{{ $offset = add $offset 100.0 }}{{ end -}}
+  {{- $segs = $segs | append (merge $row (dict
+        "i" $i
+        "dash" $dash
+        "offset" $offset
+        "dotx" (add $cx (mul $rMid $sinMid))
+        "doty" (sub $cy (mul $rMid $cosMid))
+        "side" $side)) -}}
+  {{- $cum = add $cum $share -}}
+{{- end -}}
+{{- $rowGap := 42.0 -}}
+{{- $minY := 26.0 -}}
+{{- /* How far below its baseline a label's underline runs. */ -}}
+{{- $lead := 9.0 -}}
+{{- $callouts := slice -}}
+{{- range $col := slice "left" "right" -}}
+  {{- $column := slice -}}
+  {{- $below := 100000.0 -}}
+  {{- range sort (where $segs "side" $col) "doty" "desc" -}}
+    {{- $y := math.Min (sub .doty $lead) (sub $below $rowGap) -}}
+    {{- $column = $column | append (merge . (dict "labely" $y)) -}}
+    {{- $below = $y -}}
+  {{- end -}}
+  {{- /* Data dense enough to pull a column above the panel gets clamped back
+         down, trading the no-crossing guarantee for staying in frame. */ -}}
+  {{- $above := sub $minY $rowGap -}}
+  {{- range sort $column "labely" -}}
+    {{- $y := math.Max .labely (add $above $rowGap) -}}
+    {{- $callouts = $callouts | append (merge . (dict "labely" $y)) -}}
+    {{- $above = $y -}}
+  {{- end -}}
+{{- end -}}
+<div class="donut-chart donut--{{ $tone }}">
+  <p class="donut-title">{{ $title }}</p>
+  <p class="sr-only">{{ $title }}: {{ delimit $spoken ", " }}.</p>
+  <svg class="donut-svg" viewBox="0 0 720 356" width="720" height="356" aria-hidden="true">
+    {{- /* Each segment is one stroked circle: pathLength makes the dash
+           pattern percent-native, rotate(-90) moves the dash origin from
+           3 o'clock to 12, and the offset walks each dash to its cumulative
+           start. A circle's path runs clockwise, matching the authored
+           order. */ -}}
+    <g transform="rotate(-90 360 196)">
+      {{- range $segs }}
+      <circle class="donut-seg" cx="360" cy="196" r="{{ printf "%.1f" $rMid }}" pathLength="100" stroke-width="{{ printf "%.1f" $band }}" stroke-dasharray="{{ printf "%.3f" .dash }} {{ printf "%.3f" (sub 100.0 .dash) }}" stroke-dashoffset="{{ printf "%.3f" .offset }}" style="stroke:var(--donut-seg-{{ .i }})"/>
+      {{- end }}
+    </g>
+    {{- range $callouts }}
+    {{- $lineY := add .labely $lead -}}
+    {{- $dy := math.Abs (sub .doty $lineY) -}}
+    {{- if eq .side "left" }}
+    <polyline class="donut-lead" points="14,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (sub .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
+    <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
+    <text class="donut-label" x="14" y="{{ printf "%.1f" .labely }}" text-anchor="start">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>
+    {{- else }}
+    <polyline class="donut-lead" points="706,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (add .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
+    <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
+    <text class="donut-label" x="706" y="{{ printf "%.1f" .labely }}" text-anchor="end">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>
+    {{- end }}
+    {{- end }}
+  </svg>
+</div>

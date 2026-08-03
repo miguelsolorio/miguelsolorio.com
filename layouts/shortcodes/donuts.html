@@ -1,0 +1,17 @@
+{{/* Lays donut charts on one shared card: side by side on the wide measure,
+     stacking once a chart would drop under a readable width — the same trade
+     the quote grid makes. `alt` carries the sentence the plain image this
+     replaces used to speak; `caption` adds a visible figcaption under the
+     charts. */}}
+{{- if not (strings.Trim .Inner " \t\r\n") -}}
+  {{- errorf "donuts shortcode in %s: needs {{< donut >}} calls between its opening and closing tags" $.Page.File.Path -}}
+{{- end -}}
+<figure class="donut-board">
+  {{- with .Get "alt" }}
+  <p class="sr-only">{{ . }}</p>
+  {{- end }}
+{{ .Inner }}
+  {{- with .Get "caption" }}
+  <figcaption class="donut-caption">{{ . }}</figcaption>
+  {{- end }}
+</figure>
