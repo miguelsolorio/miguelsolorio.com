@@ -205,6 +205,13 @@
     filter: drop-shadow(0 2px 6px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
             drop-shadow(0 12px 28px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
   }
+  /* Opt-in rounded corners for screenshots via the image shortcode's
+     rounded param. Declared after the cutout rule so a rounded screenshot
+     wins even on a cutout stage. */
+  .single .project-embed > img.media-rounded,
+  .single img.media-rounded {
+    border-radius: .75rem;
+  }
   /* Poster videos show one large play affordance instead of the browser's
      control bar (common.js swaps them at first play), so the poster reads as
      a designed thumbnail rather than a chrome-heavy player. The stage has

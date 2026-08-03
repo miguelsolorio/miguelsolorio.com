@@ -93,7 +93,7 @@ The reaction was immediate. Within days, developers were sharing workflows built
 
 Because the work happened in the open, the design contribution is traceable in the repository itself: **59 pull requests opened** and **39 merged**, **44 commits on main**, and **22 issues filed** to document a problem before fixing it. That work also carried past the CLI - the project established a shared foundation with Gemini Code Assist's agent mode in VS Code, so patterns developed here - tool use conventions, MCP extensibility, GEMINI.md configuration - shaped the editor experience too, and with it what it means to build a trustworthy, practical AI agent for the workflows developers already live in.
 
-{{< image src="qwen-cli.jpg" alt="Qwen Code's terminal interface with a pixel-art QWEN wordmark and a provider sign-in dialog, closely mirroring Gemini CLI's layout" gradient="true" frame_class="project-embed--cutout" caption="Qwen Code's startup screen, echoing Gemini CLI's design" >}}
+{{< image src="qwen-cli.jpg" alt="Qwen Code's terminal interface with a pixel-art QWEN wordmark and a provider sign-in dialog, closely mirroring Gemini CLI's layout" gradient="true" frame_class="project-embed--cutout" rounded="true" width="80%" caption="Qwen Code's startup screen, echoing Gemini CLI's design" >}}
 
 [QWEN Code](https://github.com/QwenLM/qwen-code), a competing open-source agent, was released in March 2026 and is a fork of Gemini CLI, using its design and interaction model.
 
