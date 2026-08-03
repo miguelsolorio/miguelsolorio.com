@@ -3,9 +3,9 @@
    Every row is static in the HTML; this file only moves the highlight, hides
    rows outside the active section or search, and renders each value from
    data-value/data-default — a single render path, no duplicated state in the
-   markup. theme-dialog.css keys the palette on data-cli-theme, and a
-   BroadcastChannel handshake keeps that attribute in step with the theme
-   picker embedded on the same page. */
+   markup. cli-theme.css keys the palette on data-cli-theme, and cli-theme.js
+   keeps that attribute in step with the theme picker embedded on the same
+   page. */
 
 const panel = document.querySelector(".settings-panel");
 const list = panel.querySelector(".settings-list");
@@ -22,10 +22,10 @@ let query = "";
 let selected = 0;
 let lastVisibleKey = "";
 
-/* Match the site's mode before the handshake, so a standalone or
-   settings-first load still looks right; a live theme dialog answers the
-   "get" below and wins. */
-panel.dataset.cliTheme = document.documentElement.classList.contains("dark") ? "default" : "default-light";
+/* The panel keeps its own copy of the attribute — cli-theme.css hands a synced
+   default back to the site palette by matching .theme-panel — so it starts at
+   whatever CliTheme resolved and follows it from there. */
+panel.dataset.cliTheme = CliTheme.current();
 
 function visibleItems() {
   /* An empty query shows the active section; a query filters label +
@@ -172,15 +172,9 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-/* Counterpart of the theme dialog's broadcast: repaint with any theme picked
-   there, and ask for the current one in case that dialog loaded first. */
-const channel = typeof BroadcastChannel === "undefined" ? null : new BroadcastChannel("cli-theme");
-if (channel) {
-  channel.addEventListener("message", (event) => {
-    const data = event.data || {};
-    if (data.type === "theme") panel.dataset.cliTheme = data.theme;
-  });
-  channel.postMessage({ type: "get" });
-}
+/* Counterpart of the theme dialog's broadcast. Both paths that used to live
+   here — the handshake with that dialog and the reset on a site light/dark
+   toggle — are CliTheme's now, so following them is one line. */
+CliTheme.subscribe((theme) => { panel.dataset.cliTheme = theme; });
 
 render();

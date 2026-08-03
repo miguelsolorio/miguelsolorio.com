@@ -6,16 +6,20 @@
 <title>Gemini CLI settings dialog</title>
 <script src="/demo-system/demo-system.js?v=2"></script>
 <link rel="stylesheet" href="/demo-system/demo-system.css">
-<link rel="stylesheet" href="./cli-animation.css?v=6">
-<link rel="stylesheet" href="./diff-view.css?v=4">
-<link rel="stylesheet" href="./theme-dialog.css?v=21">
+<link rel="stylesheet" href="./cli-animation.css?v=7">
+<link rel="stylesheet" href="./cli-theme.css?v=1">
+<link rel="stylesheet" href="./diff-view.css?v=5">
+<link rel="stylesheet" href="./theme-dialog.css?v=25">
 <link rel="stylesheet" href="./settings-dialog.css?v=5">
-<script defer src="./settings-dialog.js?v=1"></script>
+<script defer src="./cli-theme.js?v=1"></script>
+<script defer src="./settings-dialog.js?v=2"></script>
 </head>
 <body class="demo-scene diff-scene theme-scene settings-scene" data-demo-scene="cli-settings">
 
 <main class="diff-stage">
-  <div class="diff-panel theme-panel settings-panel" data-cli-theme="default">
+  <!-- Unstamped, like the theme picker's: cli-theme.css paints the panel to
+       match the site mode until settings-dialog.js names a theme. -->
+  <div class="diff-panel theme-panel settings-panel">
     <div class="theme-title">&gt; Settings</div>
 
     <div class="settings-search" aria-hidden="true">
@@ -159,7 +163,7 @@
     </ul>
     <button type="button" class="theme-scroll" data-settings-step="1" aria-label="Highlight the next setting">&#9660;</button>
 
-    <div class="theme-hint">(Use Enter to toggle, Tab to change section, Esc to clear search)</div>
+    <div class="theme-hint">(Enter to toggle, Tab to change section, Esc to clear)</div>
   </div>
 </main>
 

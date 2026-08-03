@@ -10,59 +10,49 @@ card_animation: "/cli-agents/cli-animation.html"
 card_theme: "cli"
 ---
 
-As the lead designer, I partnered with engineering and product to bring Gemini's agentic capabilities directly into the terminal. Gemini CLI is an open-source AI agent that lets developers query codebases, manipulate files, run shell commands, and automate complex workflows - all without leaving the environment where they already work.
+As the lead designer, I partnered with our engineering team to bring Gemini's agentic capabilities directly into the terminal. Gemini CLI is an open-source AI agent that lets developers to write code, manipulate files, run shell commands, and automate complex workflows.
 
 {{< iframe src="/cli-agents/cli-animation.html" height="600" title="Gemini CLI planning and building a React todo app, with an interactive approval step" theme="cli" caption="Gemini CLI planning and building a React todo app, pausing for approval" >}}
 
 # Understanding the Problem
 
-Developers who live in the terminal have always had to leave it when they need AI help. The workflow was: stop what you're doing, switch to a browser or a chat window, describe the context you already have in your head, get an answer, translate it back into something you can run. Every round trip costs focus.
-
-The insight that shaped this project was simple: the terminal isn't a constraint to design around, it's where these users feel most at home. An AI agent that fits that environment - that reads your files, understands your project, and operates on your codebase directly - could remove the translation layer entirely.
+We heard from our users that they'd love to bring Gemini to the terminal and keep them in their existing workflows. The challenge was that terminals are text-only and are limited in what can be displayed. In order for us to bring agentic workflows to the CLI, we needed to find a framework that provided more freedom and flexibility.
 
 {{< image src="original.png" alt="The original Gemini CLI startup screen, with its dashed ASCII wordmark, getting-started tips, and a typed prompt for a Node.js boxing timer app" gradient="true" frame_class="project-embed--cutout" caption="The original Gemini CLI startup screen before the redesign" >}}
 
+The team discovered a [React library (Ink)](https://github.com/vadimdemedes/ink) that allowed us to build interactive elements in the terminal. This opened a new door for us to explore as we weren't constrained by text-only UI anymore.
+
 # Designing the Interaction Model
 
-Bringing conversational AI to the terminal required rethinking what "conversation" looks like in a text-only, line-by-line environment. There's no chat bubble, no text field, no send button - just a prompt and whatever the agent streams back.
-
-I worked to establish interaction patterns that felt native to the CLI rather than imported from a chat UI. Streaming responses give immediate feedback so users know the agent is working. Multi-step reasoning is surfaced progressively - each action the agent takes (reading a file, running a command, searching the web) is logged visibly as it happens, so the process is legible rather than opaque.
-
-{{< iframe src="/cli-agents/cli-todo-animation.html" height="600" title="Gemini CLI reading a research plan, writing a grouped four-step todo list, and completing each task with its matching tool call" theme="cli" caption="The agent works through a grouped todo list, one visible tool call at a time" >}}
-
-The turn structure needed to support both quick one-shot prompts and sustained back-and-forth sessions. A single invocation can handle a self-contained task; a session persists context across turns so users can refine, redirect, or expand on what the agent has already done. The 1 million token context window made it practical to keep an entire codebase in scope across a long session.
-
-# Shipping in the Open
-
-Because Gemini CLI is open-source, design decisions didn't stop at the spec - they continued into the pull request. I contributed directly to the repository, filing issues and landing code across several areas of the UI.
-
-**Semantic color tokens.** The original codebase used hardcoded colors scattered throughout components, which made theming brittle and inconsistent. I designed and implemented a semantic token architecture - a shared vocabulary of named roles (`text.primary`, `status.error`, `accent`) that themes map to actual values. This made it possible for the community to build fully coherent custom themes without touching component code. ([#5796](https://github.com/google-gemini/gemini-cli/pull/5796), [#6253](https://github.com/google-gemini/gemini-cli/pull/6253), [#8087](https://github.com/google-gemini/gemini-cli/pull/8087), [#8291](https://github.com/google-gemini/gemini-cli/pull/8291))
-
-**Input syntax highlighting.** As users type, `/commands` and `@file/paths` now highlight in real time to distinguish them from plain text. I designed the highlighting behavior - including the rule that commands should only highlight at the start of a prompt, not mid-sentence - and landed the implementation. ([#7165](https://github.com/google-gemini/gemini-cli/pull/7165), [#5323](https://github.com/google-gemini/gemini-cli/pull/5323), [#7651](https://github.com/google-gemini/gemini-cli/issues/7651))
-
-
-**Identity and branding.** I replaced the default text logo with a custom ASCII mark, added a visual indicator distinguishing nightly builds from stable releases, and updated the `/help` page to be a genuine entry point - linking to docs, MCP tools, and available commands rather than just listing slash commands. ([#958](https://github.com/google-gemini/gemini-cli/pull/958), [#3701](https://github.com/google-gemini/gemini-cli/pull/3701), [#1119](https://github.com/google-gemini/gemini-cli/pull/1119))
-
-{{< iframe src="/cli-agents/settings-dialog.html" height="620" frame_class="project-embed--bare" title="Gemini CLI settings dialog: search to filter, Tab between General, Display, and Advanced sections, and Enter to toggle a setting - modified values show a green asterisk" theme="cli" caption="The settings dialog with search, tabbed sections, and inline toggles" >}}
-
-**UI component polish.** Across dozens of smaller PRs, I tightened up the component layer: scrollable theme dialogs, numbered selection lists, consistent footer layout and configuration, scope settings moved into a proper dialog, shell tool call colors scoped to confirmed actions, and a Todo component refactor for readability and performance. ([#3895](https://github.com/google-gemini/gemini-cli/pull/3895), [#4320](https://github.com/google-gemini/gemini-cli/pull/4320), [#7419](https://github.com/google-gemini/gemini-cli/pull/7419), [#7836](https://github.com/google-gemini/gemini-cli/pull/7836), [#11126](https://github.com/google-gemini/gemini-cli/pull/11126), [#12238](https://github.com/google-gemini/gemini-cli/pull/12238), [#12265](https://github.com/google-gemini/gemini-cli/pull/12265))
+We knew that we wanted to mimic the chat model used in other Gemini interfaces. Bringing conversations to the terminal required rethinking what conversations looked like as: no chat bubble, no text field, no buttons. Just a prompt input and the streaming conversation.
 
 {{< iframe src="/cli-agents/theme-dialog.html" height="440" frame_class="project-embed--bare" title="Gemini CLI theme picker: pick one of six dark or four light themes from the numbered list, or step it with the scroll arrows, to preview its background, syntax, and diff colors" theme="cli" caption="The scrollable theme picker with live color previews" >}}
 
-# Explorations and Iterations
+Knowing that terminals are very personalized for developers, I wanted to make sure that the CLI was flexible enough to support different configurations (fonts, color schemes, and terminal apps) but also come with default themes that were accessible and familiar. Leveraging existing design patterns used in developer tools (slash commands, file mentions, syntax highlighting, etc.) allowed us to create an experience that was familiar and approachable for developers.
 
-Early concepts leaned too heavily on chat metaphors - a REPL-style interface with distinct user and agent turns, styled to look like a dialogue. Testing with terminal-native developers made it clear this felt off. They didn't want a chat window that happened to run in a terminal; they wanted something that felt like a capable collaborator embedded in their existing workflow.
+{{< iframe src="/cli-agents/cli-todo-animation.html" height="600" title="Gemini CLI reading a research plan, writing a grouped four-step todo list, and completing each task with its matching tool call" theme="cli" caption="The agent works through a grouped todo list, one visible tool call at a time" >}}
 
-**Diff view.** I filed the issue documenting how the existing diff display was inconsistent between new and existing files, and lacked syntax highlighting that developers expect from tools like VS Code or GitHub. I then shipped the fix - adding styled line numbers, colored diff characters, and a unified presentation across file types. ([#4739](https://github.com/google-gemini/gemini-cli/issues/4739), [#4747](https://github.com/google-gemini/gemini-cli/pull/4747), [#6269](https://github.com/google-gemini/gemini-cli/pull/6269))
+We needed to create building blocks that can be used across an array of uses: one-shot prompts, iterative sessions, long-running tasks, and multi-step plans. We also needed to surface information to the user that informed them of their usage, model configuration, and modes that provided elevated permissions. The design system we created provided a foundation for the CLI to be flexible and extensible for the future.
+
+# Shipping in the Open
+
+Because Gemini CLI is open-source, we had to be consciou about the design decisions we made as we had to involve the community with feedback. This dynamic relationship with the community allowed us to quickly iterate through features. We started to see a huge influx of community contributions and feedback that not only helped us shape the product but also helped us understand what mattered most to our users.
+
+{{< iframe src="/cli-agents/star-history.html" height="500" frame_class="project-embed--chart" title="GitHub star history for google-gemini/gemini-cli, openai/codex, and anthropics/claude-code from March to September 2025: Gemini CLI sits under 3,000 stars until its June 25 launch, rises almost vertically to 40,000 within a week, and passes both of the others by August" theme="cli" caption="GitHub stars across the three terminal agents, March-September 2025." >}}
+
+In an effort to improve the quality of the product, I began using Gemini CLI to test and validate design ideas in the product, foregoing the traditional design process where you start in Figma. This gave me a personal insight into the workflows of our users and helped our team move faster.
+
+Below is an example that started as a community contribution for a settings dialog ([#4738](https://github.com/google-gemini/gemini-cli/pull/4738)) and evolved to be a key feature of configuring the CLI. Previously, users had to edit their JSON files in a text editor, which interrupted the flow if you were in the middle of a session. The settings dialog allowed users to search, filter, and toggle settings inline without leaving the CLI.
+
+{{< iframe src="/cli-agents/settings-dialog.html" height="620" frame_class="project-embed--bare" title="Gemini CLI settings dialog: search to filter, Tab between General, Display, and Advanced sections, and Enter to toggle a setting - modified values show a green asterisk" theme="cli" caption="The settings dialog with search, tabbed sections, and inline toggles" >}}
+
+Earlier concepts leaned too heavily on text-only styles, which made it difficult to read and understand the diff output. I iterated on the design to improve the readability and bring more familiarity by using patterns found in most text editors. The new design added line numbers, colored diff lines, and syntax highlighting to make it easier to read and understand.
 
 {{< iframe src="/cli-agents/diff-compare.html" height="620" title="The diff view before and after the fix: the original tinted whole lines and numbered them inconsistently, the shipped version adds line numbers, colored diff characters, and syntax highlighting" theme="cli" caption="The diff view before and after the fix" >}}
 
-
 # Impact
 
-Gemini CLI launched on June 25, 2025, as a free, open-source agent available to any developer with a Google account. The generous free tier - powered by Gemini 2.5 Pro - made it accessible to individual developers, students, and open-source contributors without any billing setup.
-
-The reaction was immediate. Within days, developers were sharing workflows built around the free tier and the 1M-token context window - and as the UI work landed over the following months, the polish itself started showing up in the feedback.
+Gemini CLI launched on June 25, 2025 as a free, open-source agent available to any developer with a Google account. The generous free tier made it accessible to individual developers, students, and open-source contributors without any billing setup. The reaction was immediate. Within days, developers were sharing workflows built around the free tier and the 1M-token context window and as the UI work landed over the following months, the polish itself started showing up in the feedback.
 
 {{< quotes >}}
 

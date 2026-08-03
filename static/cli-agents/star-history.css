@@ -1,0 +1,167 @@
+/* Star History chart. The scene draws no surface of its own — it stands
+   directly on the embed's themed stage — so every color here is either ink or
+   a series hue, and the .dark block restates only what has to change.
+
+   The one embed on the page that does not follow the theme picker: it reports
+   on the three CLIs rather than demonstrating one, so it stays on the site's
+   own light/dark pair and never links cli-theme.css. */
+
+.star-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0;
+  background: transparent;
+
+  --chart-ink: #33415a;
+  --chart-ink-muted: #64748b;
+  --chart-rule: rgb(51 65 90 / 16%);
+  --chart-grid: rgb(51 65 90 / 10%);
+  --chart-gemini: #e2513f;
+  --chart-codex: #2f93da;
+  --chart-claude: #d9a300;
+}
+
+:root.dark .star-scene {
+  --chart-ink: #cbd5e1;
+  --chart-ink-muted: #94a3b8;
+  --chart-rule: rgb(203 213 225 / 26%);
+  --chart-grid: rgb(203 213 225 / 14%);
+  --chart-gemini: #f4695c;
+  --chart-codex: #6bb8ef;
+  --chart-claude: #f2cb4a;
+}
+
+.star-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-grid line {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+}
+
+.chart-axis-line {
+  stroke: var(--chart-rule);
+  stroke-width: 1.5;
+}
+
+/* The drawing renders at roughly six-sevenths of its viewBox in the column,
+   so type is set a step larger here than it needs to be at 1:1. */
+.chart-title {
+  fill: var(--chart-ink);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.chart-tick {
+  fill: var(--chart-ink-muted);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.chart-axis-title {
+  fill: var(--chart-ink);
+  font-size: 15px;
+}
+
+/* The launch marker is the annotation the source chart leaves to the reader:
+   a hairline at the date, kept lighter than the series so it reads as a note
+   on the drawing rather than a fourth line in it. */
+.chart-launch line {
+  stroke: var(--chart-rule);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 5;
+  stroke-linecap: round;
+}
+
+.chart-launch text {
+  fill: var(--chart-ink-muted);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.chart-line {
+  fill: none;
+  stroke: var(--chart-series-color);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-dot {
+  fill: var(--chart-series-color);
+}
+
+.chart-series--gemini {
+  --chart-series-color: var(--chart-gemini);
+}
+
+.chart-series--codex {
+  --chart-series-color: var(--chart-codex);
+}
+
+.chart-series--claude {
+  --chart-series-color: var(--chart-claude);
+}
+
+.chart-legend text {
+  fill: var(--chart-ink);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 15px;
+}
+
+.chart-swatch--gemini {
+  fill: var(--chart-gemini);
+}
+
+.chart-swatch--codex {
+  fill: var(--chart-codex);
+}
+
+.chart-swatch--claude {
+  fill: var(--chart-claude);
+}
+
+/* Each line draws itself in once, left to right, at a pace set by how long
+   that repository has been on the chart. */
+.chart-line {
+  stroke-dasharray: var(--chart-line-length, 2400);
+  stroke-dashoffset: var(--chart-line-length, 2400);
+  animation: chart-draw 1.9s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+}
+
+.chart-dot {
+  opacity: 0;
+  animation: chart-fade 0.6s ease-out forwards;
+  animation-delay: 1.5s;
+}
+
+@keyframes chart-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes chart-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-line,
+  .chart-dot {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}

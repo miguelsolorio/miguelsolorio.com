@@ -301,15 +301,13 @@ async function run(context) {
   await context.sleep(400);
 }
 
-function syncPrismTheme(dark) {
-  document.getElementById("prismLightTheme").disabled = dark;
-  document.getElementById("prismDarkTheme").disabled = !dark;
-}
-
+/* No onThemeChange hook: the highlighted code reads the shared --code-* tokens
+   in cli-theme.css, which already answer to both the site's light/dark pair and
+   a picked CLI theme. Swapping a pair of Prism stylesheets, as this used to,
+   could only ever track the first of the two. */
 window.cliDemo = DemoSystem.createPlayer({
   run,
   cardStartMs: 1800,
   cardLoopDelay: 2000,
-  onFrame: ui.onFrame,
-  onThemeChange: syncPrismTheme
+  onFrame: ui.onFrame
 });

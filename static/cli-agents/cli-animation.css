@@ -401,9 +401,6 @@
     text-shadow: none;
     transition: color 0.3s ease;
   }
-  .language-css .token.string, .style .token.string, .token.entity, .token.operator, .token.url {
-    background-color: transparent;
-  }
 
   /* ---------- fixed bottom bar (input + footer) ---------- */
   .bottom-bar {

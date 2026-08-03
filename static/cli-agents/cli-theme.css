@@ -1,0 +1,561 @@
+  /* The CLI theme system, shared by every scene in this case study.
+     Layered on cli-animation.css — link that first, and this before any scene
+     sheet that paints code.
+
+     The theme picker embedded on the page broadcasts whatever row is
+     highlighted (see cli-theme.js); every scene stamps that name on its own
+     body as data-cli-theme, and the bridge at the bottom of this file re-tokens
+     the whole document from the matching palette. One copy of the palettes, one
+     copy of the mapping: a scene joins the system by linking this file and
+     needs no theme CSS of its own.
+
+     Every palette below is transcribed from the theme's source of truth in
+     google-gemini/gemini-cli (packages/cli/src/ui/themes/builtin/{dark,light}/*):
+     --fg/--secondary/--border/--focus/--success/--error come from the theme's
+     semantic tokens (Foreground, Gray, DarkGray, FocusColor ?? AccentGreen,
+     AccentGreen, AccentRed) and the syntax tokens from its highlight.js map.
+     Values derived with interpolateColor() are pre-computed.
+
+     --blue/--purple/--yellow carry the theme's AccentBlue/AccentPurple/
+     AccentYellow — roles the dialogs never paint, kept for scenes that map the
+     full terminal onto a palette. Each block is shared between the picker's own
+     .theme-panel and body[data-cli-theme], so one set of values serves both a
+     dialog previewing a theme and a whole document wearing it; ANSI's named
+     colours resolve to the same VS Code terminal defaults as the rest of its
+     set. */
+
+  /* ---------- theme palettes ---------- */
+
+  /* Default and ANSI are the two builtins whose background is the terminal's
+     own black rather than a designed surface, so they are also the two whose
+     colours were never sampled against anything. Both take #1c1c1c — the value
+     the CLI's own getSafeLowColorBackground() substitutes for a black terminal —
+     and their change bars are mixed back into it, which is how they read in a
+     terminal: a tint under the line rather than a painted block. Every other
+     theme keeps its diff colours flat, because those were picked against the
+     theme's own background. */
+
+  /* darkTheme: the 256-colour-safe palette the CLI ships as its default.
+     Its Gray (#afafaf) and DarkGray (#878787) were picked to stay legible on a
+     256-colour terminal, and on this surface they pull as hard as the theme
+     names do — so the quiet tier and the frame are taken down until the list is
+     the only thing with weight.
+
+     The attribute-less selector is the dialogs' first paint. Both open on the
+     CLI default matching the site's mode, and their scripts are deferred, so
+     without it the panel would paint unthemed until JS ran. Keyed on :root.dark
+     rather than written into the markup, which is what used to flash the dark
+     palette onto a light page. */
+  :root.dark .theme-panel:not([data-cli-theme]),
+  .theme-panel[data-cli-theme="default"],
+  body[data-cli-theme="default"] {
+    --theme-bg:        #1c1c1c;
+    --theme-fg:        #ffffff;
+    --theme-secondary: #6e6e6e;
+    --theme-border:    #3f3f3f;
+    --theme-focus:     #d7ffd7;
+    --theme-success:   #d7ffd7;
+    --theme-error:     #ff87af;
+    --theme-blue:      #87afff;
+    --theme-purple:    #d7afff;
+    --theme-yellow:    #ffffaf;
+    --theme-keyword:   #87afff;
+    --theme-string:    #ffffaf;
+    --theme-number:    #d7ffd7;
+    --theme-comment:   #afafaf;
+    --theme-title:     #ffffff;
+    --theme-builtin:   #87d7d7;
+    --theme-diff-add:  color-mix(in srgb, #005f00 62%, var(--theme-bg));
+    --theme-diff-del:  color-mix(in srgb, #5f0000 62%, var(--theme-bg));
+  }
+
+  /* ANSI paints its syntax with the sixteen terminal colours rather than with
+     hex, so the emulator decides what "blue" is. These are the xterm defaults —
+     the closest a browser can get to "whatever your terminal calls blue".
+     Its dialog chrome is the default theme's: ANSI is the one builtin that
+     passes darkSemanticColors straight through. */
+  .theme-panel[data-cli-theme="ansi"],
+  body[data-cli-theme="ansi"] {
+    --theme-bg:        #1c1c1c;
+    --theme-fg:        #ffffff;
+    --theme-secondary: #afafaf;
+    --theme-border:    #878787;
+    --theme-focus:     #d7ffd7;
+    --theme-success:   #d7ffd7;
+    --theme-error:     #ff87af;
+    --theme-blue:      #2472c8;
+    --theme-purple:    #bc3fbc;
+    --theme-yellow:    #e5e510;
+    --theme-keyword:   #2472c8;
+    --theme-string:    #e5e510;
+    --theme-number:    #0dbc79;
+    --theme-comment:   #0dbc79;
+    --theme-title:     #e5e5e5;
+    --theme-builtin:   #11a8cd;
+    --theme-diff-add:  color-mix(in srgb, #003300 62%, var(--theme-bg));
+    --theme-diff-del:  color-mix(in srgb, #4d0000 62%, var(--theme-bg));
+  }
+
+  .theme-panel[data-cli-theme="atom-one"],
+  body[data-cli-theme="atom-one"] {
+    --theme-bg:        #282c34;
+    --theme-fg:        #abb2bf;
+    --theme-secondary: #5c6370;
+    --theme-border:    #424852;
+    --theme-focus:     #98c379;
+    --theme-success:   #98c379;
+    --theme-error:     #e06c75;
+    --theme-blue:      #61aeee;
+    --theme-purple:    #c678dd;
+    --theme-yellow:    #e6c07b;
+    --theme-keyword:   #c678dd;
+    --theme-string:    #98c379;
+    --theme-number:    #e6c07b;
+    --theme-comment:   #5c6370;
+    --theme-title:     #61aeee;
+    --theme-builtin:   #e6c07b;
+    --theme-diff-add:  #39544e;
+    --theme-diff-del:  #562b2f;
+  }
+
+  /* Ayu maps neither a number nor a built-in token, so numerals and calls like
+     print() fall back to the foreground — kept here rather than "improved",
+     because that is the theme. Dracula does the same. */
+  .theme-panel[data-cli-theme="ayu"],
+  body[data-cli-theme="ayu"] {
+    --theme-bg:        #0b0e14;
+    --theme-fg:        #aeaca6;
+    --theme-secondary: #3d4149;
+    --theme-border:    #24282f;
+    --theme-focus:     #aad94c;
+    --theme-success:   #aad94c;
+    --theme-error:     #f26d78;
+    --theme-blue:      #39bae6;
+    --theme-purple:    #d2a6ff;
+    --theme-yellow:    #ffb454;
+    --theme-keyword:   #ffb454;
+    --theme-string:    #aad94c;
+    --theme-number:    #aeaca6;
+    --theme-comment:   #646a71;
+    --theme-title:     #ffb454;
+    --theme-builtin:   #aeaca6;
+    --theme-diff-add:  #293022;
+    --theme-diff-del:  #3d1215;
+  }
+
+  .theme-panel[data-cli-theme="dracula"],
+  body[data-cli-theme="dracula"] {
+    --theme-bg:        #282a36;
+    --theme-fg:        #a3afb7;
+    --theme-secondary: #6272a4;
+    --theme-border:    #454e6d;
+    --theme-focus:     #50fa7b;
+    --theme-success:   #50fa7b;
+    --theme-error:     #ff5555;
+    --theme-blue:      #8be9fd;
+    --theme-purple:    #ff79c6;
+    --theme-yellow:    #fff783;
+    --theme-keyword:   #8be9fd;
+    --theme-string:    #fff783;
+    --theme-number:    #a3afb7;
+    --theme-comment:   #6272a4;
+    --theme-title:     #fff783;
+    --theme-builtin:   #a3afb7;
+    --theme-diff-add:  #11431d;
+    --theme-diff-del:  #6e1818;
+  }
+
+  .theme-panel[data-cli-theme="github"],
+  body[data-cli-theme="github"] {
+    --theme-bg:        #24292e;
+    --theme-fg:        #c0c4c8;
+    --theme-secondary: #6a737d;
+    --theme-border:    #474e56;
+    --theme-focus:     #85e89d;
+    --theme-success:   #85e89d;
+    --theme-error:     #f97583;
+    --theme-blue:      #79b8ff;
+    --theme-purple:    #b392f0;
+    --theme-yellow:    #ffab70;
+    --theme-keyword:   #f97583;
+    --theme-string:    #9ecbff;
+    --theme-number:    #79b8ff;
+    --theme-comment:   #6a737d;
+    --theme-title:     #b392f0;
+    --theme-builtin:   #79b8ff;
+    --theme-diff-add:  #3c4636;
+    --theme-diff-del:  #502125;
+  }
+
+  /* The light half of the list. Nothing about the scene changes for them: the
+     surface is painted from --theme-bg either way, so selecting one turns the
+     scene into a light terminal on the page's own stage. */
+
+  /* Like its dark twin, ANSI Light draws its syntax from the terminal's sixteen
+     colours and its chrome from the shared light semantic tokens. The hexes are
+     the light-terminal defaults, which are darker than the dark set — the same
+     names have to hold up against white. */
+  .theme-panel[data-cli-theme="ansi-light"],
+  body[data-cli-theme="ansi-light"] {
+    --theme-bg:        #ffffff;
+    --theme-fg:        #000000;
+    --theme-secondary: #5f5f5f;
+    --theme-border:    #5f5f5f;
+    --theme-focus:     #005f00;
+    --theme-success:   #005f00;
+    --theme-error:     #af0000;
+    --theme-blue:      #0451a5;
+    --theme-purple:    #bc05bc;
+    --theme-yellow:    #949800;
+    --theme-keyword:   #0451a5;
+    --theme-string:    #cd3131;
+    --theme-number:    #00bc00;
+    --theme-comment:   #666666;
+    --theme-title:     #000000;
+    --theme-builtin:   #0598bc;
+    --theme-diff-add:  #e5f2e5;
+    --theme-diff-del:  #ffe5e5;
+  }
+
+  .theme-panel[data-cli-theme="ayu-light"],
+  body[data-cli-theme="ayu-light"] {
+    --theme-bg:        #f8f9fa;
+    --theme-fg:        #5c6166;
+    --theme-secondary: #a6aaaf;
+    --theme-border:    #cfd2d5;
+    --theme-focus:     #86b300;
+    --theme-success:   #86b300;
+    --theme-error:     #f07171;
+    --theme-blue:      #399ee6;
+    --theme-purple:    #a37acc;
+    --theme-yellow:    #f2ae49;
+    --theme-keyword:   #f2ae49;
+    --theme-string:    #86b300;
+    --theme-number:    #a37acc;
+    --theme-comment:   #abadb1;
+    --theme-title:     #399ee6;
+    --theme-builtin:   #f07171;
+    --theme-diff-add:  #c6ead8;
+    --theme-diff-del:  #ffcccc;
+  }
+
+  /* lightTheme, the 256-colour-safe light palette — and the one theme that
+     prints comments in green, which is why the first preview line changes hue
+     rather than just darkening. */
+  :root:not(.dark) .theme-panel:not([data-cli-theme]),
+  .theme-panel[data-cli-theme="default-light"],
+  body[data-cli-theme="default-light"] {
+    --theme-bg:        #ffffff;
+    --theme-fg:        #000000;
+    --theme-secondary: #5f5f5f;
+    --theme-border:    #d4d4d4;
+    --theme-focus:     #005f00;
+    --theme-success:   #005f00;
+    --theme-error:     #af0000;
+    --theme-blue:      #005faf;
+    --theme-purple:    #5f00ff;
+    --theme-yellow:    #875f00;
+    --theme-keyword:   #005faf;
+    --theme-string:    #af0000;
+    --theme-number:    #000000;
+    --theme-comment:   #008700;
+    --theme-title:     #af0000;
+    --theme-builtin:   #005faf;
+    --theme-diff-add:  #d7ffd7;
+    --theme-diff-del:  #ffd7d7;
+  }
+
+  /* The second builtin with its own FocusColor: GitHub's brand blue marks the
+     highlighted row while the added line keeps the theme's green. */
+  .theme-panel[data-cli-theme="github-light"],
+  body[data-cli-theme="github-light"] {
+    --theme-bg:        #f8f8f8;
+    --theme-fg:        #24292e;
+    --theme-secondary: #999999;
+    --theme-border:    #c9c9c9;
+    --theme-focus:     #445588;
+    --theme-success:   #008080;
+    --theme-error:     #dd1144;
+    --theme-blue:      #445588;
+    --theme-purple:    #990000;
+    --theme-yellow:    #990073;
+    --theme-keyword:   #24292e;
+    --theme-string:    #dd1144;
+    --theme-number:    #008080;
+    --theme-comment:   #999988;
+    --theme-title:     #990000;
+    --theme-builtin:   #0086b3;
+    --theme-diff-add:  #c6ead8;
+    --theme-diff-del:  #ffcccc;
+  }
+
+  /* Google Code keeps the original compact web-code palette: navy keywords,
+     green strings, red comments, and purple declarations on white. */
+  .theme-panel[data-cli-theme="google-code"],
+  body[data-cli-theme="google-code"] {
+    --theme-bg:        #ffffff;
+    --theme-fg:        #444444;
+    --theme-secondary: #5f5f5f;
+    --theme-border:    #afafaf;
+    --theme-focus:     #008800;
+    --theme-success:   #008800;
+    --theme-error:     #880000;
+    --theme-blue:      #000088;
+    --theme-purple:    #660066;
+    --theme-yellow:    #666600;
+    --theme-keyword:   #000088;
+    --theme-string:    #008800;
+    --theme-number:    #006666;
+    --theme-comment:   #880000;
+    --theme-title:     #660066;
+    --theme-builtin:   #660066;
+    --theme-diff-add:  #c6ead8;
+    --theme-diff-del:  #fedede;
+  }
+
+  /* Solarized Light uses its canonical warm base and low-contrast chrome while
+     keeping blue, cyan, green, and yellow syntax accents distinct. */
+  .theme-panel[data-cli-theme="solarized-light"],
+  body[data-cli-theme="solarized-light"] {
+    --theme-bg:        #fdf6e3;
+    --theme-fg:        #657b83;
+    --theme-secondary: #93a1a1;
+    --theme-border:    #eee8d5;
+    --theme-focus:     #859900;
+    --theme-success:   #859900;
+    --theme-error:     #dc322f;
+    --theme-blue:      #268bd2;
+    --theme-purple:    #6c71c4;
+    --theme-yellow:    #d0b000;
+    --theme-keyword:   #268bd2;
+    --theme-string:    #d0b000;
+    --theme-number:    #859900;
+    --theme-comment:   #93a1a1;
+    --theme-title:     #657b83;
+    --theme-builtin:   #2aa198;
+    --theme-diff-add:  #d7f2d7;
+    --theme-diff-del:  #f2d7d7;
+  }
+
+  /* ---------- the quiet tier ---------- */
+  /* One step under the secondary text: list numbers, gutters, chart ticks.
+     Declared at palette specificity rather than inside the bridge below, so the
+     light remix can out-specify the default without having to repeat the guard.
+     The picker's panel declares its own base in theme-dialog.css, which is what
+     covers its very first paint before any theme name is stamped; only the
+     remix has to name it here.
+
+     On the light palettes the secondary tier lands close to body text —
+     #5f5f5f on white reads nearly as loud as the code beside it — so the quiet
+     tier steps back toward the surface. Keyed on the palette, not the site
+     theme, so a dark theme previewed on a light page keeps its greys as-is. */
+  body[data-cli-theme] {
+    --theme-quiet: var(--theme-secondary);
+  }
+  .theme-panel[data-cli-theme$="-light"],
+  .theme-panel[data-cli-theme="google-code"],
+  body[data-cli-theme$="-light"],
+  body[data-cli-theme="google-code"] {
+    --theme-quiet: color-mix(in srgb, var(--theme-secondary) 38%, var(--theme-bg));
+  }
+
+  /* ---------- code palette ---------- */
+  /* The site's own syntax colours, and the Prism token map that reads them.
+     Both live here rather than in diff-view.css because the animation
+     highlights JSX too and has no use for the rest of that sheet — sharing the
+     palette is what lets a themed scene restyle its syntax by overriding
+     variables instead of loading a second stylesheet. */
+  :root {
+    /* Nearly every code colour is an existing terminal token, so the scenes
+       stay in the same family as the animation above them on the page. Only
+       the property/string hues are new, and both have a light and dark value
+       because the originals were sampled from a black terminal. */
+    --code-plain:    var(--text);
+    --code-comment:  var(--text-muted);
+    /* Punctuation stays at full strength. The unhighlighted "before" panel
+       renders every semicolon in the foreground colour, so muting them here
+       would make the improved panel read as the dimmer of the two. */
+    --code-punct:    var(--code-plain);
+    /* The shared --accent-* pair only reaches ~3.2:1 on white, and these are
+       the two most-used colours in the scenes, so light mode takes darker
+       values of the same hues. */
+    --code-keyword:  #1967d2;
+    --code-number:   #137333;
+    --code-property: #00737b;
+    --code-string:   #a35b00;
+    /* Function names and built-in calls sit with the plain text and the
+       keywords by default; the palettes below separate them, because
+       highlight.js — the grammar the CLI actually renders with — gives
+       title.function and built_in their own colours per theme. */
+    --code-function: var(--code-plain);
+    --code-builtin:  var(--code-keyword);
+    /* The gutter is reference material, not content, so it sits well under the
+       code — but only in the shipped panel. The "before" panel overrides it back
+       to the foreground, because the old renderer had no muted tier. Light mode
+       reads the animation's shared gutter token, so every embed's line numbers
+       land on the same colour; dark keeps its own bluish value below. */
+    --code-line:     var(--diff-gutter);
+  }
+
+  :root.dark {
+    --code-keyword:  var(--accent-blue);
+    --code-number:   var(--accent-green);
+    --code-property: #a3dce9;
+    --code-string:   #f6e3aa;
+    --code-line:     #7f85a1;
+  }
+
+  .diff-code {
+    color: var(--code-plain);
+  }
+  .diff-code .token.comment,
+  .diff-code .token.prolog,
+  .diff-code .token.doctype,
+  .diff-code .token.cdata {
+    color: var(--code-comment);
+  }
+  .diff-code .token.punctuation,
+  .diff-code .token.operator {
+    color: var(--code-punct);
+  }
+  .diff-code .token.keyword,
+  .diff-code .token.boolean,
+  .diff-code .token.important,
+  .diff-code .token.atrule {
+    color: var(--code-keyword);
+  }
+  /* Prism files built-ins with the keywords; highlight.js puts `print` and
+     `range` in built_in and reserves title.function for the name after `def`,
+     so the two take different colours per theme and this map has to follow
+     suit. Off the palettes the two tokens resolve to the same colour they
+     always did. */
+  .diff-code .token.builtin {
+    color: var(--code-builtin);
+  }
+  /* hexcode and unit-bearing numbers are added to the CSS grammar in
+     diff-view.js — Prism's core grammar has neither, which would leave every
+     value in the "after" panel the same colour as the "before" one. */
+  .diff-code .token.number,
+  .diff-code .token.hexcode,
+  .diff-code .token.unit {
+    color: var(--code-number);
+  }
+  .diff-code .token.string,
+  .diff-code .token.char,
+  .diff-code .token.triple-quoted-string,
+  .diff-code .token.attr-value,
+  .diff-code .token.selector,
+  .diff-code .token.class-name,
+  .diff-code .token.decorator {
+    color: var(--code-string);
+  }
+  .diff-code .token.property,
+  .diff-code .token.attr-name,
+  .diff-code .token.variable,
+  .diff-code .token.parameter {
+    color: var(--code-property);
+  }
+  .diff-code .token.function,
+  .diff-code .token.url {
+    color: var(--code-function);
+  }
+  /* Prism marks Python's `def name` as a plain token pair; the name should read
+     as the subject of the line, not as a keyword. */
+  .diff-code .token.function-definition {
+    color: var(--code-plain);
+  }
+
+  /* ---------- theme tokens -> scene tokens ---------- */
+  /* The bridge. cli-theme.js stamps the picked theme on body; the palette above
+     lights up; this block hands it to every token the scenes actually paint
+     with, so a scene needs no theme CSS of its own.
+
+     The guard is the whole point of the two-selector list. The site's mode
+     lives on :root and the picked theme on body — two different elements, which
+     no single compound selector can test — so each arm excludes its own mode's
+     default. In the synced state (Default Light on a light page, Default Dark
+     on a dark one) this block does not match at all and the scene keeps the
+     site's own tokens verbatim, which is what makes a picker sitting on 9.
+     Default Light look exactly like the rest of the page. Written as an
+     exclusion rather than a list of themes for a second reason: the correct
+     appearance on load is then "no bridge", which is what the document already
+     paints during parse, so the deferred script can stamp the attribute after
+     first paint with no repaint at all.
+
+     Every variable below is restated rather than inherited. A custom property
+     declared at :root that references another (--code-line: var(--diff-gutter))
+     resolves against :root, not against the element reading it, so an override
+     here has to be explicit or it silently keeps the site palette. Custom
+     properties resolve by inheritance proximity, so these body declarations
+     beat every :root and :root.dark block regardless of specificity; the
+     specificity only has to clear other body-level rules, which it does. */
+  :root:not(.dark) > body[data-cli-theme]:not([data-cli-theme="default-light"]),
+  :root.dark > body[data-cli-theme]:not([data-cli-theme="default"]) {
+    /* surface and ink */
+    --bg:               var(--theme-bg);
+    --text:             var(--theme-fg);
+    --text-muted:       var(--theme-secondary);
+    --text-placeholder: var(--theme-quiet);
+    --border:           var(--theme-border);
+    --surface-btn:      color-mix(in srgb, var(--theme-fg) 8%, var(--theme-bg));
+    --surface-hover:    color-mix(in srgb, var(--theme-fg) 14%, var(--theme-bg));
+
+    /* accents. The CLI fills a highlighted row with an opaque bar; the scenes
+       mark a selection with a tint of the same accent, so the theme's focus
+       colour is tinted rather than used flat. */
+    --accent-purple:    var(--theme-purple);
+    --accent-blue:      var(--theme-blue);
+    --accent-green:     var(--theme-focus);
+    --accent-green-bg:  color-mix(in srgb, var(--theme-focus) 14%, transparent);
+    --warn:             var(--theme-yellow);
+    /* Shell mode's neon has no semantic twin in a CLI palette; the built-in
+       colour is the nearest role — the one hue a theme reserves for "the
+       terminal is doing this, not the model". */
+    --accent-neon:      var(--theme-builtin);
+    --suggestion-active-bg: color-mix(in srgb, var(--theme-purple) 18%, var(--theme-bg));
+    /* An alias of --accent-green at :root, so it needs restating here for the
+       same reason everything else does. */
+    --plan-border:      var(--theme-focus);
+
+    /* diff. Theme tints are opaque colours sampled against the theme's own
+       background, so they replace both the shared pair and the deepened pair
+       diff-view.css uses for dark mode. */
+    --diff-add:         var(--theme-success);
+    --diff-del:         var(--theme-error);
+    --diff-add-bg:      var(--theme-diff-add);
+    --diff-del-bg:      var(--theme-diff-del);
+    --diff-add-panel:   var(--theme-diff-add);
+    --diff-del-panel:   var(--theme-diff-del);
+    --diff-gutter:      var(--theme-quiet);
+    --diff-rule:        color-mix(in srgb, var(--theme-secondary) 32%, var(--theme-bg));
+    --panel-border:     color-mix(in srgb, var(--theme-yellow) 38%, transparent);
+
+    /* code */
+    --code-plain:       var(--theme-fg);
+    --code-punct:       var(--theme-fg);
+    --code-property:    var(--theme-fg);
+    --code-keyword:     var(--theme-keyword);
+    --code-string:      var(--theme-string);
+    --code-number:      var(--theme-number);
+    --code-comment:     var(--theme-comment);
+    --code-function:    var(--theme-title);
+    --code-builtin:     var(--theme-builtin);
+    --code-line:        var(--theme-quiet);
+
+    /* The star-history chart is deliberately absent from this list. It is the
+       one embed that is not a terminal: it reports on the three CLIs rather
+       than demonstrating one, so a picked terminal theme has no more claim on
+       its ink than it does on the page's body text. It follows the site's
+       light/dark pair only — see star-history.css.
+
+       The demo player's controls. cli-animation.css aliases these to the site
+       palette at :root, so without a restatement the timeline would keep site
+       ink over a themed surface — invisible on a dark theme in light mode. */
+    --demo-color-text:          var(--theme-fg);
+    --demo-color-muted:         var(--theme-quiet);
+    --demo-color-accent:        var(--theme-blue);
+    --demo-color-surface:       var(--theme-bg);
+    --demo-color-control:       color-mix(in srgb, var(--theme-fg) 8%, var(--theme-bg));
+    --demo-color-control-hover: color-mix(in srgb, var(--theme-fg) 14%, var(--theme-bg));
+    --demo-color-track:         color-mix(in srgb, var(--theme-fg) 22%, var(--theme-bg));
+  }

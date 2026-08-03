@@ -6,18 +6,24 @@
 <title>Gemini CLI theme picker</title>
 <script src="/demo-system/demo-system.js?v=2"></script>
 <link rel="stylesheet" href="/demo-system/demo-system.css">
-<link rel="stylesheet" href="./cli-animation.css?v=6">
-<link rel="stylesheet" href="./diff-view.css?v=4">
-<link rel="stylesheet" href="./theme-dialog.css?v=21">
+<link rel="stylesheet" href="./cli-animation.css?v=7">
+<link rel="stylesheet" href="./cli-theme.css?v=1">
+<link rel="stylesheet" href="./diff-view.css?v=5">
+<link rel="stylesheet" href="./theme-dialog.css?v=25">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script defer src="./cli-theme.js?v=1"></script>
 <script defer src="./diff-view.js?v=2"></script>
-<script defer src="./theme-dialog.js?v=5"></script>
+<script defer src="./theme-dialog.js?v=6"></script>
 </head>
 <body class="demo-scene diff-scene theme-scene" data-demo-scene="cli-theme">
 
 <main class="diff-stage">
-  <div class="diff-panel theme-panel" data-cli-theme="default">
+  <!-- No data-cli-theme here: theme-dialog.js stamps the site's own default on
+       load, and cli-theme.css paints an unstamped panel to match the site mode
+       so the first frame is already right. Hardcoding a name is what used to
+       flash the dark palette onto a light page. -->
+  <div class="diff-panel theme-panel">
     <div class="theme-cols">
 
       <section class="theme-list-col">

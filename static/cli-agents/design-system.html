@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini CLI design system</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./cli-animation.css?v=7">
+<link rel="stylesheet" href="./cli-theme.css?v=1">
+<link rel="stylesheet" href="./diff-view.css?v=5">
+<link rel="stylesheet" href="./theme-dialog.css?v=25">
+<link rel="stylesheet" href="./cli-todo-animation.css?v=5">
+<link rel="stylesheet" href="./design-system.css?v=10">
+<script defer src="./cli-theme.js?v=1"></script>
+<script defer src="./design-system.js?v=8"></script>
+</head>
+<body class="demo-scene design-scene" data-demo-scene="cli-design">
+
+<main class="ds-stage">
+
+  <!-- ==================== color ==================== -->
+  <section class="ds-section">
+    <h2 class="ds-heading"><span class="ds-hash" aria-hidden="true">#</span> Color</h2>
+
+    <div class="ds-label">accent</div>
+    <div class="ds-swatches">
+      <div class="ds-swatch" data-token="--accent-purple">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">text.accent</span>
+        <span class="ds-swatch-role">Agent voice &amp; brand</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--accent-blue">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">text.link</span>
+        <span class="ds-swatch-role">Focus, links &amp; the cursor</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--accent-green">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">status.success</span>
+        <span class="ds-swatch-role">Confirmed &amp; completed</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--warn">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">status.warning</span>
+        <span class="ds-swatch-role">Awaiting approval</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--diff-del">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">status.error</span>
+        <span class="ds-swatch-role">Errors &amp; removals</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+    </div>
+
+    <div class="ds-label">foreground &amp; surface</div>
+    <div class="ds-swatches">
+      <div class="ds-swatch" data-token="--text">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">text.primary</span>
+        <span class="ds-swatch-role">Default foreground</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--text-muted">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">text.secondary</span>
+        <span class="ds-swatch-role">Supporting detail</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--text-placeholder">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">text.placeholder</span>
+        <span class="ds-swatch-role">Hints &amp; empty input</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--bg">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">background.primary</span>
+        <span class="ds-swatch-role">The terminal surface</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--surface-btn">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">background.raised</span>
+        <span class="ds-swatch-role">User pills &amp; hover</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--border">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">border.default</span>
+        <span class="ds-swatch-role">Panel frames &amp; rules</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--diff-add-bg">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">diff.added</span>
+        <span class="ds-swatch-role">Added-line tint</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--diff-del-bg">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">diff.removed</span>
+        <span class="ds-swatch-role">Removed-line tint</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+      <div class="ds-swatch" data-token="--diff-gutter">
+        <div class="ds-swatch-chip"></div>
+        <span class="ds-swatch-name">diff.gutter</span>
+        <span class="ds-swatch-role">Line numbers, under the code</span>
+        <code class="ds-swatch-value"></code>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== elements ==================== -->
+  <section class="ds-section">
+    <h2 class="ds-heading"><span class="ds-hash" aria-hidden="true">#</span> Elements</h2>
+
+    <div class="ds-label">user message</div>
+    <div class="ds-specimen">
+      <div class="msg msg-user msg-reply show">
+        <div class="msg-inner">
+          <span class="msg-prefix">&gt;</span>
+          <div class="msg-content">Add a dark mode toggle to settings</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-label">status</div>
+    <div class="ds-specimen">
+      <div class="status-line show"><span class="spin-char" id="dsSpinChar">&#10251;</span><span id="dsStatusText"> Refactoring the theme tokens (esc to cancel, 4s)</span></div>
+    </div>
+
+    <div class="ds-label">agent response</div>
+    <div class="ds-specimen">
+      <div class="msg msg-ai show">
+        <div class="msg-inner">
+          <span class="msg-prefix">&#10022;</span>
+          <div class="msg-content">I'll add the toggle and wire it to the theme tokens. Run <span class="hl">/theme</span> to try it once I'm done.<ul class="msg-bullets"><li><span class="bullet">*</span><span><span class="bold">Semantic roles:</span> components read tokens, themes set values</span></li><li><span class="bullet">*</span><span><span class="bold">No hardcoded hex:</span> both modes come along for free</span></li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-label">tool call &middot; resolved</div>
+    <div class="ds-specimen">
+      <div class="tool-resolved-wrap show">
+        <div class="tool-resolved">
+          <span class="tool-check">&#10003;</span>
+          <span class="tool-label">Shell</span>
+          <span class="tool-header-sub">npm run build</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== components ==================== -->
+  <section class="ds-section">
+    <h2 class="ds-heading"><span class="ds-hash" aria-hidden="true">#</span> Components</h2>
+
+    <div class="ds-label">approval dialog</div>
+    <div class="ds-specimen">
+      <div class="tool-box show">
+        <div class="tool-box-inner">
+          <div class="tool-header">
+            <span class="tool-q">?</span>
+            <span class="tool-label">Shell</span>
+            <span class="tool-header-sub">npm create vite@latest todo-app</span>
+          </div>
+          <div class="tool-body">
+            <div class="tool-command">npm create vite@latest todo-app -- --template react</div>
+            <div class="tool-question">Allow execution?</div>
+            <div class="tool-opt selected"><span class="tool-opt-bullet">&#9679;</span><span><span class="tool-opt-num">1.</span> Yes, allow once</span></div>
+            <div class="tool-opt"><span class="tool-opt-bullet"> </span><span><span class="tool-opt-num">2.</span> Yes, allow always "npm ..."</span></div>
+            <div class="tool-opt"><span class="tool-opt-bullet"> </span><span><span class="tool-opt-num">3.</span> No (esc)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-label">todo list</div>
+    <div class="ds-specimen">
+      <section class="todo-tray show" aria-label="Todo list">
+        <div class="todo-title">
+          <span class="todo-emoji" aria-hidden="true">&#128221;</span>
+          <span class="todo-name">Todo</span>
+          <span class="todo-score">2/4 (ctrl+t to toggle)</span>
+        </div>
+        <ul class="todo-list">
+          <li class="todo-group">
+            <div class="todo-group-label">Settings panel</div>
+            <ul class="todo-children">
+              <li class="todo-item" data-status="completed"><span class="todo-glyph" aria-hidden="true">&#10003;</span><span class="todo-label">Audit the current dialog layout</span></li>
+              <li class="todo-item" data-status="completed"><span class="todo-glyph" aria-hidden="true">&#10003;</span><span class="todo-label">Add a dark mode toggle row</span></li>
+              <li class="todo-item" data-status="in_progress"><span class="todo-glyph" aria-hidden="true">&#187;</span><span class="todo-label">Wire the toggle to theme tokens</span></li>
+              <li class="todo-item" data-status="pending"><span class="todo-glyph" aria-hidden="true">&#9744;</span><span class="todo-label">Update the snapshot tests</span></li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="ds-label">diff</div>
+    <div class="ds-specimen">
+      <div class="diff-wrap show">
+        <div class="diff-file"><span class="diff-check">&#10003;</span> <span class="tool-label">Edited</span> src/ThemeToggle.jsx</div>
+        <div class="diff-body">
+          <div class="diff-line diff-line-ctx"><span class="diff-ln">41</span><span class="diff-sign"> </span><span class="diff-code"><span class="token keyword">export</span> <span class="token keyword">function</span> ThemeToggle({ <span class="token parameter">theme</span> }) {</span></div>
+          <div class="diff-line diff-line-del diff-line-change-start"><span class="diff-ln">42</span><span class="diff-sign">-</span><span class="diff-code">  <span class="token keyword">return</span> &lt;button className=<span class="token string">"btn"</span>&gt;</span></div>
+          <div class="diff-line diff-line-add"><span class="diff-ln">42</span><span class="diff-sign">+</span><span class="diff-code">  <span class="token keyword">const</span> next = theme === <span class="token string">"dark"</span> ? <span class="token string">"light"</span> : <span class="token string">"dark"</span>;</span></div>
+          <div class="diff-line diff-line-add diff-line-change-end"><span class="diff-ln">43</span><span class="diff-sign">+</span><span class="diff-code">  <span class="token keyword">return</span> &lt;button <span class="token property">aria-label</span>=<span class="token string">"Switch theme"</span>&gt;</span></div>
+          <div class="diff-line diff-line-ctx"><span class="diff-ln">44</span><span class="diff-sign"> </span><span class="diff-code">    {label} <span class="token comment">// reads text.primary, never a hex</span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== input ==================== -->
+  <section class="ds-section">
+    <h2 class="ds-heading"><span class="ds-hash" aria-hidden="true">#</span> Input</h2>
+
+    <div class="ds-label"> </div>
+    <div class="ds-specimen">
+      <div class="suggestions show" data-kind="command">
+        <div class="suggestion-option active"><span class="suggestion-label">chat</span><span class="suggestion-description">Browse auto-saved conversations and manage chat checkpoints</span></div>
+        <div class="suggestion-option"><span class="suggestion-label">clear</span><span class="suggestion-description">Clear the screen and start a new session</span></div>
+        <div class="suggestion-option"><span class="suggestion-label">compress</span><span class="suggestion-description">Compresses the context by replacing it with a summary</span></div>
+      </div>
+      <div class="input-box">
+        <span class="input-prompt">&gt;</span>
+        <div class="input-text"><span><span class="input-token">/c</span></span><span class="cursor"></span></div>
+      </div>
+    </div>
+
+    <div class="ds-duo">
+      <div>
+        <div class="ds-label"> </div>
+        <div class="ds-specimen">
+          <div class="mode-line show mode-plan">plan mode<span class="mode-hint"> (shift+tab)</span></div>
+          <div class="input-box mode-plan">
+            <span class="input-prompt">&gt;</span>
+            <div class="input-text"><span></span><span class="cursor"></span><span class="placeholder">Research only &mdash; no edits yet</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ds-label"> </div>
+        <div class="ds-specimen">
+          <div class="mode-line show mode-auto">accepting edits<span class="mode-hint"> (shift+tab)</span></div>
+          <div class="input-box mode-auto">
+            <span class="input-prompt">&gt;</span>
+            <div class="input-text"><span></span><span class="cursor"></span><span class="placeholder">Edits apply without confirmation</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ds-label"> </div>
+        <div class="ds-specimen">
+          <div class="mode-line show mode-yolo">YOLO mode<span class="mode-hint"> (ctrl+y)</span></div>
+          <div class="input-box mode-yolo">
+            <span class="input-prompt">&gt;</span>
+            <div class="input-text"><span></span><span class="cursor"></span><span class="placeholder">Everything runs without asking</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ds-label"> </div>
+        <div class="ds-specimen">
+          <div class="mode-line show mode-shell">shell mode<span class="mode-hint"> (esc to exit)</span></div>
+          <div class="input-box mode-shell">
+            <span class="input-prompt">!</span>
+            <div class="input-text"><span>git status</span><span class="cursor"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

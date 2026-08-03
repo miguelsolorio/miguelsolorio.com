@@ -284,6 +284,40 @@
     border-radius: 0 !important;
     box-shadow: none;
   }
+  /* A chart is a drawing, not a screenshot: it stands on the stage without a
+     panel, and its frame takes the proportions of the drawing itself (the
+     star-history svg's 820x500 viewBox) so the scene scales with the column
+     instead of leaving dead height under the chart on narrow screens. The
+     whole stage — not just the drawing on it — is held to the prose measure
+     and centered in the wide track, so a figure this sparse reads as a diagram
+     sized to the text rather than a full-bleed exhibit. */
+  /* The explicit width is load-bearing: auto inline margins opt a grid item
+     out of stretching, so without it the stage would shrink to fit the
+     iframe's 300px intrinsic default instead of the measure. */
+  .single .project-embed--chart {
+    width: 100%;
+    margin-inline: auto;
+  }
+  .single .project-embed--chart iframe.embed-frame,
+  .dark .single .project-embed--chart iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: 820 / 500;
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+
+  /* Star chart */
+  .single .project-embed--chart[data-project-theme="cli"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .single .project-embed--chart[data-project-theme="cli"] iframe {
+    max-width: var(--text-measure);
+  }
   /* ASCII logotype rendered as live text. Unlike other embeds it stands
      directly on the page — no stage surface — so the mark reads as type,
      not a framed screenshot. The mark is 80 monospace columns wide and the

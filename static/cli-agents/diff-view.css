@@ -1,44 +1,16 @@
-  /* Still scenes for the diff-view case study. Layered on cli-animation.css —
-     link that first. Everything structural (.diff-line, .diff-ln, .diff-sign,
-     .tool-*) comes from there; this file only adds what a static scene needs:
-     a code palette, the panel frame, and the two hunk separators. */
+  /* Still scenes for the diff-view case study. Layered on cli-animation.css +
+     cli-theme.css — link both first. Everything structural (.diff-line,
+     .diff-ln, .diff-sign, .tool-*) comes from the first and the code palette
+     from the second; this file only adds what a static scene needs on top of
+     them: the panel frame and the two hunk separators. */
 
   :root {
-    /* Nearly every code colour is an existing terminal token, so the scenes
-       stay in the same family as the animation above them on the page. Only
-       the property/string hues are new, and both have a light and dark value
-       because the originals were sampled from a black terminal. */
-    --code-plain:    var(--text);
-    --code-comment:  var(--text-muted);
-    /* Punctuation stays at full strength. The unhighlighted "before" panel
-       renders every semicolon in the foreground colour, so muting them here
-       would make the improved panel read as the dimmer of the two. */
-    --code-punct:    var(--code-plain);
-    /* The shared --accent-* pair only reaches ~3.2:1 on white, and these are
-       the two most-used colours in the scenes, so light mode takes darker
-       values of the same hues. */
-    --code-keyword:  #1967d2;
-    --code-number:   #137333;
-    --code-property: #00737b;
-    --code-string:   #a35b00;
-    /* The gutter is reference material, not content, so it sits well under the
-       code — but only in the shipped panel. The "before" panel overrides it back
-       to the foreground, because the old renderer had no muted tier. Light mode
-       reads the animation's shared gutter token, so every embed's line numbers
-       land on the same colour; dark keeps its own bluish value below. */
-    --code-line:     var(--diff-gutter);
-
     /* The CLI outlines a pending confirmation in its warning colour. */
     --panel-border:  color-mix(in srgb, var(--warn) 42%, transparent);
     --diff-rule:     color-mix(in srgb, var(--text-muted) 22%, var(--bg));
   }
 
   :root.dark {
-    --code-keyword:  var(--accent-blue);
-    --code-number:   var(--accent-green);
-    --code-property: #a3dce9;
-    --code-string:   #f6e3aa;
-    --code-line:     #7f85a1;
     --panel-border:  color-mix(in srgb, var(--warn) 34%, transparent);
     --diff-rule:     color-mix(in srgb, var(--text-muted) 32%, var(--bg));
     /* The shared change tints are tuned for the animation's small inline diffs.
@@ -187,9 +159,16 @@
     background: none;
   }
   .diff-plain .diff-line-del .diff-code { color: var(--diff-del); }
-  /* Whole lines of running text, so the added green needs more weight on white
-     than the shared token — which is sized for a one-line inline marker. */
-  .diff-plain .diff-line-add .diff-code { color: #15803d; }
+  /* Whole lines of running text, so the added green needs more weight than the
+     shared token — which is sized for a one-line inline marker. Mixed toward
+     the ink rather than written as a fixed dark green, because a CLI palette
+     repaints this panel and a hex would be the one colour in the scene that
+     ignored the theme: on a light surface the mix darkens, on a dark theme
+     previewed here it lightens, and either way it moves away from the
+     background. On the dark site the token already carries the weight. */
+  .diff-plain .diff-line-add .diff-code {
+    color: color-mix(in srgb, var(--diff-add) 82%, var(--text));
+  }
   :root.dark .diff-plain .diff-line-add .diff-code { color: var(--diff-add); }
   /* The old renderer had no quiet tier at all: the line numbers and the
      hidden-lines notice printed in the same default foreground as the code, so
@@ -208,60 +187,6 @@
     background-color: transparent;
     border-top: 1px solid var(--text);
     border-bottom: 1px solid var(--text);
-  }
-
-  /* ---------- code palette ---------- */
-  .diff-code {
-    color: var(--code-plain);
-  }
-  .diff-code .token.comment,
-  .diff-code .token.prolog,
-  .diff-code .token.doctype,
-  .diff-code .token.cdata {
-    color: var(--code-comment);
-  }
-  .diff-code .token.punctuation,
-  .diff-code .token.operator {
-    color: var(--code-punct);
-  }
-  .diff-code .token.keyword,
-  .diff-code .token.boolean,
-  .diff-code .token.builtin,
-  .diff-code .token.important,
-  .diff-code .token.atrule {
-    color: var(--code-keyword);
-  }
-  /* hexcode and unit-bearing numbers are added to the CSS grammar in
-     diff-view.js — Prism's core grammar has neither, which would leave every
-     value in the "after" panel the same colour as the "before" one. */
-  .diff-code .token.number,
-  .diff-code .token.hexcode,
-  .diff-code .token.unit {
-    color: var(--code-number);
-  }
-  .diff-code .token.string,
-  .diff-code .token.char,
-  .diff-code .token.triple-quoted-string,
-  .diff-code .token.attr-value,
-  .diff-code .token.selector,
-  .diff-code .token.class-name,
-  .diff-code .token.decorator {
-    color: var(--code-string);
-  }
-  .diff-code .token.property,
-  .diff-code .token.attr-name,
-  .diff-code .token.variable,
-  .diff-code .token.parameter {
-    color: var(--code-property);
-  }
-  .diff-code .token.function,
-  .diff-code .token.url {
-    color: var(--code-function);
-  }
-  /* Prism marks Python's `def name` as a plain token pair; the name should read
-     as the subject of the line, not as a keyword. */
-  .diff-code .token.function-definition {
-    color: var(--code-plain);
   }
 
   /* ---------- before / after comparison ---------- */

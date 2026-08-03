@@ -1,0 +1,177 @@
+  /* The design-system reference sheet. Layered on cli-animation.css (tokens
+     and the conversation/input/approval/diff components), cli-theme.css (the
+     syntax palette and the CLI theme bridge), cli-todo-animation.css (the todo
+     tray), and diff-view.css (the panel frame) — link all four first. Nothing
+     visual is restated: every specimen below is the shared
+     component rendered with its own classes, so the sheet can never drift from
+     the scenes it documents. This file adds only spec-sheet chrome — section
+     headings, swatch chips, captions, and the grid that lays specimens out —
+     plus the two input modes the animations never enter. */
+
+  /* ---------- scene shell ---------- */
+  /* cli-animation.css pins body to the viewport so the terminal can scroll
+     inside it. A reference sheet is the opposite: the document is exactly as
+     tall as its content, and design-system.js reports that height so the
+     embedding frame can match it. */
+  body.design-scene {
+    display: block;
+    height: auto;
+    overflow: visible;
+    padding: clamp(14px, 2.5vw, 22px) clamp(14px, 3vw, 26px) clamp(16px, 2.5vw, 26px);
+  }
+
+  .ds-stage {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ---------- section headings ---------- */
+  /* The CLI renders markdown, so a section opens the way a heading streams into
+     the terminal: a quiet # in the margin, the title in bold, and a rule
+     running out to the right edge. */
+  .ds-section { margin-top: 24px; }
+  .ds-stage > .ds-section:first-child { margin-top: 0; }
+  .ds-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.3s ease;
+  }
+  .ds-heading .ds-hash {
+    color: var(--accent-purple);
+    font-weight: 400;
+    transition: color 0.3s ease;
+  }
+  .ds-heading::after {
+    content: "";
+    flex: 1;
+    margin-left: 8px;
+    border-top: 1px solid var(--border);
+    transition: border-color 0.3s ease;
+  }
+  /* Specimen captions sit in the placeholder tier: present enough to organize,
+     never competing with the component they name. */
+  .ds-label {
+    margin: 14px 0 6px;
+    color: var(--text-placeholder);
+    font-size: 11.5px;
+    transition: color 0.3s ease;
+  }
+
+  /* ---------- color swatches ---------- */
+  .ds-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 8px 10px;
+  }
+  .ds-swatch { min-width: 0; }
+  /* Chips paint with var(--token) directly, so they restyle with the theme the
+     same way the components do; the hairline keeps the pale ones — surfaces,
+     diff tints — from dissolving into the page. */
+  .ds-swatch-chip {
+    height: 20px;
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  .ds-swatch-name {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+    transition: color 0.3s ease;
+  }
+  .ds-swatch-role {
+    display: block;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+  }
+  /* Filled by design-system.js with the token's resolved value, so the sheet
+     reads out the live palette rather than a transcription of it. */
+  .ds-swatch-value {
+    display: block;
+    margin-top: 1px;
+    color: var(--text-placeholder);
+    font-size: 11px;
+    line-height: 1.3;
+    font-family: inherit;
+    transition: color 0.3s ease;
+  }
+
+  /* ---------- extra input modes ---------- */
+  /* The animations only ever enter plan and auto-accept, so cli-animation.css
+     stops there; the sheet documents the other two the CLI ships. YOLO wears
+     the error red — nothing asks before running — and shell mode hands the
+     line to the terminal in a neon no other role uses, its prompt swapped for
+     a bang. */
+  :root {
+    --accent-neon: #0097a7;
+  }
+  :root.dark {
+    --accent-neon: #00e5ff;
+  }
+  .input-box.mode-yolo { border-color: var(--diff-del); }
+  .input-box.mode-yolo .input-prompt { color: var(--diff-del); }
+  .mode-line.mode-yolo { color: var(--diff-del); }
+  .input-box.mode-shell { border-color: var(--accent-neon); }
+  .input-box.mode-shell .input-prompt { color: var(--accent-neon); }
+  .mode-line.mode-shell { color: var(--accent-neon); }
+
+  /* ---------- specimen layout ---------- */
+  /* Related variants — the four input modes — sit in columns; everything else
+     gets a full-width row to itself. */
+  .ds-duo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(16px, 3vw, 28px);
+    align-items: start;
+  }
+
+  /* Specimens keep their component classes but drop the flow margins those
+     classes carry inside a live conversation — here the caption owns the
+     rhythm. */
+  .ds-specimen .msg,
+  .ds-specimen .msg-reply { margin: 0; }
+  .ds-specimen .tool-resolved-wrap { margin: 0; }
+  .ds-specimen .tool-box.show { margin: 0; }
+  .ds-specimen .diff-wrap { margin: 0; }
+  .ds-specimen .status-line {
+    height: auto;
+    padding-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* The approval box authors a 500px minimum for the full demo; the sheet's
+     column is narrower, so it shrinks the way it does in card embeds. */
+  .ds-specimen .tool-box { width: 100%; max-width: 520px; }
+  .ds-specimen .tool-box-inner { min-width: 0; }
+  .ds-specimen .tool-command { overflow-wrap: anywhere; }
+
+  /* The tray's own chrome — the hairline and inset that separate it from the
+     input above it — reads as a stray rule when the component stands alone. */
+  .ds-specimen .todo-tray {
+    max-height: none;
+    border-top: 0;
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transform: none;
+  }
+
+  .ds-specimen .suggestions { margin-bottom: 6px; }
+  .ds-specimen .input-box { margin-bottom: 0; }
+  /* The tray's rows are set for a terminal footer, where the list is the only
+     thing on screen; on the sheet it is one specimen among many. */
+  .ds-specimen .todo-list { margin-top: 6px; }
+
+  @media (max-width: 40rem) {
+    .ds-duo { grid-template-columns: minmax(0, 1fr); }
+    .ds-swatches { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); }
+  }
