@@ -46,15 +46,21 @@ We shipped Colab's AI-first redesign at Google I/O 2025 and it became available 
 
 Shipping this meant giving direction to a genuinely ambiguous problem. The team held diverging ideas about what an AI-first notebook should be, so I helped create the vision that aimed at improving the very issues our users kept describing to us. You can read the feedback from our users to see how they felt about the big changes.
 
+{{< quotes >}}
 
+    {{< quote name="Participant 1" handle="Engineering student" source="usertesting" >}}
+    I really like that it was all integrated. It made things much faster because I didn't have to keep switching between tabs, asking [AI] to debug, copying and running it again. It just ==made the process a lot more seamless==.
+    {{< /quote >}}
 
-{{< quote name="Participant 1" handle="Engineering student" source="usertesting" >}}
-I really like that it was all integrated. It made things much faster because I didn't have to keep switching between tabs, asking [AI] to debug, and then copying and running it again. It just ==made the process a lot more seamless==.
-{{< /quote >}}
+    {{< quote name="Participant 2" handle="Software Engineer, Google" source="usertesting" >}}
+    I would probably not have to struggle so much in the beginning, thinking about which API to use. ==The AI does a lot of thinking for you==.
+    {{< /quote >}}
 
-{{< quote name="Participant 2" handle="Software Engineer, Google" source="usertesting" >}}
-I would probably not have to struggle so much in the beginning, thinking about which API to use. ==The AI does a lot of thinking for you==.
-{{< /quote >}}
+    {{< quote name="Participant 3" handle="Senior Software Engineer" source="usertesting" >}}
+    I really liked that it provided proactive options and was a very friendly collaborator. ==It saved me time by automatically detecting the error.==
+    {{< /quote >}}
+
+{{< /quotes >}}
 
 
 {{< stats >}}
