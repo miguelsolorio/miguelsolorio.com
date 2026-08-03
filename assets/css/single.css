@@ -122,6 +122,25 @@
     height: clamp(20rem, 61.75vw, 45rem);
     margin: 0;
   }
+  /* The feedback sticky-note board is a fixed 1186x933 design of bare notes
+     that scales itself to the frame width, so the frame must keep that exact
+     ratio for the scaled stage to fill it edge to edge. The notes render on a
+     transparent body, so the default embed chrome (rounded shadow card) must
+     not paint a box around them. */
+  .single > .feedback-board-embed {
+    grid-column: wide;
+    margin-block: var(--media-gap);
+  }
+  .single .feedback-board-embed iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: 1186 / 933;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
   /* A scene that is nothing but two screenshots wants the screenshots' own
      proportions, not a height guessed in viewport units: the ratio below is the
      shots' (1728x931), so the frame meets them exactly at every width and the

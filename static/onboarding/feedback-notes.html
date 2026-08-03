@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community feedback sticky notes</title>
+  <script>
+    /* Same-origin theme sync, mirroring demo-system.js: follow the parent
+       site's explicit theme; cross-origin embeds fall back to the OS one.
+       Runs in <head> to avoid a theme flash. */
+    (function () {
+      var root = document.documentElement;
+      var media = window.matchMedia("(prefers-color-scheme: dark)");
+      var parentRoot = null;
+      try {
+        if (window.parent !== window) parentRoot = window.parent.document.documentElement;
+      } catch (error) { /* Cross-origin: use the OS preference. */ }
+
+      function syncTheme() {
+        root.classList.toggle("dark", parentRoot ? parentRoot.classList.contains("dark") : media.matches);
+      }
+
+      syncTheme();
+      if (parentRoot) {
+        parentRoot.addEventListener("site:themechange", syncTheme);
+      } else if (media.addEventListener) {
+        media.addEventListener("change", syncTheme);
+      }
+    })();
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { overflow: hidden; background: transparent; }
+
+    :root {
+      /* Notes sit directly on the page, so only the shadow is themed. */
+      --note-shadow: 3px 4px 9px rgba(51, 65, 85, .14);
+    }
+
+    html.dark {
+      --note-shadow: 3px 4px 10px rgba(2, 6, 16, .4);
+    }
+
+    /* Fixed 1186x933 design (four 283px columns, 18px gaps), scaled to the
+       iframe by the script below. The height crops the last note in a column
+       mid-sentence, like the source board. */
+    .stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1186px;
+      height: 933px;
+      transform-origin: top left;
+      display: flex;
+      gap: 18px;
+      overflow: hidden;
+      font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      align-items: stretch;
+      min-width: 0;
+    }
+
+    .note {
+      border-radius: 2px;
+      padding: 26px 24px 30px;
+      font-size: 17.5px;
+      line-height: 1.62;
+      color: #22304a;
+      box-shadow: var(--note-shadow);
+      flex: none;
+    }
+
+    .note p + p { margin-top: 28px; }
+
+    .note--yellow { background: #f5d563; }
+    .note--purple { background: #d9b6f2; }
+    .note--blue   { background: #7dd5f0; }
+    .note--pink   { background: #f9c8e6; }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage" role="img" aria-label="A board of sticky notes with community feedback on the VS Code welcome page explorations, color-coded by theme">
+    <div class="col">
+      <div class="note note--yellow">
+        <p>I do think Playground is an important part for people to get familiar with VS Code's editing features and should be a part of the welcome experience.</p>
+        <p>Being able to try the features right in editor is much better than reading docs in a browser and come back to editor.</p>
+      </div>
+      <div class="note note--yellow">
+        <p>Just a quick proposition, some user might not understand why their view is changing (or even when it's changing). So perhaps adding a dropdown to choose the view that the user would want might help!? I basically think of exactly how that can be customized in Outlook with Pane View customization.</p>
+      </div>
+      <div class="note note--yellow">
+        <p>the folders list looks really empty. can icons be added next to them? if a folder is mainly javascript maybe display javascript icon?</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="note note--purple">
+        <p>I prefer B... I think giving regions of space to each set of features could help users process them more quickly/easily at a glance. The background on the right side creates a nice separation. The tabs in the main content area allow a few items to be tucked away a bit, reducing clutter. It'd be a nice bonus if it retained the state of your selected tab.</p>
+      </div>
+      <div class="note note--purple">
+        <p>Another vote for B here, perhaps with a button to expand (&amp; pin) recents to fill the page...for those who want recents as the primary function of their welcome page, after using the application for some time.</p>
+        <p>Also agree that playgrounds need to feature here somewhere, but I guess that would be under the learn tab.</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="note note--blue">
+        <p>I like the focus of C on 'Recent' folders. Is there a good way to use that space when there are no recent folders yet, like on first startup? E.g., by using a subpage switcher like in B.</p>
+      </div>
+      <div class="note note--blue">
+        <p>I like C and D, perhaps sort the buttons on D by category like C, lower that container down so it's centre with everything else, and center the Show welcome page on startup checkbox</p>
+      </div>
+      <div class="note note--yellow">
+        <p>What do you think of moving the "New File", "Open Folder...", and "Add workspace folder..." buttons above the recent files/folders list? They could be represented as horizontally stacked icons, possibly with titles underneath. That way, the "Start" section could be removed, which should provide enough space for the "Customize", "Learn", and "Help" tabs to be broken out into vertically stacked sections.</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="note note--pink">
+        <p>I prefer D the most and here are my 2 cents. Before I'm super familiar with shortcuts of Open Recent and Open Folder, I used Welcome Page as my dashboard. I bind F2 to command Open Welcome Page and then everytime I just press F2 and then</p>
+      </div>
+      <div class="note note--blue">
+        <p>I really liked the new mockups, specially the exploration C, but I would like to comment a different area.</p>
+        <p>Is there any chance (or had any conversation about) allow extensions to contribute to certain sections of the Welcome Page?</p>
+      </div>
+      <div class="note note--blue">
+        <p>Really loving exploration C (maybe logo could be a little bigger) and would be wonderful if extensions could contribute to the page. An example could be a GitHub extension to provide open issues or remote repositories.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var stage = document.getElementById('stage');
+      function fit() {
+        stage.style.transform = 'scale(' + (window.innerWidth / 1186) + ')';
+      }
+      window.addEventListener('resize', fit);
+      fit();
+    })();
+  </script>
+</body>
+</html>

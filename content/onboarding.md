@@ -32,7 +32,7 @@ I began exploring various layout combinations where the content shifted dependin
 
 Once I created several variations, I started soliciting feedback from the community and began to open-source the design process. After posting the designs on [GitHub](https://github.com/Microsoft/vscode/issues/63152), we started to see emerging themes in the feedback.
 
-{{< image src="feedback1.png" >}}
+{{< iframe src="/onboarding/feedback-notes.html" title="Sticky notes with community feedback on the welcome page explorations" frame_class="feedback-board-embed" >}}
 
 Given that our customers on GitHub represent only a subset of our customers, we conducted user concept tests to validate our ideas. We were surprised to find out that even though users preferred a particular concept, we didn't solve any real problems. This remarkable insight prompted me to re-evaluate the problem I thought we were solving.
 
