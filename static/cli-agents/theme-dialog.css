@@ -404,6 +404,18 @@
     /* Kept inside the scene's own padding so the blur is not clipped. */
     box-shadow: 0 8px 22px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.2);
   }
+  /* The theme picker's shadow trades neutral black for the cli stage's own
+     pigment (52 41 255; 36 32 111 in dark, matching
+     --project-theme-shadow-tint in assets/css/project.css), so the dialog
+     casts the same colored shadow as the other media standing on this
+     theme's stage. Scoped to the picker scene: the settings dialog shares
+     .theme-panel and keeps the shared shadow above. */
+  body[data-demo-scene="cli-theme"] .theme-panel {
+    box-shadow: 0 8px 22px rgb(52 41 255 / 0.28), 0 2px 6px rgb(52 41 255 / 0.2);
+  }
+  :root.dark body[data-demo-scene="cli-theme"] .theme-panel {
+    box-shadow: 0 8px 22px rgb(36 32 111 / 0.55), 0 2px 6px rgb(36 32 111 / 0.4);
+  }
   /* diff-view fades the right edge of a panel so over-long code reads as a
      horizon. Here the right edge is the preview box's own border, and fading it
      would look like a rendering artefact. */
