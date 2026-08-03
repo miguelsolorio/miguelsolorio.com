@@ -122,6 +122,25 @@
     height: clamp(20rem, 61.75vw, 45rem);
     margin: 0;
   }
+  /* The feedback sticky-note board is a fixed 1186x933 design of bare notes
+     that scales itself to the frame width, so the frame must keep that exact
+     ratio for the scaled stage to fill it edge to edge. The notes render on a
+     transparent body, so the default embed chrome (rounded shadow card) must
+     not paint a box around them. */
+  .single > .feedback-board-embed {
+    grid-column: wide;
+    margin-block: var(--media-gap);
+  }
+  .single .feedback-board-embed iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: 1186 / 933;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
   /* A scene that is nothing but two screenshots wants the screenshots' own
      proportions, not a height guessed in viewport units: the ratio below is the
      shots' (1728x931), so the frame meets them exactly at every width and the
@@ -185,6 +204,13 @@
     box-shadow: none;
     filter: drop-shadow(0 2px 6px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
             drop-shadow(0 12px 28px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
+  }
+  /* Opt-in rounded corners for screenshots via the image shortcode's
+     rounded param. Declared after the cutout rule so a rounded screenshot
+     wins even on a cutout stage. */
+  .single .project-embed > img.media-rounded,
+  .single img.media-rounded {
+    border-radius: .75rem;
   }
   /* Poster videos show one large play affordance instead of the browser's
      control bar (common.js swaps them at first play), so the poster reads as
@@ -349,7 +375,8 @@
   .single img + .media-caption,
   .single video + .media-caption,
   .single iframe + .media-caption,
-  .single .project-embed + .media-caption {
+  .single .project-embed + .media-caption,
+  .single .feedback-board-embed + .media-caption {
     margin-top: calc(var(--caption-lead) - var(--media-gap));
   }
   .dark .single .media-caption {

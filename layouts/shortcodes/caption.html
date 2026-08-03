@@ -1,6 +1,0 @@
-{{/* Caption for the media directly above it. Sits tight under the preceding
-     image, video, or embed instead of reading as its own paragraph. */}}
-{{ $text := .Get "text" | default (.Get 0) }}
-{{ with $text }}
-<p class="media-caption">{{ $.Page.RenderString . }}</p>
-{{ end }}
