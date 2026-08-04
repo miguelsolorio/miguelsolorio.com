@@ -29,17 +29,19 @@
     })();
   </script>
   <style>
-    /* Product surfaces come from onboarding-animation.css so the diagram uses
-       the same palette as the animated scene at the top of the page — the light
-       half of :root there, the dark half of its [data-product-theme="dark"]
-       block. The scene itself has no background: it stands on the themed stage
-       the shortcode draws, in both modes. */
+    /* Nothing here paints a background: the cards are outlines, and the page
+       behind the iframe supplies every surface in both modes. Ink and accent
+       come from onboarding-animation.css so the diagram matches the animated
+       scene at the top of the page — the light half of its :root, the dark
+       half of its [data-product-theme="dark"] block. The card outline is the
+       exception: with no fill behind it, it does all the work of describing
+       the card, so it uses the site's own hairlines rather than the product's,
+       which were drawn to sit on an editor surface. */
     :root {
-      --card-surface: #fbfcfe;
       --product-text: #20242a;
       --product-muted: #626b76;
       --product-faint: #929ba6;
-      --product-border: #d5dbe2;
+      --card-outline: #cbd5e1;
       --product-accent: #147dc2;
       /* Callout ink tracks the page's own headings rather than the product's,
          so the annotations read as the site talking about the UI. */
@@ -48,11 +50,10 @@
     }
 
     html.dark {
-      --card-surface: #222428;
       --product-text: #eff1f4;
       --product-muted: #abb2bb;
       --product-faint: #7c858f;
-      --product-border: #3b4148;
+      --card-outline: #334155;
       --product-accent: #3794ff;
       --annotation-ink: #e5e7eb;
     }
@@ -61,15 +62,17 @@
 
     html, body { overflow: hidden; background: transparent; }
 
-    /* Fixed 1150x720 design, scaled to the iframe by the script below. The
+    /* Fixed 1240x720 design, scaled to the iframe by the script below. The
        frame carries the same ratio, so the scene meets it exactly at every
-       width instead of letterboxing. The box is drawn close around the
-       drawing: the themed stage the shortcode paints supplies the margin. */
+       width instead of letterboxing. The width is set by the card column
+       sitting dead centre with the wider of the two callouts clearing the
+       edge — which leaves more air on the Extensions side than on the Out of
+       the box side, the cost of centring the cards rather than the drawing. */
     .stage {
       position: absolute;
       top: 0;
       left: 0;
-      width: 1150px;
+      width: 1240px;
       height: 720px;
       overflow: hidden;
       transform-origin: top left;
@@ -85,7 +88,7 @@
 
     .column {
       position: absolute;
-      left: 265px;
+      left: 310px;
       top: 32px;
       width: 620px;
     }
@@ -100,9 +103,8 @@
 
     .card {
       position: relative;
-      border: 1px solid var(--product-border);
+      border: 1px solid var(--card-outline);
       border-radius: var(--radius-surface);
-      background: var(--card-surface);
     }
 
     .card + .card { margin-top: 14px; }
@@ -151,7 +153,7 @@
       height: 6px;
       margin-top: 20px;
       border-radius: 999px;
-      background: var(--product-border);
+      background: var(--card-outline);
     }
 
     .progress span {
@@ -214,7 +216,6 @@
   <div class="stage" id="stage">
     <div class="content" id="content" role="img" aria-label="The Getting Started card list, annotated: the first three walkthroughs ship out of the box, the next two are contributed by the C++ and Java extensions, and a Show More link holds the overflow">
       <div class="column" id="column">
-        <p class="section-label">Getting Started</p>
 
         <div class="card card--featured" data-group="builtin">
           <div class="ribbon">
@@ -271,13 +272,13 @@
         <p class="show-more" id="showMore">Show More</p>
       </div>
 
-      <svg class="annotations" id="annotations" width="1150" height="720" viewBox="0 0 1150 720" fill="none"></svg>
+      <svg class="annotations" id="annotations" width="1240" height="720" viewBox="0 0 1240 720" fill="none"></svg>
     </div>
   </div>
 
   <script>
     (function () {
-      var DESIGN_WIDTH = 1150;
+      var DESIGN_WIDTH = 1240;
       var DESIGN_HEIGHT = 720;
 
       var stage = document.getElementById('stage');
@@ -349,13 +350,16 @@
       draw('M' + (arrowX - 11) + ' ' + (arrowTop + 14) + ' L' + arrowX + ' ' + arrowTop + ' L' + (arrowX + 11) + ' ' + (arrowTop + 14));
       label('Overflow', arrowX, arrowBottom + 34, 'center');
 
-      /* Centre the drawing in the design box now that the labels have measured
-         themselves — their width depends on however the visitor's browser
-         resolved the font stack. The brackets and arrow always sit inside the
-         span the labels and the column describe, so those alone bound the ink.
-         The scale only bites if a wider font pushes the labels past the box,
-         which keeps a fallback face from clipping rather than merely crowding. */
-      var ink = { left: box(column).left, right: box(column).right, top: box(column).top, bottom: box(column).bottom };
+      /* Place the drawing now that the labels have measured themselves — their
+         width depends on however the visitor's browser resolved the font stack.
+         The cards are what the eye lines up on, so they take the horizontal
+         centre and the callouts fall either side of them, wide label and all.
+         Vertically there is nothing to align against, so the whole drawing —
+         the column plus the labels that reach above and below it — is what gets
+         centred. The brackets and arrow always sit inside the span the labels
+         and the column describe, so those alone bound the ink. */
+      var columnBox = box(column);
+      var ink = { left: columnBox.left, right: columnBox.right, top: columnBox.top, bottom: columnBox.bottom };
       labels.forEach(function (item) {
         var width = item.el.offsetWidth;
         var height = item.el.offsetHeight;
@@ -366,14 +370,21 @@
         ink.bottom = Math.max(ink.bottom, item.y + height / 2);
       });
 
-      var inkCentreX = (ink.left + ink.right) / 2;
-      var inkCentreY = (ink.top + ink.bottom) / 2;
-      var shrink = Math.min(1, DESIGN_WIDTH / (ink.right - ink.left), DESIGN_HEIGHT / (ink.bottom - ink.top));
+      var centreX = DESIGN_WIDTH / 2;
+      var centreY = DESIGN_HEIGHT / 2;
+      var dx = centreX - (columnBox.left + columnBox.right) / 2;
+      var dy = centreY - (ink.top + ink.bottom) / 2;
 
-      content.style.transformOrigin = inkCentreX + 'px ' + inkCentreY + 'px';
-      content.style.transform = 'translate(' +
-        (DESIGN_WIDTH / 2 - inkCentreX) + 'px, ' +
-        (DESIGN_HEIGHT / 2 - inkCentreY) + 'px) scale(' + shrink + ')';
+      /* With the cards pinned to the centre, a font wider than the one this was
+         drawn against pushes the left callout off the edge rather than merely
+         crowding it. Scaling about the centre by whichever side reaches furthest
+         keeps the drawing whole; on the drawn-for metrics this resolves to 1. */
+      var reachX = Math.max(centreX - (ink.left + dx), (ink.right + dx) - centreX);
+      var reachY = Math.max(centreY - (ink.top + dy), (ink.bottom + dy) - centreY);
+      var shrink = Math.min(1, centreX / reachX, centreY / reachY);
+
+      content.style.transformOrigin = (centreX - dx) + 'px ' + (centreY - dy) + 'px';
+      content.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(' + shrink + ')';
 
       function fit() {
         stage.style.transform = 'scale(' + (window.innerWidth / DESIGN_WIDTH) + ')';

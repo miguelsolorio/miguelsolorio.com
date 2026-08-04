@@ -108,7 +108,7 @@ It was clear that out of the various options we had explored, one stood out the 
 
 After rounds of testing, we noticed that the cards concept allowed us to achieve our primary goal of keeping the content on the page while also allowing extension to display different content. If experienced users weren't interested in the content, they could easily dismiss them and regain the space.
 
-{{< iframe src="/onboarding/extension-sample.html" title="Annotated diagram of the Getting Started card list, separating built-in walkthroughs, extension-contributed walkthroughs, and a Show More overflow" frame_class="card-framework-embed" theme="onboarding" caption="The card framework: built-in walkthroughs, extension contributions, and an overflow" >}}
+{{< iframe src="/onboarding/extension-sample.html" title="Annotated diagram of the Getting Started card list, separating built-in walkthroughs, extension-contributed walkthroughs, and a Show More overflow" frame_class="card-framework-embed" caption="The card framework: built-in walkthroughs, extension contributions, and an overflow" >}}
 
 # Dynamic illustrations
 
