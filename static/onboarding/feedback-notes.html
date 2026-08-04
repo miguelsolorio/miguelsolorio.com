@@ -33,26 +33,35 @@
     html, body { overflow: hidden; background: transparent; }
 
     :root {
-      /* Notes sit directly on the page, so only the shadow is themed. */
-      --note-shadow: 3px 4px 9px rgba(51, 65, 85, .14);
+      /* Notes sit directly on the page, so only the shadows are themed. The
+         second, deeper shadow is what lifts the highlighted notes off the
+         board — insights literally sit above the rest. */
+      --note-shadow: 2px 3px 6px rgba(51, 65, 85, .13);
+      --note-shadow-lift: 3px 6px 14px rgba(51, 65, 85, .22);
     }
 
     html.dark {
-      --note-shadow: 3px 4px 10px rgba(2, 6, 16, .4);
+      --note-shadow: 2px 3px 7px rgba(2, 6, 16, .38);
+      --note-shadow-lift: 3px 6px 16px rgba(2, 6, 16, .55);
     }
 
-    /* Fixed 1186x933 design (four 283px columns, 18px gaps), scaled to the
-       iframe by the script below. The height crops the last note in a column
-       mid-sentence, like the source board. */
+    /* Fixed 1186x610 design (five 226px columns, 14px gaps), scaled to the
+       iframe by the script below. The height is the tallest column plus the
+       vertical padding, so no note crops. That padding is the room the lifted
+       insight notes and their shadows need at the top and bottom edges; it is
+       vertical only, so the column arithmetic above still uses the full
+       1186px. Any change to the notes changes the tallest column, so re-measure
+       and keep the aspect-ratio in single.css in step with it. */
     .stage {
       position: absolute;
       top: 0;
       left: 0;
       width: 1186px;
-      height: 933px;
+      height: 610px;
+      padding: 4px 0 12px;
       transform-origin: top left;
       display: flex;
-      gap: 18px;
+      gap: 14px;
       overflow: hidden;
       font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
       text-rendering: optimizeLegibility;
@@ -63,76 +72,130 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 26px;
+      gap: 14px;
       align-items: stretch;
       min-width: 0;
     }
 
     .note {
       border-radius: 2px;
-      padding: 26px 24px 30px;
-      font-size: 17.5px;
-      line-height: 1.62;
+      padding: 15px 16px 17px;
+      font-size: 13px;
+      line-height: 1.54;
       color: #22304a;
       box-shadow: var(--note-shadow);
       flex: none;
     }
 
-    .note p + p { margin-top: 28px; }
+    .note p + p { margin-top: 14px; }
 
     .note--yellow { background: #f5d563; }
     .note--purple { background: #d9b6f2; }
     .note--blue   { background: #7dd5f0; }
     .note--pink   { background: #f9c8e6; }
+
+    /* Notes carrying an insight: lifted off the board, headed by the theme
+       they belong to, with the line that makes the point marked. Themes that
+       came up more than once repeat the same label on each note, so the board
+       shows how often they were said. */
+    .note--insight {
+      box-shadow: var(--note-shadow-lift);
+      transform: translateY(-2px);
+    }
+
+    .note__theme {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 9px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: rgba(34, 48, 74, .58);
+    }
+
+    .note__theme::before {
+      content: "";
+      width: 12px;
+      height: 1.5px;
+      border-radius: 1px;
+      background: currentColor;
+    }
+
+    /* A highlighter swipe: white at low alpha lightens whichever note colour
+       is underneath, so one rule works on all four. */
+    .note mark {
+      background: rgba(255, 255, 255, .62);
+      color: inherit;
+      font-weight: 500;
+      padding: .08em .16em;
+      margin: 0 -.06em;
+      border-radius: 2px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
   </style>
 </head>
 <body>
-  <div class="stage" id="stage" role="img" aria-label="A board of sticky notes with community feedback on the VS Code welcome page explorations, color-coded by theme">
+  <div class="stage" id="stage" role="img" aria-label="A board of sticky notes with community feedback on the VS Code welcome page explorations. Nine notes are lifted and labelled with the theme they belong to: learning in the editor, the page as a dashboard, room to scan, when the layout shifts, the empty first run, and letting extensions contribute to the page">
     <div class="col">
-      <div class="note note--yellow">
+      <div class="note note--yellow note--insight">
+        <p class="note__theme">Learning in the editor</p>
         <p>I do think Playground is an important part for people to get familiar with VS Code's editing features and should be a part of the welcome experience.</p>
-        <p>Being able to try the features right in editor is much better than reading docs in a browser and come back to editor.</p>
+        <p><mark>Being able to try the features right in editor is much better than reading docs in a browser</mark> and come back to editor.</p>
       </div>
-      <div class="note note--yellow">
-        <p>Just a quick proposition, some user might not understand why their view is changing (or even when it's changing). So perhaps adding a dropdown to choose the view that the user would want might help!? I basically think of exactly how that can be customized in Outlook with Pane View customization.</p>
-      </div>
-      <div class="note note--yellow">
-        <p>the folders list looks really empty. can icons be added next to them? if a folder is mainly javascript maybe display javascript icon?</p>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="note note--purple">
-        <p>I prefer B... I think giving regions of space to each set of features could help users process them more quickly/easily at a glance. The background on the right side creates a nice separation. The tabs in the main content area allow a few items to be tucked away a bit, reducing clutter. It'd be a nice bonus if it retained the state of your selected tab.</p>
-      </div>
-      <div class="note note--purple">
-        <p>Another vote for B here, perhaps with a button to expand (&amp; pin) recents to fill the page...for those who want recents as the primary function of their welcome page, after using the application for some time.</p>
+      <div class="note note--purple note--insight">
+        <p class="note__theme">The page as a dashboard</p>
+        <p>Another vote for B here, perhaps with a button to expand (&amp; pin) recents to fill the page...<mark>for those who want recents as the primary function of their welcome page, after using the application for some time.</mark></p>
         <p>Also agree that playgrounds need to feature here somewhere, but I guess that would be under the learn tab.</p>
       </div>
     </div>
 
     <div class="col">
-      <div class="note note--blue">
-        <p>I like the focus of C on 'Recent' folders. Is there a good way to use that space when there are no recent folders yet, like on first startup? E.g., by using a subpage switcher like in B.</p>
-      </div>
-      <div class="note note--blue">
-        <p>I like C and D, perhaps sort the buttons on D by category like C, lower that container down so it's centre with everything else, and center the Show welcome page on startup checkbox</p>
-      </div>
       <div class="note note--yellow">
         <p>What do you think of moving the "New File", "Open Folder...", and "Add workspace folder..." buttons above the recent files/folders list? They could be represented as horizontally stacked icons, possibly with titles underneath. That way, the "Start" section could be removed, which should provide enough space for the "Customize", "Learn", and "Help" tabs to be broken out into vertically stacked sections.</p>
+      </div>
+      <div class="note note--pink note--insight">
+        <p class="note__theme">The page as a dashboard</p>
+        <p>I prefer D the most and here are my 2 cents. Before I'm super familiar with shortcuts of Open Recent and Open Folder, <mark>I used Welcome Page as my dashboard</mark>. I bind F2 to command Open Welcome Page and then everytime I just press F2 and then</p>
       </div>
     </div>
 
     <div class="col">
-      <div class="note note--pink">
-        <p>I prefer D the most and here are my 2 cents. Before I'm super familiar with shortcuts of Open Recent and Open Folder, I used Welcome Page as my dashboard. I bind F2 to command Open Welcome Page and then everytime I just press F2 and then</p>
+      <div class="note note--purple note--insight">
+        <p class="note__theme">Room to scan</p>
+        <p>I prefer B... I think <mark>giving regions of space to each set of features could help users process them more quickly/easily at a glance.</mark> The background on the right side creates a nice separation. The tabs in the main content area allow a few items to be tucked away a bit, reducing clutter. It'd be a nice bonus if it retained the state of your selected tab.</p>
       </div>
+      <div class="note note--yellow note--insight">
+        <p class="note__theme">When the layout shifts</p>
+        <p>Just a quick proposition, <mark>some user might not understand why their view is changing (or even when it's changing).</mark> So perhaps adding a dropdown to choose the view that the user would want might help!? I basically think of exactly how that can be customized in Outlook with Pane View customization.</p>
+      </div>
+    </div>
+
+    <div class="col">
       <div class="note note--blue">
+        <p>I like C and D, perhaps sort the buttons on D by category like C, lower that container down so it's centre with everything else, and center the Show welcome page on startup checkbox</p>
+      </div>
+      <div class="note note--yellow note--insight">
+        <p class="note__theme">The empty first run</p>
+        <p><mark>the folders list looks really empty.</mark> can icons be added next to them? if a folder is mainly javascript maybe display javascript icon?</p>
+      </div>
+      <div class="note note--blue note--insight">
+        <p class="note__theme">The empty first run</p>
+        <p>I like the focus of C on 'Recent' folders. Is there a good way to use that space <mark>when there are no recent folders yet, like on first startup?</mark> E.g., by using a subpage switcher like in B.</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="note note--blue note--insight">
+        <p class="note__theme">Let extensions in</p>
         <p>I really liked the new mockups, specially the exploration C, but I would like to comment a different area.</p>
-        <p>Is there any chance (or had any conversation about) allow extensions to contribute to certain sections of the Welcome Page?</p>
+        <p>Is there any chance (or had any conversation about) <mark>allow extensions to contribute to certain sections of the Welcome Page?</mark></p>
       </div>
-      <div class="note note--blue">
-        <p>Really loving exploration C (maybe logo could be a little bigger) and would be wonderful if extensions could contribute to the page. An example could be a GitHub extension to provide open issues or remote repositories.</p>
+      <div class="note note--blue note--insight">
+        <p class="note__theme">Let extensions in</p>
+        <p>Really loving exploration C (maybe logo could be a little bigger) and would be wonderful if <mark>extensions could contribute to the page</mark>. An example could be a GitHub extension to provide open issues or remote repositories.</p>
       </div>
     </div>
   </div>
