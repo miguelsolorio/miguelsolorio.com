@@ -53,7 +53,7 @@ In addition to having pairity between design & code components, I also ensured t
 
 Below is a sample of one our popular components (Table Template) that includes nested variants, component properties, built-in interactive states, and fully customizable.
 
-{{< video src="kanvas-demo.mp4" alt="Demo of the Kanvas Table Template component in Figma, showing nested variants, component properties, and interactive states" gradient="true" caption="A walkthrough of the Table Template component in Figma" >}}
+{{< video src="kanvas-demo.mp4" poster="kanvas-demo-poster.png" alt="Demo of the Kanvas Table Template component in Figma, showing nested variants, component properties, and interactive states" gradient="true" caption="A walkthrough of the Table Template component in Figma" >}}
 
 # Impact
 

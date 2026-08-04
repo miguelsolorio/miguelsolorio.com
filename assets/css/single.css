@@ -41,6 +41,7 @@
   .single > video,
   .single > iframe,
   .single > .project-embed,
+  .single > .video-frame,
   .single > .quote-grid,
   .single > .donut-board,
   .single > .media-caption,
@@ -53,14 +54,14 @@
      took the larger of the two. Each rule below subtracts the contribution
      from above so the spacing matches what these pages had. The caption's own
      version of this lives with the caption rules further down. */
-  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board, .media-caption)
-    + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board) {
+  .single > :is(img, video, iframe, .project-embed, .video-frame, .stat-block, .quote-card, .quote-grid, .donut-board, .media-caption)
+    + :is(img, video, iframe, .project-embed, .video-frame, .stat-block, .quote-card, .quote-grid, .donut-board) {
     margin-top: 0;
   }
-  .single > :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board, .media-caption) + h1 {
+  .single > :is(img, video, iframe, .project-embed, .video-frame, .stat-block, .quote-card, .quote-grid, .donut-board, .media-caption) + h1 {
     margin-top: calc(var(--heading-lead) - var(--media-gap));
   }
-  .single > .separator + :is(img, video, iframe, .project-embed, .stat-block, .quote-card, .quote-grid, .donut-board) {
+  .single > .separator + :is(img, video, iframe, .project-embed, .video-frame, .stat-block, .quote-card, .quote-grid, .donut-board) {
     margin-top: calc(var(--media-gap) - var(--rule-gap));
   }
   .single > .separator + h1 {
@@ -220,6 +221,17 @@
   .single .project-embed--media {
     position: relative;
   }
+  /* The same affordance for poster videos that stand on the page rather than
+     on a themed stage. The wrapper takes over the media gap so the video's own
+     margin cannot offset the box the button is centred in. */
+  .single .video-frame {
+    position: relative;
+    margin-block: var(--media-gap);
+  }
+  .single .video-frame > video {
+    display: block;
+    margin: 0;
+  }
   .single .video-play-button {
     position: absolute;
     inset: 0;
@@ -236,16 +248,28 @@
     backdrop-filter: blur(8px);
     color: #fff;
     cursor: pointer;
+    /* Touch browsers hold :hover on the last thing tapped, so the grown state
+       would stick on a button that is about to be hidden. Pointer devices get
+       the hover; everything gets the press. */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     transition: transform .18s ease, background-color .18s ease;
   }
-  .single .video-play-button:hover,
+  @media (hover: hover) {
+    .single .video-play-button:hover {
+      background-color: rgb(0 0 0 / .72);
+      transform: scale(1.06);
+    }
+  }
   .single .video-play-button:focus-visible {
     background-color: rgb(0 0 0 / .72);
     transform: scale(1.06);
-  }
-  .single .video-play-button:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 3px;
+  }
+  /* Last, so the press reads even on a button that is already focused. */
+  .single .video-play-button:active {
+    transform: scale(.96);
   }
   .single .video-play-button[hidden] {
     display: none;
@@ -411,6 +435,7 @@
   .single video + .media-caption,
   .single iframe + .media-caption,
   .single .project-embed + .media-caption,
+  .single .video-frame + .media-caption,
   .single .feedback-board-embed + .media-caption,
   .single .donut-board + .media-caption {
     margin-top: calc(var(--caption-lead) - var(--media-gap));

@@ -362,7 +362,16 @@
       if (button.hidden) return;
       button.hidden = true;
       video.controls = true;
-      video.play();
+      /* Play can be refused — iOS Low Power Mode is the common case, a decode
+         or network failure the rest. Hand the poster and its button back so
+         the video still reads as playable instead of a dead frame. */
+      const started = video.play();
+      if (started && typeof started.catch === 'function') {
+        started.catch(() => {
+          button.hidden = false;
+          video.controls = false;
+        });
+      }
       video.focus({ preventScroll: true });
     };
     button.addEventListener('click', beginPlayback);

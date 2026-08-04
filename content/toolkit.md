@@ -15,7 +15,7 @@ I was the original creator of the toolkit and have rebuilt the library many time
 # Color system
 The first step was taking the color system from VS Code and importing it into Figma. Turns out that there are +660 color tokens and there are no base colors. So I decided to sort the colors and remove the duplicates but needed a better way to sort the color. I created a figma plugin, [Colorizer](https://www.figma.com/community/plugin/816889819624434639), that helped sort colors based on their hue colors.
 
-{{< video src="colorizer.mp4" alt="Screen recording of the Colorizer Figma plugin automatically sorting a grid of color swatches by hue" caption="The Colorizer plugin sorting VS Code's color tokens by hue" >}}
+{{< video src="colorizer.mp4" poster="colorizer-poster.png" alt="Screen recording of the Colorizer Figma plugin automatically sorting a grid of color swatches by hue" caption="The Colorizer plugin sorting VS Code's color tokens by hue" >}}
 
 
 This saved a lot of time because why spend 1 hour to manually sort when you can spend 10 hours automating it.
@@ -42,7 +42,7 @@ Once the variants were setup, I proceeded to add the various interaction states 
 
 Here’s an example of one of our templates that uses both Dark and Light themes as well as showing what our list comopnent can do.
 
-{{< video src="demo.mp4" alt="Screen recording of a VS Code template built with the toolkit, switching between dark and light themes and exercising the list component" caption="A template demo showing dark and light themes and the list component in action" >}}
+{{< video src="demo.mp4" poster="demo-poster.png" alt="Screen recording of a VS Code template built with the toolkit, switching between dark and light themes and exercising the list component" caption="A template demo showing dark and light themes and the list component in action" >}}
 
 # Publishing the toolkit
 I [published the toolkit](https://www.figma.com/community/file/786632241522687494) to Figma’s community because we have a lot of external partners that rely on the toolkit. This also allows others designing experiences in VS Code to use the same library that we do.

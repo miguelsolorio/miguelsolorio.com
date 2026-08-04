@@ -40,7 +40,7 @@ Below are early explorations where we took the original design and iterated on i
 
 After mocking up the various states in Figma, I needed to test out the interaction in a different medium that was closer to the real product, so I [built a protoytpe](https://codepen.io/miguelsolorio/pen/xxwWKwe) using HTML + CSS + JavaScript. This allowed me to have more control in the interaction but also test out the various animations and styles.
 
-{{< video src="notebooks-prototype.mp4" alt="Screen recording of the HTML, CSS, and JavaScript notebook prototype demonstrating cell interactions and animations" caption="The coded prototype used to test interactions and animations" >}}
+{{< video src="notebooks-prototype.mp4" poster="notebooks-prototype-poster.png" alt="Screen recording of the HTML, CSS, and JavaScript notebook prototype demonstrating cell interactions and animations" caption="The coded prototype used to test interactions and animations" >}}
 
 # Impact
 

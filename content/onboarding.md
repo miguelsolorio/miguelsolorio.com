@@ -106,7 +106,7 @@ We returned to the drawing board with our concepts and tried an alternative meth
 
 It was clear that out of the various options we had explored, one stood out the most in terms of scalability. We wanted something that allowed us to swap out content (depending on the user’s experience) and allow extensions to leverage the same functionality.
 
-{{< video src="onboarding-demo.mp4" alt="Screen recording of the final welcome page concept, where walkthrough cards swap content based on experience and can be dismissed" gradient="true" caption="The winning concept in motion: swappable walkthrough cards on the welcome page" >}}
+{{< video src="onboarding-demo.mp4" poster="onboarding-demo-poster.png" alt="Screen recording of the final welcome page concept, where walkthrough cards swap content based on experience and can be dismissed" gradient="true" caption="The winning concept in motion: swappable walkthrough cards on the welcome page" >}}
 
 After rounds of testing, we noticed that the cards concept allowed us to achieve our primary goal of keeping the content on the page while also allowing extension to display different content. If experienced users weren't interested in the content, they could easily dismiss them and regain the space.
 

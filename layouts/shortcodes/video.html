@@ -4,16 +4,19 @@
 {{ $frameClass := .Get "frame_class" }}
 {{ $caption := .Get "caption" }}
 {{ $theme := partial "project-theme.html" (dict "theme" (.Get "theme") "gradient" (.Get "gradient") "page" .Page "name" "video") }}
-{{ if $theme }}<div class="project-embed project-embed--media{{ with $frameClass }} {{ . }}{{ end }}" data-project-theme="{{ $theme }}">{{ end }}
+{{/* The play button is absolutely positioned, so a poster video needs a
+     containing block even when it has no themed stage to sit on. */}}
+{{ if $theme }}<div class="project-embed project-embed--media{{ with $frameClass }} {{ . }}{{ end }}" data-project-theme="{{ $theme }}">
+{{ else if $poster }}<div class="video-frame{{ with $frameClass }} {{ . }}{{ end }}">
+{{ end }}
 <video src="{{ $src }}"{{ with $poster }} poster="{{ . }}"{{ end }}{{ with $title }} aria-label="{{ . }}"{{ end }} controls playsinline preload="metadata"></video>
 {{/* Poster videos get one big play affordance instead of the browser's
-     control bar; common.js swaps them at first play. Positioned against the
-     themed stage, so it needs theme/gradient alongside poster. */}}
-{{ if and $poster $theme }}<button class="video-play-button" type="button" aria-label="Play{{ with $title }}: {{ . }}{{ end }}">
+     control bar; common.js swaps them at first play. */}}
+{{ if $poster }}<button class="video-play-button" type="button" aria-label="Play{{ with $title }}: {{ . }}{{ end }}">
   {{/* Material's play_arrow: the triangle sits right of the viewBox center
        (bbox spans x 8-19), which is the optical correction — center the svg
        and the glyph lands balanced without any CSS nudge. */}}
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
 </button>{{ end }}
-{{ if $theme }}</div>{{ end }}
+{{ if or $theme $poster }}</div>{{ end }}
 {{ with $caption }}<p class="media-caption">{{ $.Page.RenderString . }}</p>{{ end }}
