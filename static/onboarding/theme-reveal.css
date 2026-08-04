@@ -1,0 +1,24 @@
+/* Palette for the light/dark theme wipe. The stage itself lives in
+   /demo-system/reveal.css; this only says what the pair looks like.
+
+   Unlike a before/after pair, these two shots never change with the reader's
+   own theme — one is permanently white, the other permanently near-black — so
+   each tag is fixed against the shot it names rather than following the site
+   between light and dark. Only the divider and grip, which straddle the seam
+   between the two, keep the shared chrome that reads on either side. */
+
+:root {
+  --reveal-font: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* VS Code's own focus blue, the product both shots are of. */
+  --reveal-focus: #0078d4;
+
+  --reveal-tag-left-bg: rgb(32 36 42 / 82%);
+  --reveal-tag-left-fg: #ffffff;
+  --reveal-tag-right-bg: rgb(240 243 246 / 90%);
+  --reveal-tag-right-fg: #20242a;
+}
+
+:root.dark {
+  --reveal-focus: #4daafc;
+}

@@ -1,6 +1,10 @@
-/* Drives the before/after wipe. The divider position is one number, held in
-   --pos on the stage, so the clip, the rule and the grip all read from a single
-   source and cannot drift apart. */
+/* Drives the wipe for any reveal scene. The divider position is one number,
+   held in --pos on the stage, so the clip, the rule and the grip all read from
+   a single source and cannot drift apart.
+
+   The scene names its two shots on the stage element — data-left / data-right
+   for the spoken phrase, and the -short pair for the running percentages — so
+   this file never has to know which pair it is wiping between. */
 (function () {
   "use strict";
 
@@ -16,6 +20,11 @@
   var hintTimers = [];
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  var LEFT = stage.getAttribute("data-left") || "the first view";
+  var RIGHT = stage.getAttribute("data-right") || "the second view";
+  var LEFT_SHORT = stage.getAttribute("data-left-short") || "first";
+  var RIGHT_SHORT = stage.getAttribute("data-right-short") || "second";
+
   function clamp(n) {
     return n < 0 ? 0 : n > 100 ? 100 : n;
   }
@@ -24,9 +33,9 @@
      picture; this says where the divider is for anyone who cannot. */
   function describe(n) {
     var r = Math.round(n);
-    if (r <= 0) return "Showing the refreshed interface";
-    if (r >= 100) return "Showing the original interface";
-    return r + "% original, " + (100 - r) + "% refreshed";
+    if (r <= 0) return "Showing " + RIGHT;
+    if (r >= 100) return "Showing " + LEFT;
+    return r + "% " + LEFT_SHORT + ", " + (100 - r) + "% " + RIGHT_SHORT;
   }
 
   function apply(next) {

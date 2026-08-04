@@ -6,7 +6,8 @@
 <title>Colab UI refresh, before and after</title>
 <script src="/demo-system/demo-system.js?v=2"></script>
 <link rel="stylesheet" href="/demo-system/demo-system.css">
-<link rel="stylesheet" href="./ui-refresh-reveal.css?v=2">
+<link rel="stylesheet" href="/demo-system/reveal.css?v=1">
+<link rel="stylesheet" href="./ui-refresh-reveal.css?v=3">
 </head>
 <body class="demo-scene demo-scene--reveal" data-demo-scene="ui-refresh-reveal">
 
@@ -14,11 +15,13 @@
      refreshed one, so the divider wipes rather than cross-fades. The images
      carry the alt text; the tags repeat it visually, so they stay out of the
      accessibility tree instead of being announced twice. -->
-<main class="reveal" id="reveal" style="--pos: 50%">
+<main class="reveal" id="reveal" style="--pos: 50%"
+      data-left="the original interface" data-left-short="original"
+      data-right="the refreshed interface" data-right-short="refreshed">
 
   <img class="reveal-shot" id="shotAfter" src="./ui-refresh-after.png"
        alt="Colab's refreshed interface">
-  <span class="reveal-tag reveal-tag--after" aria-hidden="true">After</span>
+  <span class="reveal-tag reveal-tag--right" aria-hidden="true">After</span>
 
   <!-- The Before tag lives inside the clipped layer on purpose: when the
        divider runs to the left edge the label is wiped away with the shot it
@@ -26,7 +29,7 @@
   <div class="reveal-clip">
     <img class="reveal-shot" id="shotBefore" src="./ui-refresh-before.png"
          alt="Colab's interface before the refresh">
-    <span class="reveal-tag reveal-tag--before" aria-hidden="true">Before</span>
+    <span class="reveal-tag reveal-tag--left" aria-hidden="true">Before</span>
   </div>
 
   <div class="reveal-divider" aria-hidden="true"></div>
@@ -43,6 +46,6 @@
   </div>
 </main>
 
-<script src="./ui-refresh-reveal.js?v=3"></script>
+<script src="/demo-system/reveal.js?v=1"></script>
 </body>
 </html>

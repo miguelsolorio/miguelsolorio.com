@@ -1,0 +1,271 @@
+/* A half-and-half reveal. Two shots of the same frame are stacked at full size
+   and the left one is clipped over the right, so dragging the divider wipes one
+   into the other. Both frames are the same thing at the same moment, so a wipe
+   reads as one surface changing; a cross-fade would read as two competing
+   images.
+
+   This file owns the stage; a scene supplies the pair, the tag words and the
+   palette. The scene fills its iframe edge to edge and carries no padding of
+   its own — the embedding page gives the frame the shots' aspect ratio (see
+   .project-embed--reveal in assets/css/single.css), so the shots meet the
+   iframe exactly at every width and the surrounding page owns the margin. */
+
+:root {
+  --reveal-ease: cubic-bezier(0.2, 0, 0, 1);
+  --reveal-move: 260ms;
+  --reveal-font: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* The divider and grip sit on top of screenshots this file knows nothing
+     about, so they carry their own contrast rather than trusting the shot
+     behind them: a light chip with a dark hairline ring reads on both a white
+     canvas and a near-black one. */
+  --reveal-line: #ffffff;
+  --reveal-ring: 0 0 0 1px rgb(15 23 42 / 20%), 0 2px 10px rgb(15 23 42 / 26%);
+  --reveal-grip-bg: #ffffff;
+  --reveal-grip-fg: #1f1f1f;
+  --reveal-focus: #0b57d0;
+
+  /* One palette drives both tags. A scene whose two shots differ in brightness
+     overrides a single side, so each chip contrasts the shot it names instead
+     of dissolving into it. */
+  --reveal-tag-bg: rgb(15 23 42 / 72%);
+  --reveal-tag-fg: #ffffff;
+  --reveal-tag-left-bg: var(--reveal-tag-bg);
+  --reveal-tag-left-fg: var(--reveal-tag-fg);
+  --reveal-tag-right-bg: var(--reveal-tag-bg);
+  --reveal-tag-right-fg: var(--reveal-tag-fg);
+
+  --reveal-void: #eceaf2;
+  --reveal-void-rule: rgb(31 31 31 / 8%);
+}
+
+:root.dark {
+  --reveal-line: #e8eaed;
+  --reveal-ring: 0 0 0 1px rgb(0 0 0 / 45%), 0 2px 12px rgb(0 0 0 / 55%);
+  --reveal-grip-bg: #e8eaed;
+  --reveal-grip-fg: #202124;
+  --reveal-focus: #8ab4f8;
+
+  --reveal-tag-bg: rgb(0 0 0 / 66%);
+  --reveal-tag-fg: #e8eaed;
+
+  --reveal-void: #2a2b30;
+  --reveal-void-rule: rgb(232 234 237 / 8%);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  /* The embedding surface owns the backdrop, same as the animated scenes. */
+  background: transparent !important;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--reveal-font);
+}
+
+/* ---------- the two shots ---------- */
+
+.reveal {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  cursor: ew-resize;
+  inset: 0;
+  /* Every pointer gesture inside the scene is a drag, so the browser must not
+     claim horizontal swipes for scrolling first. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* clip-path rather than a width on the wrapper: the shot underneath keeps its
+   full width at every divider position, so nothing squashes as the reveal
+   narrows, and the clip animates on the compositor. */
+.reveal-clip {
+  position: absolute;
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  inset: 0;
+}
+
+.reveal-shot {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  /* The shots are the content; dragging one must not start an image drag. */
+  pointer-events: none;
+  inset: 0;
+  -webkit-user-drag: none;
+}
+
+/* ---------- divider and grip ---------- */
+
+.reveal-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--reveal-line);
+  box-shadow: var(--reveal-ring);
+  pointer-events: none;
+}
+
+.reveal-handle {
+  position: absolute;
+  top: 50%;
+  left: var(--pos);
+  display: grid;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 999px;
+  background: var(--reveal-grip-bg);
+  box-shadow: var(--reveal-ring);
+  color: var(--reveal-grip-fg);
+  cursor: ew-resize;
+  place-items: center;
+  touch-action: none;
+}
+
+.reveal-handle svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.reveal-handle:focus-visible {
+  outline: 3px solid var(--reveal-focus);
+  outline-offset: 3px;
+}
+
+/* The grip answers the pointer before the drag starts, so it reads as
+   something you take hold of rather than a mark printed on the picture. */
+.reveal:hover .reveal-handle {
+  transform: scale(1.08);
+}
+
+.reveal.is-dragging .reveal-handle {
+  transform: scale(0.94);
+}
+
+/* ---------- motion ---------- */
+/* Position eases for the moves the reader did not aim with a pointer — a tap
+   further down the frame, an arrow key, the opening hint. While a pointer is
+   down it must track the finger exactly, so the position transition is cut
+   and only the grip's own scale keeps animating. */
+
+.reveal-clip {
+  transition: clip-path var(--reveal-move) var(--reveal-ease);
+}
+
+.reveal-divider,
+.reveal-handle {
+  transition:
+    left var(--reveal-move) var(--reveal-ease),
+    transform 160ms var(--reveal-ease);
+}
+
+.reveal.is-dragging .reveal-clip {
+  transition: none;
+}
+
+.reveal.is-dragging .reveal-divider,
+.reveal.is-dragging .reveal-handle {
+  transition: transform 160ms var(--reveal-ease);
+}
+
+/* The opening sweep is longer than a normal move: it is meant to be read as a
+   demonstration, not to keep up with anyone. */
+.reveal.is-hinting .reveal-clip,
+.reveal.is-hinting .reveal-divider,
+.reveal.is-hinting .reveal-handle {
+  transition-duration: 620ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-clip,
+  .reveal-divider,
+  .reveal-handle,
+  .reveal.is-hinting .reveal-clip,
+  .reveal.is-hinting .reveal-divider,
+  .reveal.is-hinting .reveal-handle {
+    transition-duration: 1ms;
+  }
+}
+
+/* ---------- tags ---------- */
+
+.reveal-tag {
+  position: absolute;
+  top: 14px;
+  z-index: 2;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.reveal-tag--left {
+  left: 14px;
+  background: var(--reveal-tag-left-bg);
+  color: var(--reveal-tag-left-fg);
+}
+
+.reveal-tag--right {
+  right: 14px;
+  background: var(--reveal-tag-right-bg);
+  color: var(--reveal-tag-right-fg);
+}
+
+/* ---------- when a shot is missing ---------- */
+/* A renamed or mistyped file should read as an empty plate rather than as the
+   browser's broken-image mark sitting in the middle of a case study. */
+
+.reveal-shot.is-missing {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 10px,
+      var(--reveal-void-rule) 10px 11px
+    ),
+    var(--reveal-void);
+}
+
+/* ---------- narrow widths ---------- */
+
+@media (max-width: 34rem) {
+  .reveal-handle {
+    width: 38px;
+    height: 38px;
+    margin: -19px 0 0 -19px;
+  }
+
+  .reveal-handle svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .reveal-tag {
+    top: 10px;
+    padding: 4px 9px;
+    font-size: 11px;
+  }
+
+  .reveal-tag--left { left: 10px; }
+  .reveal-tag--right { right: 10px; }
+}

@@ -116,9 +116,7 @@ After rounds of testing, we noticed that the cards concept allowed us to achieve
 
 Since each walkthrough displayed different content, we introduced a new abstract illustration style to accompany the content. This uncovered a new issue with the colors used in the illustrations, as they needed to adapt to the user's theme. We then discovered a way to make them dynamic and reference CSS variables in the SVGs.
 
-{{< image src="theme1.png" alt="The Python walkthrough in a light VS Code theme, with the Explorer illustration rendered in matching light colors" gradient="true" caption="The illustration in a light theme, pulling its colors from CSS variables" >}}
-
-{{< image src="theme2.png" alt="The same walkthrough in a dark VS Code theme, with the SVG illustration adapting its colors automatically" gradient="true" caption="The same screen in a dark theme — the SVGs adapt with no redrawn assets" >}}
+{{< iframe src="/onboarding/theme-reveal.html" height="800" title="Drag the divider to wipe between the Python walkthrough in a light theme and the same walkthrough in a dark theme" theme="onboarding" frame_class="project-embed--reveal project-embed--reveal-4x3" caption="Drag the divider — the illustration pulls its colors from the theme" >}}
 
 # Impact
 

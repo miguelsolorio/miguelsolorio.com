@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Python walkthrough in a light and a dark theme</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="/demo-system/reveal.css?v=1">
+<link rel="stylesheet" href="./theme-reveal.css?v=1">
+</head>
+<body class="demo-scene demo-scene--reveal" data-demo-scene="theme-reveal">
+
+<!-- The same walkthrough twice, one theme each, stacked at full size with the
+     light shot clipped over the dark one so the divider wipes rather than
+     cross-fades — which is the point of the pair: nothing in the layout moves,
+     only the colors the illustration reads out of the theme. The images carry
+     the alt text; the tags repeat it visually, so they stay out of the
+     accessibility tree instead of being announced twice. -->
+<main class="reveal" id="reveal" style="--pos: 50%"
+      data-left="the light theme" data-left-short="light"
+      data-right="the dark theme" data-right-short="dark">
+
+  <img class="reveal-shot" id="shotDark" src="./intro.png"
+       alt="The Python walkthrough in a dark VS Code theme, with the Explorer illustration rendered in matching dark colors">
+  <span class="reveal-tag reveal-tag--right" aria-hidden="true">Dark</span>
+
+  <!-- The Light tag lives inside the clipped layer on purpose: when the divider
+       runs to the left edge the label is wiped away with the shot it names, so
+       a tag can never sit over the wrong screenshot. -->
+  <div class="reveal-clip">
+    <img class="reveal-shot" id="shotLight" src="./theme1.png"
+         alt="The same walkthrough in a light VS Code theme, with the Explorer illustration rendered in matching light colors">
+    <span class="reveal-tag reveal-tag--left" aria-hidden="true">Light</span>
+  </div>
+
+  <div class="reveal-divider" aria-hidden="true"></div>
+
+  <div class="reveal-handle" id="handle"
+       role="slider" tabindex="0"
+       aria-label="Wipe between the light and dark theme"
+       aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
+       aria-valuetext="Half light, half dark">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M10 8.5 6.5 12l3.5 3.5"/>
+      <path d="M14 8.5 17.5 12 14 15.5"/>
+    </svg>
+  </div>
+</main>
+
+<script src="/demo-system/reveal.js?v=1"></script>
+</body>
+</html>

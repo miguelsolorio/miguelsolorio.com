@@ -144,16 +144,23 @@
     background: transparent;
   }
   /* A scene that is nothing but two screenshots wants the screenshots' own
-     proportions, not a height guessed in viewport units: the ratio below is the
-     shots' (1728x931), so the frame meets them exactly at every width and the
-     scene never letterboxes or clips. Swapping in a differently shaped pair
-     means changing this one ratio. */
+     proportions, not a height guessed in viewport units, so the frame carries
+     the pair's ratio and meets them exactly at every width — the scene never
+     letterboxes or clips. The default is the Colab pair (1728x931); a pair
+     shaped differently declares its own ratio below and asks for it by class. */
   .single .project-embed--reveal iframe.embed-frame {
     display: block;
     width: 100%;
     height: auto;
     margin: 0;
-    aspect-ratio: 1728 / 931;
+    aspect-ratio: var(--reveal-ratio, 1728 / 931);
+    /* The pair fills the frame corner to corner, so a rounded frame would clip
+       the shots rather than shape them. */
+    border-radius: 0;
+  }
+  /* The onboarding theme pair, two shots of a 2400x1800 window. */
+  .single .project-embed--reveal-4x3 {
+    --reveal-ratio: 4 / 3;
   }
   .single h1 {
     @apply font-bold mb-4;
@@ -293,9 +300,12 @@
     box-shadow: none;
   }
   /* The onboarding animation draws its own product frame and shadow. Keep its
-     iframe transparent so the themed stage remains the only outer container. */
-  .single .project-embed[data-project-theme="onboarding"] iframe.embed-frame,
-  .dark .single .project-embed[data-project-theme="onboarding"] iframe.embed-frame {
+     iframe transparent so the themed stage remains the only outer container.
+     Scoped to the animation rather than the theme: the theme reveal further
+     down that page is a flat pair of screenshots and wants the frame's shadow,
+     the same one the stills beside it cast. */
+  .single .onboarding-project-demo iframe.embed-frame,
+  .dark .single .onboarding-project-demo iframe.embed-frame {
     border-radius: 0 !important;
     box-shadow: none;
   }
