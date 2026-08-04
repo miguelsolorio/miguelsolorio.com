@@ -14,8 +14,6 @@ card_theme: "onboarding"
 
 As the lead designer, I iterated through the design process to re-design VS Code's welcome page to discover a framework that could scale.
 
-{{< image src="intro.png" alt="VS Code's redesigned Get Started page showing the Python walkthrough, with setup steps on the left and an illustration of a folder dropping into the Explorer" gradient="true" caption="The final design: a Get Started walkthrough guiding setup step by step" >}}
-
 # Looking at the Data
 
 As I started looking at ways to improve the page, I began looking at the data to better understand our customer's tasks. After retrieving the data, I mapped out the actions based on two segments of users: new and current. This provided exciting insights as the segments had distinct yet overlapping tasks.
@@ -41,7 +39,7 @@ Other | 1% | right
 
 I began exploring various layout combinations where the content shifted depending on the number of recent projects in the list. The assumption, which needed to be validated, was that the more recent projects a user had, the more experienced or comfortable they became with the editor.
 
-{{< image src="wireframes.png" alt="A grid of eighteen grayscale wireframes exploring welcome page layouts, varying where recent projects, start actions, and help content appear" gradient="true" caption="Eighteen layout explorations for the welcome page" >}}
+{{< image src="wireframes.png" frame_class="project-embed--cutout" alt="A grid of eighteen grayscale wireframes exploring welcome page layouts, varying where recent projects, start actions, and help content appear" gradient="true" caption="Eighteen layout explorations for the welcome page" >}}
 
 # Listening to the Feedback
 
@@ -55,7 +53,7 @@ Given that our customers on GitHub represent only a subset of our customers, we 
 
 Our ultimate goal was to make it easier for new users to get set up with VS Code while empowering users to quickly switch between projects. We took a moment to survey the market and see what other products have done. We also looked at how extensions tried to onboard their users with their features, which hinted at their intent.
 
-{{< image src="extensions.png" alt="Three overlapping VS Code windows showing how the Python, GitLens, and Bookmarks extensions each built their own onboarding page" gradient="true" caption="How extensions like Python, GitLens, and Bookmarks onboarded users on their own" >}}
+{{< image src="extensions.png" frame_class="project-embed--cutout" alt="Three overlapping VS Code windows showing how the Python, GitLens, and Bookmarks extensions each built their own onboarding page" gradient="true" caption="How extensions like Python, GitLens, and Bookmarks onboarded users on their own" >}}
 
 # Creating the carousel
 
@@ -100,7 +98,7 @@ This ==needs a lot of work==...it needs more relevant and useful content.
 
 We returned to the drawing board with our concepts and tried an alternative method. During the concept tests, we realized that most users wanted to reference the onboarding screens, which gave us a hint to integrate them directly on the welcome page.
 
-{{< image src="iterations.png" alt="Four iterations of the welcome page redesign, moving the getting-started checklist between the main page, a sidebar panel, and a dedicated Get Started tab" gradient="true" caption="Iterating on where the onboarding checklist should live" >}}
+{{< image src="iterations.png" frame_class="project-embed--cutout" alt="Four iterations of the welcome page redesign, moving the getting-started checklist between the main page, a sidebar panel, and a dedicated Get Started tab" gradient="true" caption="Iterating on where the onboarding checklist should live" >}}
 
 # Arriving at our destination
 
@@ -110,7 +108,7 @@ It was clear that out of the various options we had explored, one stood out the 
 
 After rounds of testing, we noticed that the cards concept allowed us to achieve our primary goal of keeping the content on the page while also allowing extension to display different content. If experienced users weren't interested in the content, they could easily dismiss them and regain the space.
 
-{{< image src="extension-sample.png" alt="Annotated diagram of the Getting Started card list, separating built-in walkthroughs, extension-contributed walkthroughs, and a Show More overflow" gradient="true" caption="The card framework: built-in walkthroughs, extension contributions, and an overflow" >}}
+{{< iframe src="/onboarding/extension-sample.html" title="Annotated diagram of the Getting Started card list, separating built-in walkthroughs, extension-contributed walkthroughs, and a Show More overflow" frame_class="card-framework-embed" theme="onboarding" caption="The card framework: built-in walkthroughs, extension contributions, and an overflow" >}}
 
 # Dynamic illustrations
 

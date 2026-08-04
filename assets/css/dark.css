@@ -108,6 +108,13 @@
         color: #a5b4fc;
         background: rgb(129 140 248 / .16);
     }
+    .dark .single .quote-media,
+    .dark .single .quote-stat {
+        border-color: #334155;
+    }
+    .dark .single .quote-stat {
+        @apply text-slate-400;
+    }
 
     /* The donut charts keep the original figure's palette: the main hue at
        full strength and the small slices as pale tints of it, which hold up

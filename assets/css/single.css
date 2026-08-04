@@ -309,6 +309,21 @@
     border-radius: 0 !important;
     box-shadow: none;
   }
+  /* The card-framework diagram is a drawing, not a screenshot: it paints its
+     own card surfaces on transparency and takes the rest of its color from the
+     themed stage. The frame carries the scene's own 1150x720 proportions so it
+     meets the drawing exactly at every width instead of letterboxing. */
+  .single .card-framework-embed iframe.embed-frame,
+  .dark .single .card-framework-embed iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: 1150 / 720;
+    border-radius: 0 !important;
+    box-shadow: none;
+    background: transparent;
+  }
   /* Opt-in twin of the two rules above for scenes that draw their own panel but
      share a theme with scenes that do not — the CLI theme picker sits beside
      animations that still want the frame's surface, so it asks for this by
@@ -790,6 +805,55 @@
     box-decoration-break: clone;
     font-weight: 600;
   }
+  /* The post's own attachment, kept inside the card. .single's img rules
+     reach it the way they reach the avatar, so the media margins, the full
+     radius and the drop shadow are all taken back — inside a card it is part
+     of the quote, not a figure of its own. */
+  .single .quote-media {
+    display: block;
+    width: 100%;
+    margin: clamp(1rem, 2.5vw, 1.25rem) 0 0;
+    border: 1px solid #e2e8f0;
+    border-radius: .75rem;
+    box-shadow: none;
+  }
+  /* The counts the post carried, as the pills they were: one row, wrapping,
+     in the handle's muted ink so they sit under the words without competing
+     with them. */
+  .single .quote-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: clamp(1rem, 2.5vw, 1.25rem);
+  }
+  .single .quote-stat {
+    @apply text-slate-500;
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    padding: .3125rem .6875rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .single .quote-stat-mark {
+    display: inline-flex;
+    font-size: .9375rem;
+    line-height: 1;
+  }
+  .single .quote-stat-mark svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   /* Quotes wrapped in the quotes shortcode sit inline: up to three to a row,
      every card the same size, the full width shared equally. A run of two or
      three keeps to one row; a longer run wraps into rows of three, stretch
@@ -855,6 +919,10 @@
   .single .quote-grid .quote-text {
     margin-top: .875rem;
     font-size: 1rem;
+  }
+  .single .quote-grid .quote-media,
+  .single .quote-grid .quote-stats {
+    margin-top: .875rem;
   }
 
   /* Two donut share charts — the data figure the onboarding page used to

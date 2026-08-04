@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Getting Started card framework</title>
+  <script>
+    /* Same-origin theme sync, mirroring feedback-notes.html: follow the parent
+       site's explicit theme; cross-origin embeds fall back to the OS one.
+       Runs in <head> to avoid a theme flash. */
+    (function () {
+      var root = document.documentElement;
+      var media = window.matchMedia("(prefers-color-scheme: dark)");
+      var parentRoot = null;
+      try {
+        if (window.parent !== window) parentRoot = window.parent.document.documentElement;
+      } catch (error) { /* Cross-origin: use the OS preference. */ }
+
+      function syncTheme() {
+        root.classList.toggle("dark", parentRoot ? parentRoot.classList.contains("dark") : media.matches);
+      }
+
+      syncTheme();
+      if (parentRoot) {
+        parentRoot.addEventListener("site:themechange", syncTheme);
+      } else if (media.addEventListener) {
+        media.addEventListener("change", syncTheme);
+      }
+    })();
+  </script>
+  <style>
+    /* Product surfaces come from onboarding-animation.css so the diagram uses
+       the same palette as the animated scene at the top of the page — the light
+       half of :root there, the dark half of its [data-product-theme="dark"]
+       block. The scene itself has no background: it stands on the themed stage
+       the shortcode draws, in both modes. */
+    :root {
+      --card-surface: #fbfcfe;
+      --product-text: #20242a;
+      --product-muted: #626b76;
+      --product-faint: #929ba6;
+      --product-border: #d5dbe2;
+      --product-accent: #147dc2;
+      /* Callout ink tracks the page's own headings rather than the product's,
+         so the annotations read as the site talking about the UI. */
+      --annotation-ink: #0f172a;
+      --radius-surface: 8px;
+    }
+
+    html.dark {
+      --card-surface: #222428;
+      --product-text: #eff1f4;
+      --product-muted: #abb2bb;
+      --product-faint: #7c858f;
+      --product-border: #3b4148;
+      --product-accent: #3794ff;
+      --annotation-ink: #e5e7eb;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { overflow: hidden; background: transparent; }
+
+    /* Fixed 1150x720 design, scaled to the iframe by the script below. The
+       frame carries the same ratio, so the scene meets it exactly at every
+       width instead of letterboxing. The box is drawn close around the
+       drawing: the themed stage the shortcode paints supplies the margin. */
+    .stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1150px;
+      height: 720px;
+      overflow: hidden;
+      transform-origin: top left;
+      font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Everything the eye sees lives in here so the script can centre the whole
+       drawing in one transform once the labels have taken their real width —
+       which differs by however the visitor's browser resolves the font stack. */
+    .content { position: absolute; inset: 0; }
+
+    .column {
+      position: absolute;
+      left: 265px;
+      top: 32px;
+      width: 620px;
+    }
+
+    .section-label {
+      margin-bottom: 20px;
+      color: var(--product-faint);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: .012em;
+    }
+
+    .card {
+      position: relative;
+      border: 1px solid var(--product-border);
+      border-radius: var(--radius-surface);
+      background: var(--card-surface);
+    }
+
+    .card + .card { margin-top: 14px; }
+
+    /* Featured walkthrough: the ribbon eats the top-left corner, so the whole
+       content block is indented past it rather than wrapping around it. */
+    .card--featured { padding: 20px 44px 22px 58px; }
+
+    .ribbon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 52px;
+      height: 52px;
+      border-top-left-radius: var(--radius-surface);
+      background: var(--product-accent);
+      clip-path: polygon(0 0, 100% 0, 0 100%);
+    }
+
+    .ribbon svg {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 17px;
+      height: 17px;
+      color: #fff;
+    }
+
+    .card-title {
+      color: var(--product-text);
+      font-size: 21px;
+      font-weight: 600;
+      line-height: 1.28;
+    }
+
+    .card-desc {
+      max-width: 430px;
+      margin-top: 7px;
+      color: var(--product-muted);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .progress {
+      height: 6px;
+      margin-top: 20px;
+      border-radius: 999px;
+      background: var(--product-border);
+    }
+
+    .progress span {
+      display: block;
+      width: 38%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--product-accent);
+    }
+
+    /* Collapsed walkthroughs: a single row of icon plus title. Built-ins carry
+       a line icon in the product accent; extensions carry their own badge. */
+    .card--row {
+      display: flex;
+      height: 64px;
+      align-items: center;
+      padding: 0 22px;
+      gap: 16px;
+    }
+
+    .card--row .row-title {
+      color: var(--product-text);
+      font-size: 19px;
+      font-weight: 500;
+    }
+
+    .row-icon {
+      display: block;
+      flex: none;
+      width: 24px;
+      height: 24px;
+      color: var(--product-accent);
+    }
+
+    .show-more {
+      margin-top: 26px;
+      color: var(--product-accent);
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .annotations {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .annotation-label {
+      position: absolute;
+      color: var(--annotation-ink);
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -.014em;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div class="content" id="content" role="img" aria-label="The Getting Started card list, annotated: the first three walkthroughs ship out of the box, the next two are contributed by the C++ and Java extensions, and a Show More link holds the overflow">
+      <div class="column" id="column">
+        <p class="section-label">Getting Started</p>
+
+        <div class="card card--featured" data-group="builtin">
+          <div class="ribbon">
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 1.5 9.95 5.6l4.3.63-3.12 3.1.74 4.42L8 11.66 4.13 13.75l.74-4.42-3.12-3.1 4.3-.63z"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Get Started with VS Code</h3>
+          <p class="card-desc">Discover the best customizations to make VS Code yours.</p>
+          <div class="progress"><span></span></div>
+        </div>
+
+        <div class="card card--row" data-group="builtin">
+          <svg class="row-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M2.4 13.6V2.4h11.2v11.2" stroke-width="1.3"/>
+            <path d="M2.4 13.6h11.2" stroke-width="1.3" stroke-dasharray="1 1.7" stroke-linecap="round"/>
+          </svg>
+          <span class="row-title">Learn the Fundamentals</span>
+        </div>
+
+        <div class="card card--row" data-group="builtin">
+          <svg class="row-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 1.7 14.1 5.1v5.8L8 14.3 1.9 10.9V5.1z"/>
+            <path d="M1.9 5.1 8 8.5l6.1-3.4"/>
+            <path d="M8 8.5v5.8"/>
+          </svg>
+          <span class="row-title">Tips and Tricks</span>
+        </div>
+
+        <div class="card card--row" data-group="extension">
+          <svg class="row-icon" viewBox="0 0 32 32" aria-hidden="true">
+            <defs>
+              <linearGradient id="cppFill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#b25cd6"/>
+                <stop offset="1" stop-color="#65297f"/>
+              </linearGradient>
+            </defs>
+            <circle cx="16" cy="16" r="16" fill="url(#cppFill)"/>
+            <text x="16" y="19.6" text-anchor="middle" fill="#fff" font-family="Inter, 'Segoe UI', -apple-system, sans-serif" font-size="9.5" font-weight="700" letter-spacing="-.4">C/C++</text>
+          </svg>
+          <span class="row-title">Get started with C++ Development</span>
+        </div>
+
+        <div class="card card--row" data-group="extension">
+          <svg class="row-icon" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="7" fill="#d93a2f"/>
+            <path d="M8.6 13.8h11.6v5.6a4.3 4.3 0 0 1-4.3 4.3h-3a4.3 4.3 0 0 1-4.3-4.3z" fill="#fff"/>
+            <path d="M20.4 15.4h1.5a2.6 2.6 0 0 1 0 5.2h-1.5" fill="none" stroke="#fff" stroke-width="1.7"/>
+            <path d="M12.6 11.6c1.8-1.4-1.2-2.7.6-4.1M16.6 11.6c1.8-1.4-1.2-2.7.6-4.1" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <span class="row-title">Dive into Java Development</span>
+        </div>
+
+        <p class="show-more" id="showMore">Show More</p>
+      </div>
+
+      <svg class="annotations" id="annotations" width="1150" height="720" viewBox="0 0 1150 720" fill="none"></svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var DESIGN_WIDTH = 1150;
+      var DESIGN_HEIGHT = 720;
+
+      var stage = document.getElementById('stage');
+      var content = document.getElementById('content');
+      var column = document.getElementById('column');
+      var svg = document.getElementById('annotations');
+
+      /* Offset walking rather than getBoundingClientRect: the stage carries a
+         scale transform, and these numbers have to stay in design space. */
+      function box(el) {
+        var top = 0, left = 0, node = el;
+        while (node && node !== content) {
+          top += node.offsetTop;
+          left += node.offsetLeft;
+          node = node.offsetParent;
+        }
+        return { top: top, left: left, right: left + el.offsetWidth, bottom: top + el.offsetHeight };
+      }
+
+      function group(name) {
+        var rows = column.querySelectorAll('[data-group="' + name + '"]');
+        var first = box(rows[0]);
+        var last = box(rows[rows.length - 1]);
+        return { top: first.top, bottom: last.bottom, left: first.left, right: first.right };
+      }
+
+      function draw(d) {
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('stroke', 'var(--product-accent)');
+        path.setAttribute('stroke-width', '2.6');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(path);
+      }
+
+      var labels = [];
+
+      function label(text, x, y, align) {
+        var el = document.createElement('div');
+        el.className = 'annotation-label';
+        el.textContent = text;
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.transform = 'translate(' + (align === 'right' ? '-100%' : align === 'center' ? '-50%' : '0') + ', -50%)';
+        content.appendChild(el);
+        labels.push({ el: el, x: x, y: y, align: align });
+      }
+
+      var builtin = group('builtin');
+      var extension = group('extension');
+      var showMore = box(document.getElementById('showMore'));
+
+      /* Left bracket: "[" hugging the three walkthroughs VS Code ships with. */
+      var leftSpine = builtin.left - 30;
+      draw('M' + (builtin.left - 6) + ' ' + builtin.top + ' H' + leftSpine + ' V' + builtin.bottom + ' H' + (builtin.left - 6));
+      label('Out of the box', leftSpine - 34, (builtin.top + builtin.bottom) / 2, 'right');
+
+      /* Right bracket: "]" hugging the two extensions contribute. */
+      var rightSpine = extension.right + 30;
+      draw('M' + (extension.right + 6) + ' ' + extension.top + ' H' + rightSpine + ' V' + extension.bottom + ' H' + (extension.right + 6));
+      label('Extensions', rightSpine + 34, (extension.top + extension.bottom) / 2, 'left');
+
+      /* Arrow pointing up at the overflow link. */
+      var arrowX = Math.round((builtin.left + builtin.right) / 2);
+      var arrowTop = showMore.bottom + 16;
+      var arrowBottom = arrowTop + 68;
+      draw('M' + arrowX + ' ' + arrowBottom + ' V' + arrowTop);
+      draw('M' + (arrowX - 11) + ' ' + (arrowTop + 14) + ' L' + arrowX + ' ' + arrowTop + ' L' + (arrowX + 11) + ' ' + (arrowTop + 14));
+      label('Overflow', arrowX, arrowBottom + 34, 'center');
+
+      /* Centre the drawing in the design box now that the labels have measured
+         themselves — their width depends on however the visitor's browser
+         resolved the font stack. The brackets and arrow always sit inside the
+         span the labels and the column describe, so those alone bound the ink.
+         The scale only bites if a wider font pushes the labels past the box,
+         which keeps a fallback face from clipping rather than merely crowding. */
+      var ink = { left: box(column).left, right: box(column).right, top: box(column).top, bottom: box(column).bottom };
+      labels.forEach(function (item) {
+        var width = item.el.offsetWidth;
+        var height = item.el.offsetHeight;
+        var left = item.align === 'right' ? item.x - width : item.align === 'center' ? item.x - width / 2 : item.x;
+        ink.left = Math.min(ink.left, left);
+        ink.right = Math.max(ink.right, left + width);
+        ink.top = Math.min(ink.top, item.y - height / 2);
+        ink.bottom = Math.max(ink.bottom, item.y + height / 2);
+      });
+
+      var inkCentreX = (ink.left + ink.right) / 2;
+      var inkCentreY = (ink.top + ink.bottom) / 2;
+      var shrink = Math.min(1, DESIGN_WIDTH / (ink.right - ink.left), DESIGN_HEIGHT / (ink.bottom - ink.top));
+
+      content.style.transformOrigin = inkCentreX + 'px ' + inkCentreY + 'px';
+      content.style.transform = 'translate(' +
+        (DESIGN_WIDTH / 2 - inkCentreX) + 'px, ' +
+        (DESIGN_HEIGHT / 2 - inkCentreY) + 'px) scale(' + shrink + ')';
+
+      function fit() {
+        stage.style.transform = 'scale(' + (window.innerWidth / DESIGN_WIDTH) + ')';
+      }
+
+      window.addEventListener('resize', fit);
+      fit();
+    }());
+  </script>
+</body>
+</html>

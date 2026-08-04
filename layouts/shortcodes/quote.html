@@ -20,6 +20,17 @@
      the card is an inert div. Either way the body-link underline animation
      never applies — main.css and dark.css exclude .quote-card by class.
 
+     `stats` is the row of counts the card carried where it was said, written
+     as space-separated mark:count pairs. A mark naming a row in the icon
+     table below draws that icon — the four Twitter engagements — and anything
+     else is printed as written, which is how a GitHub reaction ("👍:19")
+     costs nothing extra. Counts print verbatim, so thousands keep whatever
+     separator the source showed.
+
+     `media` hangs the post's own attachment under the words, since a tweet
+     that was mostly its screenshot loses its point without it. It resolves
+     like `avatar` and requires `media_alt`.
+
      `avatar` resolves like the image shortcode's src (page-relative into
      static/<page>/). Left out, the neutral disc below renders and
      assets/js/quote-avatars.js (loaded by the footer whenever a page uses
@@ -36,6 +47,14 @@
   "reddit" (dict "label" "Reddit" "svg" `<svg viewBox="0 0 24 24"><path fill="#FF4500" d="M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485l-2.286 2.286C.775 23.225 1.097 24 1.738 24H12c6.627 0 12-5.373 12-12S18.627 0 12 0Zm4.388 3.199c1.104 0 1.999.895 1.999 1.999 0 1.105-.895 2-1.999 2-.946 0-1.739-.657-1.947-1.539v.002c-1.147.162-2.032 1.15-2.032 2.341v.007c1.776.067 3.4.567 4.686 1.363.473-.363 1.064-.58 1.707-.58 1.547 0 2.802 1.254 2.802 2.802 0 1.117-.655 2.081-1.601 2.531-.088 3.256-3.637 5.876-7.997 5.876-4.361 0-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538 0-1.548 1.255-2.802 2.803-2.802.645 0 1.239.218 1.712.585 1.275-.79 2.881-1.291 4.64-1.365v-.01c0-1.663 1.263-3.034 2.88-3.207.188-.911.993-1.595 1.959-1.595Zm-8.085 8.376c-.784 0-1.459.78-1.506 1.797-.047 1.016.64 1.429 1.426 1.429.786 0 1.371-.369 1.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406 0c-.786 0-1.385.824-1.338 1.841.047 1.017.634 1.385 1.418 1.385.785 0 1.473-.413 1.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703 4.013c-.974 0-1.907.048-2.77.135-.147.015-.241.168-.183.305.483 1.154 1.622 1.964 2.953 1.964 1.33 0 2.47-.81 2.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z"/></svg>`)
   "hackernews" (dict "label" "Hacker News" "svg" `<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FF6600"/><path fill="#fff" d="M11.06 13.6 7.42 6.8h1.9l2.12 4.28c.03.07.07.15.11.23l.07.15.05.11.03.08.09.19.08.18.14-.3.16-.34.06-.11.1-.22c.05-.08.08-.16.12-.23L14.6 6.8h1.98l-3.68 6.87v4.53h-1.84V13.6Z"/></svg>`)
 -}}
+{{- /* The engagement marks, drawn as strokes in currentColor so they take
+       the muted ink the counts do and read as one row. */ -}}
+{{- $statIcons := dict
+  "like" (dict "label" "likes" "svg" `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>`)
+  "repost" (dict "label" "reposts" "svg" `<svg viewBox="0 0 24 24"><path d="m17 1 4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4m14-2v2a4 4 0 0 1-4 4H3"/></svg>`)
+  "reply" (dict "label" "replies" "svg" `<svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-11.4 8L3 21l1.5-6.6A8.5 8.5 0 1 1 21 11.5Z"/></svg>`)
+  "views" (dict "label" "views" "svg" `<svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-4"/></svg>`)
+-}}
 {{- $name := .Get "name" -}}
 {{- if not $name -}}
   {{- errorf "quote shortcode in %s: missing required \"name\" param" $.Page.File.Path -}}
@@ -43,6 +62,25 @@
 {{- $handle := .Get "handle" -}}
 {{- $avatar := .Get "avatar" -}}
 {{- $link := .Get "link" -}}
+{{- $media := .Get "media" -}}
+{{- $mediaAlt := .Get "media_alt" -}}
+{{- if and $media (not $mediaAlt) -}}
+  {{- errorf "quote shortcode in %s: media needs a media_alt describing it" $.Page.File.Path -}}
+{{- end -}}
+{{- /* mark:count, whitespace separated. Splitting on runs of non-space keeps
+       a count's own comma out of it, which a comma-separated list could not. */ -}}
+{{- $stats := slice -}}
+{{- range findRE `\S+` (.Get "stats") -}}
+  {{- $parts := split . ":" -}}
+  {{- if ne (len $parts) 2 -}}
+    {{- errorf "quote shortcode in %s: stat %q is not mark:count" $.Page.File.Path . -}}
+  {{- else -}}
+    {{- $mark := index $parts 0 -}}
+    {{- $icon := dict -}}
+    {{- if isset $statIcons $mark }}{{ $icon = index $statIcons $mark }}{{ end -}}
+    {{- $stats = $stats | append (dict "icon" $icon "mark" $mark "count" (index $parts 1)) -}}
+  {{- end -}}
+{{- end -}}
 {{- $logo := dict -}}
 {{- with .Get "source" -}}
   {{- $key := lower (strings.Trim . " \t") -}}
@@ -94,6 +132,26 @@
     {{- end }}
   </div>
   <div class="quote-text">{{ $html | safeHTML }}</div>
+  {{- with $media }}
+  <img class="quote-media" src="{{ . }}" alt="{{ $mediaAlt }}" loading="lazy" decoding="async">
+  {{- end }}
+  {{- with $stats }}
+  <div class="quote-stats">
+    {{- range . }}
+    <span class="quote-stat">
+      {{- with .icon }}
+      <span class="quote-stat-mark" aria-hidden="true">{{ .svg | safeHTML }}</span>
+      {{- else }}
+      {{- /* An emoji names itself to a screen reader, so it stands in for the
+             label an icon needs. */}}
+      <span class="quote-stat-mark">{{ .mark }}</span>
+      {{- end }}
+      <span class="quote-stat-count">{{ .count }}</span>
+      {{- with .icon }}<span class="sr-only">{{ .label }}</span>{{ end }}
+    </span>
+    {{- end }}
+  </div>
+  {{- end }}
 {{- if $link }}
 </a>
 {{- else }}

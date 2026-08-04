@@ -22,7 +22,11 @@ VS Code's iconography originated as a fork from [Visual Studio](https://visualst
 
 This introduced a lot of inconsistencies as there were different styles, weights, and colors. Our customers started noticing these inconsistencies, and there wasn't anyone actively maintaining our icons. I led the initiative to begin cleaning up the iconography and creating a cohesive style that fits across our platforms.
 
-{{< image src="quote.png" alt="GitHub comment reading 'IMHO, aesthetics-wise, the icons are the worst part of the editor, by far,' listing inconsistent shades, styles, and shapes" gradient="true" caption="Community feedback calling out the inconsistent icons" >}}
+{{< quote name="GitHub User" handle="@mona" source="github" stats="👍:19 😄:16 ❤️:3" >}}
+IMHO, aesthetics-wise, ==the icons are the worst part== of the editor, by far.
+
+Pretty much everything that could have gone wrong did: inconsistent shades of gray, style and shapes (X icon), the maximize/un-maximize icon doesn't properly illustrate it's function, the "toggle output scroll lock" icon seems taken straight from an iOS password manager or something...
+{{< /quote >}}
 
 # Iterations
 
@@ -32,13 +36,30 @@ After getting leadership onboard, I partnered with our visual designer to create
 
 As we narrowed down the styles, we knew we needed to get customer feedback for this to succeed. In embracing the open-source culture, we opened the design process and invited the community to participate and provide feedback. We were surprised at what happened next.
 
-{{< image src="feedback.png" alt="Community comments from GitHub, Twitter, and Reddit reacting to the icon proposals, praising clearer sidebar icons while critiquing line thinness" gradient="true" caption="Feedback pouring in from GitHub, Twitter, and Reddit" >}}
+{{< quotes >}}
+
+    {{< quote name="GitHub User" handle="@mona" source="github" >}}
+    Overall, I think ==the sidebar icons are a lot clearer== as to what they do. Debug icon and Extensions icons particularly. The shape of the ==Source Control icon feels a little awkward== to me, though it accommodates badging better.
+    {{< /quote >}}
+
+    {{< quote name="Twitter User" handle="@username" source="twitter" >}}
+    ==Looking great!== Three-layer symbols feel disproportionately detailed. Maybe save icon with star in upper-left would be more consistent?
+    {{< /quote >}}
+
+    {{< quote name="Reddit User" handle="@username" source="reddit" >}}
+    I like the general look of icons but ==I don't like how thin the lines are==. For example, the search icon is a lot thinner here compared to the current version of VSCode
+    {{< /quote >}}
+{{< /quotes >}}
 
 # Better feedback
 
 As we went through the feedback, we realized it was great for first impressions, but we wanted to get these into our customers' hands to see how it would impact their workflows. So I created a custom build of VS Code with the new icons and asked our community to try them out. The community continued to surprise us by being active build testers and providing more feedback.
 
-{{< image src="build.png" alt="Tweet announcing work on improving VS Code's iconography, linking the GitHub issue and showing the editor running the new icons" gradient="true" caption="Inviting the community to test the custom build" >}}
+{{< quote name="Miguel Solorio" handle="@miguelsolorio_" avatar="avatars/miguelsolorio.jpg" source="twitter" media="build-media.png" media_alt="VS Code running the custom build, with the new outline icons in the activity bar, the explorer, and the outline view" stats="like:527 repost:65 reply:30 views:4,170" >}}
+We're working on improving @code's iconography to make them consistent, clear, and modern. Let us know what you think.
+
+👉 <https://github.com/Microsoft/vscode/issues/8017>
+{{< /quote >}}
 
 Once our customers had a sample build, we started receiving a flood of feedback, which felt amazing and terrifying. There was feedback around first impressions between the solid and outlines, glitches we missed, and even other areas needing updating. We worked around the clock to update the build as we iterated on the feedback.
 
