@@ -8,10 +8,20 @@
        OS preference when the file is opened on its own. Runs in <head> to avoid
        a theme flash. Only the sync runs — the player is opt-in. -->
   <script src="/demo-system/demo-system.js?v=2"></script>
+  <!-- The homepage embeds this file with ?card=1. The class lands on <html>
+       before first paint so the standalone fallback never flashes behind the
+       card's frosted surface. -->
+  <script>
+    if (new URLSearchParams(location.search).has('card')) {
+      document.documentElement.classList.add('is-card');
+    }
+  </script>
   <style>
     :root {
-      /* Matches the pastel aurora family on the project cards. */
-      --background: linear-gradient(145deg, #f0ecfd 0%, #f6f4fe 45%, #fdf1ea 100%);
+      /* Standalone fallback only — in card mode the body goes transparent and
+         the card's frosted surface supplies the field. Mirrors the neutral
+         stage pair in project.css. */
+      --background: linear-gradient(180deg, #fdfdff 0%, #f6f8fa 100%);
       --icon: #8b7cff;
       /* The field is dealt in three tiers of the same violet. Kept here rather
          than in the script so a theme change is a style recalculation: the
@@ -22,10 +32,13 @@
     }
 
     :root.dark {
-      /* Deep indigo-to-umber, mirroring the cards' dark variants. */
-      --background: linear-gradient(145deg, #23203f 0%, #1a1e33 45%, #2c2229 100%);
-      --icon-2: #6f63d8;
-      --icon-3: #564bb5;
+      --background: linear-gradient(180deg, #201c28 0%, #18151f 100%);
+      /* Dusty mauve tiers, not the light theme's violet: on the plum card the
+         saturated set reads as electric indigo and fights the rose title. */
+      --icon: #82739c;
+      --icon-1: #a494bd;
+      --icon-2: #82739c;
+      --icon-3: #63567a;
     }
 
     * { box-sizing: border-box; }
@@ -41,6 +54,10 @@
       overflow: hidden;
       background: var(--background);
       color: var(--icon);
+    }
+
+    .is-card body {
+      background: transparent;
     }
 
     .stage {

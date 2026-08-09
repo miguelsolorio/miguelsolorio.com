@@ -24,88 +24,8 @@
         user-select: none;
     }
 
-    /* Undercurrent sits in its own stacking layer, so it adds atmosphere
-       without changing the terminal's existing syntax or theme tokens. */
-    .home-hero-ambient {
-        position: absolute;
-        top: -8rem;
-        left: 50%;
-        z-index: -1;
-        width: 100vw;
-        height: calc(100% + 11rem);
-        overflow: hidden;
-        /* Fade in from transparent at the top so the element's top edge is
-           invisible against the page background. */
-        background: linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f2f0ff 18%, #f8f7ff 45%, #f5f5f5 75%, rgba(245, 245, 245, 0) 100%);
-        -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
-        mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
-        pointer-events: none;
-        transform: translateX(-50%);
-    }
-
-    .home-hero-ambient::after {
-        position: absolute;
-        inset: 0;
-        content: "";
-        opacity: .11;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.72'/%3E%3C/svg%3E");
-        background-size: 180px 180px;
-        mix-blend-mode: soft-light;
-    }
-
-    /* Undercurrent canvas: curl-noise particle trails drawn by home.js in
-       the same purple/violet/coral family the aurora blobs used. The parent's
-       mask still fades everything out toward the page content below. */
-    .home-hero-flow {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Halftone portrait, centered on both axes behind the copy and the
-       terminal. The two masks below do the real work of keeping the type
-       readable: the radial one dissolves the edges of the field, and the
-       linear one thins it out toward the left, where the headline and the
-       summary sit. Peak density lands top-right, over open space. The
-       radial gradient is an ellipse — wider than tall — so the field
-       spreads laterally into the hero instead of stacking as a narrow
-       column that extends above and below the short hero band. */
-    .home-hero-dots {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 0;
-        /* The viewport term keeps the centered square from reaching past the
-           screen edges: the spill is mask-faded to invisible, but it still
-           counted as scrollable width on phones. Hero center == viewport
-           center (symmetric shell gutters), so 100vw lands exactly on the
-           screen. */
-        width: min(72rem, 112%, 100vw);
-        aspect-ratio: 1;
-        -webkit-mask-image:
-            radial-gradient(ellipse 58% 40% at 55% 50%, #000 42%, transparent 100%),
-            linear-gradient(68deg, rgba(0, 0, 0, .2) 18%, rgba(0, 0, 0, .55) 50%, #000 82%);
-        mask-image:
-            radial-gradient(ellipse 58% 40% at 55% 50%, #000 42%, transparent 100%),
-            linear-gradient(68deg, rgba(0, 0, 0, .2) 18%, rgba(0, 0, 0, .55) 50%, #000 82%);
-        -webkit-mask-composite: source-in;
-        mask-composite: intersect;
-        mix-blend-mode: multiply;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-    }
-
-    .home-hero-dots canvas {
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
-
-    .dark .home-hero-dots {
-        mix-blend-mode: screen;
-    }
-
+    /* The hero's backdrop — the aurora shader — is the site-wide fixed
+       .site-ambient layer (main.css); nothing here draws it. */
     .home-hero * {
         box-sizing: border-box;
     }
@@ -155,7 +75,7 @@
 
     /* Terminal window. Follows the page theme; the dark palette lives in the
        `.dark` override below. The token hues differ between themes rather than
-       being reused — the dark set is tuned against #10141c and would fail
+       being reused — the dark set is tuned against #161221 and would fail
        contrast on white, yellow and green worst of all. */
     .home-hero-current {
         --t-bg: #ffffff;
@@ -423,29 +343,6 @@
         color: var(--t-text);
     }
 
-    .home-hero-terminal-confirmation {
-        display: inline-flex;
-        gap: .375rem;
-        margin-left: .625rem;
-        vertical-align: middle;
-    }
-
-    .home-hero-terminal-confirmation button {
-        padding: .1rem .35rem;
-        border: 1px solid var(--t-line);
-        border-radius: .2rem;
-        background: transparent;
-        color: var(--t-cyan);
-        font: inherit;
-        cursor: pointer;
-    }
-
-    .home-hero-terminal-confirmation button:hover,
-    .home-hero-terminal-confirmation button:focus-visible {
-        background: var(--t-bar);
-        color: var(--t-bright);
-    }
-
     .home-hero-current .home-hero-terminal-link {
         color: var(--t-cyan);
         text-decoration: none;
@@ -516,41 +413,30 @@
     }
 
     .dark .home-hero-current {
-        --t-bg: #10141c;
-        --t-bar: #1b2130;
-        --t-line: rgba(148, 163, 184, .22);
-        --t-text: #cbd5e1;
-        --t-dim: #7c8899;
-        --t-bright: #f1f5f9;
-        --t-green: #4ade80;
-        --t-cyan: #38bdf8;
-        --t-yellow: #fbbf24;
-        --t-purple: #a78bfa;
-        --t-red: #f87171;
-        --t-light: #3f4757;
-        --t-shadow: rgba(2, 6, 23, .5);
+        --t-bg: #161221;
+        --t-bar: #221c32;
+        --t-line: rgba(210, 202, 222, .15);
+        --t-text: #cec6de;
+        --t-dim: #7e7599;
+        --t-bright: #f5f0fa;
+        --t-green: #95d5a5;
+        --t-cyan: #9ccfd8;
+        --t-yellow: #f6c177;
+        --t-purple: #c4a7e7;
+        --t-red: #eb6f92;
+        --t-light: #453c5c;
+        --t-shadow: rgba(10, 6, 20, .55);
     }
 
-    /* Fade in from transparent at the top so the element's top edge is
-       invisible against the page background, then build to the atmospheric
-       tint, then back to the page color and out. */
-    .dark .home-hero-ambient {
-        background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, #15172d 18%, #121a31 48%, #0f172a 75%, rgba(15, 23, 42, 0) 100%);
-    }
-
-    .dark .home-hero-ambient::after {
-        opacity: .15;
-        mix-blend-mode: overlay;
-    }
-
-    /* Dark counterpart of the light hero's #3429ff highlight: the same hue
-       family lifted to indigo-400 so it reads as color, not gray. */
+    /* Dark counterpart of the light hero's #3429ff highlight: the palette's
+       rose accent — the one hue reserved for the headline, so it stays the
+       loudest thing on the page. */
     .dark .home-hero h1 {
-        color: #818cf8;
+        color: #efa9ae;
     }
 
     .dark .home-hero-summary {
-        color: #9ca3af !important;
+        color: #8c839f !important;
     }
 }
 @media (max-width: 64rem) {
@@ -564,28 +450,12 @@
         width: min(100%, 23rem);
         max-width: 23rem;
     }
-
-    /* Stacked layout: the copy no longer sits to one side, so the
-       left-thinning mask has nothing to protect. Even it out and pull the
-       whole field back instead. Keep the ellipse wider than tall so the
-       narrower viewports don't reintroduce the vertical stacking. */
-    .home-hero-dots {
-        width: min(48rem, 128%, 100vw);
-        opacity: .7;
-        -webkit-mask-image: radial-gradient(ellipse 55% 38% at 50% 50%, #000 38%, transparent 100%);
-        mask-image: radial-gradient(ellipse 55% 38% at 50% 50%, #000 38%, transparent 100%);
-    }
 }
 
 @media (max-width: 40rem) {
     intro.home-hero {
         margin-top: 3rem;
         margin-bottom: 7rem;
-    }
-
-    .home-hero-ambient {
-        top: -7rem;
-        height: calc(100% + 9rem);
     }
 
     .home-hero-inner {

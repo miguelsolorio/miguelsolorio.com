@@ -22,7 +22,10 @@
       </div>
     </div>
 
-    <div class="noise" aria-hidden="true"></div>
+    {{/* Site-wide ambient: fixed behind every page. The topography shader in
+         assets/js/common.js paints the canvas; the CSS gradient + grain on
+         .site-ambient (main.css) are the no-WebGL / no-JS fallback. */}}
+    <div class="site-ambient" aria-hidden="true"><canvas class="site-shader"></canvas></div>
 
     {{ $common := resources.Get "js/common.js" }}
     {{ if hugo.IsProduction }}

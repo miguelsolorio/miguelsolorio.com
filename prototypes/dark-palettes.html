@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Dark palettes — 10 full-system variations</title>
+<style>
+/* ============================================================
+   Dark palette lab — 10 candidate dark-mode systems (plus the
+   shipping palette as a baseline), each applied to a replica of
+   the real homepage: header, hero + terminal, Featured Work
+   cards, side-project tiles.
+
+   The Notebooks / CLI demo interiors keep their FIXED product
+   colors (Colab dark, Gemini CLI dark) in every variation —
+   they are the constant every palette must flatter.
+
+   Each variation is stamped from one template by JS; palettes
+   live in the PALETTES registry at the bottom. "Copy CSS" puts
+   the full token set on the clipboard for integration.
+   ============================================================ */
+
+/* ---------- lab chrome (deliberately neutral so it doesn't
+   bias warm vs cool palettes) ---------- */
+:root {
+  color-scheme: dark;
+  --lab-bg: #0a0a0c;
+  --lab-panel: #131317;
+  --lab-line: rgba(255, 255, 255, .08);
+  --lab-ink: #9a9aa3;
+  --lab-ink-hi: #ececf0;
+  --lab-accent: #a5b4fc;
+  --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--lab-bg);
+  color: var(--lab-ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.lab-header {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 1.5rem;
+}
+.lab-header h1 {
+  margin: 0;
+  color: var(--lab-ink-hi);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+.lab-header p {
+  max-width: 46rem;
+  margin: .75rem 0 0;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+.lab-header p strong { color: var(--lab-ink-hi); font-weight: 600; }
+
+/* Jump nav */
+.lab-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--lab-line);
+  background: rgba(10, 10, 12, .82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.lab-nav-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: .625rem 1.5rem;
+}
+.lab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  padding: .3rem .65rem;
+  border: 1px solid var(--lab-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--lab-ink);
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+}
+.lab-pill i {
+  width: .55rem;
+  height: .55rem;
+  border-radius: 999px;
+  background: var(--dot, #666);
+}
+.lab-pill:hover { color: var(--lab-ink-hi); border-color: rgba(255, 255, 255, .2); }
+.lab-pill.is-active {
+  color: var(--lab-ink-hi);
+  border-color: rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .06);
+}
+
+/* ---------- variation shell ---------- */
+.var {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 3.25rem 1.5rem 1.25rem;
+  scroll-margin-top: 3.25rem;
+}
+.var-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 2rem;
+  margin-bottom: 1rem;
+}
+.var-title { flex: 1 1 22rem; min-width: 0; }
+.var-title h2 {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  margin: 0;
+  color: var(--lab-ink-hi);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.var-num {
+  color: var(--lab-ink);
+  font-family: var(--mono);
+  font-size: .8rem;
+  font-weight: 500;
+}
+.var-title .var-blurb {
+  margin: .4rem 0 0;
+  font-size: .85rem;
+  line-height: 1.55;
+}
+.var-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .5rem;
+}
+.var-swatches { display: flex; align-items: flex-end; gap: .875rem; }
+.sw-group { display: flex; gap: .25rem; }
+.sw {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: .375rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+}
+.sw--sm { width: 1rem; height: 1rem; border-radius: .3rem; }
+.var-copy {
+  padding: .35rem .7rem;
+  border: 1px solid var(--lab-line);
+  border-radius: .45rem;
+  background: transparent;
+  color: var(--lab-ink);
+  font-family: var(--mono);
+  font-size: .68rem;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease;
+}
+.var-copy:hover { color: var(--lab-ink-hi); border-color: rgba(255, 255, 255, .25); }
+.var-copy.is-done { color: #86efac; border-color: rgba(134, 239, 172, .4); }
+
+.var--baseline .var-title h2::after {
+  content: 'shipping today';
+  margin-left: .25rem;
+  padding: .2em .55em;
+  border: 1px solid var(--lab-line);
+  border-radius: 999px;
+  color: var(--lab-ink);
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* ---------- the homepage mock ----------
+   Everything below paints from the per-palette custom properties
+   set on .mock by JS. Demo interiors use literal hex on purpose. */
+.mock {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07), 0 30px 80px -40px rgba(0, 0, 0, .8);
+  background: linear-gradient(180deg, var(--amb-0) 0%, var(--amb-1) 48%, var(--amb-2) 100%);
+  isolation: isolate;
+}
+
+/* Ambient: two soft glows + faint contour rings + grain, standing
+   in for the topography shader. */
+.mock-amb { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.mock-amb .glow-a,
+.mock-amb .glow-b {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(70px);
+}
+.mock-amb .glow-a {
+  top: -18%; right: -8%;
+  width: 55%; height: 65%;
+  background: radial-gradient(closest-side, var(--glow-a), transparent 70%);
+}
+.mock-amb .glow-b {
+  bottom: -25%; left: -12%;
+  width: 60%; height: 70%;
+  background: radial-gradient(closest-side, var(--glow-b), transparent 70%);
+}
+.mock-amb .contours {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-radial-gradient(circle at 84% -22%, transparent 0 46px, var(--contour) 46px 47.5px),
+    repeating-radial-gradient(circle at -8% 118%, transparent 0 54px, var(--contour) 54px 55.5px);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 55%, #000 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 55%, #000 100%);
+}
+.mock-amb .grain {
+  position: absolute;
+  inset: 0;
+  opacity: .13;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.72'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: overlay;
+}
+
+.mock-page {
+  position: relative;
+  z-index: 1;
+  max-width: 66rem;
+  margin: 0 auto;
+  padding: 0 2.5rem 2.75rem;
+}
+
+/* Header */
+.m-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 0;
+}
+.m-logo {
+  color: var(--ink-hi);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -.035em;
+}
+.m-social { display: flex; align-items: center; gap: .8rem; }
+.m-social svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--ink-hi);
+  transition: color .15s ease;
+}
+.m-social a:hover svg { color: var(--accent); }
+
+/* Hero */
+.m-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 21.5rem;
+  gap: 3rem;
+  align-items: center;
+  padding: 2.75rem 0 4.5rem;
+}
+.m-copy h1 {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(2.6rem, 4.6vw, 3.9rem);
+  font-weight: 700;
+  line-height: .96;
+  letter-spacing: -.055em;
+}
+.m-copy h1 span { display: block; white-space: nowrap; }
+.m-copy p {
+  max-width: 30rem;
+  margin: 1.3rem 0 0;
+  color: var(--ink-mut);
+  font-size: .95rem;
+  line-height: 1.65;
+}
+.m-copy a {
+  color: var(--accent-soft);
+  text-decoration: underline;
+  text-underline-offset: .15em;
+}
+
+/* Terminal — the site's own surface, re-toned per palette */
+.m-term {
+  overflow: hidden;
+  border: 1px solid var(--t-line);
+  border-radius: .625rem;
+  background: var(--t-bg);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 1.5rem 3.5rem -1.25rem var(--t-shadow);
+  color: var(--t-text);
+  font-family: var(--mono);
+  font-size: .7rem;
+  line-height: 1.55;
+}
+.m-term-bar {
+  display: grid;
+  grid-template-columns: 3rem 1fr 3rem;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0 .6rem;
+  border-bottom: 1px solid var(--t-line);
+  background: var(--t-bar);
+}
+.m-lights { display: flex; gap: .4rem; }
+.m-lights i { width: .55rem; height: .55rem; border-radius: 999px; background: var(--t-light); }
+.m-term-title {
+  overflow: hidden;
+  color: var(--t-dim);
+  font-size: .64rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.m-term-body { padding: .8rem .8rem .7rem; }
+.m-term-body p { margin: 0 0 .1rem; white-space: pre-wrap; }
+.m-term-body p.sp { margin-top: .55rem; }
+.tg { color: var(--t-green); }
+.tc { color: var(--t-cyan); }
+.ty { color: var(--t-yellow); }
+.tp { color: var(--t-purple); }
+.tr { color: var(--t-red); }
+.tb { color: var(--t-bright); }
+.tt { color: var(--t-text); }
+.td { color: var(--t-dim); opacity: .85; }
+.tr s { text-decoration-thickness: .08em; }
+.m-caret {
+  display: inline-block;
+  width: .55em;
+  height: 1.15em;
+  margin-left: .05em;
+  background: var(--t-green);
+  vertical-align: -.18em;
+  animation: caret-blink 1.1s steps(1, end) infinite;
+}
+@keyframes caret-blink { 50% { opacity: 0; } }
+
+/* Section heading */
+.m-section {
+  margin: 0 0 1.4rem;
+  color: var(--ink-hi);
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.05em;
+}
+.m-section--side { margin-top: 3rem; font-size: clamp(1.5rem, 2.6vw, 2rem); }
+
+/* Featured Work cards */
+.m-cards { display: grid; gap: .625rem; }
+.m-card {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 21rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, var(--card-0) 0%, var(--card-1) 100%);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow: 0 0 0 1px var(--card-ring), 0 1px 3px rgba(0, 0, 0, .4);
+  text-decoration: none;
+  cursor: pointer;
+  isolation: isolate;
+}
+.m-card-title {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: transparent;
+  font-size: clamp(3.5rem, 9vw, 6.4rem);
+  font-weight: 800;
+  letter-spacing: -.045em;
+  line-height: .92;
+  -webkit-text-stroke: 2px var(--accent-soft);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: color .35s ease, transform .35s ease;
+}
+.m-card-title svg {
+  width: .58em;
+  height: .58em;
+  margin-left: .1em;
+  stroke: var(--accent-soft);
+  transition: stroke .35s ease;
+}
+.m-card:hover .m-card-title { color: var(--accent-soft); transform: scale(1.02); }
+
+/* ----- Notebooks demo interior: FIXED Colab-dark colors ----- */
+.m-demo { position: absolute; inset: 0; z-index: 1; font-family: var(--mono); }
+.nb-rows {
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  width: min(88%, 40rem);
+  margin: 1.6rem auto 0;
+}
+.nb-row { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: .7rem; }
+.nb-gutter {
+  padding-top: .55rem;
+  color: #a8adb4;
+  font-size: .66rem;
+  text-align: right;
+  white-space: nowrap;
+}
+.nb-gutter .nb-check { color: #8ab4f8; margin-right: .25rem; }
+.nb-cell {
+  position: relative;
+  padding: .55rem .8rem .6rem;
+  border: 1px solid #3c4043;
+  border-radius: .5rem;
+  background: #202124;
+  color: #e8eaed;
+  font-size: .68rem;
+  line-height: 1.6;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+}
+.nb-cell p { margin: 0; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.nb-row--active .nb-cell {
+  border-color: #8ab4f8;
+  box-shadow: 0 0 10px 0 rgba(138, 180, 248, .42), 0 0 20px 5px rgba(138, 180, 248, .08), 0 4px 30px 8px rgba(0, 0, 0, .28);
+}
+.nb-kw { color: #c58af9; }
+.nb-str { color: #f28b82; }
+.nb-num { color: #81c995; }
+.nb-prm { color: #8ab4f8; }
+.nb-out { margin-top: .45rem; padding-top: .45rem; border-top: 1px solid #3c4043; color: #bdc1c6; }
+.nb-out p { margin: 0; }
+.nb-play {
+  position: absolute;
+  top: .5rem;
+  left: -2.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: #2d2e31;
+  box-shadow: 0 0 0 1px #4b4f52;
+}
+.nb-play i {
+  width: 0; height: 0;
+  margin-left: .1rem;
+  border-style: solid;
+  border-width: .28rem 0 .28rem .46rem;
+  border-color: transparent transparent transparent #e8eaed;
+}
+.nb-toolbar {
+  position: absolute;
+  top: -.9rem;
+  right: .6rem;
+  display: flex;
+  gap: .55rem;
+  padding: .3rem .55rem;
+  border: 1px solid #4b4f52;
+  border-radius: .45rem;
+  background: #292a2d;
+  color: #bdc1c6;
+  font-size: .62rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+}
+
+/* ----- CLI demo interior: FIXED Gemini-CLI-dark colors ----- */
+.cli-panel {
+  width: min(88%, 44rem);
+  margin: 1.7rem auto 0;
+  padding: 1rem 1.2rem .9rem;
+  border-radius: .5rem;
+  background: #131314;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 12px 40px rgba(0, 0, 0, .5);
+  color: #e8e8e8;
+  font-size: .68rem;
+  line-height: 1.7;
+}
+.cli-panel p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cli-panel p.sp { margin-top: .5rem; }
+.cli-chip {
+  display: inline-block;
+  margin: .45rem 0 0;
+  padding: .1rem .55rem;
+  border-radius: .25rem;
+  background: #3a4048;
+  color: #c9d1d9;
+}
+.cli-spark { color: #d7afff; }
+.cli-check { color: #6bd490; }
+.cli-blue { color: #87afff; }
+.cli-dim { color: #8b9098; }
+.cli-bold { font-weight: 700; color: #ffffff; }
+.cli-input {
+  display: flex;
+  gap: .5rem;
+  margin-top: .65rem;
+  padding: .3rem 0;
+  border-top: 1px solid #87afff;
+  border-bottom: 1px solid #87afff;
+}
+.cli-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: .45rem;
+  color: #8b9098;
+}
+
+/* Side-project tiles */
+.m-side {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .75rem;
+  margin-top: 1.3rem;
+}
+.m-tile {
+  padding: 1rem .75rem .8rem;
+  border-radius: .875rem;
+  background: linear-gradient(180deg, var(--card-0) 0%, var(--card-1) 100%);
+  box-shadow: 0 0 0 1px var(--card-ring);
+  text-align: center;
+}
+.m-tile-icon {
+  width: 2.6rem;
+  height: 2.6rem;
+  margin: 0 auto;
+  border-radius: .7rem;
+  background: var(--tile-art);
+}
+.m-tile-name {
+  margin: .6rem 0 0;
+  color: var(--ink-hi);
+  font-size: .78rem;
+  font-weight: 700;
+}
+.m-tile-desc {
+  margin: .25rem 0 0;
+  color: var(--ink-mut);
+  font-size: .68rem;
+  line-height: 1.4;
+}
+.m-tile-metrics {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  margin-top: .6rem;
+  padding-top: .55rem;
+  border-top: 1px solid var(--card-ring);
+  color: var(--ink-mut);
+  font-size: .6rem;
+  font-weight: 700;
+}
+.m-tile-metrics .dot { width: 2px; height: 2px; border-radius: 999px; background: var(--ink-mut); }
+
+.lab-footer {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  font-size: .8rem;
+}
+
+@media (max-width: 56rem) {
+  .m-hero { grid-template-columns: 1fr; gap: 2.25rem; }
+  .m-term { max-width: 23rem; }
+  .m-side { grid-template-columns: repeat(2, 1fr); }
+  .mock-page { padding: 0 1.25rem 2rem; }
+  .nb-gutter { display: none; }
+  .nb-row { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .m-caret { animation: none; }
+  .m-card-title, .m-card-title svg { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="lab-header">
+  <h1>Dark mode palettes — 10 full-system variations</h1>
+  <p>Each variation re-tones everything the site itself owns — page + ambient, text tiers, accent, links, cards, and the hero terminal's chrome and ANSI hues. The <strong>Notebooks and CLI demos keep their fixed product colors</strong> (Colab dark <span style="font-family:var(--mono)">#202124</span>, Gemini CLI <span style="font-family:var(--mono)">#131314</span>, periwinkle/lavender/pastel syntax) in every variation, so you're judging each palette against the thing it has to live with. <strong>0 is the shipping palette</strong> for reference. "Copy CSS" grabs the full token set.</p>
+</header>
+
+<nav class="lab-nav"><div class="lab-nav-inner" id="nav"></div></nav>
+
+<main id="variations"></main>
+
+<footer class="lab-footer">
+  <p>Token names map to the real hooks: page/ambient → <span style="font-family:var(--mono)">main.css .dark .site-ambient</span> + <span style="font-family:var(--mono)">dark.css body</span>, accent/links → <span style="font-family:var(--mono)">dark.css</span> + <span style="font-family:var(--mono)">hero.css .dark h1</span>, cards → <span style="font-family:var(--mono)">project.css .dark .project</span>, terminal → <span style="font-family:var(--mono)">hero.css .dark .home-hero-current --t-*</span>.</p>
+</footer>
+
+<script>
+/* ============================================================
+   Palette registry. Every value is a design decision; the demo
+   interiors are NOT here because they never change.
+   ============================================================ */
+const PALETTES = [
+  {
+    id: 'p0', num: '0', short: 'Baseline', name: 'Current — Slate & Indigo',
+    baseline: true,
+    blurb: 'What ships today: slate-900 page with a navy shader, indigo accents, cool gray text, and a blue-black terminal. The reference to beat.',
+    v: {
+      amb0: '#15172d', amb1: '#121a31', amb2: '#0f172a',
+      glowA: 'rgba(171,189,207,.10)', glowB: 'rgba(96,106,123,.14)', contour: 'rgba(171,189,207,.05)',
+      inkHi: '#e5e7eb', ink: '#9ca3af', inkMut: '#8b96a8',
+      accent: '#818cf8', accentSoft: '#a5b4fc',
+      card0: 'rgba(26,35,54,.78)', card1: 'rgba(21,28,44,.84)', ring: 'rgba(148,163,184,.14)',
+      tBg: 'rgba(16,20,28,.88)', tBar: 'rgba(27,33,48,.9)', tLine: 'rgba(148,163,184,.22)',
+      tText: '#cbd5e1', tDim: '#7c8899', tBright: '#f1f5f9',
+      tGreen: '#4ade80', tCyan: '#38bdf8', tYellow: '#fbbf24', tPurple: '#a78bfa', tRed: '#f87171',
+      tLight: '#3f4757', tShadow: 'rgba(2,6,23,.5)'
+    },
+    chips: { page: '#121a31', card: '#1a2336', heading: '#e5e7eb', body: '#9ca3af', accent: '#818cf8', link: '#a5b4fc' }
+  },
+  {
+    id: 'p1', num: '1', short: 'Indigo', name: 'Midnight Indigo',
+    blurb: 'The current direction, unified: every surface pinned to one indigo temperature instead of three competing navies, and the ANSI set retuned to the same pastel register the demos use.',
+    v: {
+      amb0: '#0b1022', amb1: '#0d1530', amb2: '#090e1c',
+      glowA: 'rgba(99,102,241,.16)', glowB: 'rgba(56,70,160,.18)', contour: 'rgba(148,163,220,.06)',
+      inkHi: '#e3e7f5', ink: '#97a0bc', inkMut: '#7c86a4',
+      accent: '#8b93ff', accentSoft: '#adb3ff',
+      card0: 'rgba(22,29,54,.78)', card1: 'rgba(17,23,44,.84)', ring: 'rgba(139,147,255,.14)',
+      tBg: 'rgba(13,17,34,.88)', tBar: 'rgba(23,29,52,.9)', tLine: 'rgba(139,147,255,.16)',
+      tText: '#c3cae8', tDim: '#6f7a9e', tBright: '#f0f2ff',
+      tGreen: '#5ee39b', tCyan: '#5bc8f5', tYellow: '#f2c97d', tPurple: '#b49cff', tRed: '#ff7d8c',
+      tLight: '#3a4266', tShadow: 'rgba(3,6,20,.55)'
+    },
+    chips: { page: '#0d1530', card: '#161d36', heading: '#e3e7f5', body: '#97a0bc', accent: '#8b93ff', link: '#adb3ff' }
+  },
+  {
+    id: 'p2', num: '2', short: 'Periwinkle', name: 'Periwinkle Ink',
+    blurb: 'The site borrows the demos’ own voice: accent lifted from Colab/Gemini periwinkle, and the terminal literally runs the Google dark syntax set — page and demos read as one product family.',
+    v: {
+      amb0: '#0c1220', amb1: '#0f1728', amb2: '#0a101c',
+      glowA: 'rgba(138,180,248,.14)', glowB: 'rgba(99,140,220,.13)', contour: 'rgba(138,180,248,.06)',
+      inkHi: '#e6ebf4', ink: '#9aa8c0', inkMut: '#7f8da8',
+      accent: '#8fb5ff', accentSoft: '#b2cbff',
+      card0: 'rgba(20,28,48,.78)', card1: 'rgba(15,22,38,.84)', ring: 'rgba(143,181,255,.14)',
+      tBg: 'rgba(13,18,30,.88)', tBar: 'rgba(22,30,48,.9)', tLine: 'rgba(143,181,255,.16)',
+      tText: '#c5d0e6', tDim: '#74829e', tBright: '#f2f6ff',
+      tGreen: '#81c995', tCyan: '#8ab4f8', tYellow: '#fdd663', tPurple: '#c58af9', tRed: '#f28b82',
+      tLight: '#3b4560', tShadow: 'rgba(2,8,22,.55)'
+    },
+    chips: { page: '#0f1728', card: '#141c30', heading: '#e6ebf4', body: '#9aa8c0', accent: '#8fb5ff', link: '#b2cbff' }
+  },
+  {
+    id: 'p3', num: '3', short: 'Graphite', name: 'Graphite & Blurple',
+    blurb: 'Neutral true-blacks, zero blue cast — the #1c1c1c / #202124 demo panels finally merge into the page instead of floating on navy. Blurple stays as the only voice the site raises.',
+    v: {
+      amb0: '#0a0a0c', amb1: '#0d0d10', amb2: '#08080a',
+      glowA: 'rgba(123,127,255,.10)', glowB: 'rgba(255,255,255,.04)', contour: 'rgba(255,255,255,.045)',
+      inkHi: '#ececee', ink: '#9fa1a8', inkMut: '#818289',
+      accent: '#7b7fff', accentSoft: '#a3a6ff',
+      card0: 'rgba(22,22,26,.82)', card1: 'rgba(16,16,20,.86)', ring: 'rgba(255,255,255,.08)',
+      tBg: 'rgba(14,14,17,.9)', tBar: 'rgba(24,24,28,.92)', tLine: 'rgba(255,255,255,.10)',
+      tText: '#c9cacf', tDim: '#7a7c85', tBright: '#f4f4f6',
+      tGreen: '#5cd992', tCyan: '#58c4e8', tYellow: '#e8c56e', tPurple: '#afa0ff', tRed: '#f5766e',
+      tLight: '#3c3d44', tShadow: 'rgba(0,0,0,.6)'
+    },
+    chips: { page: '#0d0d10', card: '#16161a', heading: '#ececee', body: '#9fa1a8', accent: '#7b7fff', link: '#a3a6ff' }
+  },
+  {
+    id: 'p4', num: '4', short: 'Violet', name: 'Deep Violet',
+    blurb: 'Leans into the demos’ purple half — the ✦ sparkles and #c58af9 keywords — with a violet-cast ground and lavender strokes that make the outlined card titles glow like neon.',
+    v: {
+      amb0: '#131024', amb1: '#171334', amb2: '#0f0c1e',
+      glowA: 'rgba(167,139,250,.15)', glowB: 'rgba(109,74,200,.14)', contour: 'rgba(196,167,255,.06)',
+      inkHi: '#ebe6f8', ink: '#a29bc2', inkMut: '#867ea8',
+      accent: '#b79dff', accentSoft: '#cfbcff',
+      card0: 'rgba(30,25,58,.78)', card1: 'rgba(23,19,45,.84)', ring: 'rgba(183,157,255,.15)',
+      tBg: 'rgba(19,15,36,.88)', tBar: 'rgba(31,25,56,.9)', tLine: 'rgba(183,157,255,.17)',
+      tText: '#cdc5e8', tDim: '#7c74a0', tBright: '#f5f1ff',
+      tGreen: '#6fe3a8', tCyan: '#72cbf2', tYellow: '#f0c880', tPurple: '#c9a8ff', tRed: '#ff82a0',
+      tLight: '#443b6a', tShadow: 'rgba(8,4,26,.55)'
+    },
+    chips: { page: '#171334', card: '#1e193a', heading: '#ebe6f8', body: '#a29bc2', accent: '#b79dff', link: '#cfbcff' }
+  },
+  {
+    id: 'p5', num: '5', short: 'Amber', name: 'Warm Charcoal & Amber',
+    blurb: 'The big departure: warm near-blacks with an amber accent — periwinkle’s complement — so the cool demo panels pop forward like lit screens in a dim room.',
+    v: {
+      amb0: '#141110', amb1: '#171310', amb2: '#100d0c',
+      glowA: 'rgba(255,180,84,.09)', glowB: 'rgba(180,120,60,.08)', contour: 'rgba(255,200,140,.05)',
+      inkHi: '#ede7e0', ink: '#a69e94', inkMut: '#8a8177',
+      accent: '#ffb454', accentSoft: '#ffce8f',
+      card0: 'rgba(30,25,20,.8)', card1: 'rgba(23,19,15,.85)', ring: 'rgba(255,180,84,.13)',
+      tBg: 'rgba(20,16,13,.9)', tBar: 'rgba(32,26,20,.92)', tLine: 'rgba(255,196,120,.14)',
+      tText: '#d3cabe', tDim: '#857b6f', tBright: '#f7f1e8',
+      tGreen: '#9cd46f', tCyan: '#63c7c9', tYellow: '#ffc964', tPurple: '#cba3f0', tRed: '#ff7a5c',
+      tLight: '#4a4036', tShadow: 'rgba(12,8,4,.6)'
+    },
+    chips: { page: '#171310', card: '#1e1914', heading: '#ede7e0', body: '#a69e94', accent: '#ffb454', link: '#ffce8f' }
+  },
+  {
+    id: 'p6', num: '6', short: 'Evergreen', name: 'Evergreen',
+    blurb: 'Green-cast neutrals that echo every ✔ success mark in the demos; the embeds’ blues and purples flip from wallpaper to the contrast note. Calm, organic, unhurried.',
+    v: {
+      amb0: '#0c1410', amb1: '#0f1a14', amb2: '#0a110d',
+      glowA: 'rgba(110,231,160,.09)', glowB: 'rgba(40,120,90,.12)', contour: 'rgba(150,220,180,.05)',
+      inkHi: '#e1eee5', ink: '#93ac9d', inkMut: '#788f82',
+      accent: '#6ee7a0', accentSoft: '#a5efc4',
+      card0: 'rgba(19,32,25,.8)', card1: 'rgba(14,25,19,.85)', ring: 'rgba(110,231,160,.12)',
+      tBg: 'rgba(13,21,16,.9)', tBar: 'rgba(22,34,26,.92)', tLine: 'rgba(140,220,170,.14)',
+      tText: '#c0d5c6', tDim: '#6e8877', tBright: '#eff8f1',
+      tGreen: '#67e08f', tCyan: '#5fd4c5', tYellow: '#e3d06e', tPurple: '#b5a6f0', tRed: '#f07b6e',
+      tLight: '#37493c', tShadow: 'rgba(3,12,7,.55)'
+    },
+    chips: { page: '#0f1a14', card: '#132019', heading: '#e1eee5', body: '#93ac9d', accent: '#6ee7a0', link: '#a5efc4' }
+  },
+  {
+    id: 'p7', num: '7', short: 'Lime', name: 'Mono + Lime',
+    blurb: 'A gallery-neutral grayscale stage with one loud lime signature — the demos carry all the chroma, the site supplies a single unmistakable brand note. The most “portfolio 2026” of the set.',
+    v: {
+      amb0: '#0c0c0d', amb1: '#0f0f11', amb2: '#0a0a0b',
+      glowA: 'rgba(200,241,105,.07)', glowB: 'rgba(255,255,255,.04)', contour: 'rgba(255,255,255,.045)',
+      inkHi: '#efeff1', ink: '#a2a2a8', inkMut: '#84848a',
+      accent: '#c8f169', accentSoft: '#dff7a4',
+      card0: 'rgba(24,24,27,.82)', card1: 'rgba(17,17,20,.86)', ring: 'rgba(255,255,255,.08)',
+      tBg: 'rgba(15,15,17,.9)', tBar: 'rgba(25,25,28,.92)', tLine: 'rgba(255,255,255,.1)',
+      tText: '#c8c8cd', tDim: '#7b7b82', tBright: '#f5f5f7',
+      tGreen: '#b5ec5f', tCyan: '#7bd2e6', tYellow: '#e6d96e', tPurple: '#bbaef2', tRed: '#f5766e',
+      tLight: '#3e3e44', tShadow: 'rgba(0,0,0,.6)'
+    },
+    chips: { page: '#0f0f11', card: '#18181b', heading: '#efeff1', body: '#a2a2a8', accent: '#c8f169', link: '#dff7a4' }
+  },
+  {
+    id: 'p8', num: '8', short: 'Rosé', name: 'Rosé Dusk',
+    blurb: 'Mauve ground between the demo purples and a warm rose accent, with Rosé Pine–family terminal hues. Soft and atmospheric — the least “developer default” palette here.',
+    v: {
+      amb0: '#161320', amb1: '#1a1626', amb2: '#110e1a',
+      glowA: 'rgba(235,188,186,.09)', glowB: 'rgba(196,167,231,.10)', contour: 'rgba(224,190,220,.055)',
+      inkHi: '#ede7f2', ink: '#a79fb8', inkMut: '#8c839f',
+      accent: '#efa9ae', accentSoft: '#c8adec',
+      card0: 'rgba(33,27,48,.78)', card1: 'rgba(25,21,38,.84)', ring: 'rgba(200,173,236,.14)',
+      tBg: 'rgba(22,18,33,.88)', tBar: 'rgba(34,28,50,.9)', tLine: 'rgba(200,173,236,.15)',
+      tText: '#cec6de', tDim: '#7e7599', tBright: '#f5f0fa',
+      tGreen: '#95d5a5', tCyan: '#9ccfd8', tYellow: '#f6c177', tPurple: '#c4a7e7', tRed: '#eb6f92',
+      tLight: '#453c5c', tShadow: 'rgba(10,6,20,.55)'
+    },
+    chips: { page: '#1a1626', card: '#211b30', heading: '#ede7f2', body: '#a79fb8', accent: '#efa9ae', link: '#c8adec' }
+  },
+  {
+    id: 'p9', num: '9', short: 'Abyss', name: 'Abyss Teal',
+    blurb: 'Deep-sea ground between navy and green with an aqua accent — picks up the terminal cyans and notebook links without repeating them. Cool but nothing like the slate default.',
+    v: {
+      amb0: '#081316', amb1: '#0b1a1f', amb2: '#060e11',
+      glowA: 'rgba(83,224,196,.09)', glowB: 'rgba(30,120,140,.12)', contour: 'rgba(120,220,220,.05)',
+      inkHi: '#dfeef2', ink: '#8facb5', inkMut: '#74929c',
+      accent: '#53e0c4', accentSoft: '#93eedb',
+      card0: 'rgba(16,32,38,.8)', card1: 'rgba(12,24,29,.85)', ring: 'rgba(83,224,196,.12)',
+      tBg: 'rgba(10,20,24,.9)', tBar: 'rgba(18,32,38,.92)', tLine: 'rgba(120,220,210,.13)',
+      tText: '#bfd6dc', tDim: '#67838c', tBright: '#eff9fa',
+      tGreen: '#5fe0a0', tCyan: '#58d5f0', tYellow: '#e8d077', tPurple: '#a9a5f0', tRed: '#ff7e87',
+      tLight: '#2f4850', tShadow: 'rgba(2,10,13,.6)'
+    },
+    chips: { page: '#0b1a1f', card: '#102026', heading: '#dfeef2', body: '#8facb5', accent: '#53e0c4', link: '#93eedb' }
+  },
+  {
+    id: 'p10', num: '10', short: 'Coral', name: 'Midnight & Coral',
+    blurb: 'Keeps the site’s cool navy ground but swaps indigo-on-navy sameness for a warm coral counterpoint — coral against the demos’ periwinkle is a classic complementary pair.',
+    v: {
+      amb0: '#0d1322', amb1: '#111a32', amb2: '#0a0f1c',
+      glowA: 'rgba(255,141,126,.08)', glowB: 'rgba(70,90,160,.16)', contour: 'rgba(170,190,230,.05)',
+      inkHi: '#e7ebf5', ink: '#99a5bd', inkMut: '#7e8aa4',
+      accent: '#ff8d7e', accentSoft: '#ffb3a3',
+      card0: 'rgba(22,30,51,.78)', card1: 'rgba(16,23,40,.84)', ring: 'rgba(150,165,200,.14)',
+      tBg: 'rgba(13,18,32,.88)', tBar: 'rgba(23,30,50,.9)', tLine: 'rgba(160,175,210,.16)',
+      tText: '#c4cde2', tDim: '#71809e', tBright: '#f1f4fc',
+      tGreen: '#6fe39f', tCyan: '#63c9f0', tYellow: '#ffc873', tPurple: '#b3a5ff', tRed: '#ff7a6b',
+      tLight: '#3a445e', tShadow: 'rgba(3,7,20,.55)'
+    },
+    chips: { page: '#111a32', card: '#161e33', heading: '#e7ebf5', body: '#99a5bd', accent: '#ff8d7e', link: '#ffb3a3' }
+  }
+];
+
+/* ---------- template ---------- */
+const ICONS = {
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l16 16M20 4L4 20"/></svg>',
+  github: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C7.5 2.8 6.4 3.1 6.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 5 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>',
+  linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V9h4v1.3A6 6 0 0 1 16 8z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>'
+};
+
+const TILES = [
+  { name: 'Chroma Colors', desc: 'create bulk color styles', art: 'linear-gradient(135deg,#ff5f6d,#ffc371)', m1: '⤓ 156k', m2: '♥ 1.4k' },
+  { name: 'Variables Generator', desc: 'create variables via JSON', art: 'linear-gradient(135deg,#4facfe,#00f2fe)', m1: '⤓ 48k', m2: '♥ 620' },
+  { name: 'Colorizer', desc: 'sort colors by hue values', art: 'linear-gradient(135deg,#a18cd1,#fbc2eb)', m1: '⤓ 32k', m2: '♥ 410' },
+  { name: 'Kaleidocode', desc: 'generate VS Code themes', art: 'linear-gradient(135deg,#0ba360,#3cba92)', m1: '⤓ 21k', m2: '♥ 380' }
+];
+
+function styleVars(v) {
+  return [
+    `--amb-0:${v.amb0}`, `--amb-1:${v.amb1}`, `--amb-2:${v.amb2}`,
+    `--glow-a:${v.glowA}`, `--glow-b:${v.glowB}`, `--contour:${v.contour}`,
+    `--ink-hi:${v.inkHi}`, `--ink:${v.ink}`, `--ink-mut:${v.inkMut}`,
+    `--accent:${v.accent}`, `--accent-soft:${v.accentSoft}`,
+    `--card-0:${v.card0}`, `--card-1:${v.card1}`, `--card-ring:${v.ring}`,
+    `--t-bg:${v.tBg}`, `--t-bar:${v.tBar}`, `--t-line:${v.tLine}`,
+    `--t-text:${v.tText}`, `--t-dim:${v.tDim}`, `--t-bright:${v.tBright}`,
+    `--t-green:${v.tGreen}`, `--t-cyan:${v.tCyan}`, `--t-yellow:${v.tYellow}`,
+    `--t-purple:${v.tPurple}`, `--t-red:${v.tRed}`,
+    `--t-light:${v.tLight}`, `--t-shadow:${v.tShadow}`
+  ].join(';');
+}
+
+function swatchesHTML(p) {
+  const main = [
+    ['Page', p.chips.page], ['Card', p.chips.card], ['Heading', p.chips.heading],
+    ['Body', p.chips.body], ['Accent', p.chips.accent], ['Link', p.chips.link]
+  ].map(([label, hex]) =>
+    `<span class="sw" style="background:${hex}" title="${label} ${hex}"></span>`
+  ).join('');
+  const ansi = [
+    ['green', p.v.tGreen], ['cyan', p.v.tCyan], ['yellow', p.v.tYellow],
+    ['purple', p.v.tPurple], ['red', p.v.tRed]
+  ].map(([label, hex]) =>
+    `<span class="sw sw--sm" style="background:${hex}" title="terminal ${label} ${hex}"></span>`
+  ).join('');
+  return `<div class="var-swatches"><div class="sw-group">${main}</div><div class="sw-group">${ansi}</div></div>`;
+}
+
+function mockHTML(p) {
+  return `
+<section class="var${p.baseline ? ' var--baseline' : ''}" id="${p.id}">
+  <header class="var-head">
+    <div class="var-title">
+      <h2><span class="var-num">${p.num}</span>${p.name}</h2>
+      <p class="var-blurb">${p.blurb}</p>
+    </div>
+    <div class="var-tools">
+      ${swatchesHTML(p)}
+      <button class="var-copy" data-palette="${p.id}">Copy CSS</button>
+    </div>
+  </header>
+
+  <div class="mock" style="${styleVars(p.v)}">
+    <div class="mock-amb" aria-hidden="true">
+      <i class="glow-a"></i><i class="glow-b"></i><i class="contours"></i><i class="grain"></i>
+    </div>
+    <div class="mock-page">
+
+      <header class="m-header">
+        <span class="m-logo">Miguel Solorio</span>
+        <nav class="m-social">
+          <a href="#" onclick="return false">${ICONS.x}</a>
+          <a href="#" onclick="return false">${ICONS.github}</a>
+          <a href="#" onclick="return false">${ICONS.linkedin}</a>
+          <a href="#" onclick="return false">${ICONS.moon}</a>
+        </nav>
+      </header>
+
+      <div class="m-hero">
+        <div class="m-copy">
+          <h1><span>Designing software</span><span>for builders.</span></h1>
+          <p>I'm a software designer that's passionate about developer tools, design systems, and open source. When I'm not vibe coding, I enjoy <a href="#" onclick="return false">\u{1F5FA}️ exploring new places</a>, \u{1F35C} trying new foods, and finding new hobbies ⚾ \u{1F30A} \u{1F6B4}‍♂️.</p>
+        </div>
+
+        <aside class="m-term">
+          <div class="m-term-bar">
+            <span class="m-lights"><i></i><i></i><i></i></span>
+            <span class="m-term-title">miguelsolorio.com</span>
+            <span></span>
+          </div>
+          <div class="m-term-body">
+            <p><span class="tg">~</span> <span class="tb">history</span></p>
+            <p><span class="td">2023-2026</span>  <span class="tc">google-colab:</span> <span class="tt">data science agents</span></p>
+            <p><span class="td">2025     </span>  <span class="tc">gemini-cli:</span> <span class="tt">agentic development</span></p>
+            <p class="sp"><span class="tg">~</span> <span class="tb">git status</span></p>
+            <p><span class="tg">On branch main</span></p>
+            <p><span class="tt">Changes to be committed:</span></p>
+            <p><span class="tr">  deleted    <s>should-designers-code.md</s></span></p>
+            <p><span class="ty">  modified   vibe-projects</span></p>
+            <p><span class="tg">  new file   next-chapter.md</span></p>
+            <p class="sp"><span class="tp">a11ce0d</span> <span class="tc">theme:</span> <span class="tt">try a new dark palette</span></p>
+            <p class="sp"><span class="tg">~</span><span class="td"> use /slash for commands</span><i class="m-caret"></i></p>
+          </div>
+        </aside>
+      </div>
+
+      <h2 class="m-section">Featured Work</h2>
+      <div class="m-cards">
+
+        <a class="m-card" href="#" onclick="return false">
+          <div class="m-demo">
+            <div class="nb-rows">
+              <div class="nb-row">
+                <div class="nb-gutter"><span class="nb-check">✓</span>[1]</div>
+                <div class="nb-cell">
+                  <p><span class="nb-kw">import</span> pandas <span class="nb-kw">as</span> pd</p>
+                  <p><span class="nb-kw">import</span> numpy <span class="nb-kw">as</span> np</p>
+                </div>
+              </div>
+              <div class="nb-row">
+                <div class="nb-gutter"><span class="nb-check">✓</span>[2]</div>
+                <div class="nb-cell">
+                  <p>URL = <span class="nb-str">'https://storage.googleapis.com/colab-datasets/flights.csv'</span></p>
+                  <p>pd.set_option(<span class="nb-str">'display.max_rows'</span>, <span class="nb-num">10</span>)</p>
+                </div>
+              </div>
+              <div class="nb-row nb-row--active">
+                <div class="nb-gutter"><span class="nb-check">✓</span>[3]</div>
+                <div class="nb-cell">
+                  <span class="nb-play"><i></i></span>
+                  <span class="nb-toolbar">⠿ &nbsp;✦ &nbsp;\u{1F5D1} &nbsp;⋮</span>
+                  <p>df = pd.read_csv(URL, <span class="nb-prm">nrows</span>=<span class="nb-num">500</span>, <span class="nb-prm">parse_dates</span>=[<span class="nb-str">'date'</span>])</p>
+                  <p>print(df.head())</p>
+                  <div class="nb-out">
+                    <p>        date carrier origin  delay</p>
+                    <p>0 2013-01-01      UA    EWR     11</p>
+                    <p>1 2013-01-01      AA    JFK      4</p>
+                    <p>2 2013-01-02      DL    LGA     -3</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="m-card-title">Notebooks ${ICONS.arrow}</p>
+        </a>
+
+        <a class="m-card" href="#" onclick="return false">
+          <div class="m-demo">
+            <div class="cli-panel">
+              <p><span class="cli-dim">We can integrate a CSS framework later if you wish.</span></p>
+              <p>Does this plan sound good to you?</p>
+              <p><span class="cli-chip">&gt; Yes, proceed</span></p>
+              <p class="sp"><span class="cli-spark">✦</span> Great! I'll begin scaffolding the React project using Vite. Running the setup command now.</p>
+              <p class="sp"><span class="cli-check">✔</span> <span class="cli-bold">Shell</span> <span class="cli-dim">npm create vite@latest todo-app -- --template react</span></p>
+              <p><span class="cli-chip">&gt; Yes, allow always</span></p>
+              <p class="sp"><span class="cli-blue">⋱ Editing src/App.jsx... (esc to cancel, 0s)</span></p>
+              <div class="cli-input">
+                <span class="cli-blue">&gt;</span>
+                <span class="cli-dim">Type your message or @path/to/file</span>
+              </div>
+              <div class="cli-footer">
+                <span>~/playground</span>
+                <span><span class="cli-blue">Gemini 3</span> /model</span>
+              </div>
+            </div>
+          </div>
+          <p class="m-card-title">CLI ${ICONS.arrow}</p>
+        </a>
+
+      </div>
+
+      <h2 class="m-section m-section--side">Projects</h2>
+      <div class="m-side">
+        ${TILES.map(t => `
+        <div class="m-tile">
+          <div class="m-tile-icon" style="--tile-art:${t.art}"></div>
+          <p class="m-tile-name">${t.name}</p>
+          <p class="m-tile-desc">${t.desc}</p>
+          <div class="m-tile-metrics"><span>${t.m1}</span><span class="dot"></span><span>${t.m2}</span></div>
+        </div>`).join('')}
+      </div>
+
+    </div>
+  </div>
+</section>`;
+}
+
+/* ---------- stamp everything ---------- */
+const main = document.getElementById('variations');
+main.innerHTML = PALETTES.map(mockHTML).join('');
+
+const nav = document.getElementById('nav');
+nav.innerHTML = PALETTES.map(p =>
+  `<a class="lab-pill" href="#${p.id}" data-for="${p.id}" style="--dot:${p.chips.accent}"><i></i>${p.num} ${p.short}</a>`
+).join('');
+
+/* Active pill tracks the section in view. */
+const pills = new Map([...nav.querySelectorAll('.lab-pill')].map(el => [el.dataset.for, el]));
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(el => el.classList.remove('is-active'));
+      pills.get(entry.target.id)?.classList.add('is-active');
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+document.querySelectorAll('.var').forEach(el => observer.observe(el));
+
+/* Copy CSS: the full token set, named for the real integration hooks. */
+function cssFor(p) {
+  const v = p.v;
+  return `/* ${p.num} — ${p.name} (dark mode) */
+/* page + ambient → main.css .dark .site-ambient / dark.css body */
+--amb-0: ${v.amb0};
+--amb-1: ${v.amb1};
+--amb-2: ${v.amb2};
+/* text tiers → dark.css */
+--heading: ${v.inkHi};
+--body: ${v.ink};
+--muted: ${v.inkMut};
+/* accent → hero.css .dark h1 / dark.css links / project.css title stroke */
+--accent: ${v.accent};
+--accent-soft: ${v.accentSoft};
+/* cards → project.css .dark .project */
+--card-0: ${v.card0};
+--card-1: ${v.card1};
+--card-ring: ${v.ring};
+/* hero terminal → hero.css .dark .home-hero-current */
+--t-bg: ${v.tBg};
+--t-bar: ${v.tBar};
+--t-line: ${v.tLine};
+--t-text: ${v.tText};
+--t-dim: ${v.tDim};
+--t-bright: ${v.tBright};
+--t-green: ${v.tGreen};
+--t-cyan: ${v.tCyan};
+--t-yellow: ${v.tYellow};
+--t-purple: ${v.tPurple};
+--t-red: ${v.tRed};
+--t-light: ${v.tLight};
+--t-shadow: ${v.tShadow};`;
+}
+
+document.querySelectorAll('.var-copy').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const p = PALETTES.find(x => x.id === btn.dataset.palette);
+    navigator.clipboard.writeText(cssFor(p)).then(() => {
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('is-done');
+      setTimeout(() => { btn.textContent = 'Copy CSS'; btn.classList.remove('is-done'); }, 1400);
+    });
+  });
+});
+</script>
+</body>
+</html>

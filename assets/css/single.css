@@ -472,7 +472,7 @@
     margin-top: calc(var(--caption-lead) - var(--media-gap));
   }
   .dark .single .media-caption {
-    @apply text-slate-400;
+    color: #8c839f;
   }
 
   /* Figures closing a project page. No surface of their own — the
@@ -614,8 +614,8 @@
     color: #dc2626;
     background: rgb(220 38 38 / .13);
   }
-  .dark .single .stat-pill--up { color: #34d399; background: rgb(52 211 153 / .15); }
-  .dark .single .stat-pill--down { color: #f87171; background: rgb(248 113 113 / .15); }
+  .dark .single .stat-pill--up { color: #95d5a5; background: rgb(149 213 165 / .15); }
+  .dark .single .stat-pill--down { color: #eb6f92; background: rgb(235 111 146 / .15); }
   .single .stat-label {
     @apply block text-slate-500;
     margin-top: .375rem;

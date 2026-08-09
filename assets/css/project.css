@@ -1,126 +1,52 @@
 @layer components {
-  /* Named themes keep project artwork stable when cards are reordered and let
-     the same surface treatment frame project-page embeds. */
-  [data-project-theme="notebooks"] {
-    --project-theme-surface: #f0edf9;
-    --project-theme-artwork: linear-gradient(118deg, #e3ddfc -18%, #f2effe 46%, #ffeadf 118%);
-    --project-theme-size: 125% 125%;
-    --project-theme-position: 38% 50%;
-    --project-theme-transform: scale(1.03) rotate(-1deg);
-    --project-theme-hover-transform: scale(1.12) rotate(1deg);
-    /* Pigment for anything elevated on this stage — the demo frame and the
-       screenshots beside it — so a themed surface never carries a neutral
-       shadow. Space-separated so alpha can vary per placement. */
-    --project-theme-shadow-tint: 91 63 224;
-  }
-  [data-project-theme="cli"] {
-    --project-theme-surface: #eaf2fa;
-    --project-theme-artwork:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220,232,252,.55) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228,242,248,.5) 36%, transparent 70%),
-      linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
-    --project-theme-size: 118% 118%;
-    --project-theme-position: 50% 46%;
-    --project-theme-transform: scale(1.06);
-    --project-theme-hover-transform: scale(1.15) translateX(-1.5%);
-    --project-theme-shadow-tint: 52 41 255;
-  }
-  [data-project-theme="kanvas"] {
-    --project-theme-surface: #fff1d9;
-    --project-theme-artwork:
-      radial-gradient(circle at 4% 8%, rgba(255, 184, 128, .52), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(247, 126, 166, .34), transparent 41%),
-      linear-gradient(135deg, #fff1d9 0%, #fff7e9 52%, #ffe8df 100%);
+  /* One neutral stage for every project. The cards used to carry six aurora
+     hue families, but the site background is now the slate topography shader
+     (assets/js/common.js), and five saturated washes on top of a drawn map
+     read as noise. The named-theme hooks stay — cards keep their attribute
+     and project pages frame embeds with the same tokens — but they all
+     resolve to the same quiet slate-on-white surface. Contrast now comes
+     from elevation (clean surface, hairline ring, soft shadow) instead of
+     pigment, so the artwork and the blurple titles carry the color. */
+  [data-project-theme] {
+    --project-theme-surface: #fafbfc;
+    --project-theme-artwork: linear-gradient(180deg, #fdfdff 0%, #f6f8fa 100%);
     --project-theme-size: 100% 100%;
     --project-theme-position: 50% 50%;
     --project-theme-transform: none;
     --project-theme-hover-transform: none;
-    --project-theme-shadow-tint: 180 85 44;
+    /* Shadow pigment for anything elevated on the stage — slate, matching
+       the contour ink. Space-separated so alpha can vary per placement. */
+    --project-theme-shadow-tint: 15 23 42;
   }
-  [data-project-theme="onboarding"] {
-    --project-theme-surface: #fef0f4;
+  /* Dark half: one quiet step above the near-black page, held in the page's
+     own mauve family so cards read as lifted panels of the same material the
+     topography draws on. */
+  .dark [data-project-theme] {
+    --project-theme-surface: #1c1824;
+    --project-theme-artwork: linear-gradient(180deg, #201c28 0%, #18151f 100%);
+    --project-theme-shadow-tint: 10 6 20;
+  }
+  /* Powder steel, cli only: the cli-agents embeds keep a stage of their own —
+     the theme's old blue desaturated toward steel so it reads as material
+     beside the blurple contour ink instead of as another voice of it. Bloom
+     geometry is the pair of ellipses the theme has always carried. */
+  [data-project-theme="cli"] {
+    --project-theme-surface: #ecf1f7;
     --project-theme-artwork:
-      conic-gradient(from 218deg at 68% 34%, #fce4ee 0deg, #fef2f5 96deg, #fdf0f3 174deg, #f8dde8 258deg, #fce4ee 360deg);
-    --project-theme-size: 135% 150%;
-    --project-theme-position: 64% 35%;
-    --project-theme-transform: scale(1.08) rotate(-2deg);
-    --project-theme-hover-transform: scale(1.17) rotate(2deg);
-    --project-theme-shadow-tint: 138 55 103;
+      radial-gradient(ellipse 78% 145% at -6% 18%, #dbe5f2 0%, rgba(219,229,242,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #e5eef5 0%, rgba(229,238,245,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #eff4f9 10%, #e8eff5 90%);
+    --project-theme-size: 118% 118%;
+    --project-theme-position: 50% 46%;
+    --project-theme-shadow-tint: 62 84 122;
   }
-  /* Amber horizon shared with the icons homepage card (grid slot 6n+5), so
-     the post's embeds stand on the same stage the card establishes. */
-  [data-project-theme="icons"] {
-    --project-theme-surface: #fef8f0;
-    --project-theme-artwork:
-      radial-gradient(ellipse 135% 72% at 50% -14%, #fdebd4 0%, rgba(253,235,212,.55) 38%, transparent 72%),
-      linear-gradient(180deg, #fff9f2 0%, #fef6ea 58%, #fef3e4 118%);
-    --project-theme-size: 122% 135%;
-    --project-theme-position: 50% 35%;
-    --project-theme-transform: scale(1.04) translateY(-1.5%);
-    --project-theme-hover-transform: scale(1.14) translateY(2%);
-    --project-theme-shadow-tint: 172 108 48;
-  }
-  /* Dark halves of the named themes. Deep hues read far more saturated
-     against slate-900 than their light counterparts do against white, so
-     every stop keeps its hue but drops ~40% of its chroma, and the accent
-     blooms sit closer in lightness to the field they wash over — a tint on
-     the surface rather than a glow on top of it. */
-  .dark [data-project-theme="notebooks"] {
-    --project-theme-surface: #191c28;
-    --project-theme-artwork: linear-gradient(118deg, #282741 -18%, #1e212e 46%, #312629 118%);
-    --project-theme-shadow-tint: 54 42 111;
-  }
-  /* The cli hues are blue-on-slate: at the muted chroma the other themes use,
-     the stage disappears into the navy page. This theme alone keeps richer
-     blue and teal blooms so the artwork still reads as color in dark mode. */
   .dark [data-project-theme="cli"] {
-    --project-theme-surface: #1a2233;
+    --project-theme-surface: #1a2231;
     --project-theme-artwork:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #2c4a85 0%, rgba(44,74,133,.55) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #1f4d5c 0%, rgba(31,77,92,.5) 36%, transparent 70%),
-      linear-gradient(145deg, #182238 10%, #1b2836 90%);
-    --project-theme-shadow-tint: 36 32 111;
-  }
-  .dark [data-project-theme="kanvas"] {
-    --project-theme-surface: #2f2623;
-    --project-theme-artwork:
-      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
-      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
-    --project-theme-shadow-tint: 96 54 36;
-  }
-  .dark [data-project-theme="onboarding"] {
-    --project-theme-surface: #1e1b24;
-    --project-theme-artwork:
-      conic-gradient(from 218deg at 68% 34%, #29202c 0deg, #1e1b28 96deg, #262025 174deg, #30212b 258deg, #29202c 360deg);
-    --project-theme-shadow-tint: 83 40 65;
-  }
-  .dark [data-project-theme="icons"] {
-    --project-theme-surface: #1e1c19;
-    --project-theme-artwork:
-      radial-gradient(ellipse 135% 72% at 50% -14%, #352d24 0%, rgba(53,45,36,.5) 38%, transparent 72%),
-      linear-gradient(180deg, #28231c 0%, #1e1d25 58%, #2a2733 118%);
-    --project-theme-shadow-tint: 96 70 36;
-  }
-  /* Give the homepage card a more defined stage than the animation itself:
-     periwinkle, sky, and mint keep it in the portfolio's palette while the
-     higher-contrast field lets the light product scene stand forward. */
-  .project.project--themed[data-project-theme="kanvas"] {
-    --project-aurora:
-      radial-gradient(circle at 4% 8%, rgba(255, 184, 128, .52), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(247, 126, 166, .34), transparent 41%),
-      linear-gradient(135deg, #fff1d9 0%, #fff7e9 52%, #ffe8df 100%);
-    background-color: #fff1d9;
-  }
-  .project.project--themed[data-project-theme="kanvas"]::after {
-    display: none;
-  }
-  .dark .project.project--themed[data-project-theme="kanvas"] {
-    --project-aurora:
-      radial-gradient(circle at 4% 8%, rgba(122, 81, 58, .48), transparent 38%),
-      radial-gradient(circle at 96% 92%, rgba(111, 64, 72, .34), transparent 41%),
-      linear-gradient(135deg, #2f2623 0%, #362d29 52%, #352729 100%);
-    background-color: #2f2623;
+      radial-gradient(ellipse 78% 145% at -6% 18%, #31435f 0%, rgba(49,67,95,.55) 34%, transparent 68%),
+      radial-gradient(ellipse 86% 155% at 108% 82%, #263a52 0%, rgba(38,58,82,.5) 36%, transparent 70%),
+      linear-gradient(145deg, #182030 10%, #1d2738 90%);
+    --project-theme-shadow-tint: 30 42 68;
   }
 
   /* Projects */
@@ -147,16 +73,31 @@
   }
   .project {
     @apply relative block w-full overflow-hidden no-underline;
-    --project-aurora: linear-gradient(118deg, #e9e4fd -12%, #f3f0fe 48%, #ffeee7 112%);
+    --project-aurora: linear-gradient(180deg, #fdfdff 0%, #f6f8fa 100%);
     --project-aurora-position: center;
-    --project-aurora-size: 112% 112%;
+    --project-aurora-size: 100% 100%;
     --project-aurora-transform: scale(1);
-    --project-aurora-hover-transform: scale(1.08);
-    background-color: #f0edf9;
-    background-image: var(--project-aurora);
+    --project-aurora-hover-transform: scale(1.04);
+    /* Frosted, not solid: the topography reads through the card so the grid
+       sits on the shader rather than masking it. The alpha lives on this one
+       layer — background-image paints over background-color, so a translucent
+       color under the opaque --project-aurora would still come out sealed.
+       --project-aurora stays opaque for the ::after wash, which needs full
+       pigment to have anything to blend. */
+    --project-surface: linear-gradient(180deg, rgba(253, 253, 255, .66) 0%, rgba(246, 248, 250, .74) 100%);
+    background-color: transparent;
+    background-image: var(--project-surface);
     background-position: var(--project-aurora-position);
     background-size: var(--project-aurora-size);
     border-radius: 1rem;
+    /* Blur so the contour lines survive as motion and shape behind the card
+       instead of competing with the artwork as legible drawing. */
+    -webkit-backdrop-filter: blur(20px) saturate(1.3);
+    backdrop-filter: blur(20px) saturate(1.3);
+    /* Separation from the near-white topography field is elevation, not
+       pigment: a hairline slate ring and a soft shadow lift the card off
+       the contour lines without adding a competing wash. */
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, .06), 0 1px 3px rgba(15, 23, 42, .05);
     container-type: inline-size;
     height: clamp(18rem, 33.333cqw, 24rem);
     isolation: isolate;
@@ -170,8 +111,9 @@
     opacity: 0;
     transition: opacity .35s ease;
   }
-  /* Six aurora compositions share the same softness and motion, but each
-     card gets its own hue family so the grid feels related, not duplicated. */
+  /* A single soft-light wash shared by every card. It carries no hue of its
+     own anymore — it exists so hover can breathe a little light into the
+     surface, in step with the media zoom. */
   .project::after {
     content: '';
     position: absolute;
@@ -186,147 +128,47 @@
     transform: var(--project-aurora-transform);
     transition: opacity .45s ease, transform .8s cubic-bezier(.2,.8,.2,1);
   }
-  .project:nth-child(6n + 1) {
-    /* Wide diagonal: violet enters low left and coral exits high right. */
-    --project-aurora: linear-gradient(118deg, #e3ddfc -18%, #f2effe 46%, #ffeadf 118%);
-    background-color: #f0edf9;
-    --project-aurora-size: 125% 125%;
-    --project-aurora-position: 38% 50%;
-    --project-aurora-transform: scale(1.03) rotate(-1deg);
-    --project-aurora-hover-transform: scale(1.12) rotate(1deg);
-  }
-  .project:nth-child(6n + 2) {
-    /* Dusk cross-light: peach enters high left, lavender answers from the low
-       right, meeting in a warm near-white seam across the middle. */
-    --project-aurora:
-      linear-gradient(42deg, rgba(255,224,206,.9) 0%, rgba(253,241,234,0) 55%),
-      linear-gradient(222deg, rgba(228,222,249,.85) 0%, rgba(242,238,251,0) 52%),
-      linear-gradient(180deg, #fdf1ea 0%, #f3effa 100%);
-    background-color: #f9f0ee;
-    --project-aurora-size: 128% 128%;
-    --project-aurora-position: 45% 55%;
-    --project-aurora-transform: scale(1.05) rotate(1deg);
-    --project-aurora-hover-transform: scale(1.13) rotate(-1deg);
-  }
-  .project:nth-child(6n + 3) {
-    /* Mint blooms: soft mint enters one corner, seafoam answers from the other. */
-    --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #d6f1e2 0%, rgba(214,241,226,.55) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #e2f6ea 0%, rgba(226,246,234,.5) 36%, transparent 70%),
-      linear-gradient(145deg, #ecf9f1 10%, #e6f5ec 90%);
-    background-color: #e9f5ee;
-    --project-aurora-size: 118% 118%;
-    --project-aurora-position: 50% 46%;
-    --project-aurora-transform: scale(1.06);
-    --project-aurora-hover-transform: scale(1.15) translateX(-1.5%);
-  }
-  .project:nth-child(6n + 4) {
-    /* Off-center prism: blush rotates into rose near the title. */
-    --project-aurora:
-      conic-gradient(from 218deg at 68% 34%, #fce4ee 0deg, #fef2f5 96deg, #fdf0f3 174deg, #f8dde8 258deg, #fce4ee 360deg);
-    background-color: #fef0f4;
-    --project-aurora-size: 135% 150%;
-    --project-aurora-position: 64% 35%;
-    --project-aurora-transform: scale(1.08) rotate(-2deg);
-    --project-aurora-hover-transform: scale(1.17) rotate(2deg);
-  }
-  .project:nth-child(6n + 5) {
-    /* Vertical horizon: amber glows from above and settles into cream. */
-    --project-aurora:
-      radial-gradient(ellipse 135% 72% at 50% -14%, #fdebd4 0%, rgba(253,235,212,.55) 38%, transparent 72%),
-      linear-gradient(180deg, #fff9f2 0%, #fef6ea 58%, #fef3e4 118%);
-    background-color: #fef8f0;
-    --project-aurora-size: 122% 135%;
-    --project-aurora-position: 50% 35%;
-    --project-aurora-transform: scale(1.04) translateY(-1.5%);
-    --project-aurora-hover-transform: scale(1.14) translateY(2%);
-  }
-  .project:nth-child(6n + 6) {
-    /* Cross-light: periwinkle enters high left, lilac answers from the low
-       right, meeting in a quiet near-white seam across the middle. */
-    --project-aurora:
-      linear-gradient(42deg, rgba(230,226,252,.9) 0%, rgba(240,237,254,0) 55%),
-      linear-gradient(222deg, rgba(221,216,248,.9) 0%, rgba(240,237,254,0) 52%),
-      linear-gradient(180deg, #f0edfe 0%, #ece8fc 100%);
-    background-color: #eeebfa;
-    --project-aurora-size: 128% 128%;
-    --project-aurora-position: 45% 55%;
-    --project-aurora-transform: scale(1.05) rotate(1deg);
-    --project-aurora-hover-transform: scale(1.13) rotate(-1deg);
-  }
-  /* Dark theme: the same six compositions rebuilt in deep, muted hues that
-     mirror each light palette — one quiet step above the slate-900 page.
-     Chroma is held low on purpose: at these lightnesses a hue that looks
-     tasteful on white turns lurid on slate, so each stop trades saturation
-     for hue identity. Sizes, focal points, and hover motion inherit from
-     the light variants. */
+  /* The six per-slot aurora compositions are gone — every card shares the
+     neutral surface defined on .project above, and the grid's variety now
+     comes entirely from the artwork inside each card. */
   .dark .project {
-    --project-aurora: linear-gradient(118deg, #242338 -12%, #1c1f2b 48%, #2d2429 112%);
-    background-color: #191c28;
+    --project-aurora: linear-gradient(180deg, #201c28 0%, #18151f 100%);
+    /* Held a touch more opaque than light mode: the dark contour ink is the
+       higher-contrast pair, so the same alpha would let it read through as
+       drawing rather than as texture. */
+    --project-surface: linear-gradient(180deg, rgba(32, 28, 40, .78) 0%, rgba(24, 21, 31, .84) 100%);
+    background-color: transparent;
+    box-shadow: 0 0 0 1px rgba(210, 202, 222, .12), 0 1px 3px rgba(10, 6, 20, .4);
   }
   .dark .project::before {
-    background-color: rgba(15, 23, 42, .35);
+    background-color: rgba(17, 14, 26, .35);
   }
   .dark .project .title {
-    -webkit-text-stroke-color: #a5b4fc;
+    -webkit-text-stroke-color: #efa9ae;
     mix-blend-mode: screen;
   }
   .dark .project:hover .title,
   .dark .project:focus-visible .title {
-    color: #a5b4fc;
+    color: #efa9ae;
   }
-  .dark .project:nth-child(6n + 1) {
-    --project-aurora: linear-gradient(118deg, #232236 -18%, #1d202c 46%, #292326 118%);
-    background-color: #191c28;
+  /* The light focus ring is the brand blurple; against the mauve page the
+     rose primary is the visible one. */
+  .dark .project:focus-visible {
+    outline-color: #efa9ae;
   }
-  .dark .project:nth-child(6n + 2) {
-    /* Peach → lavender dusk: warm umber crossing into deep violet. */
-    --project-aurora:
-      linear-gradient(42deg, rgba(54,41,35,.85) 0%, rgba(37,32,36,0) 55%),
-      linear-gradient(222deg, rgba(46,43,66,.85) 0%, rgba(35,33,46,0) 52%),
-      linear-gradient(180deg, #231f20 0%, #201e2b 100%);
-    background-color: #211e25;
-  }
-  .dark .project:nth-child(6n + 3) {
-    /* Mint → seafoam: deep pine with sea-green undertones. */
-    --project-aurora:
-      radial-gradient(ellipse 78% 145% at -6% 18%, #22332c 0%, rgba(34,51,44,.5) 34%, transparent 68%),
-      radial-gradient(ellipse 86% 155% at 108% 82%, #1f2f2a 0%, rgba(31,47,42,.45) 36%, transparent 70%),
-      linear-gradient(145deg, #17201c 10%, #1b2723 90%);
-    background-color: #18201d;
-  }
-  .dark .project:nth-child(6n + 4) {
-    /* Blush → rose: deep plum with muted rose. */
-    --project-aurora:
-      conic-gradient(from 218deg at 68% 34%, #29202c 0deg, #1e1b28 96deg, #262025 174deg, #30212b 258deg, #29202c 360deg);
-    background-color: #1e1b24;
-  }
-  .dark .project:nth-child(6n + 5) {
-    /* Amber → cream: deep umber with warm brown. */
-    --project-aurora:
-      radial-gradient(ellipse 135% 72% at 50% -14%, #352d24 0%, rgba(53,45,36,.5) 38%, transparent 72%),
-      linear-gradient(180deg, #28231c 0%, #1e1d25 58%, #2a2733 118%);
-    background-color: #1e1c19;
-  }
-  .dark .project:nth-child(6n + 6) {
-    /* Periwinkle → lilac: deep indigo with cool violet. */
-    --project-aurora:
-      linear-gradient(42deg, rgba(38,38,60,.85) 0%, rgba(30,33,46,0) 55%),
-      linear-gradient(222deg, rgba(49,46,71,.85) 0%, rgba(35,34,50,0) 52%),
-      linear-gradient(180deg, #1d2031 0%, #221f2f 100%);
-    background-color: #1a1b28;
-  }
+  /* Themed cards keep the shared frosted surface — --project-theme-surface is
+     the opaque stage for the embed on the project page (single.css), and
+     painting it here would seal the card back up. The theme still supplies
+     the artwork wash and its transform. */
   .project.project--themed {
     --project-aurora: var(--project-theme-artwork);
     --project-aurora-size: var(--project-theme-size);
     --project-aurora-position: var(--project-theme-position);
     --project-aurora-transform: var(--project-theme-transform);
     --project-aurora-hover-transform: var(--project-theme-hover-transform);
-    background-color: var(--project-theme-surface);
   }
   .dark .project.project--themed {
     --project-aurora: var(--project-theme-artwork);
-    background-color: var(--project-theme-surface);
   }
   .project-media {
     @apply absolute inset-0 z-0 overflow-hidden;

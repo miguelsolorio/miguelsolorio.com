@@ -1,21 +1,28 @@
 @layer components {
+    /* Rosé Dusk: mauve near-blacks with one rose accent. Rose (#efa9ae) is
+       dark mode's primary — it carries every role the blurple carries in
+       light (headline, links, card titles, focus) — while iris stays a
+       supporting hue for terminal purple and hairlines. The mauve surfaces
+       sit between the demos' purple half (#c58af9 / #d7afff) and the rose,
+       so the fixed embed palettes read as family rather than as guests. */
     .dark body {
-        @apply bg-slate-900 text-gray-400
+        background-color: #110e1a;
+        color: #a79fb8;
     }
 
     .dark #logo,
     .dark .social a,
     .dark .social #theme-toggle {
-        @apply text-gray-200;
+        color: #ede7f2;
     }
 
     /* Scrolled header: the same tint recipe as light mode, keyed to
-       slate-900. The hairline lifts rather than darkens, since a darker line
-       would disappear into the page. */
+       the mauve page. The hairline lifts rather than darkens, since a darker
+       line would disappear into the page. */
     html.dark:not(.top):not(.incognito) .site-header {
-        background-color: rgba(15, 23, 42, .72);
-        border-bottom-color: rgba(148, 163, 184, .16);
-        box-shadow: 0 1px 12px rgba(0, 0, 0, .25);
+        background-color: rgba(25, 22, 32, .72);
+        border-bottom-color: rgba(210, 202, 222, .13);
+        box-shadow: 0 1px 12px rgba(10, 6, 20, .3);
     }
 
     .dark .section,
@@ -26,105 +33,123 @@
     .dark .single h4,
     .dark .single h5,
     .dark .single h6 {
-        @apply text-gray-200;
+        color: #ede7f2;
     }
 
-    /* Body links: the light resting blue (#241bc7) all but vanishes on
-       slate-900, so rest on a light indigo instead. The hover fill (white on
-       #3429ff) already passes contrast and stays shared with light mode. */
+    /* Body links: the light resting blue (#241bc7) all but vanishes on the
+       mauve page, so rest on the rose primary instead. The hover fill is
+       overridden too — the shared light fill (white on #3429ff) is the one
+       blue this palette doesn't speak. Dark ink on the rose fill clears
+       contrast where white would not. */
     .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)) {
-        color: #a5b4fc;
+        color: #efa9ae;
+        background-image: linear-gradient(#efa9ae, #efa9ae);
+    }
+    .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)):hover,
+    .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)):focus-visible {
+        color: #110e1a;
+        box-shadow: .2em 0 #efa9ae, -.2em 0 #efa9ae;
+    }
+
+    /* Theme toggle hover keeps the accent treatment in the rose primary with
+       dark ink — the light bg-primary blurple fights the palette. */
+    .dark nav #theme-toggle:hover {
+        background-color: #efa9ae;
+    }
+    .dark nav #theme-toggle:hover svg {
+        fill: #110e1a;
     }
 
     .dark .social a svg,
     .dark .social a svg path {
-        @apply text-gray-200 fill-current;
+        color: #ede7f2;
+        fill: currentColor;
     }
 
     .dark .side-project {
-        @apply bg-slate-800;
-        border-color: #334155;
+        background-color: #201c28;
+        border-color: #3a3444;
     }
     .dark .side-project-title {
-        @apply text-gray-200;
+        color: #ede7f2;
     }
     .dark .side-project-description {
-        @apply text-slate-400;
+        color: #8c839f;
     }
     .dark .side-project-metrics {
-        @apply text-slate-400;
-        border-top-color: #334155;
+        color: #8c839f;
+        border-top-color: #3a3444;
     }
     .dark .side-project-metric-separator {
-        background: #475569;
+        background: #4e4759;
     }
 
     .dark .single .stat-value {
-        @apply text-gray-200;
+        color: #ede7f2;
     }
     .dark .single .stat-label,
     .dark .single .stat-source {
-        @apply text-slate-400;
+        color: #8c839f;
     }
-    /* The light glyph colours sit too saturated against slate-900; these are
-       the dark halves of the same CLI demo palette. */
-    .dark .single .stat-icon--pr { color: #8ab4f8; }
-    .dark .single .stat-icon--merge { color: #c58af9; }
-    .dark .single .stat-icon--commit { color: #81c995; }
-    .dark .single .stat-icon--issue { color: #fdd663; }
-    .dark .single .stat-icon--issue-closed { color: #81c995; }
+    /* Glyph colours from the palette's terminal set (hero.css --t-*), so the
+       stat icons and the hero prompt speak the same five hues. */
+    .dark .single .stat-icon--pr { color: #9ccfd8; }
+    .dark .single .stat-icon--merge { color: #c4a7e7; }
+    .dark .single .stat-icon--commit { color: #95d5a5; }
+    .dark .single .stat-icon--issue { color: #f6c177; }
+    .dark .single .stat-icon--issue-closed { color: #95d5a5; }
 
     .dark .single .quote-card {
-        @apply bg-slate-800;
-        border-color: #334155;
+        background-color: #201c28;
+        border-color: #3a3444;
     }
-    /* The indigo glow vanishes against slate-900; plain depth instead. */
+    /* Accent glows vanish against the near-black page; plain depth instead. */
     .dark .single a.quote-card:hover,
     .dark .single a.quote-card:focus-visible {
-        box-shadow: 0 10px 24px -12px rgb(0 0 0 / .6);
+        box-shadow: 0 10px 24px -12px rgb(10 6 20 / .6);
     }
     .dark .single a.quote-card:focus-visible {
-        outline-color: #818cf8;
+        outline-color: #efa9ae;
     }
     .dark .single .quote-name {
-        @apply text-gray-200;
+        color: #ede7f2;
     }
     .dark .single .quote-handle {
-        @apply text-slate-400;
+        color: #8c839f;
     }
     .dark .single .quote-logo {
-        color: #f8fafc;
+        color: #f5f0fa;
     }
     .dark .single .quote-avatar--fallback {
-        color: #64748b;
-        background: #334155;
+        color: #8c839f;
+        background: #3a3444;
     }
     .dark .single .quote-avatar--gen .qa-light { display: none; }
     .dark .single .quote-avatar--gen .qa-dark { display: block; }
     .dark .single .quote-text {
-        @apply text-slate-200;
+        color: #e0d9ec;
     }
     .dark .single .quote-text mark {
-        color: #a5b4fc;
-        background: rgb(129 140 248 / .16);
+        color: #efa9ae;
+        background: rgb(239 169 174 / .16);
     }
     .dark .single .quote-media,
     .dark .single .quote-stat {
-        border-color: #334155;
+        border-color: #3a3444;
     }
     .dark .single .quote-stat {
-        @apply text-slate-400;
+        color: #8c839f;
     }
 
     /* The donut charts keep the original figure's palette: the main hue at
        full strength and the small slices as pale tints of it, which hold up
-       on slate-900 as they did on the image's near-black. */
+       on the near-black page as they did on the image's near-black. */
     .dark .single .donut-board {
-        --donut-label-ink: #f1f5f9;
-        --donut-line: #9ca3af;
+        --donut-label-ink: #f5f0fa;
+        --donut-line: #a79fb8;
     }
     .dark .single .donut-title {
-        @apply text-gray-200;
+        color: #ede7f2;
     }
     .dark .single .donut--teal {
         --donut-seg-0: #1e9e8e;
