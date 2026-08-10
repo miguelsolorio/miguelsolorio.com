@@ -944,6 +944,11 @@
   .single .donut-board {
     --donut-label-ink: #334155;
     --donut-line: #94a3b8;
+    /* The hovered callout's ink and leader. Resting ink already clears 9.5:1,
+       so the lift is a step toward the heading colour rather than more
+       contrast for its own sake. */
+    --donut-label-ink-hi: #1c1725;
+    --donut-line-hi: #1c1725;
     --donut-gap: clamp(1.5rem, 4vw, 3rem);
     margin-block: var(--media-gap);
   }
@@ -957,23 +962,32 @@
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
     gap: var(--donut-gap);
   }
+  /* Slot 0 is the dominant share and takes the ramp's deepest step; 1 through 5
+     walk the tail from palest back down. Both ramps are stepped in OKLCH so
+     every neighbour clears 0.06 lightness — the pair this replaced sat 0.054
+     apart at the pale end, close enough to read as one colour, and its palest
+     step was 1.17:1 against the page, which is not a visible mark at all. The
+     hover colour is the same hue carried to where it reads as a lift without
+     dropping under 4.5:1 as text. */
   .single .donut--teal {
-    --donut-seg-0: #12897b;
-    --donut-seg-1: #d9efe9;
-    --donut-seg-2: #b5e3d9;
-    --donut-seg-3: #8ad2c4;
-    --donut-seg-4: #4fbba9;
-    --donut-seg-5: #2aa892;
-    --donut-value: #0c7568;
+    --donut-seg-0: #045a4d;
+    --donut-seg-1: #85b7ab;
+    --donut-seg-2: #67a597;
+    --donut-seg-3: #469484;
+    --donut-seg-4: #1a8371;
+    --donut-seg-5: #006f5f;
+    --donut-value: #037a69;
+    --donut-value-hi: #005448;
   }
   .single .donut--blue {
-    --donut-seg-0: #2f6bef;
-    --donut-seg-1: #dce7fb;
-    --donut-seg-2: #bcd2f8;
-    --donut-seg-3: #93b5f4;
-    --donut-seg-4: #6892f0;
-    --donut-seg-5: #4677ed;
-    --donut-value: #1f56dd;
+    --donut-seg-0: #0f3bb7;
+    --donut-seg-1: #99abce;
+    --donut-seg-2: #7d97cb;
+    --donut-seg-3: #6182c8;
+    --donut-seg-4: #456cc3;
+    --donut-seg-5: #2a56be;
+    --donut-value: #2d5ed4;
+    --donut-value-hi: #143ca1;
   }
   /* A rank below the h1 that introduces the section, on the same family and
      weight as every other heading on the page. */
@@ -1012,6 +1026,63 @@
   }
   .single .donut-dot {
     fill: var(--donut-line);
+  }
+  /* The hero share in the hole. A figure, so it wears ink rather than the
+     segment's colour, and proportional digits — tabular would make a number
+     like 15% sit loose at this size. Qualified by the element so it out-ranks
+     the blanket `.donut-svg text` size and fill above. */
+  .single .donut-svg text.donut-centre {
+    fill: var(--donut-label-ink-hi);
+    font-size: 46px;
+    font-weight: 700;
+    letter-spacing: -.03em;
+  }
+
+  /* Hover. donut-charts.js marks the pointed-at band and its callout with
+     data-hot and puts data-hover on the chart, which is what dims the rest.
+     Both are absent until the script runs, so the resting figure is untouched
+     by any of this.
+
+     Bands drop further than callouts: a dimmed arc is still an arc, but text
+     at the same value stops being readable, and the four small labels are
+     exactly what a reader scans while pointing at the fifth. Weights never
+     change between states — bolding would re-flow the label and make it twitch
+     under the pointer. */
+  .single .donut-chart[data-hover] .donut-seg { opacity: .32; }
+  .single .donut-chart[data-hover] .donut-callout { opacity: .45; }
+  /* Carries the same [data-hover] ancestor as the dimming rule above it and
+     one attribute more — the pointed-at pair has to out-specify the dim it
+     would otherwise inherit along with its four neighbours. */
+  .single .donut-chart[data-hover] .donut-seg[data-hot],
+  .single .donut-chart[data-hover] .donut-callout[data-hot] {
+    opacity: 1;
+  }
+  .single .donut-seg[data-hot] {
+    stroke-width: var(--donut-band-hot);
+  }
+  .single .donut-callout[data-hot] .donut-label {
+    fill: var(--donut-label-ink-hi);
+  }
+  .single .donut-callout[data-hot] .donut-value {
+    fill: var(--donut-value-hi);
+  }
+  .single .donut-callout[data-hot] .donut-lead {
+    stroke: var(--donut-line-hi);
+    stroke-width: 1.75;
+  }
+  .single .donut-callout[data-hot] .donut-dot {
+    fill: var(--donut-line-hi);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .single .donut-seg {
+      transition: opacity .18s ease, stroke-width .18s ease;
+    }
+    .single .donut-callout {
+      transition: opacity .18s ease;
+    }
+    .single .donut-callout :is(.donut-label, .donut-value, .donut-lead, .donut-dot) {
+      transition: fill .18s ease, stroke .18s ease;
+    }
   }
   .single .donut-caption {
     @apply text-slate-500;

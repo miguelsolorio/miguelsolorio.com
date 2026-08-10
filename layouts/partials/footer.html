@@ -48,5 +48,13 @@
       {{ end }}
       <script src="{{ $quotes.RelPermalink }}" defer{{ with $quotes.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
     {{ end }}
+
+    {{ if .HasShortcode "donut" }}
+      {{ $donuts := resources.Get "js/donut-charts.js" }}
+      {{ if hugo.IsProduction }}
+        {{ $donuts = $donuts | minify | fingerprint }}
+      {{ end }}
+      <script src="{{ $donuts.RelPermalink }}" defer{{ with $donuts.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
+    {{ end }}
   </body>
 </html>

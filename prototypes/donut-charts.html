@@ -1,0 +1,1881 @@
+<!doctype html>
+<html lang="en" class="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Onboarding data — 10 interactive chart variations</title>
+<style>
+/* ============================================================
+   Chart lab — ten interactive takes on the "Looking at the Data"
+   figure from the onboarding case study.
+
+   The shipping figure (layouts/shortcodes/donut.html) is a static
+   build-time SVG: two donuts, leader-line callouts, no script. It
+   reads well and costs nothing. These ten ask the other question —
+   what the same two numbers can do once the reader can point at
+   them.
+
+   Four charting libraries are loaded from a CDN so each variation
+   can be judged on the library's real hover/animation behaviour
+   rather than on a hand-rolled imitation: ECharts, Chart.js, D3,
+   ApexCharts. That is deliberate for a lab and is NOT a shipping
+   proposal — the pick would be re-implemented on one library (or
+   back in build-time SVG plus a small hover layer) before it goes
+   near the site.
+
+   PALETTE. The shipped ramp fails two of the dataviz ordinal
+   checks: its two palest teal steps sit 0.054 apart in OKLCH L
+   (floor is 0.06, so they read as one colour), and the palest step
+   is 1.17:1 against the page — invisible as a mark. The ramps below
+   are re-stepped on the same two hues and pass every check in both
+   modes, against the real card surfaces (#ffffff / #201c28):
+
+     validate_palette.js "<ramp>" --ordinal --mode light --surface "#ffffff"
+     validate_palette.js "<ramp>" --ordinal --mode dark  --surface "#201c28"
+
+   DATA. Values are the ones the case study publishes. They sum to
+   99 (new) and 101 (current), so — exactly like the shortcode —
+   geometry runs on the normalised share while the label keeps the
+   authored number.
+   ============================================================ */
+
+/* ---------- tokens ---------- */
+:root {
+  color-scheme: light;
+
+  --page: #f5f5f5;
+  --card: #ffffff;
+  --line: #e6e6ea;
+  --ring: 0 0 0 1px rgb(35 28 102 / .07);
+  --shadow: 0 1px 12px rgb(35 28 102 / .06);
+  --shadow-lift: 0 16px 32px -12px rgb(35 28 102 / .15);
+
+  --ink: #1c1725;
+  --ink-body: #334155;
+  --ink-muted: #64748b;
+
+  /* Ordinal ramps — deep slot first, then the tail, light→dark reversed
+     for authoring convenience (slot 0 is the dominant share). */
+  --teal-0: #036152;
+  --teal-1: #81b8ab;
+  --teal-2: #5da394;
+  --teal-3: #338f7d;
+  --teal-4: #007967;
+  --blue-0: #1442be;
+  --blue-1: #98abd2;
+  --blue-2: #7693cf;
+  --blue-3: #557aca;
+  --blue-4: #3560c5;
+
+  --accent-teal: #068874;
+  --accent-blue: #436ed1;
+
+  --tail-0: #576070;
+  --tail-1: #737c8c;
+  --tail-2: #8f97a5;
+  --tail-3: #abb2bd;
+
+  --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  --page: #110e1a;
+  --card: #201c28;
+  --line: #3a3444;
+  --ring: 0 0 0 1px rgb(210 202 222 / .12);
+  --shadow: 0 1px 12px rgb(56 39 51 / .38);
+  --shadow-lift: 0 16px 32px -12px rgb(56 39 51 / .5);
+
+  --ink: #ede7f2;
+  --ink-body: #c6bed4;
+  --ink-muted: #8c839f;
+
+  --teal-0: #007463;
+  --teal-1: #a2cfc4;
+  --teal-2: #7bb9ab;
+  --teal-3: #51a392;
+  --teal-4: #158e7a;
+  --blue-0: #2456d3;
+  --blue-1: #b4c5e5;
+  --blue-2: #8fabe3;
+  --blue-3: #6b90df;
+  --blue-4: #4774d9;
+
+  --accent-teal: #0baa92;
+  --accent-blue: #5f8df3;
+
+  --tail-0: #9d94b3;
+  --tail-1: #847c9b;
+  --tail-2: #6b6480;
+  --tail-3: #544d64;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink-body);
+  font-family: var(--sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .25s ease, color .25s ease;
+}
+
+/* ---------- lab chrome ---------- */
+.lab-header {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 3.5rem var(--gutter, clamp(1.25rem, 4vw, 3rem)) 1.5rem;
+}
+.lab-header h1 {
+  margin: 0 0 .75rem;
+  color: var(--ink);
+  font-size: clamp(1.6rem, 3.4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+.lab-header p {
+  max-width: 46rem;
+  margin: 0 0 .75rem;
+  line-height: 1.6;
+}
+.lab-header code {
+  font-family: var(--mono);
+  font-size: .85em;
+  color: var(--ink);
+}
+
+.lab-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem 1.25rem;
+  max-width: 68rem;
+  margin: 0 auto 2rem;
+  padding: .75rem clamp(1.25rem, 4vw, 3rem);
+  background: color-mix(in srgb, var(--page) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.lab-group { display: flex; align-items: center; gap: .4rem; }
+.lab-group > span {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.lab-bar button,
+.lab-bar select {
+  font: inherit;
+  font-size: .8125rem;
+  color: var(--ink-body);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: .5rem;
+  padding: .3rem .65rem;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.lab-bar button:hover { border-color: var(--ink-muted); }
+.lab-bar button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--card);
+  font-weight: 600;
+}
+.lab-bar button:focus-visible,
+.lab-bar select:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* ---------- the shared table view (every value, no hovering) ---------- */
+.lab-table {
+  max-width: 68rem;
+  margin: 0 auto 2rem;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+.lab-table[hidden] { display: none; }
+.lab-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: .75rem;
+  box-shadow: var(--ring), var(--shadow);
+  overflow: hidden;
+  font-size: .875rem;
+}
+.lab-table caption {
+  caption-side: top;
+  padding: 0 0 .6rem;
+  color: var(--ink-muted);
+  font-size: .8125rem;
+  text-align: left;
+}
+.lab-table th, .lab-table td {
+  padding: .55rem .9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.lab-table thead th {
+  color: var(--ink);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.lab-table td:last-child, .lab-table th:last-child { text-align: right; }
+.lab-table td:last-child { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+.lab-table tbody tr:last-child td { border-bottom: 0; }
+.lab-table .seg-row td {
+  background: color-mix(in srgb, var(--ink) 4%, var(--card));
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ---------- variation cards ---------- */
+main {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem) 6rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.variation {
+  background: var(--card);
+  border-radius: 1rem;
+  box-shadow: var(--ring), var(--shadow);
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+.variation-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .5rem .75rem;
+  margin-bottom: .5rem;
+}
+.variation-num {
+  font-family: var(--mono);
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+.variation-head h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.chip {
+  padding: .12rem .5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.variation-note {
+  margin: 0 0 1.5rem;
+  max-width: 44rem;
+  font-size: .875rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+.variation-note b { color: var(--ink-body); font-weight: 600; }
+.variation-foot {
+  margin: 1.25rem 0 0;
+  font-size: .8125rem;
+  font-style: italic;
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+/* Two charts per card. Stacked by default — the layout toggle in the bar
+   flips the cards that carry a pair. */
+.chart-pair {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+body[data-layout="side"] .chart-pair {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+.chart-panel { min-width: 0; }
+.chart-title {
+  margin: 0 0 .25rem;
+  color: var(--ink);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.chart-sub {
+  margin: 0 0 .75rem;
+  font-size: .8125rem;
+  color: var(--ink-muted);
+}
+.chart-host {
+  position: relative;
+  width: 100%;
+}
+.chart-host svg { display: block; width: 100%; height: auto; }
+
+/* Center readout that sits in a donut's hole. */
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+.donut-center .dc-value {
+  display: block;
+  color: var(--ink);
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+.donut-center .dc-label {
+  display: block;
+  margin-top: .3rem;
+  max-width: 9rem;
+  color: var(--ink-muted);
+  font-size: .75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+/* Legend / linked rows. */
+.key {
+  display: grid;
+  gap: .125rem;
+  margin: .75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.key-row {
+  display: grid;
+  grid-template-columns: .6rem 1fr auto;
+  align-items: center;
+  gap: .6rem;
+  width: 100%;
+  padding: .35rem .5rem;
+  background: none;
+  border: 0;
+  border-radius: .45rem;
+  font: inherit;
+  font-size: .8125rem;
+  color: var(--ink-body);
+  text-align: left;
+  cursor: default;
+  transition: background-color .15s ease;
+}
+.key-row:hover, .key-row:focus-visible, .key-row[data-active="true"] {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  outline: none;
+}
+.key-swatch { width: .6rem; height: .6rem; border-radius: 2px; }
+.key-value { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Inline legend used above the comparison charts. */
+.legend-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem 1rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  font-size: .8125rem;
+}
+.legend-inline li { display: flex; align-items: center; gap: .4rem; }
+.legend-inline .key-swatch { width: .75rem; height: .75rem; }
+.legend-inline .rule { width: 1rem; height: 2px; border-radius: 1px; }
+
+/* Shared tooltip for the hand-built (D3) charts. */
+.viz-tip {
+  position: fixed;
+  z-index: 60;
+  min-width: 8rem;
+  padding: .5rem .65rem;
+  background: var(--card);
+  border-radius: .5rem;
+  box-shadow: var(--ring), var(--shadow-lift);
+  font-size: .8125rem;
+  line-height: 1.35;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -120%);
+  transition: opacity .12s ease;
+}
+.viz-tip[data-show="true"] { opacity: 1; }
+.viz-tip .tip-value {
+  display: block;
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.viz-tip .tip-label {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  color: var(--ink-muted);
+}
+.viz-tip .tip-note { display: block; margin-top: .2rem; color: var(--ink-muted); font-size: .75rem; }
+
+/* Hero / stat-tile variation. */
+.hero-figure {
+  display: grid;
+  gap: .15rem;
+}
+.hero-figure .hf-value {
+  color: var(--ink);
+  font-size: clamp(3rem, 11vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: .95;
+}
+.hero-figure .hf-action { color: var(--ink); font-size: 1.05rem; font-weight: 600; }
+.hero-figure .hf-of { color: var(--ink-muted); font-size: .875rem; }
+.hero-meter {
+  position: relative;
+  height: 10px;
+  margin: .9rem 0 1.1rem;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.hero-meter .hm-fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; }
+
+.tail-list { display: grid; gap: .1rem; margin: 0; padding: 0; list-style: none; }
+.tail-row {
+  display: grid;
+  grid-template-columns: minmax(6rem, 8rem) 1fr 2.5rem;
+  align-items: center;
+  gap: .75rem;
+  padding: .3rem .4rem;
+  border-radius: .4rem;
+  font-size: .8125rem;
+  transition: background-color .15s ease;
+}
+.tail-row:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.tail-row .tr-track { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 7%, transparent); overflow: hidden; }
+.tail-row .tr-fill { height: 100%; border-radius: 999px; }
+.tail-row .tr-value { text-align: right; color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Segmented control (variation 9). */
+.seg-control {
+  display: inline-flex;
+  gap: .2rem;
+  margin: 0 0 1rem;
+  padding: .2rem;
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  border-radius: .6rem;
+}
+.seg-control button {
+  font: inherit;
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  background: none;
+  border: 0;
+  border-radius: .45rem;
+  padding: .35rem .85rem;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease;
+}
+.seg-control button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--ring);
+}
+.seg-control button:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 1px; }
+
+/* Waffle. */
+.waffle-grid {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 2px;
+}
+.waffle-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.waffle-grid[data-dim="true"] .waffle-cell:not([data-hot="true"]) { opacity: .25; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lab-footer {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem) 5rem;
+  font-size: .8125rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+.lab-footer h2 { color: var(--ink); font-size: 1rem; margin: 0 0 .5rem; }
+.lab-footer ul { margin: 0; padding-left: 1.1rem; }
+
+@media (max-width: 40rem) {
+  .tail-row { grid-template-columns: minmax(5rem, 7rem) 1fr 2.25rem; }
+  .waffle-grid { grid-template-columns: repeat(10, 1fr); }
+}
+</style>
+</head>
+<body data-layout="stacked">
+
+<header class="lab-header">
+  <h1>Looking at the Data — ten interactive variations</h1>
+  <p>
+    The onboarding case study currently draws this figure as a static build-time SVG: two donuts,
+    leader-line callouts, no JavaScript. Below are ten ways the same two numbers could behave once
+    the reader can point at them — each built on a real charting library so the hover, focus and
+    animation behaviour is the library's own, not an imitation.
+  </p>
+  <p>
+    Charts stack vertically by default. Every variation is themed, keyboard-reachable, and honours
+    <code>prefers-reduced-motion</code>. Values are the published ones; they sum to 99% and 101%, so
+    geometry runs on the normalised share while labels keep the authored number — same trade the
+    shipping shortcode makes.
+  </p>
+</header>
+
+<nav class="lab-bar" aria-label="Lab controls">
+  <div class="lab-group">
+    <span>Theme</span>
+    <button type="button" id="theme-light" aria-pressed="true">Light</button>
+    <button type="button" id="theme-dark" aria-pressed="false">Dark</button>
+  </div>
+  <div class="lab-group">
+    <span>Pairs</span>
+    <button type="button" id="layout-stacked" aria-pressed="true">Stacked</button>
+    <button type="button" id="layout-side" aria-pressed="false">Side by side</button>
+  </div>
+  <div class="lab-group">
+    <span>Data</span>
+    <button type="button" id="toggle-table" aria-pressed="false" aria-controls="data-table">Show the numbers</button>
+  </div>
+  <div class="lab-group">
+    <span>Jump</span>
+    <select id="jump" aria-label="Jump to a variation"></select>
+  </div>
+</nav>
+
+<div class="lab-table" id="data-table" hidden></div>
+
+<main id="variations"></main>
+
+<footer class="lab-footer">
+  <h2>Notes for picking one</h2>
+  <ul>
+    <li><b>Colour.</b> The shipped ramp fails two ordinal checks — its two palest teal steps are 0.054 apart in OKLCH lightness (0.06 is the floor where steps stop reading as separate) and the palest step is 1.17:1 against the page, invisible as a mark. Every ramp here is re-stepped on the same two hues and passes in both themes against the real card surfaces.</li>
+    <li><b>Libraries.</b> Four are loaded here so each variation shows its library's true behaviour. Shipping any of them means one library, or re-implementing the winner as build-time SVG plus a small hover layer — the current shortcode ships zero JavaScript, which is worth keeping if the interaction earns little.</li>
+    <li><b>The 0% cases.</b> "Recent folder" is absent from the new-user list and "New file" from the current-user list. Those shares are inside each segment's <i>Other</i> bucket, so the comparison charts draw them as a bounded ghost mark (≤ that segment's Other), never as a hard zero.</li>
+    <li><b>Naming.</b> The source writes "Install Extensions" for new users and "Install Extension" for current ones. The comparison charts canonicalise to one label so the two segments line up.</li>
+  </ul>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.54.0/dist/apexcharts.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ==========================================================
+     Data
+     ========================================================== */
+
+  const SEGMENTS = [
+    {
+      key: "new",
+      title: "New Users",
+      tone: "teal",
+      blurb: "First session, nothing in the recents list yet",
+      rows: [
+        { label: "Install extensions", display: "84%", value: 84 },
+        { label: "Install keymap",     display: "6%",  value: 6 },
+        { label: "New file",           display: "4%",  value: 4 },
+        { label: "Open folder",        display: "3%",  value: 3 },
+        { label: "Other",              display: "2%",  value: 2 }
+      ]
+    },
+    {
+      key: "current",
+      title: "Current Users",
+      tone: "blue",
+      blurb: "Returning, with projects already on the list",
+      rows: [
+        { label: "Recent folder",      display: "80%", value: 80 },
+        { label: "Install extensions", display: "15%", value: 15 },
+        { label: "Install keymap",     display: "3%",  value: 3 },
+        { label: "Open folder",        display: "2%",  value: 2 },
+        { label: "Other",              display: "1%",  value: 1 }
+      ]
+    }
+  ];
+
+  /* Normalised share drives every piece of geometry; `display` stays the
+     authored string. Same split the Hugo shortcode makes, so a set that
+     totals 99 or 101 still closes the ring. */
+  SEGMENTS.forEach(function (seg) {
+    const total = seg.rows.reduce(function (s, r) { return s + r.value; }, 0);
+    seg.total = total;
+    seg.rows.forEach(function (r) { r.share = (r.value / total) * 100; });
+    seg.lead = seg.rows[0];
+    seg.other = seg.rows[seg.rows.length - 1];
+  });
+
+  const CAPTION = "New users install extensions; current users reach for recent folders";
+
+  /* The union used by the comparison charts. A segment that never lists an
+     action has that share folded into its own Other bucket — so the value is
+     unknown but bounded by it, and gets drawn as a ghost, not a zero. */
+  const ACTIONS = ["Install extensions", "Recent folder", "Install keymap", "New file", "Open folder", "Other"];
+
+  function shareOf(seg, action) {
+    const row = seg.rows.find(function (r) { return r.label === action; });
+    return row ? row.share : null;
+  }
+  function displayOf(seg, action) {
+    const row = seg.rows.find(function (r) { return r.label === action; });
+    return row ? row.display : null;
+  }
+  function boundOf(seg) { return seg.other.share; }
+
+  /* ==========================================================
+     Palette + theme
+     ========================================================== */
+
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Chart text has to name a real family, not "inherit". ECharts measures every
+     string through a canvas context, and `ctx.font = "13px inherit"` is invalid
+     — the context silently keeps its 10px default, so every label is measured
+     far narrower than it draws and rich-text blocks get laid out on top of each
+     other. Same stack the page uses, spelled out. */
+  const FONT = "'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+  const PALETTE = {
+    light: {
+      card: "#ffffff",
+      page: "#f5f5f5",
+      line: "#e6e6ea",
+      ink: "#1c1725",
+      body: "#334155",
+      muted: "#64748b",
+      teal: ["#036152", "#81b8ab", "#5da394", "#338f7d", "#007967"],
+      blue: ["#1442be", "#98abd2", "#7693cf", "#557aca", "#3560c5"],
+      accent: { teal: "#068874", blue: "#436ed1" },
+      /* The colour a callout's value takes while its arc is hovered. "Brighter"
+         is theme-relative: against white it means deeper and more saturated,
+         against the near-black card it means lighter. Both land above 7:1. */
+      hi: { teal: "#036152", blue: "#1442be" },
+      tail: ["#576070", "#737c8c", "#8f97a5", "#abb2bd"]
+    },
+    dark: {
+      card: "#201c28",
+      page: "#110e1a",
+      line: "#3a3444",
+      ink: "#ede7f2",
+      body: "#c6bed4",
+      muted: "#8c839f",
+      teal: ["#007463", "#a2cfc4", "#7bb9ab", "#51a392", "#158e7a"],
+      blue: ["#2456d3", "#b4c5e5", "#8fabe3", "#6b90df", "#4774d9"],
+      accent: { teal: "#0baa92", blue: "#5f8df3" },
+      hi: { teal: "#a2cfc4", blue: "#b4c5e5" },
+      tail: ["#9d94b3", "#847c9b", "#6b6480", "#544d64"]
+    }
+  };
+
+  let theme = "light";
+  const P = function () { return PALETTE[theme]; };
+  const ramp = function (seg) { return P()[seg.tone]; };
+  const accent = function (seg) { return P().accent[seg.tone]; };
+
+  /* ==========================================================
+     Shared tooltip for the hand-built charts
+     ========================================================== */
+
+  const tip = document.createElement("div");
+  tip.className = "viz-tip";
+  tip.setAttribute("role", "status");
+  document.body.appendChild(tip);
+
+  function showTip(evt, value, label, color, note) {
+    tip.textContent = "";
+    const v = document.createElement("span");
+    v.className = "tip-value";
+    v.textContent = value;
+    const l = document.createElement("span");
+    l.className = "tip-label";
+    if (color) {
+      const sw = document.createElement("span");
+      sw.className = "key-swatch";
+      sw.style.background = color;
+      l.appendChild(sw);
+    }
+    l.appendChild(document.createTextNode(label));
+    tip.append(v, l);
+    if (note) {
+      const n = document.createElement("span");
+      n.className = "tip-note";
+      n.textContent = note;
+      tip.appendChild(n);
+    }
+    tip.style.left = evt.clientX + "px";
+    tip.style.top = evt.clientY - 12 + "px";
+    tip.dataset.show = "true";
+  }
+  function hideTip() { tip.dataset.show = "false"; }
+  document.addEventListener("scroll", hideTip, { passive: true });
+
+  /* ==========================================================
+     DOM helpers
+     ========================================================== */
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+  const svgNS = "http://www.w3.org/2000/svg";
+  function svgEl(tag, attrs) {
+    const node = document.createElementNS(svgNS, tag);
+    for (const k in attrs) node.setAttribute(k, attrs[k]);
+    return node;
+  }
+
+  /* A titled panel with a chart host inside — the unit both members of a
+     stacked pair are made of. */
+  function panel(seg, hostHeight) {
+    const wrap = el("div", "chart-panel");
+    wrap.appendChild(el("p", "chart-title", seg.title));
+    wrap.appendChild(el("p", "chart-sub", seg.blurb));
+    const host = el("div", "chart-host");
+    if (hostHeight) host.style.height = hostHeight;
+    wrap.appendChild(host);
+    return { wrap: wrap, host: host };
+  }
+
+  /* Spoken equivalent of a chart, for screen readers. */
+  function spoken(seg) {
+    return seg.title + ": " + seg.rows.map(function (r) { return r.label + " " + r.display; }).join(", ") + ".";
+  }
+
+  function pairContainer(node) {
+    const pair = el("div", "chart-pair");
+    node.appendChild(pair);
+    return pair;
+  }
+
+  /* ==========================================================
+     Variation registry — each renders from scratch on theme or
+     layout change, and only once it is near the viewport.
+     ========================================================== */
+
+  const VARIATIONS = [];
+  function variation(def) { VARIATIONS.push(def); }
+
+  /* ----------------------------------------------------------
+     1 — Faithful donut (ECharts)
+     ---------------------------------------------------------- */
+  variation({
+    id: "donut-callouts",
+    name: "Donut with leader-line callouts",
+    lib: "ECharts",
+    note: "<b>Closest to what ships.</b> Same ring, same callouts — hovering an arc pulls it out, lifts its callout on the left to full ink and its value to the theme's brightest step, drops everything else back, and swaps the centre readout. The tail is still four labels crowded at twelve o'clock, which is the shipping figure's real weakness.",
+    render: function (root, keep) {
+      const pair = pairContainer(root);
+      SEGMENTS.forEach(function (seg) {
+        const p = panel(seg, "clamp(19rem, 42vw, 25rem)");
+        p.wrap.appendChild(el("p", "sr-only", spoken(seg)));
+        pair.appendChild(p.wrap);
+
+        const centre = el("div", "donut-center");
+        const cv = el("span", "dc-value");
+        const cl = el("span", "dc-label");
+        centre.append(cv, cl);
+        p.host.appendChild(centre);
+        const setCentre = function (row) {
+          cv.textContent = row.display;
+          cl.textContent = row.label;
+        };
+        setCentre(seg.lead);
+
+        const chart = echarts.init(p.host, null, { renderer: "svg" });
+        keep(chart);
+
+        /* Hovering an arc lifts its callout on the left with it: the name goes
+           to full ink, the value to the brightest step the theme allows, and
+           the leader line comes up too — while every other callout drops back.
+
+           This is driven per item rather than through ECharts' emphasis/blur
+           states, which do not apply to a label built out of rich-text blocks:
+           the state style never reaches `label.rich`, so the callout stays
+           exactly as it was while only the arc responds. Repainting the data
+           array is a diff-update — the arcs stay put and only the styles
+           tween — so it costs one cheap setOption per hover.
+
+           Weights stay fixed across states. Bolding on hover would re-measure
+           the label and make it twitch under the pointer. */
+        const items = function (hot) {
+          return seg.rows.map(function (r, i) {
+            const isHot = hot === i;
+            const dim = hot !== null && !isHot;
+            return {
+              name: r.label,
+              value: r.share,
+              display: r.display,
+              /* Arcs can drop further than their callouts: a dimmed shape is
+                 still a shape, but text at .32 stops being readable, and the
+                 four small labels are the ones a reader is scanning while
+                 hovering the fifth. */
+              itemStyle: { color: ramp(seg)[i], opacity: dim ? .32 : 1 },
+              label: {
+                opacity: dim ? .45 : 1,
+                rich: {
+                  n: { color: isHot ? P().ink : P().body, fontSize: 13, fontFamily: FONT },
+                  v: {
+                    color: isHot ? P().hi[seg.tone] : accent(seg),
+                    fontSize: 13, fontWeight: 700, fontFamily: FONT, padding: [0, 0, 0, 8]
+                  }
+                }
+              },
+              labelLine: {
+                lineStyle: {
+                  color: isHot ? P().ink : P().muted,
+                  width: isHot ? 1.75 : 1.25,
+                  opacity: dim ? .45 : 1
+                }
+              }
+            };
+          });
+        };
+
+        chart.setOption({
+          animation: !REDUCED,
+          animationDuration: 650,
+          animationDurationUpdate: REDUCED ? 0 : 180,
+          tooltip: { show: false },
+          series: [{
+            type: "pie",
+            radius: ["58%", "82%"],
+            center: ["50%", "50%"],
+            avoidLabelOverlap: true,
+            minAngle: 2,
+            /* The 2px separation is the surface showing through, not a
+               stroke drawn around each segment. */
+            itemStyle: { borderColor: P().card, borderWidth: 2 },
+            label: {
+              alignTo: "edge",
+              edgeDistance: 4,
+              /* Rich-text blocks are laid out edge to edge — a literal space
+                 between {n|…} and {v|…} is dropped, which is what ran the
+                 label into its value. The gap has to be padding on the value. */
+              formatter: function (pt) { return "{n|" + pt.name + "}{v|" + pt.data.display + "}"; }
+            },
+            labelLine: { length: 14, length2: 22 },
+            labelLayout: { moveOverlap: "shiftY", hideOverlap: false },
+            emphasis: { scaleSize: 7, itemStyle: { borderWidth: 2 } },
+            data: items(null)
+          }]
+        });
+
+        const paint = function (hot) {
+          chart.setOption({ series: [{ data: items(hot) }] });
+        };
+        chart.on("mouseover", { seriesIndex: 0 }, function (e) {
+          setCentre({ display: e.data.display, label: e.name });
+          paint(e.dataIndex);
+        });
+        chart.on("globalout", function () {
+          setCentre(seg.lead);
+          paint(null);
+        });
+      });
+      root.appendChild(el("p", "variation-foot", CAPTION));
+    }
+  });
+
+  /* ----------------------------------------------------------
+     2 — Donut + linked legend rows (Chart.js)
+     ---------------------------------------------------------- */
+  variation({
+    id: "donut-legend",
+    name: "Donut with a linked value list",
+    lib: "Chart.js",
+    note: "<b>The callouts move out of the drawing.</b> The ring carries only the shape; the numbers live in a list beside it that highlights both ways — hover a row and its arc lifts, hover an arc and its row lights. Reads cleanly at any width, and the tail stops fighting for space.",
+    render: function (root, keep) {
+      const pair = pairContainer(root);
+      SEGMENTS.forEach(function (seg) {
+        const p = panel(seg);
+        p.wrap.appendChild(el("p", "sr-only", spoken(seg)));
+        pair.appendChild(p.wrap);
+
+        p.host.style.height = "clamp(13rem, 30vw, 16rem)";
+        const canvas = document.createElement("canvas");
+        p.host.appendChild(canvas);
+
+        const centre = el("div", "donut-center");
+        const cv = el("span", "dc-value");
+        const cl = el("span", "dc-label");
+        centre.append(cv, cl);
+        p.host.appendChild(centre);
+        const setCentre = function (row) { cv.textContent = row.display; cl.textContent = row.label; };
+        setCentre(seg.lead);
+
+        const colors = ramp(seg);
+        const chart = new Chart(canvas, {
+          type: "doughnut",
+          data: {
+            labels: seg.rows.map(function (r) { return r.label; }),
+            datasets: [{
+              data: seg.rows.map(function (r) { return r.share; }),
+              backgroundColor: colors,
+              borderColor: P().card,
+              borderWidth: 2,
+              hoverOffset: 10,
+              hoverBorderColor: P().card
+            }]
+          },
+          options: {
+            cutout: "64%",
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: REDUCED ? false : { duration: 650 },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                displayColors: false,
+                backgroundColor: P().ink,
+                titleColor: P().card,
+                bodyColor: P().card,
+                padding: 10,
+                callbacks: {
+                  label: function (ctx) { return seg.rows[ctx.dataIndex].display; }
+                }
+              }
+            },
+            onHover: function (evt, active) {
+              setCentre(active.length ? seg.rows[active[0].index] : seg.lead);
+              rows.forEach(function (r, i) {
+                r.dataset.active = String(active.length > 0 && active[0].index === i);
+              });
+            }
+          }
+        });
+        keep(chart);
+
+        const key = el("ul", "key");
+        const rows = seg.rows.map(function (r, i) {
+          const li = document.createElement("li");
+          const btn = el("button", "key-row");
+          btn.type = "button";
+          const sw = el("span", "key-swatch");
+          sw.style.background = colors[i];
+          btn.append(sw, el("span", "key-label", r.label), el("span", "key-value", r.display));
+          const on = function () {
+            chart.setActiveElements([{ datasetIndex: 0, index: i }]);
+            chart.tooltip.setActiveElements([{ datasetIndex: 0, index: i }], { x: 0, y: 0 });
+            chart.update("none");
+            setCentre(r);
+            btn.dataset.active = "true";
+          };
+          const off = function () {
+            chart.setActiveElements([]);
+            chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+            chart.update("none");
+            setCentre(seg.lead);
+            btn.dataset.active = "false";
+          };
+          btn.addEventListener("mouseenter", on);
+          btn.addEventListener("mouseleave", off);
+          btn.addEventListener("focus", on);
+          btn.addEventListener("blur", off);
+          li.appendChild(btn);
+          key.appendChild(li);
+          return btn;
+        });
+        p.wrap.appendChild(key);
+      });
+      root.appendChild(el("p", "variation-foot", CAPTION));
+    }
+  });
+
+  /* ----------------------------------------------------------
+     3 — Half-donut gauges (ECharts)
+     ---------------------------------------------------------- */
+  variation({
+    id: "half-donut",
+    name: "Half-donut gauges",
+    lib: "ECharts",
+    note: "<b>Half the height for the same reading.</b> Folding the ring to a semicircle buys back the vertical space a stacked pair costs, and the flat baseline lets the two arcs be compared by eye. The tail crowds the left shoulder — this one lives or dies on whether the tail matters.",
+    render: function (root, keep) {
+      const pair = pairContainer(root);
+      SEGMENTS.forEach(function (seg) {
+        const p = panel(seg, "clamp(11rem, 26vw, 15rem)");
+        p.wrap.appendChild(el("p", "sr-only", spoken(seg)));
+        pair.appendChild(p.wrap);
+
+        const centre = el("div", "donut-center");
+        centre.style.alignContent = "end";
+        centre.style.paddingBottom = ".5rem";
+        const cv = el("span", "dc-value");
+        const cl = el("span", "dc-label");
+        centre.append(cv, cl);
+        p.host.appendChild(centre);
+        const setCentre = function (row) { cv.textContent = row.display; cl.textContent = row.label; };
+        setCentre(seg.lead);
+
+        /* A transparent slice equal to the whole keeps the lower half
+           unpainted — the portable way to draw a semicircle pie. */
+        const data = seg.rows.map(function (r, i) {
+          return { name: r.label, value: r.share, display: r.display, itemStyle: { color: ramp(seg)[i] } };
+        }).concat([{
+          value: 100,
+          name: "",
+          itemStyle: { color: "transparent" },
+          tooltip: { show: false },
+          emphasis: { disabled: true },
+          silent: true
+        }]);
+
+        const chart = echarts.init(p.host, null, { renderer: "svg" });
+        keep(chart);
+        chart.setOption({
+          animation: !REDUCED,
+          tooltip: {
+            trigger: "item",
+            backgroundColor: P().card,
+            borderColor: P().line,
+            textStyle: { color: P().body, fontFamily: FONT },
+            formatter: function (pt) {
+              return "<b style='color:" + P().ink + ";font-size:1.05em'>" + pt.data.display + "</b><br>" + pt.name;
+            }
+          },
+          series: [{
+            type: "pie",
+            radius: ["62%", "96%"],
+            center: ["50%", "94%"],
+            startAngle: 180,
+            minAngle: 1.5,
+            label: { show: false },
+            labelLine: { show: false },
+            itemStyle: { borderColor: P().card, borderWidth: 2 },
+            emphasis: { scaleSize: 6 },
+            blur: { itemStyle: { opacity: .3 } },
+            data: data
+          }]
+        });
+        chart.on("mouseover", { seriesIndex: 0 }, function (e) {
+          if (e.data.display) setCentre({ display: e.data.display, label: e.name });
+        });
+        chart.on("globalout", function () { setCentre(seg.lead); });
+
+        /* The gauge shows no numbers of its own, so the key carries them. */
+        const key = el("ul", "key");
+        seg.rows.forEach(function (r, i) {
+          const li = document.createElement("li");
+          const row = el("div", "key-row");
+          const sw = el("span", "key-swatch");
+          sw.style.background = ramp(seg)[i];
+          row.append(sw, el("span", "key-label", r.label), el("span", "key-value", r.display));
+          li.appendChild(row);
+          key.appendChild(li);
+        });
+        p.wrap.appendChild(key);
+      });
+      root.appendChild(el("p", "variation-foot", CAPTION));
+    }
+  });
+
+  /* ----------------------------------------------------------
+     4 — 100% stacked bars, emphasis colouring (D3)
+     ---------------------------------------------------------- */
+  variation({
+    id: "stacked-bars",
+    name: "100% stacked bars",
+    lib: "D3 scales + SVG",
+    note: "<b>The two dominant shares finally line up.</b> Stacking the segments puts 84% directly above 80% on a shared scale, which no pair of donuts can do. Only the lead action wears the segment's hue; the tail goes neutral, so the comparison is between two bars, not ten colours.",
+    render: function (root) {
+      const W = 720, ROW = 74, PAD_TOP = 34, H = PAD_TOP + SEGMENTS.length * ROW + 30;
+      const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img" });
+      svg.appendChild(svgEl("title", {})).textContent =
+        "Share of top actions, new users versus current users";
+      root.appendChild(el("p", "sr-only", SEGMENTS.map(spoken).join(" ")));
+
+      const x = d3.scaleLinear().domain([0, 100]).range([0, W]);
+      const GAP = 2; /* the surface doing the separating */
+
+      /* Quarter ticks behind the bars — hairline, solid, recessive. */
+      [25, 50, 75].forEach(function (t) {
+        svg.appendChild(svgEl("line", {
+          x1: x(t), x2: x(t), y1: PAD_TOP - 12, y2: H - 22,
+          stroke: P().line, "stroke-width": 1
+        }));
+        const lab = svgEl("text", { x: x(t), y: H - 6, "text-anchor": "middle", fill: P().muted, "font-size": 12 });
+        lab.textContent = t + "%";
+        svg.appendChild(lab);
+      });
+
+      SEGMENTS.forEach(function (seg, si) {
+        const y = PAD_TOP + si * ROW;
+        const head = svgEl("text", { x: 0, y: y - 8, fill: P().ink, "font-size": 15, "font-weight": 700 });
+        head.textContent = seg.title;
+        svg.appendChild(head);
+
+        let cursor = 0;
+        seg.rows.forEach(function (r, i) {
+          const x0 = x(cursor), x1 = x(cursor + r.share);
+          cursor += r.share;
+          const w = Math.max(1, x1 - x0 - (i === seg.rows.length - 1 ? 0 : GAP));
+          /* The lead takes the ramp's deepest step, not the mid accent: it is
+             the only segment wide enough to hold a label, and white on the
+             accent lands at 4.4:1 — under the 4.5:1 body-text floor. */
+          const fill = i === 0 ? ramp(seg)[0] : P().tail[Math.min(i - 1, P().tail.length - 1)];
+          const first = i === 0, last = i === seg.rows.length - 1;
+
+          /* 4px rounded outer data-ends; interior joints stay square. */
+          const rect = svgEl("path", {
+            d: roundedBar(x0, y, w, 30, first ? 4 : 0, last ? 4 : 0),
+            fill: fill, cursor: "pointer", tabindex: 0
+          });
+          const aria = seg.title + ", " + r.label + " " + r.display;
+          rect.setAttribute("aria-label", aria);
+          const enter = function (evt) {
+            rect.setAttribute("fill-opacity", ".82");
+            showTip(evt.touches ? evt.touches[0] : evt, r.display, r.label, fill, seg.title);
+          };
+          const leave = function () { rect.removeAttribute("fill-opacity"); hideTip(); };
+          rect.addEventListener("pointerenter", enter);
+          rect.addEventListener("pointermove", enter);
+          rect.addEventListener("pointerleave", leave);
+          rect.addEventListener("focus", function () {
+            const box = rect.getBoundingClientRect();
+            enter({ clientX: box.left + box.width / 2, clientY: box.top });
+          });
+          rect.addEventListener("blur", leave);
+          svg.appendChild(rect);
+
+          /* A label only goes inside a segment when it measurably fits.
+             Everything else is carried by the legend, tooltip and table. */
+          if (w > 140) {
+            const t = svgEl("text", {
+              x: x0 + 12, y: y + 19, fill: "#ffffff", "font-size": 14, "font-weight": 600,
+              "pointer-events": "none"
+            });
+            t.textContent = r.label + "  " + r.display;
+            svg.appendChild(t);
+          }
+        });
+      });
+      root.appendChild(svg);
+
+      const legend = el("ul", "legend-inline");
+      const leadItem = document.createElement("li");
+      const leadSw = el("span", "key-swatch");
+      leadSw.style.background = ramp(SEGMENTS[0])[0];
+      const leadSw2 = el("span", "key-swatch");
+      leadSw2.style.background = ramp(SEGMENTS[1])[0];
+      leadItem.append(leadSw, leadSw2, el("span", null, "Lead action for the segment"));
+      const tailItem = document.createElement("li");
+      const tailSw = el("span", "key-swatch");
+      tailSw.style.background = P().tail[1];
+      tailItem.append(tailSw, el("span", null, "Everything else, ranked"));
+      legend.append(leadItem, tailItem);
+      root.appendChild(legend);
+      root.appendChild(el("p", "variation-foot", CAPTION));
+    }
+  });
+
+  /* A bar path with independently rounded ends. */
+  function roundedBar(x, y, w, h, rl, rr) {
+    rl = Math.min(rl, w / 2); rr = Math.min(rr, w / 2);
+    return "M" + (x + rl) + "," + y +
+      "H" + (x + w - rr) + (rr ? "a" + rr + "," + rr + " 0 0 1 " + rr + "," + rr : "") +
+      "V" + (y + h - rr) + (rr ? "a" + rr + "," + rr + " 0 0 1 " + (-rr) + "," + rr : "") +
+      "H" + (x + rl) + (rl ? "a" + rl + "," + rl + " 0 0 1 " + (-rl) + "," + (-rl) : "") +
+      "V" + (y + rl) + (rl ? "a" + rl + "," + rl + " 0 0 1 " + rl + "," + (-rl) : "") + "Z";
+  }
+
+  /* ----------------------------------------------------------
+     5 — Paired bars by action (ECharts)
+     ---------------------------------------------------------- */
+  variation({
+    id: "paired-bars",
+    name: "Paired bars, one row per action",
+    lib: "ECharts",
+    note: "<b>The overlap the caption claims, made visible.</b> Actions on one axis, the two segments as two series — so \"distinct yet overlapping tasks\" stops being a sentence and becomes something you can read off. One tooltip lists both segments at once.",
+    render: function (root, keep) {
+      const host = el("div", "chart-host");
+      host.style.height = "clamp(19rem, 40vw, 24rem)";
+      root.appendChild(el("p", "sr-only", SEGMENTS.map(spoken).join(" ")));
+      root.appendChild(host);
+
+      const order = ACTIONS.slice().reverse(); /* ECharts stacks category 0 at the bottom */
+      const series = SEGMENTS.map(function (seg) {
+        return {
+          name: seg.title,
+          type: "bar",
+          barMaxWidth: 18,
+          itemStyle: { color: accent(seg), borderRadius: [0, 4, 4, 0] },
+          emphasis: { itemStyle: { color: accent(seg), opacity: .82 } },
+          data: order.map(function (a) {
+            const v = shareOf(seg, a);
+            return v == null ? null : +v.toFixed(1);
+          })
+        };
+      });
+
+      const chart = echarts.init(host, null, { renderer: "svg" });
+      keep(chart);
+      chart.setOption({
+        animation: !REDUCED,
+        grid: { left: 4, right: 48, top: 44, bottom: 24, containLabel: true },
+        legend: {
+          data: SEGMENTS.map(function (s) { return s.title; }),
+          top: 0, left: 0, icon: "roundRect", itemWidth: 12, itemHeight: 12,
+          textStyle: { color: P().body, fontFamily: FONT, fontSize: 13 }
+        },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow", shadowStyle: { color: theme === "dark" ? "rgba(255,255,255,.05)" : "rgba(28,23,37,.05)" } },
+          backgroundColor: P().card,
+          borderColor: P().line,
+          textStyle: { color: P().body, fontFamily: FONT },
+          formatter: function (items) {
+            const action = items[0].axisValue;
+            let out = "<div style='font-weight:600;color:" + P().ink + "'>" + action + "</div>";
+            SEGMENTS.forEach(function (seg) {
+              const d = displayOf(seg, action);
+              const swatch = "<span style='display:inline-block;width:8px;height:8px;border-radius:2px;background:" + accent(seg) + ";margin-right:6px'></span>";
+              out += "<div style='margin-top:2px'>" + swatch +
+                "<b style='color:" + P().ink + "'>" + (d || "≤ " + seg.other.display) + "</b> " +
+                "<span style='color:" + P().muted + "'>" + seg.title + (d ? "" : " (inside Other)") + "</span></div>";
+            });
+            return out;
+          }
+        },
+        xAxis: {
+          type: "value", max: 100,
+          axisLabel: { color: P().muted, formatter: "{value}%", fontFamily: FONT },
+          splitLine: { lineStyle: { color: P().line, type: "solid" } },
+          axisLine: { show: false }, axisTick: { show: false }
+        },
+        yAxis: {
+          type: "category", data: order,
+          axisLabel: { color: P().body, fontFamily: FONT, fontSize: 13 },
+          axisLine: { lineStyle: { color: P().line } }, axisTick: { show: false }
+        },
+        series: series
+      });
+
+      const foot = el("p", "variation-foot",
+        "Recent folder and New file appear in only one segment's top five — the other segment's share sits inside its Other bucket, so it is drawn as no bar and reported as a bound in the tooltip.");
+      root.appendChild(foot);
+    }
+  });
+
+  /* ----------------------------------------------------------
+     6 — Dumbbell (D3)
+     ---------------------------------------------------------- */
+  variation({
+    id: "dumbbell",
+    name: "Dumbbell — the shift from new to current",
+    lib: "D3 scales + SVG",
+    note: "<b>The story is the distance.</b> One row per action, a dot for each segment and a connector between them: the two long rows are the whole insight, and the four short rows say the rest barely moves. Hover a connector for the delta.",
+    render: function (root) {
+      const W = 720, ROW = 46, PAD_L = 168, PAD_R = 56, PAD_T = 16;
+      const H = PAD_T + ACTIONS.length * ROW + 34;
+      const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img" });
+      svg.appendChild(svgEl("title", {})).textContent = "Shift in share of top actions from new to current users";
+      root.appendChild(el("p", "sr-only", SEGMENTS.map(spoken).join(" ")));
+
+      const legend = el("ul", "legend-inline");
+      SEGMENTS.forEach(function (seg) {
+        const li = document.createElement("li");
+        const sw = el("span", "key-swatch");
+        sw.style.background = accent(seg);
+        sw.style.borderRadius = "999px";
+        li.append(sw, el("span", null, seg.title));
+        legend.appendChild(li);
+      });
+      root.appendChild(legend);
+
+      const x = d3.scaleLinear().domain([0, 100]).range([PAD_L, W - PAD_R]);
+
+      [0, 25, 50, 75, 100].forEach(function (t) {
+        svg.appendChild(svgEl("line", {
+          x1: x(t), x2: x(t), y1: PAD_T, y2: H - 30, stroke: P().line, "stroke-width": 1
+        }));
+        const lab = svgEl("text", { x: x(t), y: H - 12, "text-anchor": "middle", fill: P().muted, "font-size": 12 });
+        lab.textContent = t + "%";
+        svg.appendChild(lab);
+      });
+
+      ACTIONS.forEach(function (action, i) {
+        const cy = PAD_T + i * ROW + ROW / 2;
+        const label = svgEl("text", { x: PAD_L - 14, y: cy + 5, "text-anchor": "end", fill: P().body, "font-size": 14 });
+        label.textContent = action;
+        svg.appendChild(label);
+
+        const a = shareOf(SEGMENTS[0], action);
+        const b = shareOf(SEGMENTS[1], action);
+
+        if (a != null && b != null) {
+          svg.appendChild(svgEl("line", {
+            x1: x(Math.min(a, b)), x2: x(Math.max(a, b)), y1: cy, y2: cy,
+            stroke: P().muted, "stroke-width": 2, "stroke-linecap": "round", opacity: .45
+          }));
+        }
+
+        SEGMENTS.forEach(function (seg) {
+          const v = shareOf(seg, action);
+          const known = v != null;
+          const value = known ? v : boundOf(seg);
+          const cx = x(value);
+          /* A 2px ring in the surface colour keeps overlapping dots legible. */
+          const dot = svgEl("circle", {
+            cx: cx, cy: cy, r: 7,
+            fill: known ? accent(seg) : P().card,
+            stroke: known ? P().card : accent(seg),
+            "stroke-width": 2,
+            "stroke-dasharray": known ? "none" : "3 2.5"
+          });
+          /* The hit target is a transparent disc well past the painted dot. */
+          const hit = svgEl("circle", { cx: cx, cy: cy, r: 15, fill: "transparent", cursor: "pointer", tabindex: 0 });
+          const other = shareOf(SEGMENTS[seg === SEGMENTS[0] ? 1 : 0], action);
+          const note = known
+            ? (other != null
+                ? (Math.abs(v - other) < .5 ? "About the same in both segments"
+                  : (v > other ? "+" : "−") + Math.abs(v - other).toFixed(0) + " points vs " + SEGMENTS[seg === SEGMENTS[0] ? 1 : 0].title)
+                : null)
+            : "Not in this segment's top five — inside its Other bucket";
+          hit.setAttribute("aria-label", seg.title + ", " + action + " " +
+            (known ? displayOf(seg, action) : "at most " + seg.other.display));
+          const enter = function (evt) {
+            dot.setAttribute("r", 9);
+            showTip(evt.touches ? evt.touches[0] : evt,
+              known ? displayOf(seg, action) : "≤ " + seg.other.display,
+              seg.title + " · " + action, accent(seg), note);
+          };
+          const leave = function () { dot.setAttribute("r", 7); hideTip(); };
+          hit.addEventListener("pointerenter", enter);
+          hit.addEventListener("pointermove", enter);
+          hit.addEventListener("pointerleave", leave);
+          hit.addEventListener("focus", function () {
+            const box = hit.getBoundingClientRect();
+            enter({ clientX: box.left + box.width / 2, clientY: box.top });
+          });
+          hit.addEventListener("blur", leave);
+          svg.append(dot, hit);
+        });
+      });
+
+      root.appendChild(svg);
+      root.appendChild(el("p", "variation-foot",
+        "A hollow dashed dot marks an action a segment never listed: its share is unknown but capped by that segment's Other bucket."));
+    }
+  });
+
+  /* ----------------------------------------------------------
+     7 — Hero figure + ranked tail
+     ---------------------------------------------------------- */
+  variation({
+    id: "hero-tail",
+    name: "Hero figure with a ranked tail",
+    lib: "No chart library",
+    note: "<b>When one number is the story, a chart can bury it.</b> 84% and 80% get set as figures; the tail becomes a small ranked meter list underneath. Least clever of the ten and probably the fastest to read — worth keeping in the running as the control.",
+    render: function (root) {
+      const pair = pairContainer(root);
+      SEGMENTS.forEach(function (seg) {
+        const wrap = el("div", "chart-panel");
+        wrap.appendChild(el("p", "chart-title", seg.title));
+        wrap.appendChild(el("p", "chart-sub", seg.blurb));
+        wrap.appendChild(el("p", "sr-only", spoken(seg)));
+
+        const hero = el("div", "hero-figure");
+        hero.appendChild(el("div", "hf-value", seg.lead.display));
+        hero.appendChild(el("div", "hf-action", seg.lead.label));
+        hero.appendChild(el("div", "hf-of", "of top actions in this segment"));
+        wrap.appendChild(hero);
+
+        /* Meter: the fill carries the share, the track is a lighter step of
+           the same ramp so the state reads across the whole bar. */
+        const meter = el("div", "hero-meter");
+        meter.style.background = ramp(seg)[1];
+        const fill = el("div", "hm-fill");
+        fill.style.background = accent(seg);
+        fill.style.width = REDUCED ? seg.lead.share + "%" : "0%";
+        fill.style.transition = REDUCED ? "none" : "width .9s cubic-bezier(.22,.61,.36,1)";
+        meter.appendChild(fill);
+        wrap.appendChild(meter);
+        if (!REDUCED) requestAnimationFrame(function () { fill.style.width = seg.lead.share + "%"; });
+
+        const list = el("ul", "tail-list");
+        seg.rows.slice(1).forEach(function (r, i) {
+          const li = el("li", "tail-row");
+          li.append(el("span", "tr-label", r.label));
+          const track = el("span", "tr-track");
+          const bar = el("span", "tr-fill");
+          bar.style.background = P().tail[Math.min(i, P().tail.length - 1)];
+          /* Scaled against the lead so the tail reads as a tail, not as
+             five bars of roughly equal length. */
+          bar.style.width = (r.share / seg.lead.share) * 100 + "%";
+          track.appendChild(bar);
+          li.append(track, el("span", "tr-value", r.display));
+          list.appendChild(li);
+        });
+        wrap.appendChild(list);
+        pair.appendChild(wrap);
+      });
+      root.appendChild(el("p", "variation-foot", CAPTION));
+    }
+  });
+
+  /* ----------------------------------------------------------
+     8 — Waffle / unit grid
+     ---------------------------------------------------------- */
+  variation({
+    id: "waffle",
+    name: "Waffle — a hundred users each",
+    lib: "No chart library",
+    note: "<b>Literal about what a percentage is.</b> A hundred squares per segment, one per user; hovering a category dims the rest of the grid. Slower to read than a bar but hard to misread, and it survives being screenshotted into a deck.",
+    render: function (root) {
+      const pair = pairContainer(root);
+      SEGMENTS.forEach(function (seg) {
+        const wrap = el("div", "chart-panel");
+        wrap.appendChild(el("p", "chart-title", seg.title));
+        wrap.appendChild(el("p", "chart-sub", seg.blurb));
+        wrap.appendChild(el("p", "sr-only", spoken(seg)));
+
+        /* Largest-remainder so the hundred cells add up exactly. */
+        const counts = largestRemainder(seg.rows.map(function (r) { return r.share; }), 100);
+        const grid = el("div", "waffle-grid");
+        const cells = [];
+        counts.forEach(function (n, i) {
+          for (let c = 0; c < n; c++) {
+            const cell = el("span", "waffle-cell");
+            cell.style.background = i === 0 ? accent(seg) : P().tail[Math.min(i - 1, P().tail.length - 1)];
+            cell.dataset.cat = String(i);
+            grid.appendChild(cell);
+            cells.push(cell);
+          }
+        });
+        wrap.appendChild(grid);
+
+        const key = el("ul", "key");
+        seg.rows.forEach(function (r, i) {
+          const li = document.createElement("li");
+          const btn = el("button", "key-row");
+          btn.type = "button";
+          const sw = el("span", "key-swatch");
+          sw.style.background = i === 0 ? accent(seg) : P().tail[Math.min(i - 1, P().tail.length - 1)];
+          btn.append(sw, el("span", "key-label", r.label),
+            el("span", "key-value", r.display + " · " + counts[i] + " cells"));
+          const on = function () {
+            grid.dataset.dim = "true";
+            cells.forEach(function (c) { c.dataset.hot = String(c.dataset.cat === String(i)); });
+            btn.dataset.active = "true";
+          };
+          const off = function () {
+            grid.dataset.dim = "false";
+            cells.forEach(function (c) { delete c.dataset.hot; });
+            btn.dataset.active = "false";
+          };
+          btn.addEventListener("mouseenter", on);
+          btn.addEventListener("mouseleave", off);
+          btn.addEventListener("focus", on);
+          btn.addEventListener("blur", off);
+          li.appendChild(btn);
+          key.appendChild(li);
+        });
+        wrap.appendChild(key);
+        pair.appendChild(wrap);
+      });
+      root.appendChild(el("p", "variation-foot",
+        "Cells are rounded by largest remainder, so each grid totals exactly 100."));
+    }
+  });
+
+  function largestRemainder(shares, total) {
+    const scaled = shares.map(function (s) { return (s / 100) * total; });
+    const floors = scaled.map(Math.floor);
+    let left = total - floors.reduce(function (a, b) { return a + b; }, 0);
+    const order = scaled
+      .map(function (v, i) { return { i: i, rem: v - Math.floor(v) }; })
+      .sort(function (a, b) { return b.rem - a.rem; });
+    for (let k = 0; k < order.length && left > 0; k++, left--) floors[order[k].i]++;
+    return floors;
+  }
+
+  /* ----------------------------------------------------------
+     9 — Morphing donut behind a segmented control (ApexCharts)
+     ---------------------------------------------------------- */
+  variation({
+    id: "morph-donut",
+    name: "One donut, segmented control",
+    lib: "ApexCharts",
+    note: "<b>One chart instead of two.</b> Switching segments animates the arcs between datasets, and the transition itself carries the comparison — you watch the ring re-form around a different action. Costs the reader the ability to see both at once.",
+    render: function (root, keep) {
+      const control = el("div", "seg-control");
+      control.setAttribute("role", "group");
+      control.setAttribute("aria-label", "Choose a user segment");
+      const host = el("div", "chart-host");
+      host.style.maxWidth = "34rem";
+      host.style.margin = "0 auto";
+      root.appendChild(control);
+      root.appendChild(host);
+      root.appendChild(el("p", "sr-only", SEGMENTS.map(spoken).join(" ")));
+
+      let active = 0;
+      const optsFor = function (seg) {
+        return {
+          series: seg.rows.map(function (r) { return +r.share.toFixed(2); }),
+          labels: seg.rows.map(function (r) { return r.label; }),
+          colors: ramp(seg).slice(0, seg.rows.length),
+          chart: {
+            type: "donut",
+            height: 380,
+            fontFamily: FONT,
+            foreColor: P().body,
+            animations: { enabled: !REDUCED, speed: 600, animateGradually: { enabled: false } },
+            toolbar: { show: false }
+          },
+          stroke: { colors: [P().card], width: 2 },
+          dataLabels: { enabled: false },
+          legend: {
+            position: "bottom",
+            fontSize: "13px",
+            markers: { width: 10, height: 10, radius: 3 },
+            itemMargin: { horizontal: 10, vertical: 3 },
+            labels: { colors: P().body }
+          },
+          plotOptions: {
+            pie: {
+              expandOnClick: false,
+              donut: {
+                size: "66%",
+                labels: {
+                  show: true,
+                  name: { fontSize: "13px", color: P().muted, offsetY: 18 },
+                  value: {
+                    fontSize: "34px", fontWeight: 700, color: P().ink, offsetY: -18,
+                    formatter: function (v) { return Math.round(v) + "%"; }
+                  },
+                  total: {
+                    show: true, showAlways: true,
+                    label: seg.lead.label,
+                    color: P().muted,
+                    formatter: function () { return seg.lead.display; }
+                  }
+                }
+              }
+            }
+          },
+          states: { hover: { filter: { type: "lighten", value: .1 } }, active: { filter: { type: "none" } } },
+          tooltip: {
+            theme: theme,
+            y: {
+              formatter: function (v, o) { return seg.rows[o.seriesIndex].display; },
+              title: { formatter: function (name) { return name; } }
+            }
+          }
+        };
+      };
+
+      const chart = new ApexCharts(host, optsFor(SEGMENTS[0]));
+      chart.render();
+      keep(chart);
+
+      SEGMENTS.forEach(function (seg, i) {
+        const btn = el("button", null, seg.title);
+        btn.type = "button";
+        btn.setAttribute("aria-pressed", String(i === 0));
+        btn.addEventListener("click", function () {
+          if (active === i) return;
+          active = i;
+          control.querySelectorAll("button").forEach(function (b, bi) {
+            b.setAttribute("aria-pressed", String(bi === i));
+          });
+          const next = optsFor(seg);
+          chart.updateOptions({
+            labels: next.labels,
+            colors: next.colors,
+            plotOptions: next.plotOptions,
+            tooltip: next.tooltip
+          }, false, false);
+          chart.updateSeries(next.series, !REDUCED);
+        });
+        control.appendChild(btn);
+      });
+      root.appendChild(el("p", "variation-foot", CAPTION));
+    }
+  });
+
+  /* ----------------------------------------------------------
+     10 — Sunburst (ECharts)
+     ---------------------------------------------------------- */
+  variation({
+    id: "sunburst",
+    name: "Sunburst — both segments in one ring",
+    lib: "ECharts",
+    note: "<b>Both segments in one figure, drillable.</b> The inner ring is the segment, the outer its actions; clicking a half zooms into it and clicking the middle backs out. The most compact of the ten and the most novel — which is also the argument against it on a case-study page.",
+    render: function (root, keep) {
+      const host = el("div", "chart-host");
+      host.style.height = "clamp(21rem, 46vw, 30rem)";
+      root.appendChild(host);
+      root.appendChild(el("p", "sr-only", SEGMENTS.map(spoken).join(" ")));
+
+      const chart = echarts.init(host, null, { renderer: "svg" });
+      keep(chart);
+      chart.setOption({
+        animation: !REDUCED,
+        tooltip: {
+          backgroundColor: P().card,
+          borderColor: P().line,
+          textStyle: { color: P().body, fontFamily: FONT },
+          formatter: function (pt) {
+            const d = pt.data.display;
+            return "<b style='color:" + P().ink + "'>" + pt.name + "</b>" + (d ? "<br>" + d : "");
+          }
+        },
+        series: [{
+          type: "sunburst",
+          radius: ["16%", "94%"],
+          center: ["50%", "50%"],
+          sort: null,
+          nodeClick: "rootToNode",
+          emphasis: { focus: "ancestor" },
+          itemStyle: { borderColor: P().card, borderWidth: 2 },
+          levels: [
+            {},
+            {
+              r0: "16%", r: "40%",
+              label: {
+                rotate: 0,
+                /* The hub is a container, not a value: a neutral fill keeps it
+                   from reading as a sixth slice, and clears 6.3:1 for its
+                   label in both themes where the accent would not. */
+                color: theme === "dark" ? "#110e1a" : "#ffffff",
+                fontSize: 13, fontWeight: 700, fontFamily: FONT
+              },
+              itemStyle: { borderWidth: 2 }
+            },
+            {
+              r0: "42%", r: "94%",
+              label: { rotate: "tangential", minAngle: 22, color: P().ink, fontSize: 12, fontFamily: FONT }
+            }
+          ],
+          data: SEGMENTS.map(function (seg) {
+            return {
+              name: seg.title,
+              itemStyle: { color: P().tail[0] },
+              children: seg.rows.map(function (r, i) {
+                return {
+                  name: r.label,
+                  value: r.share,
+                  display: r.display,
+                  itemStyle: { color: ramp(seg)[i] }
+                };
+              })
+            };
+          })
+        }]
+      });
+      root.appendChild(el("p", "variation-foot",
+        "Click a half to zoom into that segment, click the centre to come back. Each half is normalised to its own 100%."));
+    }
+  });
+
+  /* ==========================================================
+     Mounting, theming, layout
+     ========================================================== */
+
+  const main = document.getElementById("variations");
+  const jump = document.getElementById("jump");
+
+  const mounted = VARIATIONS.map(function (def, i) {
+    const section = el("section", "variation");
+    section.id = def.id;
+
+    const head = el("div", "variation-head");
+    head.appendChild(el("span", "variation-num", String(i + 1).padStart(2, "0")));
+    head.appendChild(el("h2", null, def.name));
+    head.appendChild(el("span", "chip", def.lib));
+    section.appendChild(head);
+
+    const note = el("p", "variation-note");
+    note.innerHTML = def.note; /* lab copy, authored here — not data */
+    section.appendChild(note);
+
+    const body = el("div", "variation-body");
+    section.appendChild(body);
+    main.appendChild(section);
+
+    const opt = el("option", null, (i + 1) + ". " + def.name);
+    opt.value = def.id;
+    jump.appendChild(opt);
+
+    return { def: def, body: body, instances: [], rendered: false };
+  });
+
+  function teardown(entry) {
+    entry.instances.forEach(function (inst) {
+      if (!inst) return;
+      if (typeof inst.dispose === "function") inst.dispose();       /* ECharts */
+      else if (typeof inst.destroy === "function") inst.destroy();  /* Chart.js, ApexCharts */
+    });
+    entry.instances = [];
+    entry.body.textContent = "";
+  }
+
+  function draw(entry) {
+    teardown(entry);
+    entry.def.render(entry.body, function (inst) { entry.instances.push(inst); });
+    entry.rendered = true;
+  }
+
+  /* Ten chart instances is enough to feel on a cold load, so each one waits
+     until it is nearly on screen. */
+  const io = new IntersectionObserver(function (items) {
+    items.forEach(function (item) {
+      if (!item.isIntersecting) return;
+      const entry = mounted.find(function (m) { return m.body.parentNode === item.target; });
+      if (entry && !entry.rendered) draw(entry);
+      io.unobserve(item.target);
+    });
+  }, { rootMargin: "300px 0px" });
+  mounted.forEach(function (m) { io.observe(m.body.parentNode); });
+
+  function redrawAll() {
+    hideTip();
+    mounted.forEach(function (m) { if (m.rendered) draw(m); });
+  }
+
+  /* ECharts and Chart.js size to their host; the host sizes to the card. */
+  const ro = new ResizeObserver(function () {
+    mounted.forEach(function (m) {
+      m.instances.forEach(function (inst) {
+        if (inst && typeof inst.resize === "function" && typeof inst.dispose === "function") inst.resize();
+      });
+    });
+  });
+  ro.observe(main);
+
+  /* ---- theme ---- */
+  const lightBtn = document.getElementById("theme-light");
+  const darkBtn = document.getElementById("theme-dark");
+  function setTheme(next) {
+    theme = next;
+    document.documentElement.classList.toggle("dark", next === "dark");
+    document.documentElement.classList.toggle("light", next !== "dark");
+    lightBtn.setAttribute("aria-pressed", String(next === "light"));
+    darkBtn.setAttribute("aria-pressed", String(next === "dark"));
+    redrawAll();
+  }
+  lightBtn.addEventListener("click", function () { setTheme("light"); });
+  darkBtn.addEventListener("click", function () { setTheme("dark"); });
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) setTheme("dark");
+
+  /* ---- layout ---- */
+  const stackedBtn = document.getElementById("layout-stacked");
+  const sideBtn = document.getElementById("layout-side");
+  function setLayout(next) {
+    document.body.dataset.layout = next;
+    stackedBtn.setAttribute("aria-pressed", String(next === "stacked"));
+    sideBtn.setAttribute("aria-pressed", String(next === "side"));
+    /* Libraries that measure their host need a nudge after the grid reflows. */
+    requestAnimationFrame(function () {
+      mounted.forEach(function (m) {
+        m.instances.forEach(function (inst) {
+          if (inst && typeof inst.resize === "function") inst.resize();
+        });
+      });
+    });
+  }
+  stackedBtn.addEventListener("click", function () { setLayout("stacked"); });
+  sideBtn.addEventListener("click", function () { setLayout("side"); });
+
+  /* ---- table view ---- */
+  const tableWrap = document.getElementById("data-table");
+  const tableBtn = document.getElementById("toggle-table");
+  (function buildTable() {
+    const table = document.createElement("table");
+    const caption = el("caption", null,
+      "Every value in the figure. Published shares total 99% and 101%; the normalised column is what the geometry uses.");
+    table.appendChild(caption);
+    const thead = document.createElement("thead");
+    const hr = document.createElement("tr");
+    ["Segment", "Action", "Published", "Normalised"].forEach(function (h) {
+      hr.appendChild(el("th", null, h));
+    });
+    thead.appendChild(hr);
+    table.appendChild(thead);
+    const tbody = document.createElement("tbody");
+    SEGMENTS.forEach(function (seg) {
+      seg.rows.forEach(function (r, i) {
+        const tr = document.createElement("tr");
+        tr.appendChild(el("td", null, i === 0 ? seg.title : ""));
+        tr.appendChild(el("td", null, r.label));
+        tr.appendChild(el("td", null, r.display));
+        tr.appendChild(el("td", null, r.share.toFixed(1) + "%"));
+        tbody.appendChild(tr);
+      });
+      const sum = document.createElement("tr");
+      sum.className = "seg-row";
+      sum.appendChild(el("td", null, seg.title));
+      sum.appendChild(el("td", null, "Total"));
+      sum.appendChild(el("td", null, seg.total + "%"));
+      sum.appendChild(el("td", null, "100.0%"));
+      tbody.appendChild(sum);
+    });
+    table.appendChild(tbody);
+    tableWrap.appendChild(table);
+  })();
+  tableBtn.addEventListener("click", function () {
+    const open = tableWrap.hasAttribute("hidden");
+    if (open) tableWrap.removeAttribute("hidden"); else tableWrap.setAttribute("hidden", "");
+    tableBtn.setAttribute("aria-pressed", String(open));
+    tableBtn.textContent = open ? "Hide the numbers" : "Show the numbers";
+  });
+
+  /* ---- jump ---- */
+  jump.addEventListener("change", function () {
+    const target = document.getElementById(jump.value);
+    if (target) target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+  });
+})();
+</script>
+</body>
+</html>

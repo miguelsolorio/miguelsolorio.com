@@ -135,33 +135,42 @@
         color: #8c839f;
     }
 
-    /* The donut charts keep the original figure's palette: the main hue at
-       full strength and the small slices as pale tints of it, which hold up
-       on the near-black page as they did on the image's near-black. */
+    /* The donut charts keep the original figure's shape: the main hue at full
+       strength and the small slices as paler steps of it. The steps themselves
+       are re-cut for the near-black page — light mode's ramp does not simply
+       invert, and each mode's is stepped against its own surface so the pale
+       end stays a visible mark instead of dissolving into the page.
+
+       Resting label ink steps back from the old near-white: the hover state
+       needs somewhere to go, and #f5f0fa is already the top of the range. */
     .dark .single .donut-board {
-        --donut-label-ink: #f5f0fa;
-        --donut-line: #a79fb8;
+        --donut-label-ink: #b8afc9;
+        --donut-line: #7d748f;
+        --donut-label-ink-hi: #f5f0fa;
+        --donut-line-hi: #f5f0fa;
     }
     .dark .single .donut-title {
         color: #ede7f2;
     }
     .dark .single .donut--teal {
-        --donut-seg-0: #1e9e8e;
-        --donut-seg-1: #f0faf7;
-        --donut-seg-2: #cfeee7;
-        --donut-seg-3: #a5e0d5;
-        --donut-seg-4: #62c6b6;
-        --donut-seg-5: #35b09d;
-        --donut-value: #7fd8cb;
+        --donut-seg-0: #007463;
+        --donut-seg-1: #9ed0c4;
+        --donut-seg-2: #80beb0;
+        --donut-seg-3: #60ad9c;
+        --donut-seg-4: #3b9b88;
+        --donut-seg-5: #048976;
+        --donut-value: #54b9a5;
+        --donut-value-hi: #9ee5d4;
     }
     .dark .single .donut--blue {
-        --donut-seg-0: #2f6bef;
-        --donut-seg-1: #eef4fd;
-        --donut-seg-2: #cdddf9;
-        --donut-seg-3: #a3c2f5;
-        --donut-seg-4: #6f9cf1;
-        --donut-seg-5: #4c82ee;
-        --donut-value: #85acf7;
+        --donut-seg-0: #2456d3;
+        --donut-seg-1: #b2c4e9;
+        --donut-seg-2: #95b0e6;
+        --donut-seg-3: #789be2;
+        --donut-seg-4: #5c85de;
+        --donut-seg-5: #406ed9;
+        --donut-value: #81a4ea;
+        --donut-value-hi: #c0d5fe;
     }
 
 }

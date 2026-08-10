@@ -27,6 +27,14 @@
      starts at the column edge, underlines its label, then breaks 45 degrees
      to the dot; a level pair degenerates to one straight line.
 
+     Hovering: assets/js/donut-charts.js pairs each band with its callout
+     through the data-seg index stamped on both, so pointing at a segment
+     lifts its label and value on the outside and drops the other four back,
+     while the hole swaps to that segment's share. That is enhancement only —
+     nothing is hidden behind it. Every label and value is already drawn, the
+     sr-only line above speaks the whole table, and with JavaScript off the
+     figure is exactly the static drawing it was before.
+
      Meant to sit inside {{< donuts >}}, which pairs the charts up. */}}
 {{- $palettes := dict "teal" 6 "blue" 6 -}}
 {{- $title := "" -}}
@@ -149,32 +157,48 @@
     {{- $above = $y -}}
   {{- end -}}
 {{- end -}}
-<div class="donut-chart donut--{{ $tone }}">
+{{- /* The hovered band thickens rather than scaling: a segment here is a dash
+       on a stroked circle, not a shape of its own, so there is nothing to grow
+       outward except its stroke. Both widths ride to CSS as custom properties
+       so the resting figure still draws with no stylesheet at all. */ -}}
+{{- $bandHot := add $band 10.0 -}}
+<div class="donut-chart donut--{{ $tone }}" data-donut>
   <p class="donut-title">{{ $title }}</p>
   <p class="sr-only">{{ $title }}: {{ delimit $spoken ", " }}.</p>
-  <svg class="donut-svg" viewBox="0 0 720 356" width="720" height="356" aria-hidden="true">
+  <svg class="donut-svg" viewBox="0 0 720 356" width="720" height="356" aria-hidden="true" style="--donut-band:{{ printf "%.1f" $band }};--donut-band-hot:{{ printf "%.1f" $bandHot }}">
     {{- /* Each segment is one stroked circle: pathLength makes the dash
            pattern percent-native, rotate(-90) moves the dash origin from
            3 o'clock to 12, and the offset walks each dash to its cumulative
            start. A circle's path runs clockwise, matching the authored
-           order. */ -}}
+           order.
+
+           Only the painted part of a dashed stroke takes pointer events, so
+           each circle is hit-testable exactly over its own band and the gaps
+           between segments fall through — no separate hit layer needed. */ -}}
     <g transform="rotate(-90 360 196)">
       {{- range $segs }}
-      <circle class="donut-seg" cx="360" cy="196" r="{{ printf "%.1f" $rMid }}" pathLength="100" stroke-width="{{ printf "%.1f" $band }}" stroke-dasharray="{{ printf "%.3f" .dash }} {{ printf "%.3f" (sub 100.0 .dash) }}" stroke-dashoffset="{{ printf "%.3f" .offset }}" style="stroke:var(--donut-seg-{{ .i }})"/>
+      <circle class="donut-seg" data-seg="{{ .i }}" data-display="{{ .display }}" cx="360" cy="196" r="{{ printf "%.1f" $rMid }}" pathLength="100" stroke-width="{{ printf "%.1f" $band }}" stroke-dasharray="{{ printf "%.3f" .dash }} {{ printf "%.3f" (sub 100.0 .dash) }}" stroke-dashoffset="{{ printf "%.3f" .offset }}" style="stroke:var(--donut-seg-{{ .i }})"/>
       {{- end }}
     </g>
+    {{- /* The hole carries the hovered share as a hero figure, resting on the
+           largest one. Only the number: the callout it belongs to lights up at
+           the same moment and is already spelling out its name, and a label
+           long enough to overrun the hole has nowhere to wrap to. */ -}}
+    <text class="donut-centre" x="360" y="196" text-anchor="middle" dominant-baseline="central">{{ (index $rows 0).display }}</text>
     {{- range $callouts }}
     {{- $lineY := add .labely $lead -}}
     {{- $dy := math.Abs (sub .doty $lineY) -}}
+    <g class="donut-callout" data-seg="{{ .i }}">
     {{- if eq .side "left" }}
-    <polyline class="donut-lead" points="14,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (sub .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
-    <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
-    <text class="donut-label" x="14" y="{{ printf "%.1f" .labely }}" text-anchor="start">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>
+      <polyline class="donut-lead" points="14,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (sub .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
+      <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
+      <text class="donut-label" x="14" y="{{ printf "%.1f" .labely }}" text-anchor="start">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>
     {{- else }}
-    <polyline class="donut-lead" points="706,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (add .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
-    <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
-    <text class="donut-label" x="706" y="{{ printf "%.1f" .labely }}" text-anchor="end">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>
+      <polyline class="donut-lead" points="706,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (add .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
+      <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
+      <text class="donut-label" x="706" y="{{ printf "%.1f" .labely }}" text-anchor="end">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>
     {{- end }}
+    </g>
     {{- end }}
   </svg>
 </div>
