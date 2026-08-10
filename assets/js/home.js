@@ -10,6 +10,7 @@ if (portfolioTerminal) {
   const terminalCaretLayer = document.getElementById('terminal-caret-layer');
   const terminalCaretText = document.getElementById('terminal-caret-text');
   const terminalSuggestions = document.getElementById('terminal-suggestions');
+  const terminalHintLink = document.getElementById('terminal-hint-link');
   const commandHistory = ['miguelsolorio history', 'miguelsolorio status'];
   let historyIndex = commandHistory.length;
   const allSuggestionEntries = [];
@@ -102,8 +103,20 @@ if (portfolioTerminal) {
       name: 'work',
       description: 'selected work and side projects',
       run: showWork
+    },
+    {
+      name: 'game',
+      aliases: ['games', 'play'],
+      description: 'take over the page with a game',
+      run: showGames
     }
   ];
+
+  /* Sorted here rather than hand-ordered in the literal above: help, the
+     autocomplete list and the "Try:" hints are all derived from this array, so
+     one sort keeps every listing alphabetical no matter where a new command
+     gets appended. */
+  commandDefinitions.sort(function (a, b) { return a.name.localeCompare(b.name); });
 
   commandDefinitions.forEach(function (definition) {
     allSuggestionEntries.push({
@@ -175,6 +188,23 @@ if (portfolioTerminal) {
     return row;
   }
 
+  function addActionRow(parts, onActivate, spaced) {
+    const row = createRow(spaced);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'home-hero-terminal-action';
+    parts.forEach(function (part) {
+      const span = document.createElement('span');
+      span.className = part.className || 't-out';
+      span.textContent = part.text;
+      button.appendChild(span);
+    });
+    button.addEventListener('click', onActivate);
+    row.appendChild(button);
+    terminalOutput.appendChild(row);
+    return row;
+  }
+
   function addCommandLine(command, spaced) {
     addParts([
       { text: '~', className: 't-ps1' },
@@ -236,16 +266,117 @@ if (portfolioTerminal) {
     });
   }
 
+  /* Games live in assets/js/games.js behind window.siteGames, so this only
+     ever lists and dispatches — it never knows what a game is.
+
+     `game` with no argument leaves the terminal in a picker state: the rows
+     become a selection list with the first entry highlighted, and the input
+     keeps focus so arrows move the highlight and Enter commits. Typing
+     anything dismisses it, so the prompt never traps you. */
+  let pendingChoice = null;
+
+  function paintChoice() {
+    pendingChoice.buttons.forEach(function (button, index) {
+      const active = index === pendingChoice.index;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-selected', active ? 'true' : 'false');
+      button.firstElementChild.textContent = active ? ' \u276f ' : '   ';
+    });
+  }
+
+  function moveChoice(delta) {
+    const count = pendingChoice.items.length;
+    pendingChoice.index = (pendingChoice.index + delta + count) % count;
+    paintChoice();
+  }
+
+  function endChoice() {
+    if (!pendingChoice) return;
+    portfolioTerminal.classList.remove('is-choosing');
+    pendingChoice.buttons.forEach(function (button) {
+      button.classList.remove('is-active');
+      button.removeAttribute('aria-selected');
+      button.disabled = true;
+      button.firstElementChild.textContent = '   ';
+    });
+    pendingChoice = null;
+  }
+
+  function commitChoice(index) {
+    if (!pendingChoice) return;
+    const item = pendingChoice.items[index === undefined ? pendingChoice.index : index];
+    endChoice();
+    if (!item) return;
+    addParts([{ text: 'launching ', className: 't-out' }, { text: item.name, className: 't-ok' }], true);
+    scrollToBottom();
+    window.siteGames.play(item.id);
+  }
+
+  function showGames(args) {
+    endChoice();
+
+    if (!window.siteGames) {
+      addLine('game mode is unavailable right now', 't-error');
+      return;
+    }
+
+    const games = window.siteGames.list();
+    const query = args && args.length ? args[0] : '';
+
+    if (query) {
+      const hit = window.siteGames.find(query);
+      if (!hit) {
+        addLine('no such game: ' + query, 't-error');
+        addLine('Try `game` to see what is available.', 't-muted');
+        return;
+      }
+      addParts([{ text: 'launching ', className: 't-out' }, { text: hit.name, className: 't-ok' }]);
+      window.siteGames.play(hit.id);
+      return;
+    }
+
+    addLine('choose a game:', 't-out', true);
+
+    const width = games.reduce(function (widest, game) {
+      return Math.max(widest, game.name.length);
+    }, 0);
+
+    const buttons = games.map(function (game, index) {
+      const row = addActionRow([
+        { text: '   ', className: 't-scope' },
+        { text: String(index + 1) + '  ', className: 't-dim' },
+        { text: game.name.padEnd(width + 3), className: 't-cmd' },
+      ], function () { commitChoice(index); });
+      return row.firstElementChild;
+    });
+
+    addParts([
+      { text: '\u2191\u2193', className: 't-scope' },
+      { text: ' select  ', className: 't-muted' },
+      { text: 'enter', className: 't-scope' },
+      { text: ' play  ', className: 't-muted' },
+      { text: 'esc', className: 't-scope' },
+      { text: ' cancel', className: 't-muted' }
+    ], true);
+
+    pendingChoice = { items: games, buttons: buttons, index: 0 };
+    /* The prompt collapses: the selection is the input now. It stays in the
+       DOM and keeps focus, because the hidden input is what receives the
+       arrow keys. */
+    portfolioTerminal.classList.add('is-choosing');
+    paintChoice();
+  }
+
   function parseInput(value) {
     const trimmed = value.trim();
-    if (!trimmed) return { name: 'help', rawName: '' };
+    if (!trimmed) return { name: 'help', rawName: '', args: [] };
 
     const tokens = trimmed.split(/\s+/);
     if (tokens[0].toLowerCase() === 'miguelsolorio') tokens.shift();
 
     const rawName = (tokens.shift() || '').toLowerCase();
     const name = rawName.charAt(0) === '/' ? rawName.slice(1) : rawName;
-    return { name: name, rawName: rawName };
+    return { name: name, rawName: rawName, args: tokens };
   }
 
   function getCommand(name) {
@@ -387,7 +518,7 @@ if (portfolioTerminal) {
       addLine('command not found: ' + (parsed.rawName || command), 't-error');
       addLine(closeMatches.length ? 'Try: ' + closeMatches.join(' · ') : 'Try `help` to see what is available.', 't-muted');
     } else {
-      definition.run();
+      definition.run(parsed.args);
     }
 
     setTerminalInputValue('');
@@ -396,6 +527,7 @@ if (portfolioTerminal) {
   }
 
   terminalInput.addEventListener('input', function () {
+    if (pendingChoice && terminalInput.value) endChoice();
     syncTerminalCaret();
     updateSuggestions(false);
   });
@@ -404,7 +536,57 @@ if (portfolioTerminal) {
     terminalInput.addEventListener(eventName, syncTerminalCaret);
   });
 
+  if (terminalHintLink) {
+    // Same trick the suggestion options use: eat the mousedown so the
+    // input never blurs while the hint link is being clicked.
+    terminalHintLink.addEventListener('mousedown', function (event) {
+      event.preventDefault();
+    });
+    terminalHintLink.addEventListener('click', function () {
+      if (suggestionsVisible) {
+        hideSuggestions();
+        return;
+      }
+      if (pendingChoice) endChoice();
+      terminalInput.focus();
+      updateSuggestions(true);
+    });
+  }
+
   terminalInput.addEventListener('keydown', function (event) {
+    if (pendingChoice) {
+      if (event.key === 'ArrowDown' || (event.key === 'Tab' && !event.shiftKey)) {
+        event.preventDefault(); moveChoice(1); return;
+      }
+      if (event.key === 'ArrowUp' || (event.key === 'Tab' && event.shiftKey)) {
+        event.preventDefault(); moveChoice(-1); return;
+      }
+      if (/^[0-9]$/.test(event.key)) {
+        const index = Number(event.key) - 1;
+        if (index >= 0 && index < pendingChoice.items.length) {
+          event.preventDefault();
+          pendingChoice.index = index;
+          paintChoice();
+          return;
+        }
+      }
+      if (event.key === 'Enter') { event.preventDefault(); commitChoice(); return; }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        endChoice();
+        addLine('cancelled', 't-muted');
+        scrollToBottom();
+        return;
+      }
+      /* The prompt is collapsed, so a stray character would land in a field
+         nobody can see and silently drop the picker. Swallow it: escape is the
+         way out, and the hint row says so. */
+      if (event.key.length === 1 && !event.metaKey && !event.ctrlKey) {
+        event.preventDefault();
+        return;
+      }
+    }
+
     if ((event.metaKey || event.ctrlKey) && event.code === 'Space') {
       event.preventDefault();
       updateSuggestions(true);
@@ -469,6 +651,18 @@ if (portfolioTerminal) {
   syncTerminalCaret();
   if (document.activeElement === document.body) terminalInput.focus({ preventScroll: true });
 }
+
+/* The games sit in the projects grid alongside the plugins, but they are page
+   takeovers rather than destinations, so their tiles launch window.siteGames
+   instead of navigating. The guard mirrors the command palette's: a games.js
+   that failed to load leaves the tile inert rather than throwing on click. */
+(function () {
+  document.querySelectorAll('#side-projects [data-game]').forEach(function (tile) {
+    tile.addEventListener('click', function () {
+      if (window.siteGames) window.siteGames.play(tile.dataset.game);
+    });
+  });
+})();
 
 // Classic 3D Perlin noise (x, y, time), used by the parked undercurrent
 // module below. (The halftone portrait that shared this field was removed

@@ -22,8 +22,16 @@
             <span class="t-ps1" aria-hidden="true">~</span>
             <label class="sr-only" for="terminal-input">Enter a portfolio terminal command</label>
             <span class="home-hero-terminal-input-wrap">
-              <input id="terminal-input" class="home-hero-terminal-input" type="text" inputmode="text" autocapitalize="none" spellcheck="false" aria-autocomplete="list" aria-controls="terminal-suggestions" aria-expanded="false" placeholder=" use /slash for commands" />
+              <input id="terminal-input" class="home-hero-terminal-input" type="text" inputmode="text" autocapitalize="none" spellcheck="false" aria-autocomplete="list" aria-controls="terminal-suggestions" aria-expanded="false" placeholder=" " />
               <span class="home-hero-terminal-caret-layer" id="terminal-caret-layer" aria-hidden="true"><span id="terminal-caret-text"></span><span class="home-hero-terminal-caret"></span></span>
+              {{/* The placeholder, rebuilt as a real layer so the /slash token
+                   can be a click target that opens the command menu (home.js).
+                   The single-space placeholder on the input keeps
+                   :placeholder-shown reporting "empty", which is what hides
+                   this hint while typing (hero.css). aria-hidden + tabindex=-1
+                   make the link pointer-only sugar — keyboard and AT users
+                   already have the label, the input, and Cmd+Space. */}}
+              <span class="home-hero-terminal-hint" aria-hidden="true"> use <button type="button" id="terminal-hint-link" class="home-hero-terminal-hint-link" tabindex="-1">/slash</button> for commands</span>
             </span>
           </form>
           <ul class="home-hero-terminal-suggestions" id="terminal-suggestions" role="listbox" aria-label="Available commands" hidden></ul>
