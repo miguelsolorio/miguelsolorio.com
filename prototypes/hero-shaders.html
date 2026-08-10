@@ -31,7 +31,10 @@
   --hairline: rgba(15, 23, 42, .1);
   --glass: rgba(255, 255, 255, .78);
   --glass-strong: rgba(255, 255, 255, .92);
-  --shadow: rgba(15, 23, 42, .12);
+  /* Shadow ink: light rgb(35 28 102) = color-mix(#3429ff 30%, #1c1725);
+     dark rgb(56 39 51) = color-mix(#efa9ae 20%, #0a0614); see --shadow-rgb
+     in assets/css/main.css. */
+  --shadow: rgb(35 28 102 / .14);
   /* Terminal palette, lifted from hero.css --t-* */
   --t-bg: rgba(255, 255, 255, .7);
   --t-bar: rgba(241, 245, 249, .65);
@@ -44,7 +47,7 @@
   --t-yellow: #b45309;
   --t-red: #b91c1c;
   --t-light: #cbd5e1;
-  --t-shadow: rgba(15, 23, 42, .1);
+  --t-shadow: rgb(35 28 102 / .12);
 }
 html.dark {
   color-scheme: dark;
@@ -57,7 +60,7 @@ html.dark {
   --hairline: rgba(148, 163, 184, .18);
   --glass: rgba(15, 23, 42, .72);
   --glass-strong: rgba(15, 23, 42, .9);
-  --shadow: rgba(0, 0, 0, .45);
+  --shadow: rgb(56 39 51 / .55);
   --t-bg: rgba(16, 20, 28, .78);
   --t-bar: rgba(27, 33, 48, .8);
   --t-line: rgba(148, 163, 184, .22);
@@ -70,7 +73,7 @@ html.dark {
   --t-purple: #a78bfa;
   --t-red: #f87171;
   --t-light: #3f4757;
-  --t-shadow: rgba(0, 0, 0, .5);
+  --t-shadow: rgb(56 39 51 / .55);
 }
 
 *, *::before, *::after { box-sizing: border-box; }

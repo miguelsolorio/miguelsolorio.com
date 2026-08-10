@@ -20,7 +20,10 @@
         --accent: #3429ff;
         --accent-ink: #241bc7;
         --accent-soft: rgba(52, 41, 255, .09);
-        --shadow: 0 12px 28px -8px rgba(52, 41, 255, .28);
+        /* Shadow ink: light rgb(35 28 102) = color-mix(#3429ff 30%, #1c1725);
+           dark rgb(56 39 51) = color-mix(#efa9ae 20%, #0a0614); see
+           --shadow-rgb in assets/css/main.css. */
+        --shadow: 0 12px 28px -8px rgb(35 28 102 / .3);
         /* CLI project stage, lifted from assets/css/project.css */
         --stage-surface: #eaf2fa;
         --stage-art:
@@ -50,7 +53,7 @@
         --accent: #a5b4fc;
         --accent-ink: #c7d2fe;
         --accent-soft: rgba(165, 180, 252, .13);
-        --shadow: 0 14px 32px -10px rgba(0, 0, 0, .55);
+        --shadow: 0 12px 28px -8px rgb(56 39 51 / .55);
         --stage-surface: #161f2e;
         --stage-art:
           radial-gradient(ellipse 78% 145% at -6% 18%, #1e3a5f 0%, rgba(30, 58, 95, .5) 34%, transparent 68%),

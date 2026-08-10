@@ -108,10 +108,13 @@
   body.is-card .cli-stage {
     margin-bottom: calc(var(--cli-card-bleed) * -1);
     border-radius: var(--demo-radius-md);
-    box-shadow: 0 12px 28px -8px rgba(52, 41, 255, 0.45);
+    /* Shadow ink: light rgb(35 28 102) = color-mix(#3429ff 30%, #1c1725);
+       dark rgb(56 39 51) = color-mix(#efa9ae 20%, #0a0614); see --shadow-rgb
+       in assets/css/main.css. */
+    box-shadow: 0 12px 28px -8px rgb(35 28 102 / 0.38);
   }
   :root.dark body.is-card .cli-stage {
-    box-shadow: 0 12px 28px -8px rgb(36 32 111 / 0.55);
+    box-shadow: 0 12px 28px -8px rgb(56 39 51 / 0.55);
   }
   /* Keep the footer clear of the cropped edge as the bleed scales. */
   body.is-card .bottom-bar {

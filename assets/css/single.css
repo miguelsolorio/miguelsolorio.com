@@ -98,7 +98,8 @@
     margin-inline: auto;
   }
   .single img, .single video, .single iframe {
-    @apply rounded-lg shadow-lg;
+    @apply rounded-lg;
+    box-shadow: var(--shadow-lg);
     max-width: 100%;
     margin-block: var(--media-gap);
   }
@@ -202,13 +203,13 @@
        screenshot, or cutout art — so the stills cast the same colored shadow
        as the demo above them. Only the alpha changes between themes; the hue
        stays put instead of degrading to black in dark mode. */
-    --embed-shadow-tint: var(--project-theme-shadow-tint, 43 76 124);
-    --embed-shadow-far: .26;
-    --embed-shadow-near: .18;
+    --embed-shadow-tint: var(--project-theme-shadow-tint, var(--shadow-rgb));
+    --embed-shadow-far: .3;
+    --embed-shadow-near: .2;
   }
   .dark .single .project-embed {
-    --embed-shadow-far: .42;
-    --embed-shadow-near: .3;
+    --embed-shadow-far: .5;
+    --embed-shadow-near: .35;
   }
   .single .project-embed > img,
   .single .project-embed > video,
@@ -651,7 +652,7 @@
   .single a.quote-card:hover,
   .single a.quote-card:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px -12px rgba(52, 41, 255, .35);
+    box-shadow: var(--shadow-hover);
   }
   .single a.quote-card:focus-visible {
     outline: 2px solid #3429ff;

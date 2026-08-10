@@ -12,6 +12,38 @@
   :root {
     --site-max-width: 72rem;
     --site-gutter: clamp(1.25rem, 4vw, 3rem);
+
+    /* Site accent, until now only in tailwind.config.js. */
+    --primary: #3429ff;
+
+    /* Shadow ink: the primary mixed into the topography shader's dark base —
+       color-mix(in srgb, #3429ff 30%, #1c1725) = rgb(35 28 102) / #231c66.
+       One ink per theme (see .dark below); every shadow draws from it so
+       depth reads as one material across the site. */
+    --shadow-rgb: 35 28 102;
+
+    --shadow-ring: 0 0 0 1px rgb(var(--shadow-rgb) / .07);
+    --shadow-sm: 0 1px 12px rgb(var(--shadow-rgb) / .06);
+    --shadow-md: 0 8px 24px rgb(var(--shadow-rgb) / .1);
+    --shadow-lg: 0 16px 32px -12px rgb(var(--shadow-rgb) / .15);
+    --shadow-xl: 0 24px 64px -16px rgb(var(--shadow-rgb) / .15);
+    --shadow-hover: 0 12px 28px -8px rgb(var(--shadow-rgb) / .38);
+  }
+
+  /* Dark halves — Rosé Dusk. The ink swaps to the dark primary's mix:
+     color-mix(in srgb, #efa9ae 20%, #0a0614) = rgb(56 39 51) / #38272f,
+     rose warmed into the palette's mauve shadow black — depth stays warm
+     while rose itself stays reserved for text roles. The ring is the one
+     pigment exception: a dark hairline vanishes on the near-black page,
+     so edges lift with the palette's mauve hairline (210 202 222). */
+  .dark {
+    --shadow-rgb: 56 39 51;
+    --shadow-ring: 0 0 0 1px rgb(210 202 222 / .12);
+    --shadow-sm: 0 1px 12px rgb(var(--shadow-rgb) / .38);
+    --shadow-md: 0 8px 24px rgb(var(--shadow-rgb) / .45);
+    --shadow-lg: 0 16px 32px -12px rgb(var(--shadow-rgb) / .5);
+    --shadow-xl: 0 24px 64px -16px rgb(var(--shadow-rgb) / .55);
+    --shadow-hover: 0 12px 28px -8px rgb(var(--shadow-rgb) / .58);
   }
 
   /* Detail pages give their visuals a wider stage than the home grid. Both
@@ -142,7 +174,7 @@
   html:not(.top):not(.incognito) .site-header {
     background-color: rgba(245, 245, 245, .72);
     border-bottom-color: rgba(15, 23, 42, .08);
-    box-shadow: 0 1px 12px rgba(15, 23, 42, .05);
+    box-shadow: var(--shadow-sm);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     backdrop-filter: blur(12px) saturate(180%);
   }
@@ -167,7 +199,8 @@
   }
 
   .social a:hover {
-    @apply scale-110 shadow-lg;
+    @apply scale-110;
+    box-shadow: var(--shadow-md);
   }
 
   .social a:hover svg path {

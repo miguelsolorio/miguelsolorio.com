@@ -90,7 +90,6 @@
         --t-purple: #6d28d9;
         --t-red: #b91c1c;
         --t-light: #cbd5e1;
-        --t-shadow: rgba(15, 23, 42, .1);
 
         overflow: hidden;
         border: 1px solid var(--t-line);
@@ -104,7 +103,7 @@
         background: color-mix(in srgb, var(--t-bg) 70%, transparent);
         -webkit-backdrop-filter: blur(18px) saturate(1.5);
         backdrop-filter: blur(18px) saturate(1.5);
-        box-shadow: 0 1.5rem 3.75rem -1.25rem var(--t-shadow);
+        box-shadow: var(--shadow-xl);
         color: var(--t-text);
         font-family: 'JetBrains Mono', monospace;
         font-size: .75rem;
@@ -287,9 +286,7 @@
         background: color-mix(in srgb, var(--t-bg) 88%, transparent);
         -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
-        box-shadow:
-            0 .25rem .625rem -.375rem var(--t-shadow),
-            0 1rem 2rem -.75rem var(--t-shadow);
+        box-shadow: var(--shadow-md), var(--shadow-lg);
     }
 
     .home-hero-terminal-suggestion {
@@ -425,7 +422,6 @@
         --t-purple: #c4a7e7;
         --t-red: #eb6f92;
         --t-light: #453c5c;
-        --t-shadow: rgba(10, 6, 20, .55);
     }
 
     /* Dark counterpart of the light hero's #3429ff highlight: the palette's

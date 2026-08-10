@@ -22,7 +22,6 @@
     html.dark:not(.top):not(.incognito) .site-header {
         background-color: rgba(25, 22, 32, .72);
         border-bottom-color: rgba(210, 202, 222, .13);
-        box-shadow: 0 1px 12px rgba(10, 6, 20, .3);
     }
 
     .dark .section,
@@ -102,11 +101,6 @@
     .dark .single .quote-card {
         background-color: #201c28;
         border-color: #3a3444;
-    }
-    /* Accent glows vanish against the near-black page; plain depth instead. */
-    .dark .single a.quote-card:hover,
-    .dark .single a.quote-card:focus-visible {
-        box-shadow: 0 10px 24px -12px rgb(10 6 20 / .6);
     }
     .dark .single a.quote-card:focus-visible {
         outline-color: #efa9ae;

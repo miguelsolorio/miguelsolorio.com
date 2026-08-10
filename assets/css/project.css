@@ -14,9 +14,10 @@
     --project-theme-position: 50% 50%;
     --project-theme-transform: none;
     --project-theme-hover-transform: none;
-    /* Shadow pigment for anything elevated on the stage — slate, matching
-       the contour ink. Space-separated so alpha can vary per placement. */
-    --project-theme-shadow-tint: 15 23 42;
+    /* Shadow pigment for anything elevated on the stage — the site shadow
+       ink (--shadow-rgb, main.css). Space-separated so alpha can vary per
+       placement; themed stages may override it (see the cli steel pair). */
+    --project-theme-shadow-tint: var(--shadow-rgb);
   }
   /* Dark half: one quiet step above the near-black page, held in the page's
      own mauve family so cards read as lifted panels of the same material the
@@ -24,7 +25,6 @@
   .dark [data-project-theme] {
     --project-theme-surface: #1c1824;
     --project-theme-artwork: linear-gradient(180deg, #201c28 0%, #18151f 100%);
-    --project-theme-shadow-tint: 10 6 20;
   }
   /* Powder steel, cli only: the cli-agents embeds keep a stage of their own —
      the theme's old blue desaturated toward steel so it reads as material
@@ -95,9 +95,9 @@
     -webkit-backdrop-filter: blur(20px) saturate(1.3);
     backdrop-filter: blur(20px) saturate(1.3);
     /* Separation from the near-white topography field is elevation, not
-       pigment: a hairline slate ring and a soft shadow lift the card off
+       pigment: a hairline ink ring and a soft shadow lift the card off
        the contour lines without adding a competing wash. */
-    box-shadow: 0 0 0 1px rgba(15, 23, 42, .06), 0 1px 3px rgba(15, 23, 42, .05);
+    box-shadow: var(--shadow-ring), var(--shadow-sm);
     container-type: inline-size;
     height: clamp(18rem, 33.333cqw, 24rem);
     isolation: isolate;
@@ -138,7 +138,6 @@
        drawing rather than as texture. */
     --project-surface: linear-gradient(180deg, rgba(32, 28, 40, .78) 0%, rgba(24, 21, 31, .84) 100%);
     background-color: transparent;
-    box-shadow: 0 0 0 1px rgba(210, 202, 222, .12), 0 1px 3px rgba(10, 6, 20, .4);
   }
   .dark .project::before {
     background-color: rgba(17, 14, 26, .35);
@@ -304,7 +303,7 @@
   }
   .side-project:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 28px -8px rgba(52,41,255,.45);
+    box-shadow: var(--shadow-hover);
   }
   #side-projects img {
     @apply m-0;

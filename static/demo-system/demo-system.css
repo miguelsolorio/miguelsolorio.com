@@ -20,7 +20,10 @@
   --demo-radius-sm: 6px;
   --demo-radius-md: 10px;
   --demo-radius-round: 999px;
-  --demo-shadow-control: 0 1px 4px rgb(0 0 0 / 30%);
+  /* Shadow ink: light rgb(35 28 102) = color-mix(#3429ff 30%, #1c1725);
+     dark rgb(56 39 51) = color-mix(#efa9ae 20%, #0a0614); see --shadow-rgb
+     in assets/css/main.css. */
+  --demo-shadow-control: 0 1px 4px rgb(35 28 102 / 38%);
   --demo-motion-fast: 120ms;
   --demo-motion-base: 200ms;
   --demo-ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -37,6 +40,7 @@
   --demo-color-control: #3c4043;
   --demo-color-control-hover: #4b4f52;
   --demo-color-track: #5f6368;
+  --demo-shadow-control: 0 1px 4px rgb(56 39 51 / 55%);
 }
 
 .demo-scene {
