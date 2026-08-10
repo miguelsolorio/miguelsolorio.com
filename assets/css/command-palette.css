@@ -1,4 +1,8 @@
-/* Command Palette */
+/* Command Palette — Raycast-style launcher. Glassy panel, icon-led rows,
+   action-bar footer. Selection is the accent wash: #ede9fe under blurple in
+   light, the rose wash under #efa9ae in dark (dark.css palette). Category
+   badges are gone on purpose — the group headers already say where a row
+   lives, so the right side of every row stays empty. */
 
 #cmd-palette-overlay {
   position: fixed;
@@ -13,12 +17,19 @@
   -webkit-backdrop-filter: blur(3px);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 140ms ease, visibility 140ms ease;
+  /* visibility is stepped, not interpolated: transitioning it over the same
+     140ms flips it at the halfway mark, so the overlay stays hidden for ~70ms
+     after .open lands — and focus() on a hidden element is a no-op, which is
+     what kept the input from taking the caret on open. Switch it instantly on
+     open, and delay it to the end of the fade on close so the exit still
+     animates. */
+  transition: opacity 140ms ease, visibility 0s linear 140ms;
 }
 
 #cmd-palette-overlay.open {
   opacity: 1;
   visibility: visible;
+  transition: opacity 140ms ease, visibility 0s linear 0s;
 }
 
 #cmd-palette-overlay.open #cmd-palette {
@@ -27,10 +38,15 @@
 
 #cmd-palette {
   width: calc(100% - 2rem);
-  max-width: 560px;
+  max-width: 640px;
+  /* Solid fallback first — color-mix + backdrop blur where supported,
+     same pattern as the hero terminal. */
   background: #ffffff;
+  background: color-mix(in srgb, #ffffff 88%, transparent);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: var(--shadow-ring), var(--shadow-md), var(--shadow-xl);
   overflow: hidden;
   transform: scale(0.97) translateY(-6px);
@@ -41,9 +57,9 @@
 #cmd-palette-input {
   display: block;
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 0.95rem 1.125rem;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
   color: #1e293b;
@@ -63,7 +79,7 @@
 #cmd-palette-results {
   max-height: 380px;
   overflow-y: auto;
-  padding: 0.375rem 0;
+  padding: 0.125rem 0 0.5rem;
   scrollbar-width: thin;
   scrollbar-color: #e2e8f0 transparent;
 }
@@ -81,13 +97,12 @@
   border-radius: 4px;
 }
 
+/* Sentence-case section labels, indented to the row icons. */
 .cmd-category-header {
-  padding: 0.625rem 1.25rem 0.25rem;
+  padding: 0.625rem 1.125rem 0.2rem;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.5625rem;
-  font-weight: 500;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-size: 0.68rem;
+  font-weight: 600;
   color: #c8d2dc;
   user-select: none;
 }
@@ -95,12 +110,12 @@
 .cmd-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 1.25rem;
+  gap: 0.7rem;
+  margin: 0 0.5rem;
+  padding: 0.5rem 0.625rem;
   cursor: pointer;
-  border-radius: 0;
+  border-radius: 9px;
   transition: background 60ms ease;
-  gap: 1rem;
 }
 
 .cmd-item.active {
@@ -110,17 +125,37 @@
 .cmd-item-left {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.7rem;
   flex: 1;
   min-width: 0;
 }
 
 .cmd-item-icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   flex-shrink: 0;
   object-fit: contain;
+}
+
+/* Commands without a product icon get a quiet tile so every row leads
+   with a 24px square and the labels rag left on one line. */
+.cmd-item-icobox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  color: #475569;
+  box-sizing: border-box;
+}
+
+.cmd-item.active .cmd-item-icobox {
+  color: #3429ff;
 }
 
 .cmd-item-label {
@@ -136,18 +171,6 @@
 
 .cmd-item.active .cmd-item-label {
   color: #3429ff;
-}
-
-.cmd-item-badge {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  color: #94a3b8;
-  flex-shrink: 0;
-}
-
-.cmd-item.active .cmd-item-badge {
-  color: #818cf8;
 }
 
 .cmd-item[data-id="clear-recents"] .cmd-item-label {
@@ -167,41 +190,63 @@
   text-align: center;
 }
 
+/* Action bar: identity on the left, the two real actions on the right. */
 .cmd-palette-footer {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  padding: 0.625rem 1.25rem;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
   border-top: 1px solid #f1f5f9;
+  background: rgba(248, 250, 252, 0.55);
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: #94a3b8;
   user-select: none;
 }
 
-.cmd-palette-footer span {
+.cmd-footer-logo {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #3429ff, #818cf8);
+  flex-shrink: 0;
+}
+
+.cmd-footer-action {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.4rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.cmd-footer-action:first-of-type {
+  margin-left: auto;
+}
+
+.cmd-footer-sep {
+  width: 1px;
+  height: 14px;
+  background: #e2e8f0;
 }
 
 .cmd-palette-footer kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.1em 0.35em;
+  padding: 0.1em 0.38em;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.625rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: #64748b;
   box-sizing: border-box;
   line-height: 1.4;
 }
 
-/* Dark mode */
+/* Dark mode — Rosé Dusk (dark.css): rose accent on mauve surfaces. */
 
 .dark #cmd-palette-overlay {
   background: rgba(0, 0, 0, 0.45);
@@ -209,12 +254,14 @@
 
 .dark #cmd-palette {
   background: #201c28;
+  background: color-mix(in srgb, #201c28 88%, transparent);
   border-color: #3a3444;
 }
 
 .dark #cmd-palette-input {
   color: #e0d9ec;
-  border-color: #3a3444;
+  caret-color: #efa9ae;
+  border-color: rgba(210, 202, 222, 0.09);
 }
 
 .dark #cmd-palette-input::placeholder {
@@ -237,20 +284,22 @@
   background: rgba(239, 169, 174, 0.14);
 }
 
+.dark .cmd-item-icobox {
+  background: #161221;
+  border-color: rgba(210, 202, 222, 0.09);
+  color: #a79fb8;
+}
+
+.dark .cmd-item.active .cmd-item-icobox {
+  color: #efa9ae;
+}
+
 .dark .cmd-item-label {
   color: #cec6de;
 }
 
 .dark .cmd-item.active .cmd-item-label {
   color: #efa9ae;
-}
-
-.dark .cmd-item-badge {
-  color: #6b6284;
-}
-
-.dark .cmd-item.active .cmd-item-badge {
-  color: #cf9199;
 }
 
 .dark .cmd-item[data-id="clear-recents"] .cmd-item-label {
@@ -266,8 +315,21 @@
 }
 
 .dark .cmd-palette-footer {
-  border-color: #3a3444;
+  border-color: rgba(210, 202, 222, 0.09);
+  background: rgba(22, 18, 33, 0.55);
   color: #6b6284;
+}
+
+.dark .cmd-footer-logo {
+  background: linear-gradient(135deg, #efa9ae, #c4a7e7);
+}
+
+.dark .cmd-footer-action {
+  color: #a79fb8;
+}
+
+.dark .cmd-footer-sep {
+  background: #3a3444;
 }
 
 .dark .cmd-palette-footer kbd {

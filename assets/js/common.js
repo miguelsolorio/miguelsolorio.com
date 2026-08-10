@@ -105,36 +105,71 @@
   updateScrollState();
   window.addEventListener('scroll', queueScrollUpdate, { passive: true });
 
-  const CATEGORY_ORDER = ['Appearance', 'Navigation', 'Featured Work', 'Projects', 'Socials'];
+  /* Game mode fixes the body, which collapses the document and snaps scrollY to
+     0; unlocking scrolls back. queueScrollUpdate is rAF-deferred, so without a
+     synchronous resync the header renders untinted for a frame at a scrolled
+     position. */
+  root.addEventListener('site:gamestate', updateScrollState);
+
+  /* Category headers, in list order — Tools first, then the two content
+     sections in the order the home page renders them. 'Actions' is
+     deliberately absent: Clear Recents is a hidden command, reached by ⌘K or
+     by searching for it, never listed while browsing.
+
+     This array's own order is what the browse list follows (render() opens a
+     new header each time the category changes, so the groups have to stay
+     contiguous). Within each group the sequence mirrors layouts/index.html:
+     Featured Work takes Hugo's page order, Projects the reach ranking the
+     home page sorts by. Reach comes from data/project_metrics.json, so a
+     metrics update can drift the two apart — re-read the rendered home page
+     rather than assuming this list is still in step. VS Code Toolkit has no
+     `project` param and so never appears on the home page; it sits last. */
+  const CATEGORY_ORDER = ['Tools', 'Featured Work', 'Projects'];
   const COMMANDS = [
-    { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Appearance' },
-    { id: 'go-home', label: 'Home', category: 'Navigation', href: '/' },
-    { id: 'go-resume', label: 'Résumé', category: 'Navigation', href: '/miguel-solorio-resume.pdf', external: true },
-    { id: 'go-kanvas', label: 'Kanvas Design System', category: 'Featured Work', href: '/kustomer-design-system/' },
-    { id: 'go-cli', label: 'CLI Agents', category: 'Featured Work', href: '/cli-agents/' },
-    { id: 'go-icons', label: 'Icons', category: 'Featured Work', href: '/icons/' },
-    { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', href: '/onboarding/' },
-    { id: 'go-notebooks', label: 'Colab Notebooks', category: 'Featured Work', href: '/colab-notebooks/' },
+    { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Tools' },
+    { id: 'play-polarity', label: 'Play Polarity', category: 'Tools', icon: '/polarity.png' },
+    { id: 'play-hexrush', label: 'Play Hexrush', category: 'Tools', icon: '/hexrush.png' },
+    { id: 'go-notebooks', label: 'Colab Notebooks', category: 'Featured Work', href: '/colab-notebooks/', glyph: 'notebook' },
+    { id: 'go-cli', label: 'CLI Agents', category: 'Featured Work', href: '/cli-agents/', glyph: 'terminal' },
+    { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', href: '/onboarding/', glyph: 'flag' },
+    { id: 'go-kanvas', label: 'Kanvas Design System', category: 'Featured Work', href: '/kustomer-design-system/', glyph: 'layers' },
+    { id: 'go-icons', label: 'Icons', category: 'Featured Work', href: '/icons/', glyph: 'shapes' },
+    { id: 'go-fluent', label: 'Fluent Icons', category: 'Projects', href: '/fluent/', icon: '/fluent.png' },
+    { id: 'go-symbols', label: 'Symbols', category: 'Projects', href: '/symbols/', icon: '/symbols.png' },
+    { id: 'go-min', label: 'Min Theme', category: 'Projects', href: '/min/', icon: '/min.svg' },
     { id: 'go-chroma', label: 'Chroma Colors', category: 'Projects', href: '/chroma/', icon: '/chroma.svg' },
+    { id: 'go-colorizer', label: 'Colorizer', category: 'Projects', href: '/colorizer/', icon: '/colorizer.svg' },
+    { id: 'go-codicons', label: 'VS Code Icons', category: 'Projects', href: '/codicons/', icon: '/codicons.svg' },
+    { id: 'go-navigator', label: 'Navigator', category: 'Projects', href: '/navigator/', icon: '/navigator.svg' },
+    { id: 'go-regulator', label: 'Regulator', category: 'Projects', href: '/regulator/', icon: '/regulator.svg' },
+    { id: 'go-kaleidocode', label: 'Kaleidocode', category: 'Projects', href: '/kaleidocode/', icon: '/kaleidocode-logo.svg' },
+    { id: 'go-variables', label: 'Variables Generator', category: 'Projects', href: '/variables/', icon: '/variables.png' },
+    { id: 'go-syntaxer', label: 'Syntaxer', category: 'Projects', href: '/syntaxer/', icon: '/syntaxer.png' },
+    { id: 'go-paster', label: 'Paster', category: 'Projects', href: '/paster/', icon: '/paster.png' },
     { id: 'go-contrast-grid', label: 'Contrast Grid', category: 'Projects', href: '/contrast-grid/', icon: '/contrast-grid.png' },
     { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', href: '/code/', icon: '/code.svg' },
-    { id: 'go-codicons', label: 'VS Code Icons', category: 'Projects', href: '/codicons/', icon: '/codicons.svg' },
-    { id: 'go-colorizer', label: 'Colorizer', category: 'Projects', href: '/colorizer/', icon: '/colorizer.svg' },
-    { id: 'go-fluent', label: 'Fluent Icons', category: 'Projects', href: '/fluent/', icon: '/fluent.png' },
-    { id: 'go-kaleidocode', label: 'Kaleidocode', category: 'Projects', href: '/kaleidocode/', icon: '/kaleidocode-logo.svg' },
-    { id: 'go-min', label: 'Min Theme', category: 'Projects', href: '/min/', icon: '/min.svg' },
-    { id: 'go-navigator', label: 'Navigator', category: 'Projects', href: '/navigator/', icon: '/navigator.svg' },
-    { id: 'go-paster', label: 'Paster', category: 'Projects', href: '/paster/', icon: '/paster.png' },
-    { id: 'go-regulator', label: 'Regulator', category: 'Projects', href: '/regulator/', icon: '/regulator.svg' },
-    { id: 'go-symbols', label: 'Symbols', category: 'Projects', href: '/symbols/', icon: '/symbols.png' },
-    { id: 'go-syntaxer', label: 'Syntaxer', category: 'Projects', href: '/syntaxer/', icon: '/syntaxer.png' },
-    { id: 'go-variables', label: 'Variables Generator', category: 'Projects', href: '/variables/', icon: '/variables.png' },
-    { id: 'social-github', label: 'GitHub', category: 'Socials', href: 'https://github.com/miguelsolorio', external: true },
-    { id: 'social-linkedin', label: 'LinkedIn', category: 'Socials', href: 'https://www.linkedin.com/in/miguel-solorio-a432b021', external: true },
-    { id: 'social-twitter', label: 'Twitter', category: 'Socials', href: 'https://twitter.com/miguelsolorio_', external: true },
-    { id: 'social-adplist', label: 'ADPList', category: 'Socials', href: 'https://adplist.org/mentors/miguel-solorio', external: true },
-    { id: 'clear-recents', label: 'Clear Recents', category: 'Actions' }
+    { id: 'clear-recents', label: 'Clear Recents', category: 'Actions', glyph: 'clear', hidden: true }
   ];
+
+  /* Stroke glyphs for the commands that have no product icon, so every row
+     leads with the same 24px tile the project icons occupy. A command names
+     its glyph; only the theme toggle picks one at render time. */
+  const GLYPH_ATTRS = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+  const GLYPH_PATHS = {
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
+    layers: '<path d="m12 2 9 5-9 5-9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/>',
+    terminal: '<path d="m4 17 6-5-6-5"/><path d="M12 19h8"/>',
+    shapes: '<circle cx="8" cy="8" r="5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>',
+    flag: '<path d="M5 21V4.5"/><path d="M5 5c3-1.8 6 1.2 9-.5v8.5c-3 1.7-6-1.3-9 .5Z"/>',
+    notebook: '<path d="M6 2h13v20H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M9 2v20"/>',
+    clear: '<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>'
+  };
+
+  function commandGlyph(command) {
+    if (command.id === 'toggle-theme') return siteTheme.get() === 'dark' ? 'sun' : 'moon';
+    return command.glyph || null;
+  }
 
   const overlay = document.getElementById('cmd-palette-overlay');
   const palette = document.getElementById('cmd-palette');
@@ -175,13 +210,24 @@
     input.focus();
   }
 
+  /* Game mode listens for this: while the palette owns the keyboard the game
+     must stop reading it, or typing a query also flies the ship. */
+  function announcePalette(open) {
+    document.documentElement.dispatchEvent(
+      new CustomEvent('site:palette', { detail: { open } })
+    );
+  }
+
   function closePalette({ restoreFocus = true } = {}) {
     if (!isOpen) return;
     isOpen = false;
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
-    if (restoreFocus && previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+    if (restoreFocus && previouslyFocused instanceof HTMLElement && previouslyFocused.isConnected) {
+      previouslyFocused.focus();
+    }
     previouslyFocused = null;
+    announcePalette(false);
   }
 
   function executeCommand(id) {
@@ -191,6 +237,9 @@
       clearRecents();
       return;
     }
+    /* Checked before closePalette(), so a games.js that failed to load leaves
+       the palette open rather than silently swallowing the interaction. */
+    if (id.indexOf('play-') === 0 && !window.siteGames) return;
 
     recentIds = [id, ...recentIds.filter((recentId) => recentId !== id)].slice(0, maxRecent);
     saveRecents();
@@ -198,6 +247,8 @@
 
     if (id === 'toggle-theme') {
       siteTheme.toggle();
+    } else if (id.indexOf('play-') === 0) {
+      window.siteGames.play(id.slice(5));
     } else if (command.href && command.external) {
       window.open(command.href, '_blank', 'noopener,noreferrer');
     } else if (command.href) {
@@ -213,23 +264,29 @@
       displayCategory: command.category
     }));
 
+    /* Searching reaches everything, hidden commands included — typing "clear"
+       is the second way to Clear Recents, alongside ⌘K. A category outside
+       CATEGORY_ORDER sorts last rather than first, which indexOf's -1 would do. */
     if (normalizedQuery) {
+      const rank = (command) => {
+        const index = CATEGORY_ORDER.indexOf(command.category);
+        return index === -1 ? CATEGORY_ORDER.length : index;
+      };
       return commands
         .filter((command) => command.label.toLowerCase().includes(normalizedQuery) || command.category.toLowerCase().includes(normalizedQuery))
-        .sort((a, b) => CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category));
+        .sort((a, b) => rank(a) - rank(b));
     }
 
+    /* Browsing shows recents first, then everything else once. Commands
+       dropped from COMMANDS survive in a returning visitor's stored recents,
+       so the find() miss is filtered out rather than rendered blank. */
     const recentIdSet = new Set(recentIds);
     const recentItems = recentIds
       .map((id) => commands.find((command) => command.id === id))
       .filter(Boolean)
       .map((command) => ({ ...command, displayCategory: 'Recent' }));
 
-    if (recentItems.length) {
-      recentItems.push({ id: 'clear-recents', label: 'Clear Recents', category: 'Actions', displayCategory: 'Recent' });
-    }
-
-    return recentItems.concat(commands.filter((command) => !recentIdSet.has(command.id) && command.id !== 'clear-recents'));
+    return recentItems.concat(commands.filter((command) => !command.hidden && !recentIdSet.has(command.id)));
   }
 
   function makeElement(tag, className, text) {
@@ -271,9 +328,17 @@
         icon.alt = '';
         icon.setAttribute('aria-hidden', 'true');
         left.appendChild(icon);
+      } else {
+        const glyph = commandGlyph(command);
+        if (glyph) {
+          const box = makeElement('span', 'cmd-item-icobox');
+          box.setAttribute('aria-hidden', 'true');
+          box.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" ${GLYPH_ATTRS} aria-hidden="true">${GLYPH_PATHS[glyph]}</svg>`;
+          left.appendChild(box);
+        }
       }
       left.appendChild(makeElement('span', 'cmd-item-label', command.label));
-      item.append(left, makeElement('span', 'cmd-item-badge', command.category));
+      item.appendChild(left);
       results.appendChild(item);
     });
   }
@@ -287,6 +352,15 @@
     });
   }
 
+  /* The palette is a type-first surface: while it is open the caret belongs in
+     the input and nowhere else. Guarded on activeElement so the focusin
+     handler below cannot recurse, and preventScroll keeps focusing a field
+     inside the fixed overlay from jumping the page behind it. */
+  function focusInput() {
+    if (!isOpen || document.activeElement === input) return;
+    input.focus({ preventScroll: true });
+  }
+
   function openPalette() {
     if (isOpen) return;
     isOpen = true;
@@ -296,7 +370,13 @@
     render();
     overlay.classList.add('open');
     overlay.removeAttribute('aria-hidden');
-    window.requestAnimationFrame(() => input.focus());
+    announcePalette(true);
+    /* The synchronous call is the one that lands — but only because the
+       overlay's visibility now flips instantly (see command-palette.css);
+       focus() on a hidden element is a no-op. The deferred retry is the net
+       for anything that takes the caret back during the same tick. */
+    focusInput();
+    window.setTimeout(focusInput, 0);
   }
 
   document.addEventListener('keydown', (event) => {
@@ -330,8 +410,20 @@
   });
 
   input.addEventListener('input', () => render(input.value));
+
+  /* Two ways focus can leave the input, so two nets. blur catches it landing
+     outside the overlay entirely (the hero terminal below claims focus on
+     load, and clicks reach the page behind); focusin catches it landing on
+     something inside the palette that took focus on its own. The blur retry
+     is deferred because at blur time the browser has not settled on the new
+     activeElement yet — by timer rather than by frame, since rAF is paused
+     while the document is hidden and a focus net that stops working in a
+     background tab is no net at all. */
   input.addEventListener('blur', () => {
-    if (isOpen) window.requestAnimationFrame(() => input.focus());
+    if (isOpen) window.setTimeout(focusInput, 0);
+  });
+  overlay.addEventListener('focusin', (event) => {
+    if (event.target !== input) focusInput();
   });
 
   results.addEventListener('mousedown', (event) => {
@@ -636,7 +728,10 @@ void main() {
   /* The host is fixed and viewport-filling, so there is no offscreen state
      to observe — only tab visibility and the reduced-motion preference gate
      the loop. */
-  const shouldAnimate = () => !document.hidden && !motionMedia.matches;
+  /* A game covers the viewport with a near-opaque scrim, so the terrain is
+     doing full-screen fragment work nobody can see, on the GPU the game wants. */
+  let gameActive = false;
+  const shouldAnimate = () => !document.hidden && !motionMedia.matches && !gameActive;
 
   /* ~30fps: the erosion is slow enough that extra frames buy nothing, and
      it keeps the GPU cost polite on a canvas that lives on every page. */
@@ -694,6 +789,10 @@ void main() {
   new ResizeObserver(resize).observe(host);
   document.addEventListener('visibilitychange', sync);
   motionMedia.addEventListener('change', sync);
+  document.documentElement.addEventListener('site:gamestate', (event) => {
+    gameActive = !!(event.detail && event.detail.active);
+    sync();
+  });
   document.documentElement.addEventListener('site:themechange', () => {
     /* Animating frames pick the new palette up next tick; a paused canvas
        (reduced motion, hidden tab) needs the repaint now. */
