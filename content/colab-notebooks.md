@@ -32,19 +32,19 @@ We knew that users needed to have their focus on the notebook canvas and they di
 
 # Refreshing the Interface
 
-Designing for the agent kept surfacing the limits of UI patterns that hadn't changed in years, so I drove a refresh alongside the agent work — one that felt lightweight and easy to use, and aligned closer to Google's Workspace suite of products (Docs, Sheets, Slides, etc). I authored and owned the design spec, running review sessions over several months that folded in feedback from across the team, then paired it with a phased rollout so engineering could ship changes incrementally. That document became the single source of truth for the refresh and fed directly into the team's roadmap and OKRs.
+While designing AI interfaces, we realized Colab's UI needed to scale for new agentic workflows. This meant we needed to not only update the visual language of the site but to also introduce new patterns to scale the product. Taking inspiration from other developer tools, we introduced new panel arrangements that closer match our user's mental model.
 
 {{< iframe src="/colab-notebooks/ui-refresh-reveal.html" height="580" title="Drag the divider to wipe between Colab's original interface and the refreshed one" theme="notebooks" frame_class="project-embed--reveal" caption="Drag the divider to compare the two directly" >}}
 
 # Google I/O
 
-We shipped Colab's AI-first redesign at Google I/O 2025 and it became available to all users on June 24, 2025. Across the full data science lifecycle, the agentic workflow increased user efficiency by 4.9x and earned an 82% user satisfaction rating.
+We shipped Colab's AI-first redesign at Google I/O in 2025. Across our metrics, we noticed a big increase in AI usage, raising our user efficiency metrics by 4.9x and earned an 82% user satisfaction rating across our users.
 
 {{< video src="ai-video-May2026.mp4" poster="ai-video-May2026-poster.png" alt="Launch video walking through the agentic Colab experience" gradient="true" caption="The launch video announcing the agentic experience" >}}
 
 # Impact
 
-Shipping this meant giving direction to a genuinely ambiguous problem. The team held diverging ideas about what an AI-first notebook should be, so I helped create the vision that aimed at improving the very issues our users kept describing to us. You can read the feedback from our users to see how they felt about the big changes.
+Shipping this gave form to a genuinely ambiguous problem. The team held diverging ideas about what an AI-first notebook should be, and in making that idea come to life we were able to better align on a shared vision as a team. The launch was well received by our users, who appreciated the integration of Gemini in the product.
 
 {{< quotes >}}
 
