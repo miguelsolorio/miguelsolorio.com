@@ -12,7 +12,7 @@ card_theme: "icons"
 
 As the lead designer, I created a cohesive iconography style that could be seamlessly applied across our various products and platforms.
 
-{{< image src="intro.png" alt="Grid of hundreds of VS Code product icons in the final outline style on a dark background" gradient="true" caption="The full Codicons set in its final outline style" >}}
+{{< iframe src="/icons/icon-board.html" height="500" title="A grid of several hundred VS Code product icons in the final outline style, laid out 24 across and 14 down" theme="icons" frame_class="project-embed--board" caption="The full Codicons set in its final outline style" >}}
 
 # Background
 

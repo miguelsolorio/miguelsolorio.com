@@ -364,6 +364,21 @@
     box-shadow: none;
   }
 
+  /* The icon board is a field, not a screenshot: it stands on the stage with
+     no panel of its own, and its frame takes the grid's own proportions (24
+     columns by 14 rows of 51px cells) so the set scales with the column
+     instead of stranding dead height beneath it on narrow screens. */
+  .single .project-embed--board iframe.embed-frame,
+  .dark .single .project-embed--board iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: 1224 / 714;
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+
   /* Star chart */
   .single .project-embed--chart[data-project-theme="cli"] {
     display: flex;
