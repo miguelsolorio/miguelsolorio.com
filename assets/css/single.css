@@ -75,8 +75,13 @@
     + :is(p, ul, ol):not(.title):not(.description):not(.media-caption) {
     margin-top: var(--para-gap);
   }
+  /* The page title carries the hero headline's accent, not the body ink —
+     it is the same role one level down, so the two read as one voice. The
+     color sits outside the !important @apply above so the dark override
+     can still take it. */
   .single .title {
     @apply mb-4 font-extrabold m-0 !important;
+    @apply text-primary;
     padding-top: clamp(4rem, 10vw, 6rem);
     font-size: clamp(3rem, 8vw, 6rem);
     line-height: .95;

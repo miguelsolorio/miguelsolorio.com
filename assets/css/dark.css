@@ -25,7 +25,6 @@
     }
 
     .dark .section,
-    .dark .single .title,
     .dark .single h1,
     .dark .single h2,
     .dark .single h3,
@@ -33,6 +32,13 @@
     .dark .single h5,
     .dark .single h6 {
         color: #ede7f2;
+    }
+
+    /* The page title follows the hero headline onto the rose accent rather
+       than the near-white the in-body headings take, so the loudest type on
+       a detail page matches the loudest type on the home page. */
+    .dark .single .title {
+        color: #efa9ae;
     }
 
     /* Body links: the light resting blue (#241bc7) all but vanishes on the
