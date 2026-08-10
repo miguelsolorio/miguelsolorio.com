@@ -83,17 +83,34 @@
        layer — background-image paints over background-color, so a translucent
        color under the opaque --project-aurora would still come out sealed.
        --project-aurora stays opaque for the ::after wash, which needs full
-       pigment to have anything to blend. */
-    --project-surface: linear-gradient(180deg, rgba(253, 253, 255, .66) 0%, rgba(246, 248, 250, .74) 100%);
+       pigment to have anything to blend.
+
+       The alpha has to be this low to read at all. Card ink and the page
+       behind it are both near-white (#fdfdff over an #f2f0ff field), so
+       alpha alone moves the composite by only a couple of RGB steps —
+       .66 and .50 are indistinguishable. What actually reads as glass is
+       the contour lines surviving the blur, which is why the radius below
+       is the other half of this setting. */
+    --project-surface: linear-gradient(180deg, rgba(253, 253, 255, .34) 0%, rgba(246, 248, 250, .42) 100%);
+    /* The hover half of the transparency. It rides on background-color
+       instead of a fourth layer: the color paints under the translucent
+       --project-surface gradient, so the two stack to ~.7 coverage on hover
+       against ~.38 at rest, and unlike a gradient it interpolates smoothly.
+       Kept off ::before deliberately — that layer sits above the artwork and
+       is the frost, so folding the two together would mean one can't move
+       without the other. */
     background-color: transparent;
     background-image: var(--project-surface);
     background-position: var(--project-aurora-position);
     background-size: var(--project-aurora-size);
     border-radius: 1rem;
     /* Blur so the contour lines survive as motion and shape behind the card
-       instead of competing with the artwork as legible drawing. */
-    -webkit-backdrop-filter: blur(20px) saturate(1.3);
-    backdrop-filter: blur(20px) saturate(1.3);
+       instead of competing with the artwork as legible drawing. The radius
+       is a legibility dial, not a taste one: the lines are only a few px
+       wide, so anything past ~12px averages them into flat field and the
+       card goes back to looking sealed no matter how low the alpha is. */
+    -webkit-backdrop-filter: blur(10px) saturate(1.4);
+    backdrop-filter: blur(10px) saturate(1.4);
     /* Separation from the near-white topography field is elevation, not
        pigment: a hairline ink ring and a soft shadow lift the card off
        the contour lines without adding a competing wash. */
@@ -101,7 +118,14 @@
     container-type: inline-size;
     height: clamp(18rem, 33.333cqw, 24rem);
     isolation: isolate;
+    transition: background-color .35s ease;
   }
+  /* The hover frost: a blur pass over the card's OWN artwork, so the title
+     lands on a soft field instead of on legible UI. It works because of the
+     isolation above — that makes .project the backdrop root for its children,
+     so this layer's backdrop-filter samples the media beneath it rather than
+     the page behind the card. Keep the two together; dropping either one
+     silently kills the effect. z-10 puts it over the media and under .title. */
   .project::before {
     content: '';
     @apply absolute inset-0 z-10 pointer-events-none;
@@ -136,7 +160,7 @@
     /* Held a touch more opaque than light mode: the dark contour ink is the
        higher-contrast pair, so the same alpha would let it read through as
        drawing rather than as texture. */
-    --project-surface: linear-gradient(180deg, rgba(32, 28, 40, .78) 0%, rgba(24, 21, 31, .84) 100%);
+    --project-surface: linear-gradient(180deg, rgba(32, 28, 40, .46) 0%, rgba(24, 21, 31, .54) 100%);
     background-color: transparent;
   }
   .dark .project::before {
@@ -257,12 +281,24 @@
   .project:focus-visible::before {
     opacity: 1;
   }
+  /* Hover firms the glass up: this paints under --project-surface, so the two
+     stack from ~.38 coverage at rest to ~.7 here and the topography behind
+     the card recedes without ever fully sealing. */
+  .project:hover,
+  .project:focus-visible {
+    background-color: rgba(253, 253, 255, .55);
+  }
+  .dark .project:hover,
+  .dark .project:focus-visible {
+    background-color: rgba(24, 21, 31, .5);
+  }
   .project:focus-visible {
     outline: 3px solid #2A25FF;
     outline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .project,
     .project-media,
     .project .title,
     .project::before,
