@@ -1,0 +1,259 @@
+/* Game mode overlay — the cabinet that assets/js/games.js builds and drives.
+   The overlay markup is created in JS; everything here is scoped to #arcade.
+
+   Colours come from the site's own token sets: light is the hero terminal's
+   light palette plus the blurple primary, dark is Rosé Dusk plus that
+   terminal's dark tokens. PAL in games.js mirrors these for canvas drawing —
+   keep the two columns in step. */
+
+/* The cabinet borrows the page's own tokens rather than inventing a palette:
+   light is the hero terminal's light set + the blurple primary, dark is Rosé
+   Dusk + that terminal's dark set. Mirrored in JS as PAL for canvas drawing —
+   keep the two columns in step. */
+#arcade {
+  --a-ink: #0f172a;                    /* --t-bright */
+  --a-text: #475569;                   /* --t-text   */
+  --a-dim: #94a3b8;                    /* --t-dim    */
+  --a-faint: #cbd5e1;                  /* --t-light  */
+  --a-line: rgba(15, 23, 42, .12);
+  --a-panel: #ffffff;                  /* --t-bg     */
+  --a-raise: #f1f5f9;                  /* --t-bar    */
+  --a-hot: #3429ff;                    /* --primary  */
+  --a-on-hot: #ffffff;
+  --a-good: #16a34a;
+  --a-warn: #d97706;
+  --a-bad: #e11d48;
+  --a-veil: linear-gradient(180deg, #f2f0ff 0%, #f8f7ff 45%, #f5f5f5 100%);
+  --a-scan: rgba(15, 23, 42, .028);
+  --a-scan-blend: multiply;
+  --a-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --a-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* above the sticky header (20), below the command palette (9999) — the
+     palette has to stay reachable and visible from inside a game */
+  position: fixed; inset: 0; z-index: 9500;
+  font-family: var(--a-mono);
+  color: var(--a-text);
+  -webkit-user-select: none; user-select: none;
+  touch-action: none;
+}
+html.dark #arcade {
+  --a-ink: #f5f0fa;
+  --a-text: #cec6de;
+  --a-dim: #7e7599;
+  --a-faint: #453c5c;
+  --a-line: rgba(210, 202, 222, .15);
+  --a-panel: #161221;
+  --a-raise: #221c32;
+  --a-hot: #efa9ae;
+  --a-on-hot: #110e1a;
+  --a-good: #95d5a5;
+  --a-warn: #f6c177;
+  --a-bad: #eb6f92;
+  --a-veil: linear-gradient(180deg, #161320 0%, #1a1626 48%, #110e1a 100%);
+  --a-scan: rgba(255, 255, 255, .035);
+  --a-scan-blend: overlay;
+}
+#arcade[hidden] { display: none; }
+
+/* ---- scrim + stage ----
+   The veil is the site's own ambient gradient, with the same grain layered
+   over it, so a full takeover reads as the page dimming into a stage rather
+   than as a black box dropped on top of it. */
+.a-scrim {
+  position: absolute; inset: 0; overflow: hidden;
+  background: var(--a-veil);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity .28s ease;
+}
+.a-scrim::after {
+  content: ""; position: absolute; inset: 0; opacity: .11;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.72'/%3E%3C/svg%3E");
+  background-size: 180px 180px; mix-blend-mode: soft-light;
+}
+html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
+#arcade.show-scrim .a-scrim { opacity: .985; }
+#arcade.dim-scrim .a-scrim { opacity: .82; }
+
+.a-stage-wrap { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity .2s ease; }
+#arcade.show-stage .a-stage-wrap { opacity: 1; }
+#a-canvas { display: block; width: 100%; height: 100%; }
+
+/* scanline veil — sells the cabinet without costing a frame */
+.a-scan {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: repeating-linear-gradient(180deg, var(--a-scan) 0 1px, transparent 1px 3px);
+  transition: opacity .3s ease; mix-blend-mode: var(--a-scan-blend);
+}
+#arcade.show-stage .a-scan { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .a-scan { display: none; } }
+
+/* ---- HUD ---- */
+.a-hud {
+  position: absolute; inset: 0; display: grid;
+  grid-template-rows: auto 1fr auto; padding: max(1rem, env(safe-area-inset-top)) 1rem 1rem;
+  opacity: 0; transition: opacity .25s ease; pointer-events: none;
+}
+#arcade.show-hud .a-hud { opacity: 1; }
+/* Title left, score centred on the viewport. A three-column grid rather than
+   space-between, so the score sits dead centre instead of drifting with the
+   length of the game's name. */
+.a-hud-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 1rem; }
+.a-hud-top .a-title { grid-column: 1; justify-self: start; }
+.a-hud-top .a-stat { grid-column: 2; justify-self: center; }
+.a-hud-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+
+.a-chip {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .4rem .7rem; border: 1px solid var(--a-line); border-radius: .5rem;
+  background: var(--a-panel);
+  background: color-mix(in srgb, var(--a-panel) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: var(--shadow-sm);
+  color: var(--a-text);
+  font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase;
+}
+.a-title { font-weight: 700; color: var(--a-ink); letter-spacing: .1em; }
+.a-stat b, .a-hint kbd { color: var(--a-ink); }
+.a-title b { color: var(--a-hot); }
+.a-pips { display: inline-flex; gap: .3rem; }
+.a-pips i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--a-faint); transition: background-color .2s ease, transform .2s ease; }
+.a-pips i.on { background: var(--a-hot); transform: scale(1.25); }
+.a-pips i.done { background: var(--a-good); }
+/* The score is the one chip the player reads mid-fight, so it gets its own
+   scale rather than the shared chip size. */
+.a-stat {
+  color: var(--a-dim);
+  padding: .5rem 1.1rem;
+  font-size: .8125rem;
+  letter-spacing: .12em;
+}
+.a-stat b { color: var(--a-ink); font-size: 1.0625rem; font-variant-numeric: tabular-nums; }
+.a-hint { color: var(--a-dim); font-size: .6875rem; letter-spacing: .04em; text-transform: none; }
+.a-hint kbd {
+  display: inline-block; padding: 0 .3rem; border: 1px solid var(--a-line); border-radius: .25rem;
+  color: var(--a-ink); font: inherit;
+}
+.a-esc { pointer-events: auto !important; cursor: pointer; }
+.a-esc:hover { border-color: var(--a-hot); color: var(--a-hot); }
+
+/* health / meter bar used by several games */
+.a-meter { position: relative; width: 7rem; height: .375rem; border-radius: 999px; background: var(--a-faint); overflow: hidden; }
+.a-meter span { position: absolute; inset: 0 auto 0 0; background: var(--a-good); transition: width .12s linear, background-color .2s ease; }
+.a-meter.low span { background: var(--a-bad); }
+
+/* ---- banners ---- */
+.a-banner-wrap { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.a-banner {
+  min-width: min(30rem, 88vw); max-width: min(38rem, 92vw);
+  padding: 1.75rem 2rem; text-align: center;
+  border: 1px solid var(--a-line); border-radius: 1rem;
+  background: var(--a-panel);
+  background: color-mix(in srgb, var(--a-panel) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: var(--shadow-xl);
+  opacity: 0; transform: translateY(14px) scale(.97); transition: opacity .25s ease, transform .25s cubic-bezier(.2,.9,.25,1);
+}
+.a-banner.is-open { opacity: 1; transform: none; }
+.a-banner-kicker { color: var(--a-hot); font-size: .6875rem; letter-spacing: .28em; text-transform: uppercase; }
+.a-banner h2 { margin: .6rem 0 0; color: var(--a-hot); font-family: var(--a-sans); font-weight: 700; font-size: clamp(1.75rem, 5vw, 2.75rem); letter-spacing: -.05em; line-height: 1; }
+.a-banner p { margin: .75rem 0 0; color: var(--a-dim); font-size: .8125rem; line-height: 1.6; }
+.a-banner .a-actions { margin-top: 1.25rem; display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+.a-btn {
+  pointer-events: auto; cursor: pointer;
+  padding: .55rem 1rem; border: 1px solid var(--a-line); border-radius: .5rem;
+  background: transparent; color: var(--a-ink); font: inherit; font-size: .75rem;
+  letter-spacing: .08em; text-transform: uppercase;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+}
+.a-btn:hover, .a-btn:focus-visible { border-color: var(--a-hot); color: var(--a-hot); transform: translateY(-1px); box-shadow: var(--shadow-md); outline: none; }
+.a-btn.primary { background: var(--a-hot); border-color: var(--a-hot); color: var(--a-on-hot); font-weight: 700; }
+.a-btn.primary:hover { color: var(--a-on-hot); filter: brightness(1.08); }
+.a-score-line { margin-top: 1rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; font-size: .75rem; }
+.a-score-line div { color: var(--a-dim); }
+.a-score-line b { display: block; margin-top: .2rem; color: var(--a-ink); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+
+/* ---- touch controls ---- */
+.a-touch { position: absolute; inset: auto 0 0 0; height: 42%; display: none; }
+#arcade.show-touch .a-touch { display: block; }
+.a-pad {
+  position: absolute; bottom: max(1.75rem, env(safe-area-inset-bottom)); left: 1.25rem;
+  width: 8.5rem; height: 8.5rem; border-radius: 50%;
+  border: 1px solid var(--a-line);
+  background: color-mix(in srgb, var(--a-panel) 45%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto; touch-action: none;
+}
+.a-pad i {
+  position: absolute; top: 50%; left: 50%; width: 3.25rem; height: 3.25rem; margin: -1.625rem 0 0 -1.625rem;
+  border-radius: 50%; background: var(--a-faint); border: 1px solid var(--a-line);
+  box-shadow: var(--shadow-sm);
+  transition: transform .05s linear;
+}
+.a-keys { position: absolute; bottom: max(1.75rem, env(safe-area-inset-bottom)); right: 1.25rem; display: grid; gap: .625rem; justify-items: end; }
+.a-key {
+  pointer-events: auto; touch-action: none; cursor: pointer;
+  width: 4.25rem; height: 4.25rem; border-radius: 50%;
+  border: 1px solid var(--a-line);
+  background: color-mix(in srgb, var(--a-panel) 62%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
+  color: var(--a-ink);
+  font: inherit; font-size: .625rem; letter-spacing: .08em; text-transform: uppercase;
+}
+.a-key.wide { width: auto; min-width: 5.5rem; height: 3rem; border-radius: 999px; padding-inline: 1rem; }
+.a-key:active, .a-key.is-down { background: var(--a-hot); color: var(--a-on-hot); }
+
+/* toast / floating text layer for page-mode games */
+.a-toast-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.a-toast {
+  position: absolute; transform: translate(-50%, -50%);
+  font-family: var(--font-mono); font-weight: 700; font-size: .8125rem;
+  text-shadow: 0 1px 10px var(--a-veil-shadow, rgba(0,0,0,.35)); white-space: nowrap;
+}
+
+@media (max-width: 40rem) {
+  .a-hud-top { grid-template-columns: 1fr; justify-items: center; }
+  .a-hud-top .a-title { grid-column: 1; justify-self: start; }
+  .a-hud-top .a-stat { grid-column: 1; }
+  .a-hud-bottom .a-hint { display: none; }
+}
+
+/* ---- page lock ----
+   Deliberately no `overflow: hidden` on body: main.css documents that once html
+   carries its own overflow, body's stops propagating to the viewport and body
+   becomes a scroll container, silently unsticking .site-header. Fixed
+   positioning already collapses the document height. The gutter replaces the
+   scrollbar so the page doesn't shift underneath the overlay. */
+body.is-game-open {
+  position: fixed;
+  inset-inline: 0;
+  top: var(--game-scroll-top, 0);
+  width: 100%;
+  padding-right: var(--game-gutter, 0);
+}
+
+/* two chips share the bottom-right corner */
+.a-hud-right { display: flex; align-items: flex-end; gap: .5rem; }
+#a-mute { min-width: 5.5rem; justify-content: center; }
+
+/* With touch controls up, the bottom corners belong to the thumbs — the sound
+   and exit chips move to the top right, clear of the pad and the buttons. */
+#arcade.show-touch .a-hud-right {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: 1rem;
+}
+
+@media (max-width: 40rem) {
+  .a-stat { padding: .4rem .75rem; font-size: .6875rem; letter-spacing: .08em; }
+  .a-stat b { font-size: .875rem; }
+  #a-mute { min-width: 0; }
+}
+
+/* ---- reduced motion ----
+   Chrome motion only. The games themselves are motion; a player who opened a
+   shoot-'em-up has opted into that. Toast travel is handled in games.js. */
+@media (prefers-reduced-motion: reduce) {
+  .a-scrim, .a-banner, .a-btn, .a-card, .a-pad i, .a-pips i, .a-hud, .a-stage-wrap { transition: none; }
+  .a-banner { transform: none; }
+}

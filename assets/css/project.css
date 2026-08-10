@@ -341,6 +341,16 @@
     transform: translateY(-4px);
     box-shadow: var(--shadow-hover);
   }
+  /* The game tiles are buttons rather than links, so they need the type and
+     box sizing a <button> does not inherit. Everything else — background,
+     border, hover lift, dark palette — comes from .side-project above. */
+  .side-project--game {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+    cursor: pointer;
+  }
   #side-projects img {
     @apply m-0;
     width: 3.5rem;

@@ -60,14 +60,27 @@
       {{ range sort $ranked "reach" "desc" }}
         {{ $metrics := .metrics }}
         {{ with .page }}
-          <a
-            id="{{ .File.ContentBaseName }}"
-            data-project-id="{{ .File.ContentBaseName }}"
-            class="side-project"
-            href="{{ .Params.link }}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          {{/* A `game` project has no URL to point at — it takes the page over
+               from window.siteGames — so its tile is a button that launches the
+               id, wired up in assets/js/home.js. */}}
+          {{ if .Params.game }}
+            <button
+              type="button"
+              id="{{ .File.ContentBaseName }}"
+              data-project-id="{{ .File.ContentBaseName }}"
+              data-game="{{ .Params.game }}"
+              class="side-project side-project--game"
+            >
+          {{ else }}
+            <a
+              id="{{ .File.ContentBaseName }}"
+              data-project-id="{{ .File.ContentBaseName }}"
+              class="side-project"
+              href="{{ .Params.link }}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+          {{ end }}
             <img src="{{ .Params.thumbnail | relURL }}" alt="">
             <p class="side-project-title">{{ .Title }}</p>
             <p class="side-project-description">{{ .Description }}</p>
@@ -78,7 +91,7 @@
                 {{ partial "project-metric.html" .secondary }}
               </div>
             {{ end }}
-          </a>
+          {{ if .Params.game }}</button>{{ else }}</a>{{ end }}
         {{ end }}
       {{ end }}
     </div>

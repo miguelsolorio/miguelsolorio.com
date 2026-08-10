@@ -33,6 +33,16 @@
     {{ end }}
     <script src="{{ $common.RelPermalink }}" defer{{ with $common.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
 
+    {{/* Game mode. Site-wide because the command palette is site-wide; the
+         overlay is built on first play, so an unopened game costs nothing but
+         the download. Must load after common.js — it listens for the palette's
+         site:palette event and common.js dispatches it. */}}
+    {{ $games := resources.Get "js/games.js" }}
+    {{ if hugo.IsProduction }}
+      {{ $games = $games | minify | fingerprint }}
+    {{ end }}
+    <script src="{{ $games.RelPermalink }}" defer{{ with $games.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
+
     {{ if .IsHome }}
       {{ $home := resources.Get "js/home.js" }}
       {{ if hugo.IsProduction }}
