@@ -48,7 +48,8 @@
       {{/* Reach lives in data/project_metrics.json, not front matter, so pair each
            page with its count before sorting. Figma "users" and Marketplace
            "installs" rank together — they render as one download metric. Projects
-           with no entry (reach 0) fall to the end. */}}
+           with no entry (reach 0) fall to the end, where they keep Hugo's page
+           order — so `weight` is what ranks them, and weight 0 sorts last. */}}
       {{ $ranked := slice }}
       {{ range where .Site.RegularPages "Params.project" "==" "small" }}
         {{ $metrics := index $.Site.Data.project_metrics .File.ContentBaseName }}

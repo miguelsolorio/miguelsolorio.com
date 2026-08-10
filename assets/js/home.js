@@ -59,7 +59,16 @@ if (portfolioTerminal) {
         { name: 'Kaleidocode', description: 'generate VS Code themes', url: 'https://kaleidocode.com/' },
         { name: 'Regulator', description: 'bulk rename color styles', url: 'https://www.figma.com/community/plugin/772054917007268360/Regulator' },
         { name: 'Navigator', description: 'find color styles', url: 'https://www.figma.com/community/plugin/739558587628004077/Navigator' },
+        { name: 'Paster', description: 'fill text layers from a list', url: 'https://www.figma.com/community/plugin/1668696147027080221/paster' },
+        { name: 'Syntaxer', description: 'highlight code like VS Code', url: 'https://www.figma.com/community/plugin/1411162491720421622/syntaxer' },
         { name: 'VS Code Icons', description: 'use VS Code icons', url: 'https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons' }
+      ]
+    },
+    {
+      name: 'Web',
+      external: true,
+      projects: [
+        { name: 'Contrast Grid', description: 'test colors for accessible contrast', url: 'https://miguelsolorio.github.io/contrast-grid-editor/' }
       ]
     },
     {
