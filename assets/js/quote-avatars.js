@@ -24,19 +24,24 @@
   const VARIANCE = 0.5;
   const COLOR_COUNT = 3;
 
-  /* Site indigo, both variants — one set cannot serve both card surfaces,
-     the same reason the site accent flips from #3429ff to indigo-300 in
-     dark. */
+  /* The site accent in each mode — one set cannot serve both card surfaces,
+     the same reason the accent itself flips from indigo to rose. Light is
+     the blurple family on white; dark is Rosé Dusk, so the grounds are
+     mauve steps just above the dark card (#201c28) and the figures are the
+     palette's rose primary (#efa9ae), its iris support (#c4a7e7) and a
+     deeper and paler rose either side of them. Any two figures can land on
+     any ground — pickColors deals a ground plus two of the four — so every
+     pairing has to read on the mauve. */
   const PALETTE = {
     light: { grounds: ['#eef0ff', '#e4e7ff', '#f5f4ff'],
              figures: ['#3429ff', '#241bc7', '#7d8bff', '#b9c1ff'] },
-    dark:  { grounds: ['#1e2447', '#242b58', '#1a1f3c'],
-             figures: ['#a5b4fc', '#818cf8', '#c7d2fe', '#6366f1'] },
+    dark:  { grounds: ['#2b2436', '#332942', '#2f2530'],
+             figures: ['#efa9ae', '#c4a7e7', '#eb6f92', '#f3cdd2'] },
   };
 
   /* Hairline ring, baked per variant since the site CSS never sees inside
-     these drawings. */
-  const RING = { light: 'rgba(15,23,42,.1)', dark: 'rgba(148,163,184,.18)' };
+     these drawings. Dark takes the mauve the page's own hairlines use. */
+  const RING = { light: 'rgba(15,23,42,.1)', dark: 'rgba(210,202,222,.18)' };
 
   const CIRCLE = 'M1,48a47,47 0 1,0 94,0a47,47 0 1,0 -94,0Z';
 
