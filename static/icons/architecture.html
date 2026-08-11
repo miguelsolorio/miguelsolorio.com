@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contributing an icon, before and after Codicons</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./architecture.css?v=1">
+</head>
+<body class="demo-scene compare-scene" data-demo-scene="icons-architecture">
+
+<div class="compare">
+  <section class="compare-side">
+    <h2 class="compare-title">Before</h2>
+    <div class="code">
+      <p class="code-line"><span class="tok-key">"icon"</span>: {</p>
+      <p class="code-line">    <span class="tok-key">"light"</span>: <span class="tok-str">"icons/icon-light.svg"</span>,</p>
+      <p class="code-line">    <span class="tok-key">"dark"</span>: <span class="tok-str">"icons/icon-dark.svg"</span>,</p>
+      <p class="code-line">    <span class="tok-key">"highContrast"</span>: <span class="tok-str">"icons/icon-hc.svg"</span></p>
+      <p class="code-line">}</p>
+    </div>
+  </section>
+
+  <section class="compare-side">
+    <h2 class="compare-title">After</h2>
+    <div class="code code--after">
+      <p class="code-line">id: <span class="tok-const">ADD_WATCH_ID</span>,</p>
+      <p class="code-line code-line--focus"><span class="tok-prop">icon</span>: Codicon.add,</p>
+      <p class="code-line">menu: {</p>
+      <p class="code-line">  id: MenuId.ViewTitle,</p>
+      <p class="code-line">  ...</p>
+      <p class="code-line">}</p>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>

@@ -12,7 +12,7 @@ card_theme: "icons"
 
 As the lead designer, I created a cohesive iconography style that could be seamlessly applied across our various products and platforms.
 
-{{< iframe src="/icons/icon-board.html" height="500" title="A grid of several hundred VS Code product icons in the final outline style, laid out 24 across and 14 down" theme="icons" frame_class="project-embed--board" caption="The full Codicons set in its final outline style" >}}
+{{< iframe src="/icons/spiral-animation.html" height="500" title="A grid of several hundred VS Code product icons in the final outline style, laid out 24 across and 14 down" theme="icons" frame_class="project-embed--board" caption="The full Codicons set in its final outline style" >}}
 
 # Background
 
@@ -73,7 +73,7 @@ After several months of iterating on the new icons, we finally [shipped them](ht
 
 Once we updated the icons, we also wanted to update how icons are referenced in the source code. I created a command line interface (CLI) tool to auto-generate an icon font from our svgs. We named the icon library [Codicons](https://github.com/microsoft/vscode-codicons/), paying tribute to our previous icon library ([Octicons](https://primer.style/design/foundations/icons/)).
 
-{{< image src="codicons-tool.png" alt="Terminal output of the codicons build finding 417 SVGs and generating codicon.ttf, codicon.css, and codicon.html" gradient="true" caption="The CLI generating an icon font from 417 SVGs" >}}
+{{< iframe src="/icons/codicons-build.html" height="750" title="Terminal output of the codicons build finding 417 SVGs and generating codicon.ttf, codicon.css, and codicon.html" theme="icons" frame_class="project-embed--log" caption="The CLI generating an icon font from 417 SVGs" >}}
 
 # Open sourcing it
 
@@ -85,11 +85,11 @@ Once we shipped the icons, I knew it was time to give back to the community and 
 
 Previously, to reference icons you'd need to provide 3 different files for the various themes (Dark, Light, High Contrast) and add them in a separate file in your code. They would then be added as background images and lose any scalability benefits. With the new icon font, [Codicons](https://github.com/microsoft/vscode-codicons/), we could define a dictionary of icons and then reference them in the code.
 
-{{< image src="architecture.png" alt="Before-and-after code comparison: an icon previously required three theme-specific SVGs, now a single Codicon reference" gradient="true" caption="From three theme-specific SVGs to a single Codicon reference" >}}
+{{< iframe src="/icons/architecture.html" height="285" title="Before-and-after code comparison: an icon previously required three theme-specific SVGs, now a single Codicon reference" theme="icons" frame_class="project-embed--compare" caption="From three theme-specific SVGs to a single Codicon reference" >}}
 
 We also shipped the icon library as an npm package for anyone wanting to use them in other projects outside of VS Code or as part of their extensions. It currently has an average of +20k installs.
 
-{{< image src="codicons-npm.png" alt="Line chart of npm downloads for the codicons package climbing to roughly 19k weekly within a year, used by 1.1k projects" gradient="true" caption="Codicons npm downloads approaching 20k weekly within a year" >}}
+{{< iframe src="/icons/npm-downloads.html" height="500" title="Line chart of npm downloads for the codicons package climbing to roughly 19k weekly within a year, used by 1.1k projects" theme="icons" frame_class="project-embed--bare" caption="Codicons npm downloads approaching 20k weekly within a year" >}}
 
 # Scaling for the future
 

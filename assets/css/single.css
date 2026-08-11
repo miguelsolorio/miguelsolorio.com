@@ -385,6 +385,37 @@
     box-shadow: none;
   }
 
+  /* Two stills from the icons page redrawn as text: the codicons build log and
+     the before/after of an icon contribution. Neither is a live scene — each is
+     a fixed block of type, and it scales with the column the way the screenshot
+     it replaces did. The frame takes the block's own proportions and the scene
+     sets its type as a share of that same width, so the two can only ever
+     agree; the ratios below and the vw font sizes in static/icons/*.css are one
+     measurement and have to move together. */
+  .single .project-embed--log iframe.embed-frame,
+  .single .project-embed--compare iframe.embed-frame {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    aspect-ratio: var(--embed-aspect);
+  }
+  /* The log keeps the frame's radius and shadow: there its edge is the terminal
+     panel's edge, so there is no second surface to draw. */
+  .single .project-embed--log {
+    --embed-aspect: 820 / 481;
+  }
+  /* The comparison drops them — it is two code samples set on the stage, not a
+     screenshot of one surface. */
+  .single .project-embed--compare {
+    --embed-aspect: 820 / 285;
+  }
+  .single .project-embed--compare iframe.embed-frame,
+  .dark .single .project-embed--compare iframe.embed-frame {
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+
   /* The icon board is a field, not a screenshot: it stands on the stage with
      no panel of its own, and its frame takes the grid's own proportions (24
      columns by 14 rows of 51px cells) so the set scales with the column

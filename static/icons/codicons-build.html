@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The codicons build log</title>
+<script src="/demo-system/demo-system.js?v=2"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./codicons-build.css?v=1">
+</head>
+<body class="demo-scene log-scene" data-demo-scene="codicons-build">
+
+<div class="log">
+  <div class="log-block">
+    <p class="log-line"><span class="tok-run">npm</span> run build</p>
+  </div>
+
+  <div class="log-block">
+    <p class="log-line"><span class="tok-prompt">&gt;</span> @vscode/codicons@0.0.31 fonts</p>
+    <p class="log-line"><span class="tok-prompt">&gt;</span> fantasticon</p>
+  </div>
+
+  <div class="log-block">
+    <p class="log-line tok-warn">Generating font kit...</p>
+    <p class="log-line tok-ok"><span class="tok-check" aria-hidden="true">✔</span> Using configuration file: .fantasticonrc.js</p>
+    <p class="log-line"><span class="tok-check" aria-hidden="true">✔</span> 417 SVGs found in ./src/icons</p>
+    <p class="log-line tok-file"><span class="tok-check" aria-hidden="true">✔</span> Generated dist/codicon.ttf</p>
+    <p class="log-line tok-file"><span class="tok-check" aria-hidden="true">✔</span> Generated dist/codicon.css</p>
+    <p class="log-line tok-file"><span class="tok-check" aria-hidden="true">✔</span> Generated dist/codicon.html</p>
+    <p class="log-line tok-ok">Done</p>
+  </div>
+
+  <div class="log-block">
+    <p class="log-line"><span class="tok-prompt">&gt;</span> @vscode/codicons@0.0.31 export-to-csv</p>
+    <p class="log-line"><span class="tok-prompt">&gt;</span> node ./export-to-csv.js ./dist/codicon.ttf &gt; ./dist/codicon.csv</p>
+  </div>
+
+  <div class="log-block log-block--wide">
+    <p class="log-line"><span class="tok-prompt">&gt;</span> @vscode/codicons@0.0.31 sprite</p>
+    <p class="log-line"><span class="tok-prompt">&gt;</span> node ./svg-sprite.js --outDir dist --outFile codicon.svg</p>
+  </div>
+</div>
+
+</body>
+</html>

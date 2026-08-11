@@ -1,0 +1,103 @@
+/* The codicons build log — the terminal screenshot from icons.md redrawn as
+   text. The scene fills its frame edge to edge, so the embed's own radius and
+   shadow are the panel's; nothing here draws a second one.
+
+   Every length is set from the root font size, and that size is a share of the
+   frame's width. The frame is aspect-locked in single.css, so the ratio between
+   the type and the panel holds at every column width and the log can never
+   outgrow the box it is given — it scales the way the image it replaces did,
+   but as live text rather than pixels. */
+
+:root {
+  /* 18px at the 820px design width the aspect ratio was struck from. */
+  font-size: 2.19512vw;
+
+  --log-surface: #ffffff;
+  --log-ink: #1f2328;
+  --log-dim: #6b7280;
+  --log-edge: #e4e7ec;
+  /* The three voices of the log: what fantasticon is doing, what it finished,
+     and what it wrote. Light values are darkened off the source screenshot's
+     terminal palette, which was drawn for a dark background only. */
+  --log-ok: #0f9d58;
+  --log-warn: #a1670a;
+  --log-file: #4f46e5;
+}
+
+:root.dark {
+  /* One step above the page's mauve near-black, so the panel reads as lifted
+     material rather than a hole in the stage. */
+  --log-surface: #262130;
+  --log-ink: #d7d2e0;
+  --log-dim: #948da3;
+  --log-edge: rgb(255 255 255 / 8%);
+  --log-ok: #4ec97a;
+  --log-warn: #e3c645;
+  --log-file: #8b83ff;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.log-scene {
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  padding: 2.2rem 1.7rem;
+  border: 1px solid var(--log-edge);
+  background: var(--log-surface);
+  color: var(--log-ink);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1rem;
+  line-height: 1.16;
+}
+
+/* The log sits as one block in the middle of the panel rather than filling it,
+   so a font whose advance width differs from the one this was measured against
+   only changes the margin around the text, never where the text starts. */
+.log {
+  width: fit-content;
+}
+
+.log-line {
+  margin: 0;
+  white-space: pre;
+}
+
+/* A blank terminal line between each npm script and its output. The sprite
+   block sat two lines down in the original — the gap where the csv job's own
+   output would have been — and keeping it preserves the log's rhythm. */
+.log-block + .log-block {
+  margin-top: 1.16em;
+}
+
+.log-block + .log-block--wide {
+  margin-top: 2.32em;
+}
+
+.tok-prompt {
+  color: var(--log-dim);
+}
+
+.tok-run,
+.tok-ok {
+  color: var(--log-ok);
+}
+
+.tok-warn {
+  color: var(--log-warn);
+}
+
+.tok-file {
+  color: var(--log-file);
+}
+
+/* The check mark on the SVG count is the plain ink of its line: fantasticon
+   tints only the lines it is reporting a result for. */
+.tok-check {
+  color: inherit;
+}

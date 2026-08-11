@@ -1,0 +1,113 @@
+/* Before and after Codicons: the three theme-specific SVGs an icon used to
+   need, beside the single reference that replaced them.
+
+   The point of the picture is how little is left, so the After side is set back
+   to a whisper and only the line that does the work is held at full strength.
+   Nothing is cropped or omitted to make that happen — the surrounding
+   contribution is all still there, just quiet.
+
+   The scene stands bare on the embed's stage; every length is set from the root
+   font size, and that size is a share of the frame's width. The frame is
+   aspect-locked in single.css, so the ratio holds at every column width and the
+   two samples can never outgrow the box they are given. */
+
+:root {
+  /* 16px at the 820px design width the aspect ratio was struck from. */
+  font-size: 1.95122vw;
+
+  --code-ink: #1f2328;
+  --code-title: #1f2328;
+  --code-key: #1a6fd4;
+  --code-str: #2b7de0;
+  --code-const: #5b7a9c;
+  --code-prop: #7f46ff;
+  /* How far back the untouched part of the contribution sits. Set as one value
+     because both sides of the comparison are read at a glance and a second
+     tier would only invite the eye to rank them. */
+  --code-hush: 0.42;
+}
+
+:root.dark {
+  --code-ink: #e4e0ec;
+  --code-title: #f2f0f7;
+  --code-key: #79b8ff;
+  --code-str: #3d90f9;
+  --code-const: #8ea6c0;
+  --code-prop: #c58af9;
+  --code-hush: 0.38;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.compare-scene {
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  padding: 1.6rem 0.8rem;
+  background: transparent;
+  color: var(--code-ink);
+  font-size: 1rem;
+}
+
+/* Each column is only as wide as the sample it holds, so the pair sits centred
+   with the gap between them rather than stretched across the frame. */
+.compare {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4.5rem;
+}
+
+.compare-title {
+  margin: 0 0 1.6rem;
+  color: var(--code-title);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.code {
+  width: fit-content;
+  margin-inline: auto;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  line-height: 1.53;
+}
+
+.code-line {
+  margin: 0;
+  white-space: pre;
+}
+
+.tok-key {
+  color: var(--code-key);
+}
+
+.tok-str {
+  color: var(--code-str);
+}
+
+.tok-const {
+  color: var(--code-const);
+}
+
+.tok-prop {
+  color: var(--code-prop);
+}
+
+/* The After sample is one line of news inside an ordinary contribution. The
+   rest is held back so the eye lands on it without the surrounding code having
+   to be cut away. */
+.code--after .code-line {
+  opacity: var(--code-hush);
+}
+
+.code--after .code-line--focus {
+  opacity: 1;
+}

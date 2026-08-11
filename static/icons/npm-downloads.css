@@ -1,0 +1,139 @@
+/* Weekly npm downloads for @vscode/codicons. The plot is Chart.js on a canvas;
+   everything around it — title, projects count, package link — is ordinary
+   markup, so the only thing the script draws is the drawing.
+
+   The scene puts no surface under itself: it stands on the embed's themed
+   stage. Every colour lives here, including the ones the canvas needs, which
+   npm-downloads.js reads back off this element as custom properties and
+   re-reads whenever the page's theme changes. The script never names a colour.
+
+   Type is set in px rather than as a share of the frame, unlike the build log
+   above it: the frame is a fixed height and the chart reflows into whatever
+   width the column gives it, so an axis label stays legible on a phone instead
+   of scaling down with the plot. */
+
+.npm-scene {
+  --chart-ink: #33415a;
+  --chart-ink-muted: #64748b;
+  --chart-grid: rgb(51 65 90 / 12%);
+  --chart-series: #2b7de0;
+  /* The wash under the line. Held in the series hue so the fill reads as the
+     line's own shadow rather than a second colour. */
+  --chart-fill-top: rgb(43 125 224 / 26%);
+  --chart-fill-bottom: rgb(43 125 224 / 0%);
+  --chart-pill: #2b7de0;
+  --chart-pill-ink: #ffffff;
+  /* The tooltip is the one panel in the scene, so it carries the only surface
+     and edge here. */
+  --chart-panel: #ffffff;
+  --chart-panel-edge: rgb(51 65 90 / 14%);
+
+  display: flex;
+  min-height: 100vh;
+  box-sizing: border-box;
+  flex-direction: column;
+  padding: 0;
+  background: transparent;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root.dark .npm-scene {
+  --chart-ink: #cbd5e1;
+  --chart-ink-muted: #94a3b8;
+  --chart-grid: rgb(203 213 225 / 14%);
+  --chart-series: #6bb2f7;
+  --chart-fill-top: rgb(107 178 247 / 30%);
+  --chart-fill-bottom: rgb(107 178 247 / 0%);
+  --chart-pill: #6bb2f7;
+  --chart-pill-ink: #10151f;
+  --chart-panel: #2a2536;
+  --chart-panel-edge: rgb(255 255 255 / 10%);
+}
+
+.npm {
+  display: flex;
+  min-height: 100vh;
+  box-sizing: border-box;
+  flex-direction: column;
+  margin: 0;
+  padding: clamp(0.5rem, 2vw, 1rem) clamp(0.25rem, 1.5vw, 0.75rem);
+}
+
+.npm-title {
+  margin: 0 0 clamp(0.75rem, 2.5vw, 1.5rem);
+  color: var(--chart-ink);
+  font-size: clamp(1.25rem, 3.2vw, 1.625rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+/* Chart.js sizes its canvas from the parent box, so the plot has to be the
+   thing that flexes: the title and the strip below take what they need and the
+   drawing gets the rest of the frame. */
+.npm-plot {
+  position: relative;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.npm-meta {
+  margin: clamp(0.75rem, 2.5vw, 1.25rem) 0 0;
+  color: var(--chart-ink);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: center;
+}
+
+.npm-note {
+  margin: 0;
+  font-size: clamp(0.75rem, 1.9vw, 0.9375rem);
+}
+
+.npm-count {
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  border-radius: 999px;
+  margin: 0 0.15em;
+  background: var(--chart-pill);
+  color: var(--chart-pill-ink);
+  font-weight: 500;
+}
+
+.npm-source {
+  margin: clamp(0.5rem, 1.6vw, 0.875rem) 0 0;
+  font-size: clamp(0.625rem, 1.6vw, 0.8125rem);
+  /* The URL is one long unbroken token; below the measure it breaks rather
+     than pushing the scene sideways. */
+  overflow-wrap: anywhere;
+}
+
+.npm-source a {
+  color: var(--chart-ink-muted);
+  text-decoration: none;
+}
+
+.npm-source a:hover,
+.npm-source a:focus-visible {
+  color: var(--chart-series);
+  text-decoration: underline;
+}
+
+/* The count is the figure the line arrives at, so it waits for the line rather
+   than sitting there ahead of it. */
+.npm-meta {
+  opacity: 0;
+  animation: npm-fade 0.6s ease-out 1.5s forwards;
+}
+
+@keyframes npm-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .npm-meta {
+    animation: none;
+    opacity: 1;
+  }
+}
