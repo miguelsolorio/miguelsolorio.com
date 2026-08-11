@@ -89,7 +89,7 @@ Previously, to reference icons you'd need to provide 3 different files for the v
 
 We also shipped the icon library as an npm package for anyone wanting to use them in other projects outside of VS Code or as part of their extensions. It took a year to reach 20k installs a week. It now averages over 500k a week, and has been downloaded more than 19 million times.
 
-{{< iframe src="/icons/npm-downloads.html" height="500" title="Line chart of weekly npm downloads for the codicons package from 2021 to 2026, rising from nothing to over 500k a week" theme="icons" frame_class="project-embed--bare" caption="Codicons npm downloads, every week since launch" >}}
+{{< iframe src="/icons/npm-downloads.html" height="600" title="Line chart of weekly npm downloads for the codicons package from 2021 to 2026, rising from nothing to over 500k a week" theme="icons" frame_class="project-embed--bare" caption="Codicons npm downloads, every week since launch" >}}
 
 # Scaling for the future
 

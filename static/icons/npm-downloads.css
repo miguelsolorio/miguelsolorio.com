@@ -1,6 +1,6 @@
 /* Weekly npm downloads for @vscode/codicons. The plot is Chart.js on a canvas;
-   everything around it — title, projects count, package link — is ordinary
-   markup, so the only thing the script draws is the drawing.
+   everything around it — title, the three figures below, package link — is
+   ordinary markup, so the only thing the script draws is the drawing.
 
    The scene puts no surface under itself: it stands on the embed's themed
    stage. Every colour lives here, including the ones the canvas needs, which
@@ -21,8 +21,6 @@
      line's own shadow rather than a second colour. */
   --chart-fill-top: rgb(43 125 224 / 26%);
   --chart-fill-bottom: rgb(43 125 224 / 0%);
-  --chart-pill: #2b7de0;
-  --chart-pill-ink: #ffffff;
   /* The tooltip is the one panel in the scene, so it carries the only surface
      and edge here. */
   --chart-panel: #ffffff;
@@ -44,8 +42,6 @@
   --chart-series: #6bb2f7;
   --chart-fill-top: rgb(107 178 247 / 30%);
   --chart-fill-bottom: rgb(107 178 247 / 0%);
-  --chart-pill: #6bb2f7;
-  --chart-pill-ink: #10151f;
   --chart-panel: #2a2536;
   --chart-panel-edge: rgb(255 255 255 / 10%);
 }
@@ -84,19 +80,67 @@
   text-align: center;
 }
 
-.npm-note {
-  margin: 0;
-  font-size: clamp(0.75rem, 1.9vw, 0.9375rem);
+/* What the line adds up to: how much, how fast, how widely. A definition list
+   because that is what they are, wrapped a pair at a time so each figure keeps
+   its own label; column-reverse then lifts the value above the term without
+   disturbing the order they are read out in.
+
+   The gap is bound once and the divider is placed from it, since the rule sits
+   halfway into a space it does not own and the two would otherwise have to be
+   kept in step by hand. */
+.npm-stats {
+  --npm-stat-gap: clamp(1.25rem, 5vw, 2.75rem);
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: clamp(0.625rem, 2vw, 1rem) 0 0;
+  gap: 0.5rem var(--npm-stat-gap);
 }
 
-.npm-count {
-  display: inline-block;
-  padding: 0.15em 0.6em;
-  border-radius: 999px;
-  margin: 0 0.15em;
-  background: var(--chart-pill);
-  color: var(--chart-pill-ink);
-  font-weight: 500;
+.npm-stat {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 0.15em;
+}
+
+/* The divider belongs between the figures, so it hangs off the second one and
+   is drawn only while the two are still side by side. */
+.npm-stat + .npm-stat {
+  position: relative;
+}
+
+.npm-stat + .npm-stat::before {
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  left: calc(var(--npm-stat-gap) / -2);
+  border-left: 1px solid var(--chart-grid);
+  content: "";
+}
+
+/* Three figures will not sit in a phone-width column, so there they wrap. A
+   rule drawn into the gap only reads as a divider while the row is intact —
+   once a figure moves to a second line it would be pointing at nothing. */
+@media (width < 30rem) {
+  .npm-stat + .npm-stat::before {
+    content: none;
+  }
+}
+
+.npm-stat-value {
+  margin: 0;
+  color: var(--chart-ink);
+  font-size: clamp(1.125rem, 3.4vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.npm-stat-label {
+  color: var(--chart-ink-muted);
+  font-size: clamp(0.625rem, 1.6vw, 0.75rem);
 }
 
 .npm-source {
@@ -118,8 +162,8 @@
   text-decoration: underline;
 }
 
-/* The count is the figure the line arrives at, so it waits for the line rather
-   than sitting there ahead of it. */
+/* The figures are what the line arrives at, so they wait for it rather than
+   sitting there ahead of it. */
 .npm-meta {
   opacity: 0;
   animation: npm-fade 0.6s ease-out 1.5s forwards;

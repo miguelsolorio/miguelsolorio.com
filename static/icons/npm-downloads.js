@@ -63,8 +63,13 @@
     ["2026-01-01", "2026"]
   ];
 
+  /* A hundred thousand a step. Coarser rules cleared the 1.03M peak in three or
+     four lines, but then the first rule above the axis sat at 300k and the
+     package's first four years — all of them under 60k — had nothing to be read
+     against. Thirteen rules is a lot for one plot; they earn it by giving the
+     early years a scale. */
   var Y_MAX = 1200000;
-  var Y_STEP = 300000;
+  var Y_STEP = 100000;
   var MONO = '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
   var MONTH_NAMES = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
