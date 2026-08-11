@@ -1,10 +1,16 @@
-/* Weekly npm downloads for @vscode/codicons across its first year on the
-   registry — the figure that closed the "Impact" section of the icons page.
+/* Weekly npm downloads for @vscode/codicons across its full life on the
+   registry — the figure that closes the "Impact" section of the icons page.
 
-   The readings below are sampled off the npm-stat curve for the package over
-   the same window: enough points to keep every turn the original had (the two
-   September spikes, the holiday trough, the new-year jump) without pretending
-   to be the full daily series.
+   These are the real numbers, not a sampled curve: every day from the first
+   publish on 13 July 2021 through 9 August 2026, pulled from npm's own
+   downloads API and summed into weeks that start on a Monday.
+
+   Two liberties, both bounded. Six days came back from the API as zero —
+   2022-07-22, 2023-11-03, 2026-05-13, 2026-06-05, 2026-07-12, 2026-08-11 —
+   which are registry reporting gaps rather than days nobody installed the
+   package; each is filled with the mean of the same weekday one week either
+   side, so a dropped reading doesn't read as a cliff. And the trailing partial
+   week is dropped, so the last point is a whole week like every other one.
 
    Chart.js draws it. Everything here is geometry and wiring — every colour is
    read back off the stylesheet as a custom property, so the drawing re-tones
@@ -12,68 +18,53 @@
 (function () {
   "use strict";
 
-  var POINTS = [
-    ["2021-07-01", 60],
-    ["2021-07-11", 220],
-    ["2021-07-20", 380],
-    ["2021-07-28", 260],
-    ["2021-08-04", 950],
-    ["2021-08-09", 2000],
-    ["2021-08-14", 2350],
-    ["2021-08-20", 3200],
-    ["2021-08-25", 4700],
-    ["2021-08-30", 6500],
-    ["2021-09-02", 6800],
-    ["2021-09-07", 5800],
-    ["2021-09-12", 7900],
-    ["2021-09-18", 6600],
-    ["2021-09-24", 6000],
-    ["2021-10-02", 6100],
-    ["2021-10-10", 6500],
-    ["2021-10-17", 7000],
-    ["2021-10-24", 7600],
-    ["2021-10-31", 7900],
-    ["2021-11-07", 7900],
-    ["2021-11-14", 8600],
-    ["2021-11-21", 9300],
-    ["2021-11-28", 10400],
-    ["2021-12-03", 10500],
-    ["2021-12-08", 10300],
-    ["2021-12-14", 11400],
-    ["2021-12-19", 11800],
-    ["2021-12-24", 10400],
-    ["2021-12-29", 8000],
-    ["2022-01-03", 12500],
-    ["2022-01-08", 16500],
-    ["2022-01-13", 16300],
-    ["2022-01-19", 15000],
-    ["2022-01-25", 12800],
-    ["2022-01-31", 11700],
-    ["2022-02-06", 13900],
-    ["2022-02-11", 15400],
-    ["2022-02-16", 14900],
-    ["2022-02-21", 15300],
-    ["2022-02-26", 16000],
-    ["2022-03-04", 14400],
-    ["2022-03-09", 14000],
-    ["2022-03-14", 14500],
-    ["2022-03-19", 13900],
-    ["2022-03-24", 17600],
-    ["2022-03-29", 13900],
-    ["2022-04-04", 17900],
-    ["2022-04-10", 18600],
-    ["2022-04-16", 19500]
+  /* Weeks are a fixed stride, so only the readings are stored — the x for each
+     one is the first Monday plus seven days per index. The first entry covers
+     the six days from publication to that Sunday; every entry after it is a
+     full week. */
+  var WEEK_ONE = "2021-07-12";
+  var WEEKLY = [
+    109, 234, 290, 556, 1819, 2636, 3412, 6634, 5660, 7751,
+    6047, 6144, 6560, 7376, 7117, 7331, 8565, 9113, 8745, 10650,
+    9929, 11411, 11932, 10206, 8092, 13054, 16778, 15591, 15322, 13072,
+    11818, 15505, 14708, 15679, 14177, 14358, 14206, 17262, 14076, 18399,
+    19513, 26289, 26324, 24887, 23168, 30394, 24184, 28250, 28781, 27214,
+    31477, 22004, 27643, 26285, 27209, 26827, 20789, 25941, 26297, 24175,
+    20715, 18471, 24332, 26405, 20929, 36688, 26147, 24647, 25241, 27800,
+    26161, 21362, 21575, 27859, 25660, 19137, 13228, 22886, 29729, 23193,
+    21763, 23555, 21224, 26101, 23096, 23620, 23852, 26716, 24138, 24669,
+    21055, 22774, 24421, 23042, 16522, 20080, 18811, 21842, 22598, 24103,
+    24088, 19799, 21521, 19718, 20266, 18159, 19466, 18411, 19805, 18651,
+    19729, 18928, 20793, 22202, 21371, 22493, 21183, 21105, 22620, 26085,
+    22068, 27140, 30114, 22703, 25301, 23141, 26048, 24385, 14892, 22039,
+    28134, 26007, 25366, 29254, 28526, 27917, 28146, 30232, 28276, 27934,
+    33409, 26336, 30908, 32029, 31215, 33053, 27542, 28055, 28415, 25789,
+    30606, 31742, 33236, 32136, 30352, 27071, 32780, 36064, 38616, 34461,
+    37150, 31203, 35057, 37420, 37284, 38084, 42521, 45266, 45172, 45854,
+    46195, 48267, 44362, 49104, 53346, 55216, 44094, 46939, 54637, 46532,
+    21637, 25691, 47007, 53452, 46304, 52713, 53141, 62816, 64326, 61695,
+    66978, 69494, 66254, 79145, 77146, 76213, 73930, 72021, 65702, 76205,
+    83067, 78120, 68926, 82000, 92452, 130419, 111631, 84896, 84649, 85583,
+    80268, 90005, 87222, 91210, 83863, 110290, 87606, 106294, 100963, 110666,
+    100194, 93353, 109649, 125331, 110977, 107468, 108269, 119862, 110094, 136230,
+    123627, 112673, 69294, 69256, 127378, 134207, 126248, 145603, 150588, 158560,
+    148013, 169821, 205277, 229388, 239464, 234331, 234814, 235616, 247873, 231862,
+    250543, 236109, 253263, 261565, 238873, 689712, 654122, 587563, 1029116, 583443,
+    589550, 603894, 556306, 593005, 577862
   ];
 
+  /* One mark per new year. Five years of weeks is too long a run to label by
+     month without the axis turning into a wall of type. */
   var MONTHS = [
-    ["2021-07-01", "Jul 21"],
-    ["2021-10-01", "Oct 21"],
-    ["2022-01-01", "Jan 22"],
-    ["2022-04-01", "Apr 22"]
+    ["2022-01-01", "2022"],
+    ["2023-01-01", "2023"],
+    ["2024-01-01", "2024"],
+    ["2025-01-01", "2025"],
+    ["2026-01-01", "2026"]
   ];
 
-  var Y_MAX = 20000;
-  var Y_STEP = 5000;
+  var Y_MAX = 1200000;
+  var Y_STEP = 300000;
   var MONO = '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
   var MONTH_NAMES = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -96,8 +87,12 @@
     return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  var X_FROM = day(MONTHS[0][0]);
-  var X_TO = day(POINTS[POINTS.length - 1][0]);
+  var POINTS = WEEKLY.map(function (downloads, index) {
+    return { x: day(WEEK_ONE) + index * 7, y: downloads };
+  });
+
+  var X_FROM = POINTS[0].x;
+  var X_TO = POINTS[POINTS.length - 1].x;
   var TICKS = MONTHS.map(function (month) {
     return { value: day(month[0]) };
   });
@@ -203,9 +198,7 @@
         datasets: [
           {
             label: "downloads",
-            data: POINTS.map(function (point) {
-              return { x: day(point[0]), y: point[1] };
-            }),
+            data: POINTS,
             borderColor: colors.series,
             backgroundColor: function (context) {
               return fill(context, colors);
@@ -274,7 +267,9 @@
               stepSize: Y_STEP,
               font: { family: MONO, size: 12 },
               callback: function (value) {
-                return value === 0 ? "0" : value / 1000 + "k";
+                if (value === 0) return "0";
+                if (value >= 1000000) return value / 1000000 + "M";
+                return value / 1000 + "k";
               }
             }
           }
@@ -296,7 +291,7 @@
             caretSize: 5,
             callbacks: {
               title: function (items) {
-                return dayLabel(items[0].parsed.x);
+                return "Week of " + dayLabel(items[0].parsed.x);
               },
               label: function (item) {
                 return thousands(item.parsed.y) + " downloads / week";
