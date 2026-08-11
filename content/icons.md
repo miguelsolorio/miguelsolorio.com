@@ -18,7 +18,7 @@ As the lead designer, I created a cohesive iconography style that could be seaml
 
 VS Code's iconography originated as a fork from [Visual Studio](https://visualstudio.microsoft.com/vs/), the sister product of VS Code, and had evolved over the years to include third-party icons from GitHub ([Octicons](https://primer.github.io/octicons/)).
 
-{{< image src="background.png" alt="Older VS Code editor showing the Extensions sidebar and an IntelliSense popup with mismatched icon styles inherited from Visual Studio and Octicons" gradient="true" caption="VS Code's original UI, mixing icons from Visual Studio and Octicons" >}}
+{{< image src="background.png" alt="Older VS Code editor showing the Extensions sidebar and an IntelliSense popup with mismatched icon styles inherited from Visual Studio and Octicons" gradient="true" caption="VS Code's original UI, mixing icons from Visual Studio and Octicons" frame_class="project-embed--transparent" >}}
 
 This introduced a lot of inconsistencies as there were different styles, weights, and colors. Our customers started noticing these inconsistencies, and there wasn't anyone actively maintaining our icons. I led the initiative to begin cleaning up the iconography and creating a cohesive style that fits across our platforms.
 
@@ -67,19 +67,19 @@ Once our customers had a sample build, we started receiving a flood of feedback,
 
 After several months of iterating on the new icons, we finally [shipped them](https://code.visualstudio.com/updates/v1_37#_new-product-icons) and set them as the default. We did a lot of back and forth trying to determine which icons to use, as the feedback was very split. After several tests, we landed on the outline version because it resonated with most of our users and looked more “modern.”
 
-{{< image src="shipped.png" alt="VS Code release notes titled 'New product icons' announcing all product icons updated to be uniform in style, color, and size" gradient="true" caption="The release notes announcing the new product icons" >}}
+{{< image src="shipped.png" alt="VS Code release notes titled 'New product icons' announcing all product icons updated to be uniform in style, color, and size" gradient="true" caption="The release notes announcing the new product icons" frame_class="project-embed--transparent" >}}
 
 # Automating it
 
 Once we updated the icons, we also wanted to update how icons are referenced in the source code. I created a command line interface (CLI) tool to auto-generate an icon font from our svgs. We named the icon library [Codicons](https://github.com/microsoft/vscode-codicons/), paying tribute to our previous icon library ([Octicons](https://primer.style/design/foundations/icons/)).
 
-{{< iframe src="/icons/codicons-build.html" height="750" title="Terminal output of the codicons build finding 417 SVGs and generating codicon.ttf, codicon.css, and codicon.html" theme="icons" frame_class="project-embed--log" caption="The CLI generating an icon font from 417 SVGs" >}}
+{{< iframe src="/icons/codicons-build.html" height="750" title="Terminal output of the codicons build finding 417 SVGs and generating codicon.ttf, codicon.css, and codicon.html" theme="icons" frame_class="project-embed--log" caption="The CLI generating an icon font from 417 SVGs"  frame_class="project-embed--transparent" >}}
 
 # Open sourcing it
 
 Once we shipped the icons, I knew it was time to give back to the community and open-source them, which Microsoft hadn't previously done for design. So we published [microsoft/vscode-icons](https://github.com/microsoft/vscode-icons) on GitHub, published them to the [Figma community](https://www.figma.com/c/file/768673354734944365), and created [a plugin](https://www.figma.com/community/plugin/786075219184960694) for Figma.
 
-{{< image src="open-source.png" alt="Figma community page for Visual Studio Code Icons by Microsoft with 12.8k duplicates, previewing the icon library by category" gradient="true" caption="The icon library published to the Figma community" >}}
+{{< image src="open-source.png" alt="Figma community page for Visual Studio Code Icons by Microsoft with 12.8k duplicates, previewing the icon library by category" gradient="true" caption="The icon library published to the Figma community" frame_class="project-embed--transparent" >}}
 
 # Impact
 
@@ -95,9 +95,9 @@ We also shipped the icon library as an npm package for anyone wanting to use the
 
 During our research studies, we saw a new theme arise where customers wanted to customize the icons to match their aesthetic preferences, as not everyone liked the outline styles. After we added support for icon fonts in the source code, it was easier to use different versions of icon styles, which is where product icon themes were born. Partnering with our engineer, I helped introduce a new [API for product icon themes](https://code.visualstudio.com/api/extension-guides/product-icon-theme).
 
-{{< image src="product-icon-theme.png" alt="VS Code with a rounded custom product icon theme applied to the activity bar, file explorer, outline, and IntelliSense" gradient="true" caption="A custom product icon theme applied across the workbench" >}}
+{{< image src="product-icon-theme.png" alt="VS Code with a rounded custom product icon theme applied to the activity bar, file explorer, outline, and IntelliSense" gradient="true" caption="A custom product icon theme applied across the workbench"  frame_class="project-embed--transparent" >}}
 
-{{< image src="product-icon-theme2.png" alt="The same VS Code window with a different product icon theme swapping the activity bar, outline, and IntelliSense symbols" gradient="true" caption="The same editor with a different icon theme in one click" >}}
+{{< image src="product-icon-theme2.png" alt="The same VS Code window with a different product icon theme swapping the activity bar, outline, and IntelliSense symbols" gradient="true" caption="The same editor with a different icon theme in one click"  frame_class="project-embed--transparent" >}}
 
 # Collaborators
 
