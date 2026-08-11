@@ -48,6 +48,20 @@
       linear-gradient(145deg, #182030 10%, #1d2738 90%);
     --project-theme-shadow-tint: 30 42 68;
   }
+  /* The iterations icon grid (icons.md) was exported with its ink as literal
+     white/#F4F4F4 fills, since the original Figma canvas was dark. That ink
+     now uses currentColor so it reads on either stage. A few icons (the
+     editor/save/browser mockups) draw a solid panel with border/detail
+     accents cut into it — those accents use --icon-gap, the card's own
+     surface color, so they read as a bezel/cutout against the solid panel
+     instead of collapsing into it when fill and stroke matched. */
+  .iterations-icons {
+    color: #2d2d2d;
+    --icon-gap: var(--project-theme-surface);
+  }
+  .dark .iterations-icons {
+    color: #f4f4f4;
+  }
 
   /* Projects */
   .section {

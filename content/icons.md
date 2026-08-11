@@ -32,7 +32,7 @@ Pretty much everything that could have gone wrong did: inconsistent shades of gr
 
 After getting leadership onboard, I partnered with our visual designer to create several variations of styles we wanted to explore that matched our product branding. We explored a wide range of styles from solid and outline to rounded and playful. Below is a preview of our first rounds of iterations.
 
-{{< image src="iterations.png" alt="Four rows of the same fifteen editor icons rendered in different exploratory styles, from mixed grays to thin outlines to heavy solid fills" gradient="true" caption="Early explorations ranging from outline to solid styles" >}}
+{{< inline-svg src="icons/iterations.svg" class="iterations-icons-embed" gradient="true" caption="Early explorations ranging from outline to solid styles" frame_class="project-embed--cutout" >}}
 
 As we narrowed down the styles, we knew we needed to get customer feedback for this to succeed. In embracing the open-source culture, we opened the design process and invited the community to participate and provide feedback. We were surprised at what happened next.
 

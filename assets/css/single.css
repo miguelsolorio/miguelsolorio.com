@@ -218,6 +218,7 @@
   }
   .single .project-embed > img,
   .single .project-embed > video,
+  .single .project-embed > .inline-svg,
   .single .project-embed iframe.embed-frame {
     display: block;
     box-sizing: border-box;
@@ -229,16 +230,31 @@
     box-shadow: 0 18px 44px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)),
                 0 3px 10px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near));
   }
+  .single .project-embed > .inline-svg > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
   /* Artwork that is cut out rather than a single rectangular screenshot — a
      row of panels on transparency — needs its shadow to follow the alpha
      channel instead of the element box, otherwise one shadow wraps the whole
      group and the box's own rounded edge shows against the stage. */
   .single .project-embed--cutout > img,
-  .single .project-embed--cutout > video {
+  .single .project-embed--cutout > video,
+  .single .project-embed--cutout > .inline-svg {
     border-radius: 0;
     box-shadow: none;
     filter: drop-shadow(0 2px 6px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
             drop-shadow(0 12px 28px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
+  }
+  /* The 2px/12px shadow above is sized for a single large screenshot. The
+     iterations grid is ~60 icons at ~44px each inside one wide SVG, so that
+     same blur/offset — applied per icon, since drop-shadow follows alpha —
+     blooms into a soft halo bigger than the icon itself and reads as a pale
+     card behind it. Scaled down to match the icons' own size instead. */
+  .single .project-embed--cutout > .inline-svg.iterations-icons-embed {
+    filter: drop-shadow(0 .5px .75px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
+            drop-shadow(0 1.5px 3px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
   }
   /* Opt-in rounded corners for screenshots via the image shortcode's
      rounded param. Declared after the cutout rule so a rounded screenshot

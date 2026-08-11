@@ -1,0 +1,16 @@
+{{ $src := .Get "src" }}
+{{ $class := .Get "class" }}
+{{ $frameClass := .Get "frame_class" }}
+{{ $caption := .Get "caption" }}
+{{ $width := .Get "width" }}
+{{ $theme := partial "project-theme.html" (dict "theme" (.Get "theme") "gradient" (.Get "gradient") "page" .Page "name" "inline-svg") }}
+{{ with $src }}
+  {{ with resources.Get . }}
+    {{ if $theme }}<div class="project-embed project-embed--media{{ with $frameClass }} {{ . }}{{ end }}" data-project-theme="{{ $theme }}">{{ end }}
+    <div class="inline-svg{{ with $class }} {{ . }}{{ end }}"{{ with $width }} style="width: {{ . | safeCSS }}; margin-inline: auto;"{{ end }}>{{ .Content | safeHTML }}</div>
+    {{ if $theme }}</div>{{ end }}
+    {{ with $caption }}<p class="media-caption">{{ $.Page.RenderString . }}</p>{{ end }}
+  {{ else }}
+    {{ warnf "inline-svg shortcode: no asset found at %q (%s)" . $.Page.File.Path }}
+  {{ end }}
+{{ end }}
