@@ -261,8 +261,26 @@
          the page. The `text*` pairs are the original type-safe values — bright
          amber is a great crate and an illegible caption, so shapes take the top
          row and anything drawn as words takes the bottom one. */
-      green: '#22c55e', cyan: '#06b6d4', yellow: '#f59e0b', purple: '#8b5cf6', red: '#f43f5e',
-      textGreen: '#15803d', textCyan: '#0369a1', textYellow: '#b45309', textPurple: '#6d28d9', textRed: '#be123c',
+      green: '#22c55e', yellow: '#f59e0b', purple: '#8b5cf6', red: '#f43f5e',
+      textGreen: '#15803d', textYellow: '#b45309', textPurple: '#6d28d9', textRed: '#be123c',
+
+      /* "Sunset": rose-magenta and orange for Spread and Lance, sitting 46°–90°
+         from each other and from the other two guns so no pair can be confused,
+         and landing on the same OKLCH lightness curve as the row above (yellows
+         high, blues low, the way the eye already expects) — that shared
+         brightness is what lets unrelated hues read as one set.
+         The other two guns borrow rather than own: Pulse takes `accent`, the
+         site primary, because the gun you can never lose should be the brand,
+         and Seeker takes `yellow`, which the bomb used to hold. */
+      gunSpread: '#e900bb', gunLance: '#ff6a23',
+      textGunSpread: '#bd0098', textGunLance: '#b84400',
+
+      /* The bomb, now that Seeker has the gold. Black is a light-mode idea — on
+         the mauve page a black sphere is just a hole — so the dark value is a
+         near-black lifted clear of the page and the silhouette is closed with
+         an `ink` rim, which darkens on white and lightens on black. */
+      bomb: '#0f172a',
+
       onBright: '#0f172a',
       greenHi: '#eafff3', greenLo: '#12a150'
     };
@@ -277,10 +295,23 @@
       dim: '#7e7599',
       faint: '#453c5c',
       accent: '#efa9ae',
-      green: '#95d5a5', cyan: '#9ccfd8', yellow: '#f6c177', purple: '#c4a7e7', red: '#eb6f92',
+      green: '#95d5a5', yellow: '#f6c177', purple: '#c4a7e7', red: '#eb6f92',
       /* Rosé Dusk is already tuned against a near-black page, so type and shape
          can share one value here. */
-      textGreen: '#95d5a5', textCyan: '#9ccfd8', textYellow: '#f6c177', textPurple: '#c4a7e7', textRed: '#eb6f92',
+      textGreen: '#95d5a5', textYellow: '#f6c177', textPurple: '#c4a7e7', textRed: '#eb6f92',
+
+      /* The same two Sunset hues lifted to L ≈ 0.84 for the mauve page, where
+         type and shape share one value like everything else here. Pulse again
+         takes `accent` — the rose that is this theme's primary — and Seeker
+         `yellow`. */
+      gunSpread: '#ff96de', gunLance: '#ffc4ad',
+      textGunSpread: '#ff96de', textGunLance: '#ffc4ad',
+
+      /* Well above the page rather than true black. Anything closer and the
+         rim and halo end up carrying the shape on their own, which reads as a
+         hole punched in the stage instead of an unlit object sitting on it. */
+      bomb: '#3b3350',
+
       onBright: '#110e1a',
       greenHi: '#eafff0', greenLo: '#3f7d54'
     };
@@ -887,8 +918,10 @@
      GAME 01 · POLARITY — rebuilt
      The two colours no longer mean two polarities. They mean life and death:
      green orbs are health, red is trying to kill you, and grey rocks do not
-     care either way. You start on 3 lives, you can carry 6, and the trigger
-     is yours — nothing fires itself.
+     care either way. You start on 3 lives and can carry 6. The trigger belongs
+     to whichever device you touched last: on the keyboard it is yours, and on a
+     mouse or thumb pad — where there is no spare finger for it — the guns run
+     themselves and the click is freed up for the bomb.
 
      The escalation is deliberately global, not per-wave: `killed` never resets
      inside a run, so clearing level 1 quickly makes level 2 harder. The game
@@ -898,7 +931,14 @@
     id: 'polarity', name: 'Polarity', mode: 'stage',
     from: 'Ikaruga',
     blurb: 'Green orbs keep you alive, red wants you dead, and the rocks are just in the way. Six lives is the ceiling.',
-    controls: '<kbd>WASD</kbd> fly + <kbd>Space</kbd> fire &nbsp;·&nbsp; or just steer with the mouse — it fires itself, click to bomb',
+    /* Both halves have to be complete on their own, because you only ever read
+       the half you are already playing. The keyboard half used to stop at fire,
+       which left the bomb key undiscoverable — `click to bomb` is no help to
+       someone who never touches the mouse. Arrows have always worked too. */
+    /* the arrows are spaced because ←→ set tight enough to touch reads as a
+       single ↔, which is not a key anyone has */
+    controls: '<kbd>WASD</kbd>/<kbd>↑ ↓ ← →</kbd> fly + <kbd>Space</kbd> fire + <kbd>Shift</kbd> bomb' +
+              '&nbsp;·&nbsp; or steer with the mouse — it fires itself, click bombs',
     touchHint: 'Drag the pad to fly — guns fire themselves · A bombs',
     touch: { pad: true, a: 'BOMB' },
     lives: 1,                       /* the game runs its own life count */
@@ -931,8 +971,8 @@
        lands: how often, how hard, how many, how far it goes through. */
     WEAPONS: {
       basic:   { name: 'Pulse',  rate: 0.155, dmg: 1.9, shots: 1, ammo: Infinity, speed: 820, pal: 'accent' },
-      spread:  { name: 'Spread', rate: 0.21,  dmg: 1.7, shots: 3, ammo: 70, arc: 0.20, speed: 760, pal: 'cyan' },
-      lance:   { name: 'Lance',  rate: 0.10,  dmg: 2.6, shots: 1, ammo: 110, pierce: 3, speed: 1500, pal: 'purple', beam: true },
+      spread:  { name: 'Spread', rate: 0.21,  dmg: 1.7, shots: 3, ammo: 70, arc: 0.20, speed: 760, pal: 'gunSpread' },
+      lance:   { name: 'Lance',  rate: 0.10,  dmg: 2.6, shots: 1, ammo: 110, pierce: 3, speed: 1500, pal: 'gunLance', beam: true },
       seeker:  { name: 'Seeker', rate: 0.36,  dmg: 5.5, shots: 2, ammo: 30, speed: 520, homing: true, splash: 58, pal: 'yellow' }
     },
     WEAPON_IDS: ['spread', 'lance', 'seeker'],
@@ -972,7 +1012,8 @@
       if (s.lives == null) s.lives = 3;
       s.p = { x: g.W / 2, y: g.H * 0.78, r: 9, sp: 340, iframe: 0, cool: 0 };
       s.bullets = []; s.shots = []; s.enemies = []; s.drops = []; s.rocks = [];
-      s.weapon = 'basic'; s.ammo = Infinity; s.bombs = 1; s.blast = 0;
+      /* no free bomb: the first one has to be earned off a drop */
+      s.weapon = 'basic'; s.ammo = Infinity; s.bombs = 0; s.blast = 0;
       s.spawnIn = 0.9; s.quota = L.quota; s.cleared = 0; s.boss = null;
       s.rockIn = L.rock * 0.5; s.giftIn = g.range(7, 11);
       s.streak = 0;
@@ -1280,7 +1321,7 @@
             var sp2 = Math.hypot(sh.vx, sh.vy);
             sh.vx = Math.cos(na) * sp2; sh.vy = Math.sin(na) * sp2;
           }
-          if (g.rnd() < 0.6) g.particles.burst(sh.x, sh.y, 1, { color: this.GOLD, speed: 30, life: 0.3, size: 1.6 });
+          if (g.rnd() < 0.6) g.particles.burst(sh.x, sh.y, 1, { color: PAL[sh.pal], speed: 30, life: 0.3, size: 1.6 });
         }
         sh.x += sh.vx * dt; sh.y += sh.vy * dt;
         if (sh.y < -30 || sh.y > g.H + 30 || sh.x < -30 || sh.x > g.W + 30) { s.shots.splice(j, 1); continue; }
@@ -1325,7 +1366,7 @@
         }
 
         if (sh.splash) {
-          g.particles.burst(sh.x, sh.y, 22, { color: this.GOLD, speed: 300 });
+          g.particles.burst(sh.x, sh.y, 22, { color: PAL[sh.pal], speed: 300 });
           g.shake(7); Sfx.boom();
           for (var sp3 = s.enemies.length - 1; sp3 >= 0; sp3--) {
             var se = s.enemies[sp3];
@@ -1391,12 +1432,36 @@
         this.collect(g, dr);
       }
 
+      /* Two gauges, and only two. Lives and bombs are drawn on the ship itself
+         — reading them off a chip at the top of the screen meant looking away
+         from the only thing that can kill you. What is left up here is the mag
+         (draining right to left) and the wave (filling left to right); two bars
+         moving opposite ways are legible without reading either number. */
       var W = this.gun(g);
-      g.stats('<b style="color:' + PAL.textGreen + '">' + s.lives + '/6</b> &nbsp; ' +
-        W.name.toLowerCase() + ' <b>' + (s.ammo === Infinity ? '∞' : s.ammo) + '</b> &nbsp; ' +
-        'bomb <b>' + s.bombs + '</b> &nbsp; ' +
-        (s.boss ? 'boss <b>' + Math.max(0, Math.round(s.boss.hp / s.boss.max * 100)) + '%</b>'
-                : '<b>' + s.cleared + '/' + s.quota + '</b> down'));
+      var cap = W.ammo === Infinity ? 1 : W.ammo;
+      var infinite = s.ammo === Infinity;
+      var low = !infinite && s.ammo <= Math.max(6, cap * 0.2);
+      var right = s.boss
+        ? this.gauge('BOSS', Math.max(0, Math.round(s.boss.hp / s.boss.max * 100)) + '%',
+            s.boss.hp / s.boss.max, PAL.red, PAL.textRed)
+        : this.gauge('ENEMIES', Math.max(0, s.quota - s.cleared), s.cleared / s.quota, PAL.accent);
+      g.stats('<span class="a-gauges">' +
+        /* the bar wears the gun's own colour, so a crate you just flew through
+           is legible in the HUD before you have fired a shot with it */
+        this.gauge('AMMO', infinite ? '∞' : s.ammo, infinite ? 1 : s.ammo / cap,
+          PAL[W.pal] || PAL.accent, low ? PAL.textRed : null, low) +
+        right + '</span>');
+    },
+
+    /* One gauge: label, its number, and the bar under both. */
+    gauge: function (label, value, pct, colour, valueColour, low) {
+      return '<span class="a-gauge' + (low ? ' is-low' : '') + '">' +
+        '<span class="a-gauge-line">' +
+          '<span class="a-gauge-lab">' + label + '</span>' +
+          '<b' + (valueColour ? ' style="color:' + valueColour + '"' : '') + '>' + value + '</b>' +
+        '</span>' +
+        '<span class="a-bar"><i style="width:' + (clamp(pct, 0, 1) * 100).toFixed(1) + '%;background:' + colour + '"></i></span>' +
+        '</span>';
     },
 
     collect: function (g, dr) {
@@ -1427,8 +1492,10 @@
         return;
       }
       s.bombs = Math.min(3, s.bombs + 1);
-      g.toast(p.x, p.y - 34, '+1 BOMB', PAL.textYellow, { size: '1.1rem' });
-      g.particles.burst(p.x, p.y, 14, { color: this.GOLD, speed: 190 });
+      /* the pickup reads in ink, not gold — gold now means Seeker, and what you
+         just flew through was black. The blast it makes later is still fire. */
+      g.toast(p.x, p.y - 34, '+1 BOMB', PAL.ink, { size: '1.1rem' });
+      g.particles.burst(p.x, p.y, 14, { color: PAL.ink, speed: 190 });
       Sfx.chord([300, 400], 0.16, { type: 'sawtooth', gain: 0.2 });
       g.score += 80;
     },
@@ -1436,19 +1503,29 @@
     /* A glyph of what the gun actually does, drawn centred at the origin in the
        current fillStyle. Shared by the crate and by the ship, because the whole
        point is that the mark on your cursor is the mark you picked up. */
+    /* Three primitives, one per gun, and nothing for Pulse — it never drops a
+       crate, and the unarmed hull says "unarmed" by having no mark at all.
+       Spread splays three lines about their own bases, so the glyph opens the
+       way the gun's 0.20 rad arc does. Lance is one line at nearly twice the
+       weight: fewer shots, more of each. Seeker is a disc, the only closed
+       shape here, which is what survives the hull's waterline clip.
+       Everything strokes from the caller's fillStyle, so a glyph never carries
+       a colour of its own — the crate and the hull hand it theirs. */
     glyph: function (c, id, k) {
       c.save(); c.scale(k, k);
+      c.strokeStyle = c.fillStyle; c.lineCap = 'round';
       if (id === 'spread') {
-        c.translate(0, 3);
+        c.lineWidth = 2.2;
         for (var i = -1; i <= 1; i++) {
-          c.save(); c.rotate(i * 0.42); c.fillRect(-1.2, -9, 2.4, 9); c.restore();
+          c.save(); c.translate(i * 3.4, 4.75); c.rotate(i * 0.24);
+          c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -9.5); c.stroke();
+          c.restore();
         }
       } else if (id === 'lance') {
-        c.fillRect(-1.6, -8, 3.2, 16);
-        c.fillRect(-5, -8, 1.6, 6); c.fillRect(3.4, -8, 1.6, 6);
+        c.lineWidth = 4.07;
+        c.beginPath(); c.moveTo(0, -5); c.lineTo(0, 5); c.stroke();
       } else if (id === 'seeker') {
-        c.beginPath(); c.moveTo(0, -8); c.lineTo(5, 6); c.lineTo(0, 3); c.lineTo(-5, 6);
-        c.closePath(); c.fill();
+        c.beginPath(); c.arc(0, 0, 3.9, 0, 6.2832); c.fill();
       }
       c.restore();
     },
@@ -1462,7 +1539,7 @@
     /* ---------------------------------------------------------------- draw */
     draw: function (g) {
       var self = this, c = g.c, s = g.state, p = s.p;
-      var RED = PAL.red, WHITE = PAL.ink, GREEN = PAL.green, GOLD = PAL.yellow, STONE = PAL.dim;
+      var RED = PAL.red, WHITE = PAL.ink, GREEN = PAL.green, STONE = PAL.dim;
 
       /* the field warms toward red as your lives fall */
       var danger = clamp(1 - (s.lives - 1) / 5, 0, 1);
@@ -1596,10 +1673,18 @@
           this.glyph(c, dr.weapon, 1);
           c.restore();
         } else {
+          /* The bomb: a black sphere and a lit fuse. Every other drop glows in
+             its own colour, which a black one cannot do — so it glows `ink`
+             instead, and gets the theme it is standing on for free: a cast
+             shadow under the sphere on the white page, a halo around it on the
+             mauve one. The rim closes the silhouette where the halo is doing
+             the least work. */
           c.save(); c.translate(dr.x, dr.y); c.rotate(dr.t * 1.4);
-          D.glow(c, GOLD, 14, function () {
-            c.fillStyle = GOLD; c.beginPath(); c.arc(0, 0, 9, 0, 6.2832); c.fill();
+          D.glow(c, PAL.a('ink', .4), 10, function () {
+            c.fillStyle = PAL.bomb; c.beginPath(); c.arc(0, 0, 9, 0, 6.2832); c.fill();
           });
+          c.strokeStyle = PAL.a('ink', .45); c.lineWidth = 1.5;
+          c.beginPath(); c.arc(0, 0, 9, 0, 6.2832); c.stroke();
           c.strokeStyle = RED; c.lineWidth = 2;
           c.beginPath(); c.moveTo(0, -9); c.lineTo(4, -15); c.stroke();
           c.restore();
@@ -1607,33 +1692,62 @@
       }
 
       /* --- the ship ---
-         The hull carries the site accent only while you are unarmed. Pick a gun
-         up and the hull becomes that gun's colour outright, glyph and all — the
-         accent is hidden rather than outlined, so the cursor is one colour at a
-         time and never sets the brand blurple against the pickup you just took.
-         The crate you walked into and the cursor you are flying end up the same
-         object, which is why you never have to read the HUD to know you're armed. */
+         The hull is always the colour of whatever it is firing, glyph and all,
+         so the crate you walked into and the cursor you are flying end up the
+         same object and you never have to read the HUD to know you're armed.
+         Unarmed that colour is the site primary, because Pulse is the one gun
+         you can never lose — the hull only stops being the brand while you are
+         carrying something you can run out of. */
       var armed = s.weapon !== 'basic';
       var wpn = this.WEAPONS[s.weapon], wcol = PAL[wpn.pal];
-      var hullCol = armed ? wcol : PAL.accent;
+      var hullCol = wcol;
       var flick = p.iframe > 0 && Math.floor(g.t * 22) % 2 === 0;
       if (!flick) {
         var self2 = this;
+        /* The hull is the ammo gauge. Colour fills it from the wings up and
+           drains toward them as you fire, so the count lives on the one object
+           you are already staring at — the chip at the top of the screen is
+           the confirmation, not the source. Infinite ammo simply reads full. */
+        var fuel = (!armed || s.ammo === Infinity) ? 1 : clamp(s.ammo / wpn.ammo, 0, 1);
+        var TOP = -17, BOT = 13, level = BOT - (BOT - TOP) * fuel;
+        /* the glyph, clipped to one side of the fuel line — drawn twice so it
+           reads both on the charged colour and on the washed-out remainder */
+        var glyphIn = function (y0, y1, col) {
+          if (y1 - y0 < 0.5) return;
+          c.save();
+          c.beginPath(); c.rect(-14, y0, 28, y1 - y0); c.clip();
+          c.translate(0, 2);
+          c.fillStyle = col; self2.glyph(c, s.weapon, 0.62);
+          c.restore();
+        };
         c.save(); c.translate(p.x, p.y);
         D.glow(c, hullCol, armed ? 20 : 15, function () {
           c.fillStyle = hullCol; self2.hull(c); c.fill();
         });
         if (armed) {
+          if (fuel < 1) {
+            c.save(); self2.hull(c); c.clip();
+            /* spent rounds wash back toward the stage rather than to a fixed
+               grey, so the empty half works on either theme */
+            c.fillStyle = PAL.a('bg', .82);
+            c.fillRect(-14, TOP - 1, 28, level - TOP + 1);
+            /* a bright meniscus at the waterline: without it the boundary
+               reads as a rendering seam instead of a gauge */
+            c.fillStyle = wcol; c.fillRect(-14, level - 1, 28, 2);
+            c.restore();
+          }
           c.strokeStyle = PAL.a('ink', .45); c.lineWidth = 1.5; c.lineJoin = 'round';
           self2.hull(c); c.stroke();
           /* the glyph sits low in the hull, where the triangle is widest, and
              takes the same dark ink the crates use so it reads on any gun hue */
-          c.save(); c.translate(0, 2);
-          c.fillStyle = PAL.onBright; self2.glyph(c, s.weapon, 0.62);
-          c.restore();
+          glyphIn(level, BOT + 3, PAL.onBright);
+          glyphIn(TOP - 1, level, PAL.ink);
         } else {
-          /* unarmed, the accent hull sits close to the enemy red on the dark
-             theme — an ink hairline keeps the silhouette separate */
+          /* Unarmed there is no waterline to read — Pulse never runs out, and a
+             full gauge drawn every frame says nothing — so the hull takes a
+             punched dot instead of a glyph. The ink hairline earns its keep on
+             the dark theme, where the rose primary sits a few degrees off the
+             enemy red and the silhouette needs the separation. */
           c.strokeStyle = PAL.a('ink', .5); c.lineWidth = 1.5; c.lineJoin = 'round';
           self2.hull(c); c.stroke();
           c.fillStyle = PAL.bg; c.beginPath(); c.arc(0, -1, 3.4, 0, 6.2832); c.fill();
@@ -1646,10 +1760,13 @@
          once you are carrying extras, so "over full" is visible at a glance. --- */
       this.lifeBars(g, c, p.x, p.y - 28, s.lives);
 
-      /* bombs, tucked under the ship */
+      /* bombs, tucked under the ship — same black, same rim, since a 3.4px
+         black dot on the dark theme is otherwise nothing at all */
       for (var b = 0; b < s.bombs; b++) {
-        c.fillStyle = GOLD;
-        c.beginPath(); c.arc(p.x - (s.bombs - 1) * 6 + b * 12, p.y + p.r + 12, 3.4, 0, 6.2832); c.fill();
+        c.beginPath();
+        c.arc(p.x - (s.bombs - 1) * 6 + b * 12, p.y + p.r + 12, 3.4, 0, 6.2832);
+        c.fillStyle = PAL.bomb; c.fill();
+        c.strokeStyle = PAL.a('ink', .45); c.lineWidth = 1; c.stroke();
       }
 
       /* bomb shockwave */
@@ -1670,9 +1787,11 @@
           D.round(c, sx, cy, sw, H, 2); c.fill();
         }
       }
-      /* row two sits above row one, and only exists when it has something to say */
+      /* Row two sits above row one and only exists when it has something to
+         say. It used to be cyan, which read as a second, different resource —
+         it is not. Six lives, one colour. */
       if (lives > 3) {
-        row(y - H - gapY, lives - 3, PAL.cyan, PAL.a('cyan', .18));
+        row(y - H - gapY, lives - 3, PAL.green, PAL.a('faint', .7));
       }
       row(y, Math.min(3, lives), lives <= 1 ? PAL.red : PAL.green, PAL.a('faint', .7));
     }

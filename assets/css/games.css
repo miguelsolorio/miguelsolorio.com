@@ -115,10 +115,19 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 .a-title { font-weight: 700; color: var(--a-ink); letter-spacing: .1em; }
 .a-stat b, .a-hint kbd { color: var(--a-ink); }
 .a-title b { color: var(--a-hot); }
+/* Two states, one colour: a level you have reached is a solid primary dot, one
+   you have not is a grey ring. The dot you are on is the same solid primary,
+   scaled up — being ahead of it is the only thing worth a second hue, and it
+   is not worth one. The ring is an inset shadow rather than a border so the
+   dot never changes size between states. */
 .a-pips { display: inline-flex; gap: .3rem; }
-.a-pips i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--a-faint); transition: background-color .2s ease, transform .2s ease; }
-.a-pips i.on { background: var(--a-hot); transform: scale(1.25); }
-.a-pips i.done { background: var(--a-good); }
+.a-pips i {
+  width: .5rem; height: .5rem; border-radius: 50%;
+  background: transparent; box-shadow: inset 0 0 0 1.5px var(--a-dim);
+  transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.a-pips i.on, .a-pips i.done { background: var(--a-hot); box-shadow: none; }
+.a-pips i.on { transform: scale(1.25); }
 /* The score is the one chip the player reads mid-fight, so it gets its own
    scale rather than the shared chip size. */
 .a-stat {
@@ -128,6 +137,22 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
   letter-spacing: .12em;
 }
 .a-stat b { color: var(--a-ink); font-size: 1.0625rem; font-variant-numeric: tabular-nums; }
+
+/* Twin gauges — Polarity's readout. Each gauge is a label, its number, and a
+   bar under both; the bar colour is set inline from PAL, because the ammo bar
+   wears the current gun's hue and only JS knows which gun that is. Scoped to
+   .a-gauges so games still calling stats() with a plain string are untouched. */
+.a-gauges { display: flex; align-items: center; gap: 1.1rem; }
+.a-gauge { display: flex; flex-direction: column; gap: .3rem; }
+.a-gauge-line { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; }
+.a-gauge-lab { font-size: .5625rem; letter-spacing: .14em; color: var(--a-dim); }
+.a-gauge b { font-size: .9375rem; line-height: 1; }
+.a-bar { position: relative; width: 6rem; height: .3rem; border-radius: 999px; background: var(--a-faint); overflow: hidden; }
+.a-bar > i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; transition: width .12s linear; }
+/* the last few rounds blink rather than change hue — the bar is already
+   carrying the gun's colour and cannot also carry the warning */
+.a-gauge.is-low b { animation: a-blip 1.05s ease-in-out infinite; }
+@keyframes a-blip { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
 .a-hint { color: var(--a-dim); font-size: .6875rem; letter-spacing: .04em; text-transform: none; }
 .a-hint kbd {
   display: inline-block; padding: 0 .3rem; border: 1px solid var(--a-line); border-radius: .25rem;
@@ -247,6 +272,8 @@ body.is-game-open {
 @media (max-width: 40rem) {
   .a-stat { padding: .4rem .75rem; font-size: .6875rem; letter-spacing: .08em; }
   .a-stat b { font-size: .875rem; }
+  .a-gauges { gap: .8rem; }
+  .a-bar { width: 4.5rem; }
   #a-mute { min-width: 0; }
 }
 
@@ -256,4 +283,5 @@ body.is-game-open {
 @media (prefers-reduced-motion: reduce) {
   .a-scrim, .a-banner, .a-btn, .a-card, .a-pad i, .a-pips i, .a-hud, .a-stage-wrap { transition: none; }
   .a-banner { transform: none; }
+  .a-gauge.is-low b { animation: none; }
 }
