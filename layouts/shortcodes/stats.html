@@ -20,6 +20,11 @@
      what each row is and a second mark would only repeat it. Left off — the
      default, and what the contribution counts use — nothing about the existing
      icon-led badge changes. */}}
+{{- /* A rise, whatever it is a rise in. Bound once because more than one
+       outcome tone wants it: what separates them is the colour and the label,
+       not the shape, and a second drawing of the same idea would only invite
+       the two to drift apart. */ -}}
+{{- $rising := `<path d="m2.6 10.9 3.5-3.7 2.6 2.4 4.7-5"/><path d="M9.9 4.6h3.5v3.5"/>` -}}
 {{- $tones := dict
   "pr"           (dict "color" "#3d90f9" "glyph" `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6V13"/><circle cx="11.5" cy="12" r="1.6"/><path d="M11.5 10.4V3.2"/><path d="m9.6 5.1 1.9-1.9 1.9 1.9"/>`)
   "merge"        (dict "color" "#7f46ff" "glyph" `<circle cx="4.5" cy="4" r="1.6"/><path d="M4.5 5.6v4.1a2.4 2.4 0 0 0 2.4 2.4h2.9"/><circle cx="11.5" cy="12.1" r="1.6"/>`)
@@ -32,6 +37,9 @@
   "missing"      (dict "color" "#d3466f" "glyph" `<path d="M6.2 2.4H4.8a2.4 2.4 0 0 0-2.4 2.4v1.4"/><path d="M2.4 9.8v1.4a2.4 2.4 0 0 0 2.4 2.4h1.4"/><path d="M9.8 13.6h1.4a2.4 2.4 0 0 0 2.4-2.4V9.8"/><path d="M13.6 6.2V4.8a2.4 2.4 0 0 0-2.4-2.4H9.8"/>`)
   "speed"        (dict "color" "#3d90f9" "glyph" `<path d="M2.94 11.4a5.6 5.6 0 1 1 10.12 0"/><path d="M8 11.4 10.5 7.1"/><circle cx="8" cy="11.4" r="1.1"/>`)
   "satisfaction" (dict "color" "#1f9d6b" "glyph" `<circle cx="8" cy="8" r="5.7"/><path d="M5.6 9.3a3 3 0 0 0 4.8 0"/><path d="M6.2 6.4h.01"/><path d="M9.8 6.4h.01"/>`)
+  "engagement"   (dict "color" "#7f46ff" "glyph" $rising)
+  "usage"        (dict "color" "#3d90f9" "glyph" $rising)
+  "adoption"     (dict "color" "#1f9d6b" "glyph" `<rect x="2.4" y="2.4" width="5" height="5" rx="1.2"/><rect x="2.4" y="8.6" width="5" height="5" rx="1.2"/><rect x="8.6" y="8.6" width="5" height="5" rx="1.2"/><rect x="8.6" y="2.4" width="5" height="5" rx="1.2" transform="rotate(14 11.1 4.9)"/>`)
 -}}
 {{- $carets := dict
   "up"   `<path d="M5 1.2 9.2 8.4H.8z"/>`

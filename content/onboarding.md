@@ -118,7 +118,15 @@ Since each walkthrough displayed different content, we introduced a new abstract
 
 # Impact
 
+Once the walkthroughs shipped, the measures we had used to frame the problem started to move. More new users came back to the editor in their first days with it, usage of the onboarding content climbed, and extension authors took up the same framework to introduce their own features.
 
+{{< stats >}}
+5.6% | 2-day engaged users | engagement
+60% | Usage | usage
+116 | Extensions adopting walkthroughs | adoption
+{{< /stats >}}
+
+Because we designed in the open, the work itself is on the record too.
 
 {{< stats source="microsoft/vscode" >}}
 160 | Pull requests opened | pr
