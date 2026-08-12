@@ -7,7 +7,8 @@
   "scripts": {
     "develop": "hugo server -D --bind 0.0.0.0 --port 1313 --forceSyncStatic --noHTTPCache",
     "export": "hugo --minify --cleanDestinationDir",
-    "update:metrics": "node scripts/update-project-metrics.mjs"
+    "update:metrics": "node scripts/update-project-metrics.mjs",
+    "build:resume": "node scripts/build-resume.mjs"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
