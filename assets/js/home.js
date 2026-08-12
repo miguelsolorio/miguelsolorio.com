@@ -18,11 +18,21 @@ if (portfolioTerminal) {
   let selectedSuggestion = 0;
   let suggestionsVisible = false;
 
+  /* Newest first, ordered on the START year because that is the number the eye
+     scans down. The earlier roles are kept below but parked: the block has to
+     clear the terminal's boot view in one screen, and every extra row pushes
+     the newest entry out of sight. Descriptions have to stay short for the same
+     reason a long scope does — one that wraps takes the year column with it,
+     which is what `beyond-traditional:` runs into. */
   const historyRows = [
     ['2023-2026', 'google-colab:', 'data science agents'],
-    ['2025', 'gemini-cli:', 'agentic development'],
+    ['2025', 'gemini-cli:', 'terminal agent'],
     ['2022-2023', 'meta:', 'design systems'],
-    ['2018-2022', 'vs-code:', 'ai code editor']
+    ['2018-2022', 'vs-code:', 'developer tools']
+    // ['2016-2018', 'azure-devops:', 'developer workflows'],
+    // ['2014-2016', 'azure:', 'big data tooling'],
+    // ['2012-2014', 'zumobi:', 'mobile design & code'],
+    // ['2011-2012', 'beyond-traditional:', 'web dev']
   ];
 
   const statusRows = [
@@ -96,7 +106,11 @@ if (portfolioTerminal) {
       run: showHistory
     },
     {
+      /* Hidden, not removed: the boot output still runs `status`, so the
+         command has to keep working when someone types it or arrows back to
+         it in history — it just stops being advertised in the menu and help. */
       name: 'status',
+      hidden: true,
       description: 'what is currently in progress',
       run: showStatus
     },
@@ -119,7 +133,14 @@ if (portfolioTerminal) {
      gets appended. */
   commandDefinitions.sort(function (a, b) { return a.name.localeCompare(b.name); });
 
-  commandDefinitions.forEach(function (definition) {
+  /* Every listing draws from this rather than from commandDefinitions, so a
+     `hidden` command drops out of the menu, help and the "Try:" hints at once
+     while `getCommand` can still resolve it by name. */
+  const listedCommands = commandDefinitions.filter(function (definition) {
+    return !definition.hidden;
+  });
+
+  listedCommands.forEach(function (definition) {
     allSuggestionEntries.push({
       value: definition.name,
       description: definition.description,
@@ -247,10 +268,10 @@ if (portfolioTerminal) {
     addLine('Available commands:', 't-out', true);
     // Rows render as pre-wrap monospace, so padding the name gives a real
     // column; without it the descriptions rag with each name's length.
-    const nameColumn = commandDefinitions.reduce(function (width, definition) {
+    const nameColumn = listedCommands.reduce(function (width, definition) {
       return Math.max(width, definition.name.length);
     }, 0) + 2;
-    commandDefinitions.forEach(function (definition) {
+    listedCommands.forEach(function (definition) {
       addParts([
         { text: '  ' + definition.name.padEnd(nameColumn), className: 't-scope' },
         { text: definition.description, className: 't-out' }
@@ -435,7 +456,7 @@ if (portfolioTerminal) {
         event.preventDefault();
       });
       option.addEventListener('click', function () {
-        completeSelectedSuggestion(index);
+        runSuggestion(index);
       });
       terminalSuggestions.appendChild(option);
     });
@@ -469,6 +490,20 @@ if (portfolioTerminal) {
     setTerminalInputValue(getCompletionValue(terminalInput.value));
     hideSuggestions();
     terminalInput.focus();
+  }
+
+  /* Tab completes, but picking an entry — by click or by Enter — is a choice,
+     not a draft, so it runs straight away rather than parking the name in the
+     input and waiting for a second keystroke. Focus goes back to the prompt
+     before the command runs, so a takeover like `game` keeps whatever focus it
+     sets for itself. */
+  function runSuggestion(index) {
+    selectedSuggestion = index;
+    const completedValue = getCompletionValue(terminalInput.value);
+    setTerminalInputValue(completedValue);
+    hideSuggestions();
+    terminalInput.focus();
+    executeCommand(completedValue);
   }
 
   function moveSuggestion(direction) {
@@ -513,7 +548,7 @@ if (portfolioTerminal) {
     const parsed = parseInput(command);
     const definition = getCommand(parsed.name || 'help');
     if (!definition) {
-      const closeMatches = commandDefinitions.filter(function (item) {
+      const closeMatches = listedCommands.filter(function (item) {
         return item.name.indexOf(parsed.name) === 0;
       }).slice(0, 3).map(function (item) { return item.name; });
       addLine('command not found: ' + (parsed.rawName || command), 't-error');
@@ -608,10 +643,7 @@ if (portfolioTerminal) {
 
     if (event.key === 'Enter' && suggestionsVisible && suggestionEntries.length) {
       event.preventDefault();
-      const completedValue = getCompletionValue(terminalInput.value);
-      setTerminalInputValue(completedValue);
-      hideSuggestions();
-      executeCommand(completedValue);
+      runSuggestion(selectedSuggestion);
       return;
     }
 

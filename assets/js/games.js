@@ -890,8 +890,15 @@
         games.push(def);
         /* insertion order would otherwise be whatever the file happens to
            register first; sorting keeps the terminal picker, its numbering and
-           the palette entries in one order */
-        games.sort(function (a, b) { return a.name.localeCompare(b.name); });
+           the palette entries in one order. It sorts on the declared `order`
+           rather than the name so the running order is a choice — Polarity is
+           the front door and stays game 1 whatever gets added later. Anything
+           registered without an order falls in behind, alphabetically. */
+        games.sort(function (a, b) {
+          var ao = typeof a.order === 'number' ? a.order : 999;
+          var bo = typeof b.order === 'number' ? b.order : 999;
+          return ao - bo || a.name.localeCompare(b.name);
+        });
       },
       list: function () {
         return games.map(function (x) {
@@ -928,7 +935,7 @@
      tunes itself to how well you are actually playing.
      ========================================================================== */
   Arcade.add({
-    id: 'polarity', name: 'Polarity', mode: 'stage',
+    id: 'polarity', name: 'Polarity', mode: 'stage', order: 1,
     from: 'Ikaruga',
     blurb: 'Green orbs keep you alive, red wants you dead, and the rocks are just in the way. Six lives is the ceiling.',
     /* Both halves have to be complete on their own, because you only ever read
@@ -1808,7 +1815,7 @@
          then press fire to blow the closing walls off the board.
      ========================================================================== */
   Arcade.add({
-    id: 'hexrush', name: 'Hexrush', mode: 'stage',
+    id: 'hexrush', name: 'Hexrush', mode: 'stage', order: 2,
     from: 'Super Hexagon',
     blurb: 'Left, right, do not touch the walls. It opens slowly now — and the gaps sometimes carry dynamite.',
     controls: '<kbd>←</kbd> <kbd>→</kbd> orbit — or point the mouse where you want to be &nbsp;·&nbsp; <kbd>Space</kbd>/click detonates TNT',
