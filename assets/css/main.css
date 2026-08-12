@@ -47,11 +47,13 @@
     --shadow-hover: 0 12px 28px -8px rgb(var(--shadow-rgb) / .58);
   }
 
-  /* Detail pages give their visuals a wider stage than the home grid. Both
-     .site-shell instances — the sticky header bar and the content column —
-     inherit this from body, so the logo, media, and footer stay on one edge. */
+  /* Detail pages give their visuals a wider stage than the home grid, but only
+     a little — media spans the whole shell here, and much past this the
+     screenshots start to overpower the prose they sit with. Both .site-shell
+     instances — the sticky header bar and the content column — inherit this
+     from body, so the logo, media, and footer stay on one edge. */
   body.detail-page {
-    --site-max-width: 84rem;
+    --site-max-width: 76rem;
   }
 
   *,

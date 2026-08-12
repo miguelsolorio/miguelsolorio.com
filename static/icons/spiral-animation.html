@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Icon spiral</title>
+  <!-- Opened on its own this file never gets layouts/partials/header.html, so
+       the browser asks for /favicon.ico and Hugo answers 404. Same inline mark
+       the site header uses. -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
   <!-- Mirrors the parent site's theme onto this document's root, and follows the
        OS preference when the file is opened on its own. Runs in <head> to avoid
        a theme flash. Only the sync runs — the player is opt-in. -->
@@ -17,28 +21,48 @@
     }
   </script>
   <style>
+    /* ------------------------------------------------------------------
+       Ink Ladder — one pigment, three weights, distance does the fading.
+
+       The field used to run a violet in light and a dusty mauve ladder in
+       dark, so it spoke neither theme's primary. It now carries one ink per
+       theme: a muted indigo in light, and in dark the rose that is dark
+       mode's primary (dark.css) — the same pigment the page title and links
+       already take. Three colour tiers became three weights of that single
+       ink, which is why a saturated pigment can carry a field of hundreds
+       without turning into a wash.
+
+       Picked from static/icons/spiral-variations.html, which holds this and
+       three other takes with live controls.
+       ------------------------------------------------------------------ */
     :root {
       /* Standalone fallback only — in card mode the body goes transparent and
          the card's frosted surface supplies the field. Mirrors the neutral
          stage pair in project.css. */
       --background: linear-gradient(180deg, #fdfdff 0%, #f6f8fa 100%);
-      --icon: #8b7cff;
-      /* The field is dealt in three tiers of the same violet. Kept here rather
-         than in the script so a theme change is a style recalculation: the
-         icons recolour in place instead of the galaxy being rebuilt. */
-      --icon-1: #8b7cff;
-      --icon-2: #a294f2;
-      --icon-3: #c0b2f7;
+
+      /* The one pigment. Kept here rather than in the script so a theme
+         change is a style recalculation: the icons recolour in place
+         instead of the galaxy being rebuilt. */
+      --icon: #5f5bb9;
+
+      /* Weight, not hue. --core and --edge are the opacity at the centre and
+         at the rim; --tier-step is how much each of the three tiers steps
+         down from the one above it. */
+      --core: .92;
+      --edge: .14;
+      --tier-step: .13;
+
+      --spin: 60s;
+      /* How much of the radius the field dissolves over, so it fades out
+         instead of being cut off by the frame. */
+      --fade: .3;
     }
 
     :root.dark {
       --background: linear-gradient(180deg, #201c28 0%, #18151f 100%);
-      /* Dusty mauve tiers, not the light theme's violet: on the plum card the
-         saturated set reads as electric indigo and fights the rose title. */
-      --icon: #82739c;
-      --icon-1: #a494bd;
-      --icon-2: #82739c;
-      --icon-3: #63567a;
+      /* The rose primary, the same one the title and links take. */
+      --icon: #efa9ae;
     }
 
     * { box-sizing: border-box; }
@@ -69,13 +93,25 @@
       isolation: isolate;
     }
 
+    /* The mask sits on this static wrapper, never on the rotating galaxy, so
+       the dissolve stays pinned to the frame instead of turning with the
+       field. Every var() carries a fallback: one missing custom property
+       invalidates the whole declaration it sits in. */
+    .field {
+      position: absolute;
+      inset: 0;
+      -webkit-mask-image: radial-gradient(ellipse 74% 80% at 50% 50%, #000 var(--fade-start), transparent 100%);
+      mask-image: radial-gradient(ellipse 74% 80% at 50% 50%, #000 var(--fade-start), transparent 100%);
+      --fade-start: calc((1 - var(--fade, 0)) * 100%);
+    }
+
     .galaxy {
       position: absolute;
       top: 50%;
       left: 50%;
       width: 0;
       height: 0;
-      animation: spin 60s linear infinite;
+      animation: spin var(--spin, 60s) linear infinite;
     }
 
     .arm {
@@ -87,12 +123,17 @@
       display: block;
       flex: none;
       margin: calc(var(--size) * -0.5px) 0 0 calc(var(--size) * -0.5px);
-      animation: spin 60s linear infinite reverse;
+      color: var(--icon, #5f5bb9);
+      /* Counter-rotation, so the icons stay upright while the field turns.
+         Without it they read as confetti rather than as icons. */
+      animation: spin var(--spin, 60s) linear infinite reverse;
+      /* --ec (the curved 0→1 distance from centre) and --tier are stamped
+         once at build time, so a theme change never rebuilds the field. */
+      opacity: calc(
+        (var(--core, .9) + (var(--edge, .2) - var(--core, .9)) * var(--ec, 0))
+        * (1 - var(--tier, 0) * var(--tier-step, 0))
+      );
     }
-
-    .icon--1 { color: var(--icon-1); }
-    .icon--2 { color: var(--icon-2); }
-    .icon--3 { color: var(--icon-3); }
 
     @keyframes spin {
       from { transform: rotate(0deg); }
@@ -109,107 +150,149 @@
 </head>
 <body>
   <main class="stage" aria-label="A slowly rotating spiral field made from product icons">
-    <div class="galaxy" aria-hidden="true"></div>
+    <div class="field" aria-hidden="true">
+      <div class="galaxy"></div>
+    </div>
   </main>
 
   <script>
-    (async function () {
-      const spriteResponse = await fetch('icons-sprite.svg');
-      const spriteHolder = document.createElement('div');
-      spriteHolder.innerHTML = await spriteResponse.text();
-      const sprite = spriteHolder.firstElementChild;
-      sprite.setAttribute('aria-hidden', 'true');
-      document.body.prepend(sprite);
+    (function () {
+      var stage = document.querySelector('.stage');
+      var galaxy = document.querySelector('.galaxy');
+      var sizes = [14, 14, 16, 18, 18, 20, 22, 24, 28, 32];
+      var goldenAngle = 137.508;
+      var TIERS = 3;
+      /* Tuned in spiral-variations.html: density 1, scale 1, curve 1.25. */
+      var CURVE = 1.25;
+      var total = 0;
+      var pending = false;
+      var lastWidth = 0;
+      var lastHeight = 0;
 
-      const stage = document.querySelector('.stage');
-      const galaxy = document.querySelector('.galaxy');
-      const total = document.querySelectorAll('symbol[id^="icon-"]').length;
-      const goldenAngle = 137.508;
-      const sizes = [14, 14, 16, 18, 18, 20, 22, 24, 28, 32];
-      /* Colour tiers are CSS classes, not values — see --icon-1..3 above. */
-      const TIERS = 3;
+      /* Seeded, so a resize re-lays the same field instead of dealing a new
+         one. The old build reshuffled on every resize, which made the
+         artwork flicker into a different arrangement as the page reflowed. */
+      function makeRandom(seed) {
+        var value = seed | 0;
+        return function () {
+          value = (value + 0x6d2b79f5) | 0;
+          var r = value;
+          r = Math.imul(r ^ (r >>> 15), r | 1);
+          r ^= r + Math.imul(r ^ (r >>> 7), r | 61);
+          return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+        };
+      }
 
-      function shuffle(values) {
-        for (let i = values.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [values[i], values[j]] = [values[j], values[i]];
+      function shuffle(values, random) {
+        for (var i = values.length - 1; i > 0; i -= 1) {
+          var j = Math.floor(random() * (i + 1));
+          var swap = values[i];
+          values[i] = values[j];
+          values[j] = swap;
         }
         return values;
       }
 
-      function dealer() {
-        let deck = [];
-        let index = 0;
-
-        return function () {
-          if (index >= deck.length) {
-            deck = shuffle(Array.from({ length: total }, (_, id) => id));
-            index = 0;
-          }
-          return deck[index++];
-        };
-      }
-
-      function sizeDealer() {
-        let batch = [];
-        let index = 0;
-
-        return function () {
-          if (index >= batch.length) {
-            batch = shuffle([...sizes]);
-            index = 0;
-          }
-          return batch[index++];
-        };
-      }
-
-      function createIcon(id, size, tier) {
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.classList.add('icon', 'icon--' + tier);
+      function createIcon(id, size, tier, edge) {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'icon');
         svg.setAttribute('aria-hidden', 'true');
         svg.setAttribute('width', size);
         svg.setAttribute('height', size);
         svg.style.setProperty('--size', size);
+        svg.style.setProperty('--tier', tier);
+        svg.style.setProperty('--ec', edge.toFixed(3));
 
-        const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+        var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
         use.setAttribute('href', '#icon-' + id);
         svg.appendChild(use);
         return svg;
       }
 
       function render() {
-        const width = stage.clientWidth;
-        const height = stage.clientHeight;
-        const count = Math.max(220, Math.min(360, Math.round((width * height) / 1900)));
-        const outerRadius = Math.hypot(width, height) * 0.57;
-        const nextIcon = dealer();
-        const nextSize = sizeDealer();
+        if (!total) return;
+
+        var width = stage.clientWidth;
+        var height = stage.clientHeight;
+        /* A stage with no measurable box has nothing to lay out against —
+           flag it so the retries below can pick it up. */
+        if (!width || !height) {
+          pending = true;
+          return;
+        }
+        pending = false;
+        lastWidth = Math.round(width);
+        lastHeight = Math.round(height);
+
+        var count = Math.max(90, Math.min(420, Math.round((width * height) / 2100)));
+        var outerRadius = Math.hypot(width, height) * 0.57;
+        var random = makeRandom(0x9e3779b9);
+        var deck = shuffle(Array.from({ length: total }, function (_, id) { return id; }), random);
+        var widthScale = Math.min(1, width / 760);
+
+        /* Repeated shuffles rather than one cycled batch, so the ten size
+           steps never fall into a fixed repeating order. */
+        var sizePlan = [];
+        while (sizePlan.length < count) sizePlan = sizePlan.concat(shuffle(sizes.slice(), random));
 
         galaxy.replaceChildren();
 
-        for (let index = 1; index <= count; index += 1) {
-          const arm = document.createElement('div');
-          const size = Math.max(11, Math.round(nextSize() * Math.min(1, width / 760)));
-          const radius = 10 + outerRadius * Math.sqrt(index / count);
-          const angle = index * goldenAngle;
-          const edge = index / count;
+        for (var index = 1; index <= count; index += 1) {
+          var spread = Math.sqrt(index / count);
+          var edge = Math.pow(spread, CURVE);
+          var radius = 10 + outerRadius * spread;
+          var angle = index * goldenAngle;
 
+          var arm = document.createElement('div');
           arm.className = 'arm';
           arm.style.setProperty('--angle', angle.toFixed(1) + 'deg');
           arm.style.setProperty('--radius', radius.toFixed(1) + 'px');
 
-          const icon = createIcon(nextIcon(), size, ((index - 1) % TIERS) + 1);
-          icon.style.opacity = (0.92 - edge * 0.56).toFixed(2);
-          arm.appendChild(icon);
+          var size = Math.max(10, Math.round(sizePlan[index - 1] * widthScale));
+          arm.appendChild(createIcon(deck[(index - 1) % deck.length], size, (index - 1) % TIERS, edge));
           galaxy.appendChild(arm);
         }
       }
 
-      // Theme changes need no render: demo-system.js flips .dark on the root and
-      // the tier classes repoint at the other palette on their own. Only a
-      // resize changes the field, because only it changes the geometry.
-      render();
-      window.addEventListener('resize', render);
+      /* Theme changes need no render: demo-system.js flips .dark on the root
+         and --icon repoints on its own. Only a resize changes the field,
+         because only it changes the geometry. */
+      if (window.ResizeObserver) {
+        var resizeTimer = 0;
+        new ResizeObserver(function () {
+          if (Math.round(stage.clientWidth) === lastWidth && Math.round(stage.clientHeight) === lastHeight) return;
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(render, 140);
+        }).observe(stage);
+      } else {
+        window.addEventListener('resize', render);
+      }
+
+      /* ResizeObserver is delivered during the rendering step, which a hidden
+         or zero-sized document never runs. These are the way back in for a
+         field that was never able to measure itself. */
+      function renderPending() {
+        if (pending) render();
+      }
+      document.addEventListener('visibilitychange', renderPending);
+      window.addEventListener('pageshow', renderPending);
+
+      fetch('icons-sprite.svg').then(function (response) {
+        return response.text();
+      }).then(function (markup) {
+        var holder = document.createElement('div');
+        holder.innerHTML = markup;
+        var sprite = holder.firstElementChild;
+        sprite.setAttribute('aria-hidden', 'true');
+        document.body.prepend(sprite);
+
+        total = document.querySelectorAll('symbol[id^="icon-"]').length;
+        render();
+      }).catch(function () {
+        /* Swallowed deliberately: an unreachable sprite leaves an empty
+           stage, which is the correct degraded state for decorative
+           artwork, and must not surface as an unhandled rejection. */
+      });
     })();
   </script>
 </body>

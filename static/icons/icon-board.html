@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Icon board</title>
+  <!-- Opened on its own this file never gets layouts/partials/header.html, so
+       the browser asks for /favicon.ico and Hugo answers 404. Same inline mark
+       the site header uses. -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
   <!-- Mirrors the parent site's theme onto this document's root, and follows the
        OS preference when the file is opened on its own. Runs in <head> to avoid
        a theme flash. Only the sync runs — the player is opt-in. -->
