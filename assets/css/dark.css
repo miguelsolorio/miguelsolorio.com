@@ -56,13 +56,20 @@
         box-shadow: .2em 0 #efa9ae, -.2em 0 #efa9ae;
     }
 
-    /* Theme toggle hover keeps the accent treatment in the rose primary with
-       dark ink — the light bg-primary blurple fights the palette. */
+    /* Header controls keep the accent treatment in the rose primary with dark
+       ink — the light bg-primary blurple fights the palette. */
+    .dark .social a:hover,
     .dark nav #theme-toggle:hover {
         background-color: #efa9ae;
     }
+    .dark .social a:hover svg,
+    .dark .social a:hover svg path,
     .dark nav #theme-toggle:hover svg {
         fill: #110e1a;
+    }
+
+    .dark #logo:hover {
+        color: #efa9ae;
     }
 
     .dark .social a svg,

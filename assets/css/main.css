@@ -201,26 +201,23 @@
     @apply rounded-md p-1.5 text-slate-700 transition-all duration-300;
   }
 
-  .social a:hover {
-    @apply scale-110;
-    box-shadow: var(--shadow-md);
-  }
-
-  .social a:hover svg path {
-    @apply fill-white;
-  }
-
   .social a svg,
   .social a svg path {
     @apply fill-current text-current;
   }
 
-  #linkedin:hover {
-    @apply bg-blue-700;
+  /* Every header control — the social links and the theme toggle — takes the
+     one hover: the primary fill with white glyphs. No per-service brand colour
+     and no scale; the accent is the same one the body links highlight with. */
+  .social a:hover,
+  nav #theme-toggle:hover {
+    @apply bg-primary;
   }
 
-  #github:hover {
-    @apply bg-black;
+  .social a:hover svg,
+  .social a:hover svg path,
+  nav #theme-toggle:hover svg {
+    @apply fill-white;
   }
 
   .social {
@@ -231,14 +228,6 @@
     @apply flex items-center justify-center bg-transparent transition-all duration-100;
   }
 
-  nav #theme-toggle:hover {
-    @apply bg-primary fill-slate-800;
-  }
-
-  nav #theme-toggle:hover svg {
-    @apply fill-white;
-  }
-
   #logo {
     @apply no-underline text-slate-700;
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -246,6 +235,11 @@
     font-weight: 700;
     line-height: 1;
     letter-spacing: -.035em;
+    transition: color .22s ease;
+  }
+
+  #logo:hover {
+    color: var(--primary);
   }
 
   /* Content */

@@ -11,23 +11,9 @@
     color: #334155;
   }
 
-  .site-content footer.site-footer a.footer-link {
-    margin: 0;
-    padding: 0;
-    color: inherit;
-    background-image: none;
-    box-shadow: none;
-    text-decoration: none;
-  }
-
-  .site-content footer.site-footer a.footer-link:hover,
-  .site-content footer.site-footer a.footer-link:focus-visible {
-    color: #3429ff;
-    background-image: none;
-    background-size: auto;
-    box-shadow: none;
-    text-decoration: none;
-  }
+  /* Footer links take the body-link treatment wholesale — same rest colour,
+     same underline, same primary highlight on hover (main.css). Nothing to
+     declare here; the rule that used to strip it back is gone on purpose. */
 
   .site-footer-base {
     display: grid;
@@ -56,11 +42,6 @@
 
   .dark .site-footer {
     color: #a79fb8;
-  }
-
-  .dark .site-content footer.site-footer a.footer-link:hover,
-  .dark .site-content footer.site-footer a.footer-link:focus-visible {
-    color: #efa9ae;
   }
 
   @media (max-width: 40rem) {
