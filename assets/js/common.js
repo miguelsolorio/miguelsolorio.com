@@ -147,6 +147,7 @@
     { id: 'go-syntaxer', label: 'Syntaxer', category: 'Projects', href: '/syntaxer/', icon: '/syntaxer.png' },
     { id: 'go-paster', label: 'Paster', category: 'Projects', href: '/paster/', icon: '/paster.png' },
     { id: 'go-contrast-grid', label: 'Contrast Grid', category: 'Projects', href: '/contrast-grid/', icon: '/contrast-grid.png' },
+    { id: 'go-gradient-studio', label: 'Gradient Studio', category: 'Projects', href: '/gradient-studio/', icon: '/gradient-studio.png' },
     { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', href: '/code/', icon: '/code.svg' },
     { id: 'clear-recents', label: 'Clear Recents', category: 'Actions', glyph: 'clear', hidden: true }
   ];

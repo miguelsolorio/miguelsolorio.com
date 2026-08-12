@@ -69,7 +69,8 @@ if (portfolioTerminal) {
       name: 'Web',
       external: true,
       projects: [
-        { name: 'Contrast Grid', description: 'test colors for accessible contrast', url: 'https://miguelsolorio.github.io/contrast-grid-editor/' }
+        { name: 'Contrast Grid', description: 'test colors for accessible contrast', url: 'https://miguelsolorio.github.io/contrast-grid-editor/' },
+        { name: 'Gradient Studio', description: 'roll gradient backgrounds for Figma', url: 'https://miguelsolorio.github.io/gradient-studio/' }
       ]
     },
     {
