@@ -198,18 +198,5 @@ document.querySelectorAll("[data-diff]").forEach((mount) => {
 
 /* These scenes are still frames, but their height depends on the width they are
    given: the type scales, so the panels get shorter as the column narrows.
-   Rather than have the page guess a height, tell it the real one. common.js
-   listens for this and sizes the frame; without it the shortcode's height
-   attribute still applies. */
-function reportHeight() {
-  if (window.parent === window) return;
-  const height = Math.ceil(document.documentElement.getBoundingClientRect().height);
-  window.parent.postMessage({ type: "demo:height", height }, "*");
-}
-
-if (window.ResizeObserver) {
-  new ResizeObserver(reportHeight).observe(document.documentElement);
-} else {
-  window.addEventListener("resize", reportHeight);
-}
-reportHeight();
+   Rather than have the page guess a height, tell it the real one. */
+DemoSystem.publishHeight();

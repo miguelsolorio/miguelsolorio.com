@@ -178,3 +178,8 @@ document.addEventListener("keydown", (event) => {
 CliTheme.subscribe((theme) => { panel.dataset.cliTheme = theme; });
 
 render();
+
+/* body.diff-scene already makes this document exactly as tall as its content
+   (diff-view.css), so the frame only needs telling. Its sibling theme dialog
+   gets this from diff-view.js, which this scene has no other reason to load. */
+DemoSystem.publishHeight();

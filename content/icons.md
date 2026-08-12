@@ -73,7 +73,7 @@ After several months of iterating on the new icons, we finally [shipped them](ht
 
 Once we updated the icons, we also wanted to update how icons are referenced in the source code. I created a command line interface (CLI) tool to auto-generate an icon font from our svgs. We named the icon library [Codicons](https://github.com/microsoft/vscode-codicons/), paying tribute to our previous icon library ([Octicons](https://primer.style/design/foundations/icons/)).
 
-{{< iframe src="/icons/codicons-build.html" height="750" title="Terminal output of the codicons build finding 417 SVGs and generating codicon.ttf, codicon.css, and codicon.html" theme="icons" frame_class="project-embed--log" caption="The CLI generating an icon font from 417 SVGs"  frame_class="project-embed--transparent" >}}
+{{< iframe src="/icons/codicons-build.html" height="481" title="Terminal output of the codicons build finding 417 SVGs and generating codicon.ttf, codicon.css, and codicon.html" theme="icons" frame_class="project-embed--log project-embed--transparent" caption="The CLI generating an icon font from 417 SVGs" >}}
 
 # Open sourcing it
 

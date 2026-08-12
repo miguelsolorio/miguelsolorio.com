@@ -575,8 +575,34 @@
     return api;
   }
 
+  /* Still scenes whose height is a function of the width they are given tell
+     the page the real number rather than have the shortcode guess one.
+     common.js listens for demo:height and sizes the frame; the shortcode's
+     height attribute stays the fallback.
+
+     Opt-in, never automatic: a scene that sizes itself from the frame —
+     anything on height/min-height: 100vh, or a fit() that reads
+     window.innerHeight — would be reporting the frame's own height back at
+     the frame. That rules out every scene built on createPlayer, so this is
+     deliberately not wired into it. */
+  function reportHeight() {
+    if (window.parent === window) return;
+    var height = Math.ceil(document.documentElement.getBoundingClientRect().height);
+    window.parent.postMessage({ type: "demo:height", height: height }, "*");
+  }
+
+  function publishHeight() {
+    if (window.ResizeObserver) {
+      new ResizeObserver(reportHeight).observe(document.documentElement);
+    } else {
+      window.addEventListener("resize", reportHeight);
+    }
+    reportHeight();
+  }
+
   window.DemoSystem = Object.freeze({
     createPlayer: createPlayer,
-    syncTheme: syncTheme
+    syncTheme: syncTheme,
+    publishHeight: publishHeight
   });
 })(window, document);

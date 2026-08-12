@@ -581,6 +581,35 @@
     }
   }
 
+  /* The un-carded twin of the approval-panel reset above. That one fires on
+     .is-card for the home-page card; this one fires on width, for the case
+     study embed — which is not carded but gets just as narrow. Without it the
+     500px floor on .tool-box-inner outlives the terminal around it and
+     .scroll-area's overflow-x: hidden silently eats the answer options.
+
+     33rem, not the 40rem used above, because this is the width where the floor
+     actually stops fitting: .scroll-area spends 32px on padding, so a 528px
+     frame leaves 496px of content box against a 500px panel. Widening the
+     query would stretch the panel to full width across the tablet range, where
+     it still fits at its authored size and has nothing to fix. */
+  @media (max-width: 33rem) {
+    .tool-box {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .tool-box-inner {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .tool-command,
+    .tool-question,
+    .tool-opt > span:last-child {
+      overflow-wrap: anywhere;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .cursor {
       animation: none;

@@ -93,21 +93,7 @@
 
   /* ---------- height reporting ---------- */
   /* Same contract as the diff scenes: the sheet's height depends on how the
-     grids wrap at the width it is given, so tell the page the real number.
-     common.js listens for demo:height and sizes the frame; the shortcode's
-     height attribute stays the fallback. */
-  function reportHeight() {
-    if (window.parent === window) return;
-    var height = Math.ceil(document.documentElement.getBoundingClientRect().height);
-    window.parent.postMessage({ type: "demo:height", height: height }, "*");
-  }
-
-  if (window.ResizeObserver) {
-    new ResizeObserver(reportHeight).observe(document.documentElement);
-  } else {
-    window.addEventListener("resize", reportHeight);
-  }
-
+     grids wrap at the width it is given, so tell the page the real number. */
   renderValues();
-  reportHeight();
+  DemoSystem.publishHeight();
 })(window, document);
