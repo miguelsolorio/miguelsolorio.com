@@ -66,11 +66,18 @@
 
 /* Chart.js sizes its canvas from the parent box, so the plot has to be the
    thing that flexes: the title and the strip below take what they need and the
-   drawing gets the rest of the frame. */
+   drawing gets the rest of the frame.
+
+   The basis is nought rather than auto, and that is load-bearing. On auto the
+   plot's base size is its own content — but its content is a canvas Chart.js
+   has just sized from the plot, so the two chase each other and the figure
+   grows past the frame instead of the drawing giving way. Measured from nought
+   there is nothing to chase: the strip below takes what it needs first and the
+   drawing takes what is left. */
 .npm-plot {
   position: relative;
   min-height: 0;
-  flex: 1 1 auto;
+  flex: 1 1 0;
 }
 
 .npm-meta {
@@ -141,6 +148,115 @@
 .npm-stat-label {
   color: var(--chart-ink-muted);
   font-size: clamp(0.625rem, 1.6vw, 0.75rem);
+}
+
+/* ---- held, not live ------------------------------------------------------
+   The table these dress is commented out of npm-downloads.html for now: it read
+   as too much under the plot, and whether it comes back is still open. Kept
+   here so bringing it back is uncommenting the markup and nothing else. If that
+   call goes the other way, this block goes with it.
+
+   The ten packages that depend on codicons most, under the figures. A labelled
+   header over an unruled body: one rule to say the columns have names, and none
+   after it, so the block stays quiet beneath a plot that is already busy.
+
+   The share is drawn rather than only stated — a wash behind each name, scaled
+   against the largest reading. @theia/core is most of this table on its own, so
+   the wash runs the full width there and barely shows below it. That is the
+   finding, not a fault in the drawing. */
+.npm-deps {
+  width: 100%;
+  border-collapse: collapse;
+  margin: clamp(0.875rem, 2.5vw, 1.375rem) 0 0;
+  font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+  text-align: left;
+}
+
+.npm-deps th {
+  padding: 0 0 0.4rem;
+  border-bottom: 1px solid var(--chart-grid);
+  color: var(--chart-ink-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* The header cells carry the figure-column classes too, but `.npm-deps th` is
+   the more specific selector and was quietly winning both the padding and the
+   alignment back — which ran "weekly" and "share" into one another. Restated
+   here at a weight that holds. */
+.npm-deps th.npm-dep-num {
+  padding-left: 0.75rem;
+  text-align: right;
+}
+
+.npm-deps td {
+  padding: 0.28rem 0;
+}
+
+.npm-deps tbody tr:first-child td {
+  padding-top: 0.5rem;
+}
+
+/* The wash and the name are siblings in one cell, so the name is given its own
+   positioned box rather than left as bare inline content the wash paints over.
+   The cell is squeezed to nothing and then told to take everything, which is
+   how a table hands the leftover width to one column and lets the two figure
+   columns size to their content. */
+.npm-dep-name {
+  position: relative;
+  overflow: hidden;
+  max-width: 0;
+  width: 99%;
+  padding-right: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.npm-dep-name b {
+  position: relative;
+  font-weight: 400;
+}
+
+.npm-dep-bar {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: -0.3rem;
+  border-radius: 3px;
+  background: var(--chart-fill-top);
+}
+
+.npm-dep-num {
+  padding-left: 0.75rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.npm-dep-share {
+  color: var(--chart-ink-muted);
+}
+
+.npm-deps tfoot td {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--chart-grid);
+  color: var(--chart-ink-muted);
+}
+
+/* Below the measure the middle column is the one to lose: the share says what
+   the row is worth relative to the rest, which is the thing a narrow reading
+   is least able to work out for itself. */
+@media (width < 26rem) {
+  .npm-deps th:nth-child(2),
+  .npm-deps td:nth-child(2) {
+    display: none;
+  }
+
+  .npm-deps tfoot td {
+    /* One column fewer to span. */
+    padding-top: 0.45rem;
+  }
 }
 
 .npm-source {

@@ -96,5 +96,3 @@ We also shipped the icon library as an npm package for anyone wanting to use the
 During our research studies, we saw a new theme arise where customers wanted to customize the icons to match their aesthetic preferences, as not everyone liked the outline styles. After we added support for icon fonts in the source code, it was easier to use different versions of icon styles, which is where product icon themes were born. Partnering with our engineer, I helped introduce a new [API for product icon themes](https://code.visualstudio.com/api/extension-guides/product-icon-theme).
 
 {{< image src="product-icon-theme.png" alt="VS Code with a rounded custom product icon theme applied to the activity bar, file explorer, outline, and IntelliSense" gradient="true" caption="A custom product icon theme applied across the workbench"  frame_class="project-embed--transparent" >}}
-
-{{< image src="product-icon-theme2.png" alt="The same VS Code window with a different product icon theme swapping the activity bar, outline, and IntelliSense symbols" gradient="true" caption="The same editor with a different icon theme in one click"  frame_class="project-embed--transparent" >}}

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dependents table — hybrid takes</title>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<style>
+/* A bench, not a scene. Ten readings of one hybrid: A's labelled header over
+   B's unruled body, with G's percentages folded in. What varies between them is
+   where the share sits, how it is qualified, and how much rule is left.
+
+   Colours are the npm scene's own tokens, repeated here rather than imported so
+   this file can be opened on its own without the embed around it. */
+:root {
+  --ink: #33415a;
+  --muted: #64748b;
+  --grid: rgb(51 65 90 / 12%);
+  --rule: rgb(51 65 90 / 22%);
+  --series: #2b7de0;
+  --series-wash: rgb(43 125 224 / 14%);
+  --zebra: rgb(51 65 90 / 3.5%);
+  --page: #f6f7f9;
+  --panel: #ffffff;
+  --panel-edge: rgb(51 65 90 / 10%);
+
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root.dark {
+  --ink: #cbd5e1;
+  --muted: #94a3b8;
+  --grid: rgb(203 213 225 / 14%);
+  --rule: rgb(203 213 225 / 28%);
+  --series: #6bb2f7;
+  --series-wash: rgb(107 178 247 / 18%);
+  --zebra: rgb(255 255 255 / 3.5%);
+  --page: #15121d;
+  --panel: #1e1a29;
+  --panel-edge: rgb(255 255 255 / 8%);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2.5rem) 6rem;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.bench { max-width: 78rem; margin: 0 auto; }
+
+.bench-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+h1 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: 600; letter-spacing: -0.02em; }
+
+.bench-note {
+  max-width: 48rem;
+  margin: 0 0 2.5rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.bench-note code { font-family: var(--mono); font-size: 0.9em; }
+.bench-note b { color: var(--ink); font-weight: 500; }
+
+.toggle {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--panel-edge);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.toggle:hover { color: var(--series); border-color: var(--series); }
+
+.context {
+  padding: 1.25rem;
+  border: 1px dashed var(--panel-edge);
+  border-radius: 0.75rem;
+  margin-bottom: 2.5rem;
+  background: var(--panel);
+}
+
+.context-tag {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stat-strip {
+  display: flex;
+  justify-content: center;
+  gap: 2.75rem;
+  font-family: var(--mono);
+  text-align: center;
+}
+
+.stat-strip div { display: flex; flex-direction: column-reverse; gap: 0.15em; }
+.stat-strip b { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+.stat-strip span { color: var(--muted); font-size: 0.75rem; }
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+}
+
+.take {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  border: 1px solid var(--panel-edge);
+  border-radius: 0.75rem;
+  background: var(--panel);
+}
+
+.take-head { margin-bottom: 1rem; }
+
+.take-name { margin: 0; font-family: var(--mono); font-size: 0.8125rem; font-weight: 500; }
+.take-name i { color: var(--series); font-style: normal; }
+
+.take-why { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.5; }
+.take-body { margin-top: auto; padding-top: 0.5rem; }
+
+/* ---- the hybrid's shared bones ------------------------------------------
+   Every take below is this table. The header is labelled and separated by a
+   single rule; the body carries none. Only the share column changes hands. */
+
+table { width: 100%; border-collapse: collapse; font-family: var(--mono); }
+
+caption {
+  margin-bottom: 0.7rem;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+th {
+  padding: 0 0 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th.num { text-align: right; }
+
+td { padding: 0.4rem 0; font-size: 0.8125rem; }
+tbody tr:first-child td { padding-top: 0.7rem; }
+
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pkg { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 0; width: 99%; }
+.share { padding-left: 1rem; color: var(--muted); }
+.rank { width: 1.7rem; padding-right: 0.3rem; color: var(--muted); font-size: 0.75rem; }
+
+/* A footer that answers "of what?" in the table rather than above it. */
+tfoot td {
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+/* 2 — share as a parenthetical on the figure */
+.t-2 .paren { color: var(--muted); }
+
+/* 3 — share carries the accent, count recedes */
+.t-3 .num { color: var(--muted); }
+.t-3 .share { color: var(--series); }
+
+/* 4 — a meter in the share column */
+.t-4 .meter { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; padding-left: 1rem; }
+.t-4 .track { width: 3.2rem; height: 4px; border-radius: 2px; background: var(--grid); }
+.t-4 .fill { display: block; height: 100%; border-radius: 2px; background: var(--series); }
+.t-4 .pct { min-width: 2.9rem; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* 5 — wash behind the row, scaled by share */
+.t-5 td { position: relative; }
+.t-5 .bar { position: absolute; top: 2px; bottom: 2px; left: -0.4rem; border-radius: 3px; background: var(--series-wash); }
+.t-5 .pkg b { position: relative; font-weight: 400; }
+
+/* 6 — zebra instead of rules */
+.t-6 tbody tr:nth-child(odd) { background: var(--zebra); }
+.t-6 td { padding: 0.42rem 0.4rem; }
+.t-6 td:first-child { border-radius: 3px 0 0 3px; }
+.t-6 td:last-child { border-radius: 0 3px 3px 0; }
+.t-6 th:first-child { padding-left: 0.4rem; }
+.t-6 th:last-child { padding-right: 0.4rem; }
+
+/* 7 — share stacked under the count */
+.t-7 .stacked { display: block; }
+.t-7 .stacked small { display: block; margin-top: 0.1rem; color: var(--muted); font-size: 0.6875rem; }
+
+/* 8 — cumulative column */
+.t-8 .cum { padding-left: 1rem; color: var(--muted); }
+
+/* 9 — share only */
+.t-9 .share { color: var(--ink); }
+
+/* 10 — two shares, of dependents and of codicons itself */
+.t-10 .of-deps { padding-left: 0.9rem; }
+.t-10 .of-all { padding-left: 0.9rem; color: var(--series); }
+</style>
+</head>
+<body>
+
+<div class="bench">
+  <div class="bench-head">
+    <h1>Dependents table — hybrid takes</h1>
+    <button class="toggle" id="toggle" type="button">dark</button>
+  </div>
+
+  <p class="bench-note">
+    Ten readings of the same hybrid: <b>A</b>'s labelled header, <b>B</b>'s unruled body, and the
+    percentage breakdown from <b>G</b>. The bones are identical in all ten — what moves is where the
+    share sits and how it answers <em>of what?</em> Figures are weekly downloads, pulled 2026‑08‑11.
+    <code>@theia/core</code> is 64% of all dependent traffic on its own, so any take that draws the
+    share to scale will show one long row and nine short ones.
+  </p>
+
+  <div class="context">
+    <p class="context-tag">what sits above it today</p>
+    <div class="stat-strip">
+      <div><span>downloads all time</span><b>19.5M</b></div>
+      <div><span>weekly avg</span><b>580k</b></div>
+      <div><span>projects using it</span><b>1.1k</b></div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Names are always given in full. Dropping the scope to save a column would
+     turn @theia/core into "core" and, worse, @workbench-kit/react into "react",
+     which is a different package entirely. Narrow columns truncate with an
+     ellipsis instead: losing the tail of a name is recoverable, showing another
+     package's name is not. */
+  var ROWS = [
+    { name: "@theia/core", weekly: 29818 },
+    { name: "docusaurus-plugin-typedoc-api", weekly: 3030 },
+    { name: "@opensumi/ide-core-browser", weekly: 2306 },
+    { name: "@workbench-kit/react", weekly: 1764 },
+    { name: "@leanprover/infoview", weekly: 1192 },
+    { name: "@apify/docusaurus-plugin-typedoc-api", weekly: 1063 },
+    { name: "@christianmaf80/agentic-workflow", weekly: 955 },
+    { name: "@meridianlabs/log-viewer", weekly: 823 },
+    { name: "@darajs/components", weekly: 765 },
+    { name: "@altimateai/ui-components", weekly: 764 }
+  ];
+
+  /* Every denominator the takes reach for, named once. A percentage is only as
+     honest as the total under it, so none of these is inlined at a call site. */
+  var DEPENDENTS = 78;
+  var DEP_TOTAL = 46927;            /* all 78 dependents, weekly */
+  var CODICONS = 577862;            /* the package's own last full week */
+  var TOP_TEN = ROWS.reduce(function (sum, r) { return sum + r.weekly; }, 0);
+  var MAX = ROWS[0].weekly;
+
+  function full(n) { return n.toLocaleString("en-US"); }
+  function abbrev(n) { return n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n); }
+  function pct(n, of) { return (n / of * 100).toFixed(1) + "%"; }
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function rows(fn) { return ROWS.map(fn).join(""); }
+
+  /* Running total, worked out once so the cumulative take cannot drift from the
+     share take beside it. */
+  var CUM = [];
+  ROWS.reduce(function (run, r, i) { CUM[i] = run + r.weekly; return CUM[i]; }, 0);
+
+  var TAKES = [
+    {
+      key: "1", name: "The hybrid",
+      why: "A's header and rule, B's unruled body, share in its own column. The baseline everything else here departs from.",
+      html: '<table class="t-1"><thead><tr><th>package</th><th class="num">weekly</th><th class="num share">share</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num">' + full(r.weekly) +
+            '</td><td class="num share">' + pct(r.weekly, DEP_TOTAL) + '</td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "2", name: "Share as parenthetical",
+      why: "Two columns instead of three — the share rides along with the count. Tightest fit, but the percentages no longer align to read down.",
+      html: '<table class="t-2"><thead><tr><th>package</th><th class="num">weekly (share)</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num">' + full(r.weekly) +
+            ' <span class="paren">(' + pct(r.weekly, DEP_TOTAL) + ')</span></td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "3", name: "Share leads",
+      why: "Same table, emphasis flipped: the percentage takes the accent and the raw count recedes. Use if the ranking matters more than the volume.",
+      html: '<table class="t-3"><thead><tr><th>package</th><th class="num">weekly</th><th class="num share">share</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num">' + full(r.weekly) +
+            '</td><td class="num share">' + pct(r.weekly, DEP_TOTAL) + '</td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "4", name: "Share as a meter",
+      why: "A short track beside each percentage. Makes the concentration legible at a glance — and shows nine near-empty tracks doing it.",
+      html: '<table class="t-4"><thead><tr><th>package</th><th class="num">weekly</th><th class="num">share</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num">' + full(r.weekly) +
+            '</td><td><span class="meter"><i class="track"><b class="fill" style="width:' +
+            (r.weekly / MAX * 100) + '%"></b></i><span class="pct">' + pct(r.weekly, DEP_TOTAL) +
+            '</span></span></td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "5", name: "Weighted rows",
+      why: "The share becomes the row itself, drawn behind the name. No extra column, but the first row runs the full width and the rest barely register.",
+      html: '<table class="t-5"><thead><tr><th>package</th><th class="num">weekly</th><th class="num share">share</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg"><i class="bar" style="width:' + (r.weekly / MAX * 100) +
+            '%"></i><b>' + esc(r.name) + '</b></td><td class="num">' + full(r.weekly) +
+            '</td><td class="num share">' + pct(r.weekly, DEP_TOTAL) + '</td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "6", name: "Zebra",
+      why: "Rules traded for a faint tint on alternate rows. Easier to track across three columns; adds a texture the chart above does not have.",
+      html: '<table class="t-6"><thead><tr><th>package</th><th class="num">weekly</th><th class="num share">share</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num">' + full(r.weekly) +
+            '</td><td class="num share">' + pct(r.weekly, DEP_TOTAL) + '</td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "7", name: "Stacked figures",
+      why: "Share sits under its count rather than beside it. Two columns, no crowding — at the cost of a taller block and looser rhythm.",
+      html: '<table class="t-7"><thead><tr><th>package</th><th class="num">weekly / share</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num"><span class="stacked">' +
+            full(r.weekly) + '<small>' + pct(r.weekly, DEP_TOTAL) + '</small></span></td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "8", name: "Cumulative",
+      why: "A running share alongside the individual one. Says the thing the ranking is really for: the first three are three-quarters of everything.",
+      html: '<table class="t-8"><thead><tr><th>package</th><th class="num">share</th><th class="num cum">running</th></tr></thead><tbody>' +
+        rows(function (r, i) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num">' + pct(r.weekly, DEP_TOTAL) +
+            '</td><td class="num cum">' + pct(CUM[i], DEP_TOTAL) + '</td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "9", name: "Ranked, share only",
+      why: "Counts dropped entirely — rank, name, percentage. The simplest of the ten, and the only one that never states a number anyone could check.",
+      html: '<table class="t-9"><caption>share of the ' + DEPENDENTS +
+        ' packages that depend on codicons, by weekly downloads</caption><thead><tr><th colspan="2">package</th><th class="num share">share</th></tr></thead><tbody>' +
+        rows(function (r, i) {
+          return '<tr><td class="rank">' + (i + 1) + '</td><td class="pkg">' + esc(r.name) +
+            '</td><td class="num share">' + pct(r.weekly, DEP_TOTAL) + '</td></tr>';
+        }) + '</tbody></table>'
+    },
+    {
+      key: "10", name: "Two denominators",
+      why: "Share of dependents, and share of codicons' own traffic. The second column is the honest one: every dependent together is 8% of the chart above.",
+      html: '<table class="t-10"><thead><tr><th>package</th><th class="num of-deps">of deps</th><th class="num of-all">of codicons</th></tr></thead><tbody>' +
+        rows(function (r) {
+          return '<tr><td class="pkg">' + esc(r.name) + '</td><td class="num of-deps">' +
+            pct(r.weekly, DEP_TOTAL) + '</td><td class="num of-all">' + pct(r.weekly, CODICONS) + '</td></tr>';
+        }) + '</tbody><tfoot><tr><td>all ' + DEPENDENTS + ' dependents</td><td class="num of-deps">100%</td>' +
+        '<td class="num of-all">' + pct(DEP_TOTAL, CODICONS) + '</td></tr></tfoot></table>'
+    }
+  ];
+
+  /* Takes 1–8 share one denominator and never name it, so a footer states it
+     once beneath each. Takes 9 and 10 answer the question themselves — 9 in its
+     caption, 10 in its own footer — and are left alone.
+
+     The span is counted off the take's own header rather than set to a number
+     big enough to cover the widest of them: an overlong colspan is a column
+     count the table does not have, and engines are free to lay out the phantom
+     columns rather than clamp them. */
+  function footer(html) {
+    var span = (html.match(/<th\b/g) || []).length || 1;
+    return '<tfoot><tr><td colspan="' + span + '">top 10 of ' + DEPENDENTS + ' dependents · ' +
+      pct(TOP_TEN, DEP_TOTAL) + ' of ' + full(DEP_TOTAL) + ' weekly</td></tr></tfoot>';
+  }
+
+  document.getElementById("grid").innerHTML = TAKES.map(function (t) {
+    var body = t.key === "9" || t.key === "10"
+      ? t.html
+      : t.html.replace("</tbody></table>", "</tbody>" + footer(t.html) + "</table>");
+    return '<section class="take">' +
+      '<div class="take-head">' +
+        '<p class="take-name"><i>' + t.key + '</i> &nbsp;' + t.name + '</p>' +
+        '<p class="take-why">' + t.why + '</p>' +
+      '</div>' +
+      '<div class="take-body">' + body + '</div>' +
+    '</section>';
+  }).join("");
+
+  var toggle = document.getElementById("toggle");
+  toggle.addEventListener("click", function () {
+    var dark = document.documentElement.classList.toggle("dark");
+    toggle.textContent = dark ? "light" : "dark";
+  });
+})();
+</script>
+
+</body>
+</html>
