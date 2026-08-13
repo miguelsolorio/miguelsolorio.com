@@ -1,3 +1,7 @@
+# Canonical origin, matching the live site's og:url. Internal links stay
+# relative (relativeURLs below); this only feeds absURL and .Permalink,
+# which social scrapers require as full URLs (og:url, og:image).
+baseURL = "https://miguelsolorio.com/"
 relativeURLs = true
 languageCode = "en-us"
 title = "Miguel Solorio"
