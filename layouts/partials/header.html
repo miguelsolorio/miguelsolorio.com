@@ -7,7 +7,17 @@
     <meta property="og:title" content="{{ .Title | default .Site.Title }}">
     <meta property="og:description" content="{{ .Description | default "Portfolio of Miguel Solorio, a software designer in Seattle, WA" }}">
     <meta property="og:url" content="{{ .Permalink }}">
-    <title>{{ if .IsHome }}{{ .Site.Title }} — {{ .Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+    {{/* One card for every scraper: platforms fetch og:image server-side and
+         cache it, so it can't follow the viewer's theme. The light card is
+         canonical; static/og-dark.jpg is the same art in Rosé Dusk for
+         contexts that call for it. Both are exported from
+         static/og-images.html (?og=1 / ?og=2). */}}
+    <meta property="og:image" content="{{ "og-light.jpg" | absURL }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Designing software for builders · Miguel Solorio, Software Designer">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>{{ if .IsHome }}{{ .Site.Title }} · {{ .Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
 
     {{ $styles := resources.Get "css/main.css" | resources.PostCSS (dict "inlineImports" true) }}
     {{ if hugo.IsProduction }}

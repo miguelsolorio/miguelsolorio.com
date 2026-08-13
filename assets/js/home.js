@@ -55,9 +55,9 @@ if (portfolioTerminal) {
       projects: [
         { name: 'Notebooks', description: 'data science workflows via natural language', url: '/colab-notebooks/' },
         { name: 'Kanvas', description: 'laying the foundation of a design system', url: '/kustomer-design-system/' },
-        { name: 'Gemini CLI', description: 'terminal-first agent experiences', url: '/cli-agents/' },
+        { name: 'Gemini CLI', description: 'agent experiences for terminal-first developer workflows', url: '/cli-agents/' },
         { name: 'Icons', description: 'open sourcing the design process', url: '/icons/' },
-        { name: 'Onboarding', description: 'a redesign that led to a framework', url: '/onboarding/' }
+        { name: 'Onboarding', description: 'a redesign that led us to a framework', url: '/onboarding/' }
       ]
     },
     {

@@ -1,6 +1,6 @@
 ---
 title: "Navigator"
-description: "Quickly find and jump to color styles across a Figma file"
+description: "Find and jump to color styles across a Figma file"
 date: 2021-01-03T08:54:39-08:00
 draft: false
 weight: 5

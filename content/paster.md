@@ -1,6 +1,6 @@
 ---
 title: "Paster"
-description: "Paste text into your text layers, one line at a time."
+description: "Fill your text layers from a list, one line at a time"
 date: 2023-11-21T08:55:42-08:00
 draft: false
 weight: 2

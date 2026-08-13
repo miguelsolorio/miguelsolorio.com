@@ -10,7 +10,7 @@ card_animation: "/icons/spiral-animation.html"
 card_theme: "icons"
 ---
 
-As the lead designer, I created a cohesive iconography style that could be seamlessly applied across our various products and platforms.
+As the lead designer, I created a single iconography style that could be applied across our products and platforms.
 
 {{< iframe src="/icons/spiral-animation.html" height="500" title="A grid of several hundred VS Code product icons in the final outline style, laid out 24 across and 14 down" theme="icons" frame_class="project-embed--board" caption="The full Codicons set in its final outline style" >}}
 
@@ -20,7 +20,7 @@ VS Code's iconography originated as a fork from [Visual Studio](https://visualst
 
 {{< image src="background.png" alt="Older VS Code editor showing the Extensions sidebar and an IntelliSense popup with mismatched icon styles inherited from Visual Studio and Octicons" gradient="true" caption="VS Code's original UI, mixing icons from Visual Studio and Octicons" frame_class="project-embed--transparent" >}}
 
-This introduced a lot of inconsistencies as there were different styles, weights, and colors. Our customers started noticing these inconsistencies, and there wasn't anyone actively maintaining our icons. I led the initiative to begin cleaning up the iconography and creating a cohesive style that fits across our platforms.
+That left us with a mix of styles, weights, and colors. Customers started noticing, and no one was actively maintaining the icons. I led the initiative to begin cleaning up the iconography and creating a cohesive style that fits across our platforms.
 
 {{< quote name="GitHub User" handle="@mona" source="github" stats="👍:19 😄:16 ❤️:3" >}}
 IMHO, aesthetics-wise, ==the icons are the worst part== of the editor, by far.
@@ -30,11 +30,11 @@ Pretty much everything that could have gone wrong did: inconsistent shades of gr
 
 # Iterations
 
-After getting leadership onboard, I partnered with our visual designer to create several variations of styles we wanted to explore that matched our product branding. We explored a wide range of styles from solid and outline to rounded and playful. Below is a preview of our first rounds of iterations.
+After getting leadership on board, I partnered with our visual designer on style variations that matched our product branding. We explored a wide range of styles from solid and outline to rounded and playful. Below is a preview of our first iterations.
 
 {{< inline-svg src="icons/iterations.svg" class="iterations-icons-embed" gradient="true" caption="Early explorations ranging from outline to solid styles" frame_class="project-embed--cutout" >}}
 
-As we narrowed down the styles, we knew we needed to get customer feedback for this to succeed. In embracing the open-source culture, we opened the design process and invited the community to participate and provide feedback. We were surprised at what happened next.
+As we narrowed the styles down, we knew this needed customer feedback to succeed. So we opened the design process up and invited the community in. The response surprised us.
 
 {{< quotes >}}
 
@@ -53,7 +53,7 @@ As we narrowed down the styles, we knew we needed to get customer feedback for t
 
 # Better feedback
 
-As we went through the feedback, we realized it was great for first impressions, but we wanted to get these into our customers' hands to see how it would impact their workflows. So I created a custom build of VS Code with the new icons and asked our community to try them out. The community continued to surprise us by being active build testers and providing more feedback.
+As we went through the feedback, we realized it was great for first impressions, but we wanted to get the icons into our customers' hands to see how they'd hold up in real workflows. So I created a custom build of VS Code with the new icons and asked our community to try them out. The community surprised us again, testing the builds actively and sending more feedback.
 
 {{< quote name="Miguel Solorio" handle="@miguelsolorio_" avatar="avatars/miguelsolorio.jpg" source="twitter" media="build-media.png" media_alt="VS Code running the custom build, with the new outline icons in the activity bar, the explorer, and the outline view" stats="like:527 repost:65 reply:30 views:4,170" >}}
 We're working on improving @code's iconography to make them consistent, clear, and modern. Let us know what you think.
@@ -61,17 +61,17 @@ We're working on improving @code's iconography to make them consistent, clear, a
 👉 <https://github.com/Microsoft/vscode/issues/8017>
 {{< /quote >}}
 
-Once our customers had a sample build, we started receiving a flood of feedback, which felt amazing and terrifying. There was feedback around first impressions between the solid and outlines, glitches we missed, and even other areas needing updating. We worked around the clock to update the build as we iterated on the feedback.
+Once our customers had a sample build, we started receiving a flood of feedback, which felt amazing and terrifying. It covered first impressions of solid versus outline, glitches we'd missed, and other areas that needed updating. We worked around the clock to update the build as we iterated on the feedback.
 
 # Shipping it
 
-After several months of iterating on the new icons, we finally [shipped them](https://code.visualstudio.com/updates/v1_37#_new-product-icons) and set them as the default. We did a lot of back and forth trying to determine which icons to use, as the feedback was very split. After several tests, we landed on the outline version because it resonated with most of our users and looked more “modern.”
+After several months of iterating on the new icons, we finally [shipped them](https://code.visualstudio.com/updates/v1_37#_new-product-icons) and set them as the default. We went back and forth on which set to use, since the feedback was split. After several tests, we landed on the outline version because it resonated with most of our users and looked more “modern.”
 
 {{< image src="shipped.png" alt="VS Code release notes titled 'New product icons' announcing all product icons updated to be uniform in style, color, and size" gradient="true" caption="The release notes announcing the new product icons" frame_class="project-embed--transparent" >}}
 
 # Automating it
 
-Once we updated the icons, we also wanted to update how icons are referenced in the source code. I created a command line interface (CLI) tool to auto-generate an icon font from our svgs. We named the icon library [Codicons](https://github.com/microsoft/vscode-codicons/), paying tribute to our previous icon library ([Octicons](https://primer.style/design/foundations/icons/)).
+Once we updated the icons, we also wanted to update how icons are referenced in the source code. I created a command line interface (CLI) tool to auto-generate an icon font from our SVGs. We named the icon library [Codicons](https://github.com/microsoft/vscode-codicons/), paying tribute to our previous icon library ([Octicons](https://primer.style/design/foundations/icons/)).
 
 {{< iframe src="/icons/codicons-build.html" height="481" title="Terminal output of the codicons build finding 417 SVGs and generating codicon.ttf, codicon.css, and codicon.html" theme="icons" frame_class="project-embed--log project-embed--transparent" caption="The CLI generating an icon font from 417 SVGs" >}}
 
@@ -83,16 +83,16 @@ Once we shipped the icons, I knew it was time to give back to the community and 
 
 # Impact
 
-Previously, to reference icons you'd need to provide 3 different files for the various themes (Dark, Light, High Contrast) and add them in a separate file in your code. They would then be added as background images and lose any scalability benefits. With the new icon font, [Codicons](https://github.com/microsoft/vscode-codicons/), we could define a dictionary of icons and then reference them in the code.
+Previously, referencing an icon meant three separate files, one per theme (Dark, Light, High Contrast), plus adding them in a separate file in your code. They would then be added as background images and lose any scalability benefits. With the new icon font, [Codicons](https://github.com/microsoft/vscode-codicons/), we could define a dictionary of icons and then reference them in the code.
 
 {{< iframe src="/icons/architecture.html" height="285" title="Before-and-after code comparison: an icon previously required three theme-specific SVGs, now a single Codicon reference" theme="icons" frame_class="project-embed--compare" caption="From three theme-specific SVGs to a single Codicon reference" >}}
 
-We also shipped the icon library as an npm package for anyone wanting to use them in other projects outside of VS Code or as part of their extensions. It took a year to reach 20k installs a week. It now averages over 500k a week, and has been downloaded more than 19 million times.
+We also shipped the library as an npm package, for use outside VS Code or inside extensions. It took a year to reach 20k installs a week. It now averages over 500k a week, and has been downloaded more than 19 million times.
 
 {{< iframe src="/icons/npm-downloads.html" height="600" title="Line chart of weekly npm downloads for the codicons package from 2021 to 2026, rising from nothing to over 500k a week" theme="icons" frame_class="project-embed--bare" caption="Codicons npm downloads, every week since launch" >}}
 
 # Scaling for the future
 
-During our research studies, we saw a new theme arise where customers wanted to customize the icons to match their aesthetic preferences, as not everyone liked the outline styles. After we added support for icon fonts in the source code, it was easier to use different versions of icon styles, which is where product icon themes were born. Partnering with our engineer, I helped introduce a new [API for product icon themes](https://code.visualstudio.com/api/extension-guides/product-icon-theme).
+Research surfaced a new theme: customers wanted to customize the icons to match their own taste, since not everyone liked the outline style. Once the source code supported icon fonts, swapping icon styles got easy. That's where product icon themes came from. Partnering with our engineer, I helped introduce a new [API for product icon themes](https://code.visualstudio.com/api/extension-guides/product-icon-theme).
 
 {{< image src="product-icon-theme.png" alt="VS Code with a rounded custom product icon theme applied to the activity bar, file explorer, outline, and IntelliSense" gradient="true" caption="A custom product icon theme applied across the workbench"  frame_class="project-embed--transparent" >}}

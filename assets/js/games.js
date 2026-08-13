@@ -673,7 +673,7 @@
       }
       showBanner({
         kicker: 'Game over',
-        title: msg || 'That is the run.',
+        title: msg || 'That\'s the run.',
         stats: [{ label: 'Score', value: Math.round(g.score) }, { label: 'Reached', value: 'Level ' + (g.level + 1) }],
         actions: [{ label: 'Play again', primary: true, run: restart },
                   { label: 'Back to the page', run: close }]
@@ -946,13 +946,13 @@
        single ↔, which is not a key anyone has */
     controls: '<kbd>WASD</kbd>/<kbd>↑ ↓ ← →</kbd> fly + <kbd>Space</kbd> fire + <kbd>Shift</kbd> bomb' +
               '&nbsp;·&nbsp; or steer with the mouse — it fires itself, click bombs',
-    touchHint: 'Drag the pad to fly — guns fire themselves · A bombs',
+    touchHint: 'Drag the pad to fly · guns fire themselves · A bombs',
     touch: { pad: true, a: 'BOMB' },
     lives: 1,                       /* the game runs its own life count */
     victory: 'GOAT status: confirmed.',
     levels: [
-      { name: 'Newbie', note: 'Steer with the mouse and the guns run themselves; touch a key and the trigger becomes yours. Red drops green — fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', quota: 14, spawn: 1.45, rock: 6.5 },
-      { name: 'Mid', note: 'Every kill so far has made them faster and tougher, and that does not reset between levels. Watch for weapon crates.', quota: 22, spawn: 1.05, rock: 5 },
+      { name: 'Newbie', note: 'Steer with the mouse and the guns run themselves; touch a key and the trigger becomes yours. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', quota: 14, spawn: 1.45, rock: 6.5 },
+      { name: 'Mid', note: 'Every kill so far has made them faster and tougher, and that doesn\'t reset between levels. Watch for weapon crates.', quota: 22, spawn: 1.05, rock: 5 },
       { name: 'GOAT', note: 'Twenty-eight of them, thicker rock cover, and then whatever has been sending them.', quota: 28, spawn: 0.8, rock: 4, boss: true }
     ],
 
@@ -1817,14 +1817,14 @@
   Arcade.add({
     id: 'hexrush', name: 'Hexrush', mode: 'stage', order: 2,
     from: 'Super Hexagon',
-    blurb: 'Left, right, do not touch the walls. It opens slowly now — and the gaps sometimes carry dynamite.',
-    controls: '<kbd>←</kbd> <kbd>→</kbd> orbit — or point the mouse where you want to be &nbsp;·&nbsp; <kbd>Space</kbd>/click detonates TNT',
+    blurb: 'Left, right, don\'t touch the walls. It opens slowly now, and the gaps sometimes carry dynamite.',
+    controls: '<kbd>←</kbd> <kbd>→</kbd> orbit, or point the mouse where you want to be &nbsp;·&nbsp; <kbd>Space</kbd>/click detonates TNT',
     touchHint: 'Touch the left or right half to orbit · TNT button detonates',
     touch: { pad: false, a: 'TNT' },
     lives: 1,                      /* one clip ends the run — that is the genre */
     victory: 'Certified GOAT.',
     levels: [
-      { name: 'Newbie', note: 'Survive 30 seconds. One hit ends the run. It starts slow and speeds up — grab the orange TNT out of a gap, then press fire to clear the board.', dur: 30, sides: 6, from: 115, to: 250, spin: 0.34, gap: 230, tnt: 0.30, pattern: 0 },
+      { name: 'Newbie', note: 'Survive 30 seconds. One hit ends the run. It starts slow and speeds up. Grab the orange TNT out of a gap, then press fire to clear the board.', dur: 30, sides: 6, from: 115, to: 250, spin: 0.34, gap: 230, tnt: 0.30, pattern: 0 },
       { name: 'Mid', note: 'Forty seconds. Faster ceiling, and the field starts reversing direction under you.', dur: 40, sides: 6, from: 165, to: 355, spin: 0.95, gap: 205, tnt: 0.22, pattern: 1 },
       { name: 'GOAT', note: 'Fifty seconds. Five sides, spinning both ways, patterns that need you already moving. TNT is rarer here.', dur: 50, sides: 5, from: 210, to: 465, spin: 1.5, gap: 190, tnt: 0.15, pattern: 2 }
     ],
