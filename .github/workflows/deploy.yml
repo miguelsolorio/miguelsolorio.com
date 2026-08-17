@@ -74,7 +74,7 @@ jobs:
           # ./public_html/miguelsolorio/ here creates a nested
           # public_html/miguelsolorio/public_html/miguelsolorio/ instead, which
           # uploads cleanly, reports success, and changes nothing on the site.
-          server-dir: ./miguelsolrio/
+          server-dir: ./miguelsolorio/
           # A dry run connects, diffs against the server manifest, and reports
           # what it would transfer without writing anything. Use it to prove
           # credentials and the target path before moving 96MB.
