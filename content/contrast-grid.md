@@ -7,4 +7,9 @@ weight: 3
 project: "small"
 thumbnail: "contrast-grid.png"
 link: "https://miguelsolorio.github.io/contrast-grid-editor/"
+
+# The card links out, so this page has no body to show. Keep it out of the
+# build rather than publish an empty /<slug>/ page.
+_build:
+  render: false
 ---

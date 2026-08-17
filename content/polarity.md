@@ -9,4 +9,9 @@ thumbnail: "polarity.png"
 # No link: the games take the page over from window.siteGames rather than
 # living at a URL, so the card launches this id instead of navigating.
 game: "polarity"
+
+# The card launches the game in place, so this page has no body to show. Keep
+# it out of the build rather than publish an empty /<slug>/ page.
+_build:
+  render: false
 ---

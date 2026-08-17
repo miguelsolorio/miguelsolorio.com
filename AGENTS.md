@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This is a Hugo portfolio styled with Tailwind CSS. Content pages live in `content/` as Markdown with TOML front matter; `_index.md` drives the home page. Templates live in `layouts/`: `_default/` provides page shells, `partials/` holds shared header, navigation, footer, and intro sections, and `shortcodes/` embeds media.
+This is a Hugo portfolio styled with Tailwind CSS. Content pages live in `content/` as Markdown with TOML front matter; `_index.md` drives the home page. A side project whose home-page card links out or launches a game has no page of its own to show, so its front matter sets `_build.render: false`. Hugo keeps it in `.Site.RegularPages` for the home grid but publishes no `/<slug>/` directory. Any new one should do the same, and nothing may link to `/<slug>/` for those projects. Templates live in `layouts/`: `_default/` provides page shells, `partials/` holds shared header, navigation, footer, and intro sections, and `shortcodes/` embeds media.
 
 Source styles and browser code live in `assets/`. `assets/css/main.css` is the Tailwind entry point and imports page/component styles. Keep shared browser behavior in `assets/js/common.js` and home-page behavior in `assets/js/home.js`. Put copied media and standalone demos in `static/`, grouped by content slug (for example, `static/notebooks/`). Never edit generated `public/` or `resources/`.
 

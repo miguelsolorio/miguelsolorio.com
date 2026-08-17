@@ -7,4 +7,9 @@ weight: 6
 project: "small"
 thumbnail: "codicons.png"
 link: "https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons"
+
+# The card links out, so this page has no body to show. Keep it out of the
+# build rather than publish an empty /<slug>/ page.
+_build:
+  render: false
 ---

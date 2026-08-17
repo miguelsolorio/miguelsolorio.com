@@ -123,7 +123,11 @@
      home page sorts by. Reach comes from data/project_metrics.json, so a
      metrics update can drift the two apart — re-read the rendered home page
      rather than assuming this list is still in step. VS Code Toolkit has no
-     `project` param and so never appears on the home page; it sits last. */
+     `project` param and so never appears on the home page; it sits last.
+
+     Every Projects entry carries the same external `link` its home-page card
+     points at. Those pages set `_build.render: false` in front matter and are
+     never published, so a `/<slug>/` href here would 404. */
   const CATEGORY_ORDER = ['Tools', 'Featured Work', 'Projects'];
   const COMMANDS = [
     { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Tools' },
@@ -134,21 +138,21 @@
     { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', href: '/onboarding/', glyph: 'flag' },
     { id: 'go-kanvas', label: 'Kanvas Design System', category: 'Featured Work', href: '/kustomer-design-system/', glyph: 'layers' },
     { id: 'go-icons', label: 'Icons', category: 'Featured Work', href: '/icons/', glyph: 'shapes' },
-    { id: 'go-fluent', label: 'Fluent Icons', category: 'Projects', href: '/fluent/', icon: '/fluent.png' },
-    { id: 'go-symbols', label: 'Symbols', category: 'Projects', href: '/symbols/', icon: '/symbols.png' },
-    { id: 'go-min', label: 'Min Theme', category: 'Projects', href: '/min/', icon: '/min.svg' },
-    { id: 'go-chroma', label: 'Chroma Colors', category: 'Projects', href: '/chroma/', icon: '/chroma.svg' },
-    { id: 'go-colorizer', label: 'Colorizer', category: 'Projects', href: '/colorizer/', icon: '/colorizer.svg' },
-    { id: 'go-codicons', label: 'VS Code Icons', category: 'Projects', href: '/codicons/', icon: '/codicons.svg' },
-    { id: 'go-navigator', label: 'Navigator', category: 'Projects', href: '/navigator/', icon: '/navigator.svg' },
-    { id: 'go-regulator', label: 'Regulator', category: 'Projects', href: '/regulator/', icon: '/regulator.svg' },
-    { id: 'go-kaleidocode', label: 'Kaleidocode', category: 'Projects', href: '/kaleidocode/', icon: '/kaleidocode-logo.svg' },
-    { id: 'go-variables', label: 'Variables Generator', category: 'Projects', href: '/variables/', icon: '/variables.png' },
-    { id: 'go-syntaxer', label: 'Syntaxer', category: 'Projects', href: '/syntaxer/', icon: '/syntaxer.png' },
-    { id: 'go-paster', label: 'Paster', category: 'Projects', href: '/paster/', icon: '/paster.png' },
-    { id: 'go-contrast-grid', label: 'Contrast Grid', category: 'Projects', href: '/contrast-grid/', icon: '/contrast-grid.png' },
-    { id: 'go-gradient-studio', label: 'Gradient Studio', category: 'Projects', href: '/gradient-studio/', icon: '/gradient-studio.png' },
-    { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', href: '/code/', icon: '/code.svg' },
+    { id: 'go-fluent', label: 'Fluent Icons', category: 'Projects', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons', external: true, icon: '/fluent.png' },
+    { id: 'go-symbols', label: 'Symbols', category: 'Projects', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols', external: true, icon: '/symbols.png' },
+    { id: 'go-min', label: 'Min Theme', category: 'Projects', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme', external: true, icon: '/min.svg' },
+    { id: 'go-chroma', label: 'Chroma Colors', category: 'Projects', href: 'https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors', external: true, icon: '/chroma.svg' },
+    { id: 'go-colorizer', label: 'Colorizer', category: 'Projects', href: 'https://www.figma.com/community/plugin/816889819624434639/Colorizer', external: true, icon: '/colorizer.svg' },
+    { id: 'go-codicons', label: 'VS Code Icons', category: 'Projects', href: 'https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons', external: true, icon: '/codicons.svg' },
+    { id: 'go-navigator', label: 'Navigator', category: 'Projects', href: 'https://www.figma.com/community/plugin/739558587628004077/Navigator', external: true, icon: '/navigator.svg' },
+    { id: 'go-regulator', label: 'Regulator', category: 'Projects', href: 'https://www.figma.com/community/plugin/772054917007268360/Regulator', external: true, icon: '/regulator.svg' },
+    { id: 'go-kaleidocode', label: 'Kaleidocode', category: 'Projects', href: 'https://www.figma.com/community/plugin/736060893363678891/theme-importer-for-visual-studio-code', external: true, icon: '/kaleidocode-logo.svg' },
+    { id: 'go-variables', label: 'Variables Generator', category: 'Projects', href: 'https://www.figma.com/community/plugin/1319728928151105267/variables-generator', external: true, icon: '/variables.png' },
+    { id: 'go-syntaxer', label: 'Syntaxer', category: 'Projects', href: 'https://www.figma.com/community/plugin/1411162491720421622/syntaxer', external: true, icon: '/syntaxer.png' },
+    { id: 'go-paster', label: 'Paster', category: 'Projects', href: 'https://www.figma.com/community/plugin/1668696147027080221/paster', external: true, icon: '/paster.png' },
+    { id: 'go-contrast-grid', label: 'Contrast Grid', category: 'Projects', href: 'https://miguelsolorio.github.io/contrast-grid-editor/', external: true, icon: '/contrast-grid.png' },
+    { id: 'go-gradient-studio', label: 'Gradient Studio', category: 'Projects', href: 'https://miguelsolorio.github.io/gradient-studio/', external: true, icon: '/gradient-studio.png' },
+    { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', href: 'https://www.figma.com/community/file/786632241522687494/Visual-Studio-Code-Toolkit', external: true, icon: '/code.svg' },
     { id: 'clear-recents', label: 'Clear Recents', category: 'Actions', glyph: 'clear', hidden: true }
   ];
 
