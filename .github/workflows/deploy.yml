@@ -8,10 +8,15 @@ on:
   # Lets you re-run a deploy from the Actions tab without a new commit,
   # which is the fastest way to recover from a half-finished FTP transfer.
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Connect and list changes without uploading anything'
+        type: boolean
+        default: false
 
 # FTP has no atomic swap, so two overlapping runs would interleave writes
-# into public_html. Queue them instead, and never cancel a run mid-transfer:
-# a cancelled deploy leaves the live site partially updated.
+# into the document root. Queue them instead, and never cancel a run
+# mid-transfer: a cancelled deploy leaves the live site partially updated.
 concurrency:
   group: deploy-production
   cancel-in-progress: false
@@ -63,7 +68,14 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./public/
-          server-dir: ./public_html/
+          # The site's document root is public_html/miguelsolorio, not the
+          # account root. If the FTP account is scoped to that folder it will
+          # already land there on login, in which case this becomes ./ instead.
+          server-dir: ./public_html/miguelsolorio/
+          # A dry run connects, diffs against the server manifest, and reports
+          # what it would transfer without writing anything. Use it to prove
+          # credentials and the target path before moving 96MB.
+          dry-run: ${{ inputs.dry_run == true }}
           # The action keeps a .ftp-deploy-sync-state.json manifest on the
           # server and uploads only what changed against it, which is what
           # keeps routine deploys small despite the ~145MB of video.
