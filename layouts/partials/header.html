@@ -9,20 +9,35 @@
          notch. */}}
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     {{ if not hugo.IsProduction }}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{{ end }}
-    <meta property="og:title" content="{{ .Title | default .Site.Title }}">
-    <meta property="og:description" content="{{ .Description | default "Portfolio of Miguel Solorio, a software designer in Seattle, WA" }}">
+    <title>{{ if .IsHome }}{{ .Site.Title }} · {{ .Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+    {{ $description := .Description | default .Site.Params.description }}
+    <meta name="description" content="{{ $description }}">
+    <link rel="canonical" href="{{ .Permalink }}">
+    <meta property="og:site_name" content="{{ .Site.Title }}">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+    {{/* The home card leads with the name; project pages use their own titles.
+         The site name travels separately in og:site_name. */}}
+    <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+    <meta property="og:description" content="{{ $description }}">
     <meta property="og:url" content="{{ .Permalink }}">
     {{/* One card for every scraper: platforms fetch og:image server-side and
-         cache it, so it can't follow the viewer's theme. The light card is
-         canonical; static/og-dark.jpg is the same art in Rosé Dusk for
-         contexts that call for it. Both are exported from
-         static/og-images.html (?og=1 / ?og=2). */}}
-    <meta property="og:image" content="{{ "og-light.jpg" | absURL }}">
+         cache it, so it can't follow the viewer's theme. Exported from
+         scripts/og-images.html (?og=1), saved to assets/og-light.jpg. The
+         published name carries a short content hash, so every art change
+         gets a fresh URL and stale scraper caches never serve the old
+         card; nothing here needs editing on a re-export. */}}
+    {{ $og := resources.Get "og-light.jpg" }}
+    {{ $og = resources.Copy (printf "og-light-%s.jpg" (substr (md5 $og.Content) 0 8)) $og }}
+    <meta property="og:image" content="{{ $og.Permalink }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Designing software for builders · Miguel Solorio, Software Designer">
     <meta name="twitter:card" content="summary_large_image">
-    <title>{{ if .IsHome }}{{ .Site.Title }} · {{ .Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+    {{/* This static pair follows the OS theme; common.js re-points both at the
+         active palette when the manual toggle overrides the OS. */}}
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f0ff">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161320">
 
     {{ $styles := resources.Get "css/main.css" | resources.PostCSS (dict "inlineImports" true) }}
     {{ if hugo.IsProduction }}
@@ -30,7 +45,32 @@
     {{ end }}
     <link href="{{ $styles.RelPermalink }}" rel="stylesheet"{{ with $styles.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}>
 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    {{ if .IsHome }}
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          "name": "Miguel Solorio",
+          "jobTitle": "Software Designer",
+          "url": "{{ .Site.BaseURL }}",
+          "image": "{{ "profile.jpg" | absURL }}",
+          "description": "{{ $description }}",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Seattle",
+            "addressRegion": "WA"
+          },
+          "sameAs": [
+            "https://github.com/miguelsolorio",
+            "https://www.linkedin.com/in/miguel-solorio-a432b021"
+          ]
+        }
+      </script>
+    {{ end }}
     <script>
       (function () {
         /* A manual theme choice is stored as 'dark|YYYY-MM-DD' (local date)

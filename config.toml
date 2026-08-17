@@ -7,9 +7,15 @@ languageCode = "en-us"
 title = "Miguel Solorio"
 disableKinds = ["taxonomy", "term"]
 enableRobotsTXT = true
+# Hugo otherwise injects <meta name="generator"> as the first element of
+# <head>, ahead of the charset declaration.
+disableHugoGeneratorInject = true
 
 [params]
   googleAnalytics = "G-PDB3DT24E5"
+  # Default for <meta name="description"> and og:description; page front
+  # matter (description:) overrides it on case studies.
+  description = "I'm a software designer in Seattle who loves developer tools, design systems, and open source. My work spans VS Code, Google Colab, and Gemini CLI."
 
 # Some editors save files atomically by creating a short-lived
 # `name.ext.tmp.<pid>.<id>` file and then renaming it. Exclude those files from

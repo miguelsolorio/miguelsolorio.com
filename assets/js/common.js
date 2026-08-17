@@ -51,11 +51,23 @@
     }
   }
 
+  /* The theme-color metas in header.html track the OS through their media
+     attributes, so a manual theme choice needs both re-pointed at the applied
+     palette or the browser chrome keeps the OS color. Values mirror the
+     page-top gradient stops in main.css. */
+  function syncThemeColorMeta(theme = currentTheme()) {
+    const color = theme === 'dark' ? '#161320' : '#f2f0ff';
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+      meta.setAttribute('content', color);
+    });
+  }
+
   function setTheme(theme, persist = true) {
     const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
     root.classList.toggle('dark', normalizedTheme === 'dark');
     if (persist) storage.set(themeStorageKey, `${normalizedTheme}|${localDayStamp()}`);
     syncThemeControls(normalizedTheme);
+    syncThemeColorMeta(normalizedTheme);
     root.dispatchEvent(new CustomEvent('site:themechange', { detail: { theme: normalizedTheme } }));
     return normalizedTheme;
   }
@@ -70,6 +82,12 @@
 
   window.siteTheme = siteTheme;
   syncThemeControls();
+  /* The pre-paint script may have applied a stored manual choice; only then
+     do the metas need correcting on load. Untouched, they keep tracking the
+     OS on their own. */
+  if (currentTheme() !== (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) {
+    syncThemeColorMeta();
+  }
   themeButton?.addEventListener('click', siteTheme.toggle);
 
   /* Still demo embeds scale their type with the width they are given, so their
