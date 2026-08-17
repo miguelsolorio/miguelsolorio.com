@@ -3,5 +3,10 @@ package-lock.json
 node_modules
 resources
 public
-docs
+
+# Hugo writes this lock file while a build or server is running. It was
+# previously committed, which meant an empty runtime artifact was tracked.
+.hugo_build.lock
+
+# Editors that save atomically leave these behind mid-write.
 *.tmp.*

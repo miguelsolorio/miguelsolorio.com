@@ -16,7 +16,12 @@ enableRobotsTXT = true
 # Hugo's static mount. The development command pairs this with forceSyncStatic
 # so a watcher event always reconciles the stable files instead of copying the
 # short-lived event path.
+#
+# .DS_Store is excluded for the same reason: Finder writes one into any browsed
+# directory, and the static mount would otherwise copy it into public/ and
+# publish it. Those files list a directory's contents, including names that
+# were since deleted, so they should never reach the server.
 [[module.mounts]]
   source = "static"
   target = "static"
-  excludeFiles = ["**/*.tmp.*"]
+  excludeFiles = ["**/*.tmp.*", "**/.DS_Store"]
