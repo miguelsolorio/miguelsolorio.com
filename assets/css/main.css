@@ -12,7 +12,12 @@
 @layer base {
   :root {
     --site-max-width: 72rem;
-    --site-gutter: clamp(1.25rem, 4vw, 3rem);
+    /* The max() floor only matters once header.html opts into
+       viewport-fit=cover: in landscape on a notched phone the notch eats about
+       44px, more than the 4vw gutter, so without it body text slides under the
+       cutout. Both insets are 0 in portrait and on desktop, where this is
+       exactly the clamp it has always been. */
+    --site-gutter: max(clamp(1.25rem, 4vw, 3rem), env(safe-area-inset-left), env(safe-area-inset-right));
 
     /* Site accent, until now only in tailwind.config.js. */
     --primary: #3429ff;

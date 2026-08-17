@@ -198,7 +198,11 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 .a-score-line b { display: block; margin-top: .2rem; color: var(--a-ink); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
 
 /* ---- touch controls ---- */
-.a-touch { position: absolute; inset: auto 0 0 0; height: 42%; display: none; }
+/* Transparent to hit-testing like every other full-bleed layer above: this box
+   owns the bottom 42% of the screen, and it sits last in #arcade at z-index
+   auto, so without this it paints over the banner and swallows the tap on
+   Start / Next level / Play again. The pad and keys below opt back in. */
+.a-touch { position: absolute; inset: auto 0 0 0; height: 42%; display: none; pointer-events: none; }
 #arcade.show-touch .a-touch { display: block; }
 .a-pad {
   position: absolute; bottom: max(1.75rem, env(safe-area-inset-bottom)); left: 1.25rem;
@@ -241,6 +245,19 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
   .a-hud-top .a-title { grid-column: 1; justify-self: start; }
   .a-hud-top .a-stat { grid-column: 1; }
   .a-hud-bottom .a-hint { display: none; }
+
+  /* Except when it's the touch hint, which games.js writes for exactly these
+     screens — hiding it here left a phone player with no instructions at all.
+     Lifted above the 42% .a-touch owns so it clears the pad and the buttons,
+     and centred because the sound/exit chips have moved to the top corner. */
+  #arcade.show-touch .a-hud-bottom .a-hint {
+    display: inline-flex;
+    position: absolute;
+    left: 50%; bottom: calc(42% + .75rem);
+    transform: translateX(-50%);
+    max-width: calc(100% - 2rem);
+    text-align: center;
+  }
 }
 
 /* ---- page lock ----

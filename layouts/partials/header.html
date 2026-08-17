@@ -2,7 +2,12 @@
 <html id="top" class="top" lang="{{ .Site.LanguageCode | default "en" }}">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{/* viewport-fit=cover is what makes env(safe-area-inset-*) resolve to
+         anything but 0. games.css relies on it to keep the thumb pad and the
+         action button out of the home-indicator swipe zone; --site-gutter in
+         main.css widens to match so page content still clears a landscape
+         notch. */}}
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     {{ if not hugo.IsProduction }}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{{ end }}
     <meta property="og:title" content="{{ .Title | default .Site.Title }}">
     <meta property="og:description" content="{{ .Description | default "Portfolio of Miguel Solorio, a software designer in Seattle, WA" }}">
