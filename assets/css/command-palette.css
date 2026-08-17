@@ -190,7 +190,7 @@
   text-align: center;
 }
 
-/* Action bar: identity on the left, the two real actions on the right. */
+/* Action bar: the two real actions, right-aligned. */
 .cmd-palette-footer {
   display: flex;
   align-items: center;
@@ -202,14 +202,6 @@
   font-size: 0.75rem;
   color: #94a3b8;
   user-select: none;
-}
-
-.cmd-footer-logo {
-  width: 16px;
-  height: 16px;
-  border-radius: 5px;
-  background: linear-gradient(135deg, #3429ff, #818cf8);
-  flex-shrink: 0;
 }
 
 .cmd-footer-action {
@@ -318,10 +310,6 @@
   border-color: rgba(210, 202, 222, 0.09);
   background: rgba(22, 18, 33, 0.55);
   color: #6b6284;
-}
-
-.dark .cmd-footer-logo {
-  background: linear-gradient(135deg, #efa9ae, #c4a7e7);
 }
 
 .dark .cmd-footer-action {
