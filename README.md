@@ -29,3 +29,20 @@ npm run export
 ```
 
 Run the production export before submitting changes.
+
+## Deployment
+
+Pushing to `master` builds the site and uploads it to Bluehost over FTPS, via
+`.github/workflows/deploy.yml`. Nothing is deployed by hand.
+
+The workflow pins Hugo to the version the site is developed against and installs
+the Node toolchain, because `assets/css/main.css` is compiled through Hugo's
+PostCSS pipe. It uploads only files that changed since the last run, tracked by a
+`.ftp-deploy-sync-state.json` manifest kept on the server.
+
+Credentials live in the repository's Actions secrets as `FTP_SERVER`,
+`FTP_USERNAME`, and `FTP_PASSWORD`. Server-owned files (`.htaccess`, `cgi-bin/`,
+`.well-known/`) are excluded so a deploy can never overwrite host configuration.
+
+A failed or interrupted deploy is safe to re-run from the Actions tab; it resumes
+from the manifest rather than re-uploading everything.

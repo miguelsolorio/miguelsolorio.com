@@ -1,0 +1,86 @@
+name: Deploy to Bluehost
+
+on:
+  # Production deploys only. Pushing any other branch does nothing.
+  push:
+    branches: [master]
+
+  # Lets you re-run a deploy from the Actions tab without a new commit,
+  # which is the fastest way to recover from a half-finished FTP transfer.
+  workflow_dispatch:
+
+# FTP has no atomic swap, so two overlapping runs would interleave writes
+# into public_html. Queue them instead, and never cancel a run mid-transfer:
+# a cancelled deploy leaves the live site partially updated.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # package-lock.json is gitignored, so `npm ci` has no lockfile to read.
+      # Tailwind and postcss-cli are what matter here: the stylesheet is built
+      # through Hugo's resources.PostCSS pipe in layouts/partials/header.html,
+      # and Hugo resolves those binaries from node_modules/.bin.
+      - run: npm install
+
+      # Pinned to the version the site is developed against. Note this is
+      # deliberately NOT `npm run export`: npm would put node_modules/.bin on
+      # PATH, where hugo-bin (^0.111.3) would shadow the version pinned here.
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.127.0'
+          extended: true
+
+      - name: Build
+        run: hugo --minify --cleanDestinationDir
+
+      # Refuse to upload an empty or obviously broken build rather than
+      # letting FTP mirror the damage onto the live site.
+      - name: Verify build output
+        run: |
+          test -f public/index.html || { echo "::error::public/index.html missing"; exit 1; }
+          echo "Built $(find public -type f | wc -l) files, $(du -sh public | cut -f1)"
+
+      - name: Deploy to Bluehost
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./public/
+          server-dir: ./public_html/
+          # The action keeps a .ftp-deploy-sync-state.json manifest on the
+          # server and uploads only what changed against it, which is what
+          # keeps routine deploys small despite the ~145MB of video.
+          #
+          # Excludes protect server-owned files Hugo never generates. Without
+          # .htaccess here, a future build could overwrite Bluehost's rewrite
+          # and redirect rules. The first three entries are the action's own
+          # defaults, which are lost the moment this input is set at all.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
+            **/.htaccess
+            **/.well-known/**
+            cgi-bin/**
+          # Default is 30s per operation, too short for the 31MB video in
+          # colab-notebooks over FTPS.
+          timeout: 600000
+          log-level: minimal
