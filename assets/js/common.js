@@ -7,19 +7,6 @@
   const lightIcon = document.getElementById('theme-toggle-light-icon');
   const themeStorageKey = 'color-theme';
 
-  /* A manual theme choice only holds for the rest of the local calendar day,
-     so the stored value carries the day it was made: 'dark|YYYY-MM-DD'. The
-     matching parse-and-expire logic lives in the pre-paint inline script in
-     layouts/partials/header.html, which runs before any deferred file and so
-     cannot share this code — keep the two in sync. Built by hand because
-     toISOString() reports UTC, and the reset should happen at the visitor's
-     own midnight. */
-  function localDayStamp() {
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-  }
-
   const storage = {
     get(key) {
       try {
@@ -34,8 +21,35 @@
       } catch {
         // Theme and command history still work for the current page.
       }
+    },
+    remove(key) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch {
+        // Nothing was stored to begin with.
+      }
     }
   };
+
+  /* The theme follows the OS unless the visitor overrides it, and an override
+     is only ever stored while it DISAGREES with the OS: toggling into agreement
+     drops the key, because a preference identical to the system is not a
+     preference. That invariant is what lets the OS-change handler below clear
+     the key without reading it — the theme is binary, so an override that
+     disagreed with the old OS value agrees with the new one, and dropping it
+     cannot change what is on screen. */
+  const darkMedia = window.matchMedia('(prefers-color-scheme: dark)');
+  const osTheme = () => (darkMedia.matches ? 'dark' : 'light');
+
+  /* Anything but a bare 'dark' or 'light' is a value this site no longer
+     writes — the retired 'dark|YYYY-MM-DD' day-stamped form — so it is dropped
+     on sight rather than honored. */
+  function storedOverride() {
+    const value = storage.get(themeStorageKey);
+    if (value === 'dark' || value === 'light') return value;
+    if (value !== null) storage.remove(themeStorageKey);
+    return null;
+  }
 
   function currentTheme() {
     return root.classList.contains('dark') ? 'dark' : 'light';
@@ -52,24 +66,46 @@
   }
 
   /* The theme-color metas in header.html track the OS through their media
-     attributes, so a manual theme choice needs both re-pointed at the applied
-     palette or the browser chrome keeps the OS color. Values mirror the
-     page-top gradient stops in main.css. */
+     attributes, so an override needs both re-pointed at the applied palette or
+     the browser chrome keeps the OS color. Dropping the override restores the
+     pair and hands tracking back to the browser, which is why this reads the OS
+     rather than taking a flag. Values mirror the page-top gradient stops in
+     main.css; a tag without a media attribute is treated as the light one. */
+  const THEME_COLORS = { light: '#f2f0ff', dark: '#161320' };
+
   function syncThemeColorMeta(theme = currentTheme()) {
-    const color = theme === 'dark' ? '#161320' : '#f2f0ff';
+    const pinned = theme === osTheme() ? null : theme;
     document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
-      meta.setAttribute('content', color);
+      const scheme = (meta.getAttribute('media') || '').includes('dark') ? 'dark' : 'light';
+      meta.setAttribute('content', THEME_COLORS[pinned || scheme]);
     });
   }
 
-  function setTheme(theme, persist = true) {
+  /* Paints; touches no storage. The event only fires on a real flip: home.js
+     answers it by clearing its trails and re-rolling every particle's color, so
+     announcing a theme that is already on screen would visibly reset the hero
+     for nothing — which is exactly what an OS change catching up to a manual
+     choice would otherwise do. The metas sync either way, since retiring an
+     override re-points them without changing the theme. */
+  function applyTheme(theme) {
     const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
+    const changed = currentTheme() !== normalizedTheme;
     root.classList.toggle('dark', normalizedTheme === 'dark');
-    if (persist) storage.set(themeStorageKey, `${normalizedTheme}|${localDayStamp()}`);
     syncThemeControls(normalizedTheme);
     syncThemeColorMeta(normalizedTheme);
-    root.dispatchEvent(new CustomEvent('site:themechange', { detail: { theme: normalizedTheme } }));
+    if (changed) {
+      root.dispatchEvent(new CustomEvent('site:themechange', { detail: { theme: normalizedTheme } }));
+    }
     return normalizedTheme;
+  }
+
+  /* A deliberate choice. Stored only while it differs from the OS; landing back
+     on the system theme clears it instead, so the site resumes following. */
+  function setTheme(theme) {
+    const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
+    if (normalizedTheme === osTheme()) storage.remove(themeStorageKey);
+    else storage.set(themeStorageKey, normalizedTheme);
+    return applyTheme(normalizedTheme);
   }
 
   const siteTheme = Object.freeze({
@@ -81,14 +117,37 @@
   });
 
   window.siteTheme = siteTheme;
-  syncThemeControls();
-  /* The pre-paint script may have applied a stored manual choice; only then
-     do the metas need correcting on load. Untouched, they keep tracking the
-     OS on their own. */
-  if (currentTheme() !== (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) {
-    syncThemeColorMeta();
-  }
+
+  /* An override the system has since caught up with — dark picked on a light
+     machine, the machine later made dark — is not an override any more. It is
+     retired here rather than in the pre-paint script, which would pay a storage
+     write before first paint for no visual difference: with the invariant
+     above, honoring the override and following the OS resolve to the same class
+     whenever the two agree. */
+  const startingOverride = storedOverride();
+  if (startingOverride === osTheme()) storage.remove(themeStorageKey);
+
+  /* header.html already applied this class. Re-applying dresses the toggle
+     (both icons ship hidden) and the metas, and covers the sliver where the OS
+     flipped after that script ran and before this listener existed. */
+  applyTheme(startingOverride || osTheme());
+
   themeButton?.addEventListener('click', siteTheme.toggle);
+
+  /* The OS is the default source of truth, so a change to it takes over and
+     retires any override. */
+  darkMedia.addEventListener('change', (event) => {
+    storage.remove(themeStorageKey);
+    applyTheme(event.matches ? 'dark' : 'light');
+  });
+
+  /* The tab that made the choice has already painted itself; this one only
+     hears about it. A null key is a clear(), a missing value is a choice that
+     was dropped — both fall back to the OS. */
+  window.addEventListener('storage', (event) => {
+    if (event.key !== null && event.key !== themeStorageKey) return;
+    applyTheme(storedOverride() || osTheme());
+  });
 
   /* Still demo embeds scale their type with the width they are given, so their
      natural height is only knowable once they are laid out. Any same-origin
@@ -433,6 +492,21 @@
   });
 
   input.addEventListener('input', () => render(input.value));
+
+  /* The theme command draws its glyph and label from the live theme, and the
+     theme can now change under an open palette when the OS flips. Re-render in
+     place, holding the highlighted row rather than snapping the selection back
+     to the top. */
+  root.addEventListener('site:themechange', () => {
+    if (!isOpen) return;
+    const activeId = filteredItems[activeIndex]?.id;
+    render(input.value);
+    const restored = filteredItems.findIndex((command) => command.id === activeId);
+    if (restored > 0) {
+      activeIndex = restored;
+      updateActive();
+    }
+  });
 
   /* Two ways focus can leave the input, so two nets. blur catches it landing
      outside the overlay entirely (the hero terminal below claims focus on

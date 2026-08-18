@@ -34,8 +34,10 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Designing software for builders · Miguel Solorio, Software Designer">
     <meta name="twitter:card" content="summary_large_image">
-    {{/* This static pair follows the OS theme; common.js re-points both at the
-         active palette when the manual toggle overrides the OS. */}}
+    {{/* This static pair follows the OS theme on its own. common.js re-points
+         both at the active palette while a manual choice overrides the OS, and
+         restores the pair as soon as that override is dropped — keep it a
+         two-way sync, or the chrome color stays stuck on the old theme. */}}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f0ff">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161320">
 
@@ -73,30 +75,22 @@
     {{ end }}
     <script>
       (function () {
-        /* A manual theme choice is stored as 'dark|YYYY-MM-DD' (local date)
-           and honored only on the day it was made; the next day — or for a
-           legacy undated value — the key is dropped and the OS preference
-           takes over again. The stamp format is shared with localDayStamp()
-           in assets/js/common.js, which writes it; keep the two in sync. */
+        /* A manual theme choice is stored as a bare 'dark' or 'light', and only
+           while it disagrees with the OS — assets/js/common.js drops the key
+           the moment the two agree. So this script never has to judge whether a
+           stored choice is still current: honoring it and following the OS land
+           on the same class whenever it isn't. Values this site no longer
+           writes ('dark|YYYY-MM-DD') are ignored here and cleared there, rather
+           than paying a storage write before first paint. */
         var storedTheme = null;
         try {
-          var rawTheme = localStorage.getItem('color-theme');
-          if (rawTheme) {
-            var themeParts = rawTheme.split('|');
-            var now = new Date();
-            var today = now.getFullYear() + '-' +
-              ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
-              ('0' + now.getDate()).slice(-2);
-            if (themeParts[1] === today && (themeParts[0] === 'dark' || themeParts[0] === 'light')) {
-              storedTheme = themeParts[0];
-            } else {
-              localStorage.removeItem('color-theme');
-            }
-          }
+          storedTheme = localStorage.getItem('color-theme');
         } catch (error) {}
+        if (storedTheme !== 'dark' && storedTheme !== 'light') storedTheme = null;
 
-        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.classList.toggle('dark', storedTheme === 'dark' || (!storedTheme && prefersDark));
+        document.documentElement.classList.toggle('dark', storedTheme
+          ? storedTheme === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches);
 
         /* ?transparent strips the gradient stage off project media so a
            screenshot or recording captures the artwork alone. It runs here
