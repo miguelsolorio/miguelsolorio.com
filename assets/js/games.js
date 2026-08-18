@@ -1050,15 +1050,22 @@
           return ao - bo || a.name.localeCompare(b.name);
         });
       },
+      /* `hidden` games drop out of every listing (the terminal picker, the
+         help hints, the palette) but stay registered, so `find` can still
+         resolve one by name and `play` can still run it. Same trade the
+         terminal's `status` command makes: shelved, not deleted. */
       list: function () {
-        return games.map(function (x) {
+        return games.filter(function (x) { return !x.hidden; }).map(function (x) {
           return { id: x.id, name: x.name, blurb: x.blurb, from: x.from };
         });
       },
       find: function (q) {
         q = String(q).toLowerCase();
         var n = parseInt(q, 10);
-        var hit = (!isNaN(n) && games[n - 1]) ||
+        /* numbers index the visible list, which is what the picker numbered.
+           A hidden game is reachable by name only. */
+        var shown = games.filter(function (x) { return !x.hidden; });
+        var hit = (!isNaN(n) && shown[n - 1]) ||
           games.filter(function (x) { return x.id === q; })[0] ||
           games.filter(function (x) { return x.id.indexOf(q) === 0; })[0] ||
           games.filter(function (x) { return x.name.toLowerCase().indexOf(q) !== -1; })[0];
@@ -1978,6 +1985,11 @@
      ========================================================================== */
   Arcade.add({
     id: 'hexrush', name: 'Hexrush', mode: 'stage', order: 2,
+    /* Shelved, not removed: it stays registered so `game hexrush` and
+       siteGames.play('hexrush') still work, but it is off the home page, out
+       of the command palette and out of the terminal's game list. Drop this
+       flag to put it back everywhere. */
+    hidden: true,
     from: 'Super Hexagon',
     blurb: 'Left, right, don\'t touch the walls. It opens slowly now, and the gaps sometimes carry dynamite.',
     controls: '<kbd>←</kbd> <kbd>→</kbd> orbit, or point the mouse where you want to be &nbsp;·&nbsp; <kbd>Space</kbd>/click detonates TNT',

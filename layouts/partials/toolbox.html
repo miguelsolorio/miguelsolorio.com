@@ -1,16 +1,15 @@
-{{/* Toolbox: the dock row at the end of the home page. Ported from
-     the standalone lab in static/home/toolbox-variations.html (variation 05,
-     "macOS dock"). Marks are real brand assets: simple-icons paths (OpenAI
-     pinned from v14, the rest current), Clawd the Claude Code pixel mascot
-     (from the official VS Code extension's clawd.svg), Figma's official five
-     modules, Oh My Posh's powerline segments redrawn from ohmyposh.dev, the
-     full-color VS Code mark from static/code.svg, and the actual CleanShot
-     app icon in static/home/. */}}
-<h2 class="section section--work section--toolbox">Toolbox</h2>
+{{/* Toolbox: a static row of logo marks at the end of the home page, name and
+     category printed underneath each one. No hover state; the label is
+     always visible, so it reads the same on touch and with a mouse. Marks
+     are real brand assets: simple-icons paths (OpenAI pinned from v14, the
+     rest current), Clawd the Claude Code pixel mascot (from the official VS
+     Code extension's clawd.svg), Figma's official five modules, Oh My
+     Posh's powerline segments redrawn from ohmyposh.dev, the full-color VS
+     Code mark from static/code.svg, and CleanShot's official avatar SVG
+     inlined below. */}}
 <div id="toolbox">
   <svg class="toolbox-defs" width="0" height="0" aria-hidden="true">
     <defs>
-      <clipPath id="toolbox-cs-clip"><rect width="96" height="96" rx="21"/></clipPath>
       <symbol id="logo-vscode" viewBox="0 0 96 96"><image href="/code.svg" width="96" height="96"/></symbol>
       <symbol id="logo-claude" viewBox="0 0 47 38"><path d="M5.08191 10.0769V0.938461H9.37422V10.0769H5.08191ZM9.23305 10.0769V0.938461H13.5254V10.0769H9.23305ZM13.3842 10.0769V0.938461H17.6765V10.0769H13.3842ZM17.5353 10.0769V0.938461H21.8276V10.0769H17.5353ZM21.6865 10.0769V0.938461H25.9788V10.0769H21.6865ZM25.8376 10.0769V0.938461H30.1299V10.0769H25.8376ZM29.9888 10.0769V0.938461H34.2811V10.0769H29.9888ZM34.1399 10.0769V0.938461H38.4322V10.0769H34.1399ZM38.291 10.0769V0.938461H42.5834V10.0769H38.291ZM0.930769 19.0769V9.93846H5.22308V19.0769H0.930769ZM5.08191 19.0769V9.93846H9.37422V19.0769H5.08191ZM9.23305 19.0769V14.5077H13.5254V19.0769H9.23305ZM13.3842 19.0769V9.93846H17.6765V19.0769H13.3842ZM17.5353 19.0769V9.93846H21.8276V19.0769H17.5353ZM21.6865 19.0769V9.93846H25.9788V19.0769H21.6865ZM25.8376 19.0769V9.93846H30.1299V19.0769H25.8376ZM29.9888 19.0769V9.93846H34.2811V19.0769H29.9888ZM34.1399 19.0769V14.5077H38.4322V19.0769H34.1399ZM38.291 19.0769V9.93846H42.5834V19.0769H38.291ZM42.4422 19.0769V9.93846H46.7345V19.0769H42.4422ZM5.08191 28.0769V18.9385H9.37422V28.0769H5.08191ZM9.23305 28.0769V18.9385H13.5254V28.0769H9.23305ZM13.3842 28.0769V18.9385H17.6765V28.0769H13.3842ZM17.5353 28.0769V18.9385H21.8276V28.0769H17.5353ZM21.6865 28.0769V18.9385H25.9788V28.0769H21.6865ZM25.8376 28.0769V18.9385H30.1299V28.0769H25.8376ZM29.9888 28.0769V18.9385H34.2811V28.0769H29.9888ZM34.1399 28.0769V18.9385H38.4322V28.0769H34.1399ZM38.291 28.0769V18.9385H42.5834V28.0769H38.291ZM5.08191 37.0769V27.9385H9.37422V37.0769H5.08191ZM13.3842 37.0769V27.9385H17.6765V37.0769H13.3842ZM29.9888 37.0769V27.9385H34.2811V37.0769H29.9888ZM38.291 37.0769V27.9385H42.5834V37.0769H38.291Z"/></symbol>
       <symbol id="logo-codex" viewBox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></symbol>
@@ -29,54 +28,52 @@
         <path fill="#fcae1e" d="M2 7h3.5l3 5-3 5H2a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/>
         <path fill="#f0621e" d="M6.6 7h5.9l3 5-3 5H6.6l3-5Z"/>
         <path fill="#1793d1" d="M13.6 7h5.4l3 5-3 5h-5.4l3-5Z"/>
-        <rect fill="#ffffff" x="20.6" y="15.4" width="3.4" height="1.7" rx=".4"/>
+        <rect fill="#94a3b8" x="20.6" y="15.4" width="3.4" height="1.7" rx=".4"/>
       </symbol>
-      <symbol id="logo-cleanshot" viewBox="0 0 96 96"><image href="/home/cleanshot-icon.png" width="96" height="96" clip-path="url(#toolbox-cs-clip)"/></symbol>
+      <symbol id="logo-cleanshot" viewBox="96 88 327 327"><defs><linearGradient x1="63.6266013%" y1="-29.9024679%" x2="56.1587845%" y2="113.545902%" id="cs-lg-1"><stop stop-color="#B1B6C1" offset="0%"></stop><stop stop-color="#262B36" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="cs-lg-2"><stop stop-color="#FF7293" offset="0%"></stop><stop stop-color="#FF2732" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="cs-lg-3"><stop stop-color="#FFCE2A" offset="0%"></stop><stop stop-color="#FF710E" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="cs-lg-4"><stop stop-color="#AE95FF" offset="0%"></stop><stop stop-color="#3B32FF" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="cs-lg-5"><stop stop-color="#90FCF5" offset="0%"></stop><stop stop-color="#30F6E1" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="cs-lg-6"><stop stop-color="#FFCCFC" offset="0%"></stop><stop stop-color="#FF2A60" offset="100%"></stop></linearGradient><linearGradient x1="85.5066145%" y1="6.94757117%" x2="73.923005%" y2="94.1453864%" id="cs-lg-7"><stop stop-color="#A1E8FD" offset="0%"></stop><stop stop-color="#2CA5F4" offset="51.0708042%"></stop><stop stop-color="#125BDA" offset="100%"></stop></linearGradient><linearGradient x1="89.7271449%" y1="6.53006118%" x2="50%" y2="71.884653%" id="cs-lg-8"><stop stop-color="#73D9FC" offset="0.0527871622%"></stop><stop stop-color="#1E97ED" offset="86.2050825%"></stop><stop stop-color="#8BC6E6" offset="100%"></stop></linearGradient><linearGradient x1="25.5688971%" y1="44.4360145%" x2="50%" y2="19.6009708%" id="cs-lg-9"><stop stop-color="#72BAE1" offset="0%"></stop><stop stop-color="#E2F0F7" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="22.8089804%" x2="30.8278826%" y2="44.5649794%" id="cs-lg-10"><stop stop-color="#FFFFFF" offset="0%"></stop><stop stop-color="#FFFFFF" stop-opacity="0" offset="81.1598558%"></stop><stop stop-color="#000000" stop-opacity="0" offset="100%"></stop></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(96.3773, 88.7354)"><g transform="translate(0, 0)"><path d="M89.6334266,25.8113636 L210.961816,25.8113636 C242.129311,25.8113636 253.431398,29.056547 264.825768,35.1503229 C276.220138,41.2440989 285.162507,50.1864675 291.256283,61.5808378 C297.350059,72.9752082 300.595242,84.2772951 300.595242,115.44479 L300.595242,236.044734 C300.595242,267.21223 297.350059,278.514316 291.256283,289.908687 C285.162507,301.303057 276.220138,310.245426 264.825768,316.339202 C253.431398,322.432978 242.129311,325.678161 210.961816,325.678161 L89.6334266,325.678161 C58.4659314,325.678161 47.1638446,322.432978 35.7694742,316.339202 C24.3751038,310.245426 15.4327353,301.303057 9.33895932,289.908687 C3.24518337,278.514316 -9.99568072e-15,267.21223 -2.14655278e-14,236.044734 L7.25467311e-15,115.44479 C-4.215174e-15,84.2772951 3.24518337,72.9752082 9.33895932,61.5808378 C15.4327353,50.1864675 24.3751038,41.2440989 35.7694742,35.1503229 C47.1638446,29.056547 58.4659314,25.8113636 89.6334266,25.8113636 Z" fill="url(#cs-lg-1)"></path><g transform="translate(39.617, 145.9606)"><rect fill="url(#cs-lg-2)" x="66.3938651" y="116.736466" width="26.5231096" height="21.2184877" rx="5.30625831"></rect><rect fill="url(#cs-lg-3)" x="66.2219724" y="58.1963404" width="26.5231096" height="26.5231096" rx="13.2615548"></rect><rect fill="url(#cs-lg-4)" x="129.869319" y="114.547657" width="26.5231096" height="26.5231096" rx="13.2615548"></rect><rect fill="url(#cs-lg-5)" x="0" y="58.1963404" width="26.5231096" height="26.5231096" rx="4.42188192"></rect><polygon fill="url(#cs-lg-6)" points="13.2615548 0 26.5231096 26.5231096 0 26.5231096"></polygon></g><g transform="translate(15.1853, 25.8114)" fill="#17181B" fill-opacity="0.22"><path d="M248.956738,8.97675425 L249.640449,9.33895932 C261.03482,15.4327353 269.977188,24.3751038 276.070964,35.7694742 C282.16474,47.1638446 285.409923,58.4659314 285.409923,89.6334266 L285.409923,210.233371 C285.409923,241.400866 282.16474,252.702953 276.070964,264.097323 C274.271115,267.462749 272.222763,270.61427 269.936129,273.541668 C240.565092,274.866908 222.109873,274.084367 214.570191,271.193895 C199.062154,265.248614 25.916513,140.939472 15.4953359,133.410785 C5.21127956,125.98116 0.134456225,110.861664 0.00263609188,98.1172109 L0,97.6089099 L0,53.0197489 C0,39.6184363 2.83453913,27.827601 8.5036174,17.6472429 C12.1507919,14.4693312 16.1847026,11.6918125 20.5841555,9.33895932 C31.8645821,3.30612113 43.0545618,0.0651885266 73.5190227,0.000973158419 L195.776497,0 C226.320642,0 237.786049,3.1166741 248.956738,8.97675425 Z"></path></g><g transform="translate(22.3688, -0)"><path d="M232.697091,290.883955 C273.276299,290.893504 303.536121,265.585558 303.529918,225.157718 L303.504938,69.9501259 C303.498785,31.3444892 272.198484,0.0420623481 233.592291,0.0341983711 L69.9529232,0.000355779581 C31.7334431,-0.00691972898 0.659202187,30.6633868 0.0242203323,68.7361226 L0,100.500528 C0,109.696308 0.00646218639,119.135917 0.0242453231,125.933924 C0.0441010702,133.524233 3.9227612,141.071726 10.1187869,145.383827 L25.3956869,155.955567 C70.1727636,186.917737 197.124738,274.624581 208.61689,282.384173 C222.161211,291.529406 229.304193,290.883329 232.59844,290.883734 L232.697091,290.883955 Z" fill="url(#cs-lg-7)"></path><path d="M69.9529232,1.17106973e-06 L233.592291,0.0341983711 C272.198484,0.0420623481 303.498785,31.3444892 303.504938,69.9501259 L303.530054,225.157718 C303.536121,265.585558 272.997557,290.700302 232.49649,290.893504 C225.606304,291.317439 217.646437,288.480995 208.61689,282.384173 C197.124738,274.624581 70.1727636,186.917737 25.3956869,155.955567 L10.1187869,145.383827 C3.9227612,141.071726 0.0441010702,133.524233 0.0242453231,125.933924 C0.0109079706,120.835419 0.00393865259,114.251012 0,107.397996 L0,105.871177 C0,105.616135 0,105.360848 0,105.105379 L0,100.500528 L0.0242203323,68.7361226 C0.659202187,30.6633868 31.7334431,-0.00691972898 69.9529232,1.17106973e-06 Z M69.9524416,2.65918086 C33.2293476,2.65253093 3.2945556,32.1141545 2.68339925,68.7381502 L2.65917969,100.500528 L2.65917969,105.831008 L2.65917969,106.154801 L2.65917969,107.756035 C2.65917969,108.390508 2.65917969,109.017649 2.65917969,109.63706 L2.66218886,110.865462 C2.66584319,116.751797 2.6728589,121.891312 2.68341591,125.926968 C2.70108504,132.681392 6.17993744,139.402827 11.6319758,143.197164 L26.9080851,153.768357 C100.081188,204.365632 200.687334,273.821484 210.104943,280.180328 C218.690702,285.9775 226.11221,288.622103 232.333187,288.239343 L232.483805,288.234354 C272.822048,288.04193 300.876546,262.948766 300.870875,225.158148 L300.845759,69.9505497 C300.839839,32.8129277 270.729463,2.70094286 233.591735,2.693378 L69.9524416,2.65918086 Z" fill="url(#cs-lg-8)" fill-rule="nonzero"></path></g><path d="M146.719717,135.662876 C147.655183,137.012509 148.521681,138.408663 149.31588,139.845971 L217.479147,263.203923 L217.894034,263.877416 C219.603999,266.592324 226.993642,276.994251 235.344002,282.081656 C243.694363,287.169061 249.144113,287.855836 249.921825,287.993994 L248.783078,290.385408 C244.782386,289.707426 239.08463,287.801191 231.164285,282.518524 L230.752627,282.242261 C217.071494,273.004652 39.6486824,150.552214 32.2545245,145.241915 C28.266945,142.378135 25.3748192,138.294585 23.8444555,133.935478 C22.8242131,131.029406 22.3390311,128.028966 22.3889096,124.934158 L25.0522048,124.934158 C25.1612378,128.988309 25.7541092,132.072993 26.830819,134.188209 C28.4458838,137.361033 28.2270701,138.246441 34.7680326,141.708375 C42.0084789,145.540525 51.3149344,141.780439 54.1910895,140.426726 C56.1085263,139.52425 64.3965033,133.848291 79.0550204,123.398848 C101.126728,108.100376 131.421245,113.591168 146.719717,135.662876 Z" fill="url(#cs-lg-9)"></path><path d="M146.719717,135.662876 C147.655183,137.012509 148.521681,138.408663 149.31588,139.845971 L217.479147,263.203923 L217.894034,263.877416 C219.603999,266.592324 226.993642,276.994251 235.344002,282.081656 C243.694363,287.169061 249.144113,287.855836 249.921825,287.993994 L248.783078,290.385408 C244.782386,289.707426 239.08463,287.801191 231.164285,282.518524 L230.752627,282.242261 C217.071494,273.004652 39.6486824,150.552214 32.2545245,145.241915 C28.266945,142.378135 25.3748192,138.294585 23.8444555,133.935478 C24.3670883,133.726381 24.8060997,133.550739 25.16149,133.408554 L25.5260263,133.262709 C25.6540713,133.21148 25.7661107,133.166655 25.8621445,133.128233 L26.0328712,133.059928 C26.1573594,133.010123 26.2373875,132.978105 26.2729556,132.963875 L26.2942964,132.955336 C27.5828122,136.482739 30.4073909,139.400419 34.7680326,141.708375 C42.0084789,145.540525 51.3149344,141.780439 54.1910895,140.426726 C56.1085263,139.52425 64.3965033,133.848291 79.0550204,123.398848 C101.126728,108.100376 131.421245,113.591168 146.719717,135.662876 Z M80.5985896,125.564173 C65.6696409,136.206395 57.4672476,141.823743 55.3235167,142.832727 C52.794543,144.023034 49.7879751,145.067701 46.5758052,145.631404 C43.3070184,146.205042 40.1870747,146.20669 37.3125672,145.49674 L37.2125317,145.470215 L37.7342863,145.833649 C50.2507398,154.547278 89.1359203,181.423071 128.951135,208.903833 L133.461124,212.016503 C167.295335,235.366764 201.10798,258.675526 219.328481,271.196336 L220.529541,272.021336 L220.318268,271.763166 C218.621467,269.672779 217.107092,267.579674 215.860537,265.634987 L215.629968,265.272134 L215.21508,264.598641 L215.151656,264.490012 L146.988384,141.132052 C146.237618,139.773345 145.418506,138.453542 144.534198,137.177716 C130.072349,116.313037 101.434539,111.122518 80.5985896,125.564173 Z" fill="url(#cs-lg-10)" fill-rule="nonzero"></path></g></g></g></symbol>
     </defs>
   </svg>
-  <div class="toolbox-shelf">
-    <div class="toolbox-item" data-name="VS Code">
-      <span class="toolbox-tile" data-tool="vscode"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-vscode"/></svg></span>
+  <div class="toolbox-row">
+    <div class="toolbox-item">
+      <svg class="toolbox-mark" aria-hidden="true"><use href="#logo-vscode"/></svg>
       <span class="toolbox-name">VS Code</span>
     </div>
-    <span class="toolbox-sep" aria-hidden="true"></span>
-    <div class="toolbox-item" data-name="Claude Code">
-      <span class="toolbox-tile" data-tool="claude"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-claude"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark toolbox-mark--claude" aria-hidden="true"><use href="#logo-claude"/></svg>
       <span class="toolbox-name">Claude Code</span>
     </div>
-    <div class="toolbox-item" data-name="Codex">
-      <span class="toolbox-tile" data-tool="codex"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-codex"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark toolbox-mark--codex" aria-hidden="true"><use href="#logo-codex"/></svg>
       <span class="toolbox-name">Codex</span>
     </div>
-    <span class="toolbox-sep" aria-hidden="true"></span>
-    <div class="toolbox-item" data-name="Ghostty">
-      <span class="toolbox-tile" data-tool="ghostty"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-ghostty"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark toolbox-mark--ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>
       <span class="toolbox-name">Ghostty</span>
     </div>
-    <div class="toolbox-item" data-name="OpenCode">
-      <span class="toolbox-tile" data-tool="opencode"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-opencode"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark toolbox-mark--opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>
       <span class="toolbox-name">OpenCode</span>
     </div>
-    <div class="toolbox-item" data-name="Oh My Posh">
-      <span class="toolbox-tile" data-tool="omp"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-omp"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark" aria-hidden="true"><use href="#logo-omp"/></svg>
       <span class="toolbox-name">Oh My Posh</span>
     </div>
-    <span class="toolbox-sep" aria-hidden="true"></span>
-    <div class="toolbox-item" data-name="Figma">
-      <span class="toolbox-tile" data-tool="figma"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-figma"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark" aria-hidden="true"><use href="#logo-figma"/></svg>
       <span class="toolbox-name">Figma</span>
     </div>
-    <div class="toolbox-item" data-name="CleanShot">
-      <span class="toolbox-tile toolbox-tile--full" data-tool="cleanshot"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-cleanshot"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark" aria-hidden="true"><use href="#logo-cleanshot"/></svg>
       <span class="toolbox-name">CleanShot</span>
     </div>
-    <div class="toolbox-item" data-name="Arc">
-      <span class="toolbox-tile" data-tool="arc"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-arc"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark toolbox-mark--arc" aria-hidden="true"><use href="#logo-arc"/></svg>
       <span class="toolbox-name">Arc</span>
     </div>
-    <div class="toolbox-item" data-name="Raycast">
-      <span class="toolbox-tile" data-tool="raycast"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-raycast"/></svg></span>
+    <div class="toolbox-item">
+      <svg class="toolbox-mark toolbox-mark--raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>
       <span class="toolbox-name">Raycast</span>
     </div>
+
   </div>
 </div>

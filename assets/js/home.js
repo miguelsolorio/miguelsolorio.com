@@ -49,47 +49,42 @@ if (portfolioTerminal) {
     { spaced: false, parts: [{ text: '  new file   next-chapter.md', className: 't-added' }] }
   ];
 
+  /* Mirrors layouts/index.html: Featured work follows the same weight order as
+     the Featured Work grid, and Side projects follows the same reach-desc
+     order as the Projects grid (data/project_metrics.json), with the
+     zero-reach projects falling in afterward. Descriptions are pulled
+     straight from each project's front matter, lowercased to match this
+     terminal's style. Games are left out here since they have no URL to
+     point at and are already reachable via the `game` command. */
   const workGroups = [
     {
-      name: 'Selected work',
+      name: 'Featured work',
       projects: [
         { name: 'Notebooks', description: 'data science workflows via natural language', url: '/colab-notebooks/' },
-        { name: 'Kanvas', description: 'laying the foundation of a design system', url: '/kustomer-design-system/' },
         { name: 'Gemini CLI', description: 'agent experiences for terminal-first developer workflows', url: '/cli-agents/' },
-        { name: 'Icons', description: 'open sourcing the design process', url: '/icons/' },
-        { name: 'Onboarding', description: 'a redesign that led us to a framework', url: '/onboarding/' }
+        { name: 'Onboarding', description: 'a redesign that led us to a framework', url: '/onboarding/' },
+        { name: 'Kanvas', description: 'laying the foundation of a design system', url: '/kustomer-design-system/' },
+        { name: 'Icons', description: 'open sourcing the design process', url: '/icons/' }
       ]
     },
     {
-      name: 'Figma',
+      name: 'Side projects',
       external: true,
       projects: [
-        { name: 'Chroma Colors', description: 'create bulk color styles', url: 'https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors' },
-        { name: 'Variables Generator', description: 'create variables via JSON', url: 'https://www.figma.com/community/plugin/1319728928151105267/variables-generator' },
-        { name: 'Colorizer', description: 'sort colors by hue values', url: 'https://www.figma.com/community/plugin/816889819624434639/Colorizer' },
-        { name: 'Kaleidocode', description: 'generate VS Code themes', url: 'https://kaleidocode.com/' },
-        { name: 'Regulator', description: 'bulk rename color styles', url: 'https://www.figma.com/community/plugin/772054917007268360/Regulator' },
-        { name: 'Navigator', description: 'find color styles', url: 'https://www.figma.com/community/plugin/739558587628004077/Navigator' },
-        { name: 'Paster', description: 'fill text layers from a list', url: 'https://www.figma.com/community/plugin/1668696147027080221/paster' },
-        { name: 'Syntaxer', description: 'highlight code like VS Code', url: 'https://www.figma.com/community/plugin/1411162491720421622/syntaxer' },
-        { name: 'VS Code Icons', description: 'use VS Code icons', url: 'https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons' }
-      ]
-    },
-    {
-      name: 'Web',
-      external: true,
-      projects: [
-        { name: 'Contrast Grid', description: 'test colors for accessible contrast', url: 'https://miguelsolorio.github.io/contrast-grid-editor/' },
-        { name: 'Gradient Studio', description: 'roll gradient backgrounds for Figma', url: 'https://miguelsolorio.github.io/gradient-studio/' }
-      ]
-    },
-    {
-      name: 'VS Code',
-      external: true,
-      projects: [
-        { name: 'Min', description: 'a minimal theme', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme' },
-        { name: 'Fluent Icons', description: 'a product icon theme', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons' },
-        { name: 'Symbols', description: 'a simple file icon theme', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols' }
+        { name: 'Fluent Icons', description: 'a Fluent-inspired product icon theme that refreshes the VS Code interface', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons' },
+        { name: 'Symbols', description: 'a colorful file icon theme that makes projects easier to scan in VS Code', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols' },
+        { name: 'Min', description: 'a minimal light and dark theme built for focused coding in VS Code', url: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme' },
+        { name: 'Chroma Colors', description: 'turn named Figma layers into color styles in bulk', url: 'https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors' },
+        { name: 'Colorizer', description: 'sort and organize Figma colors by hue, saturation, and lightness', url: 'https://www.figma.com/community/plugin/816889819624434639/Colorizer' },
+        { name: 'VS Code Icons', description: 'browse and insert VS Code product icons directly in Figma', url: 'https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons' },
+        { name: 'Navigator', description: 'find and jump to color styles across a Figma file', url: 'https://www.figma.com/community/plugin/739558587628004077/Navigator' },
+        { name: 'Regulator', description: 'rename and organize large sets of Figma color styles in one pass', url: 'https://www.figma.com/community/plugin/772054917007268360/Regulator' },
+        { name: 'Kaleidocode', description: 'design and generate custom VS Code color themes from Figma', url: 'https://www.figma.com/community/plugin/736060893363678891/theme-importer-for-visual-studio-code' },
+        { name: 'Variables Generator', description: 'generate Figma variables from JSON', url: 'https://www.figma.com/community/plugin/1319728928151105267/variables-generator' },
+        { name: 'Syntaxer', description: 'apply VS Code syntax highlighting to code inside Figma', url: 'https://www.figma.com/community/plugin/1411162491720421622/syntaxer' },
+        { name: 'Paster', description: 'fill your text layers from a list, one line at a time', url: 'https://www.figma.com/community/plugin/1668696147027080221/paster' },
+        { name: 'Contrast Grid', description: 'test color pairings against a matrix grid for accessible contrast', url: 'https://miguelsolorio.github.io/contrast-grid-editor/' },
+        { name: 'Gradient Studio', description: 'generate soft gradient backgrounds for UI screenshots', url: 'https://miguelsolorio.github.io/gradient-studio/' }
       ]
     }
   ];
@@ -116,7 +111,7 @@ if (portfolioTerminal) {
     },
     {
       name: 'work',
-      description: 'selected work and side projects',
+      description: 'featured work and side projects',
       run: showWork
     },
     {
@@ -124,6 +119,11 @@ if (portfolioTerminal) {
       aliases: ['games', 'play'],
       description: 'take over the page with a game',
       run: showGames
+    },
+    {
+      name: 'about',
+      description: 'jump to the about section',
+      run: showAbout
     }
   ];
 
@@ -288,6 +288,16 @@ if (portfolioTerminal) {
     });
   }
 
+  function showAbout() {
+    const section = document.getElementById('about');
+    if (!section) {
+      addLine('about section is unavailable right now', 't-error');
+      return;
+    }
+    addLine('scrolling to the about section...', 't-out');
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   /* Games live in assets/js/games.js behind window.siteGames, so this only
      ever lists and dispatches — it never knows what a game is.
 
@@ -349,11 +359,29 @@ if (portfolioTerminal) {
       const hit = window.siteGames.find(query);
       if (!hit) {
         addLine('no such game: ' + query, 't-error');
-        addLine('Try `game` to see what is available.', 't-muted');
+        /* `game` on its own lists when there is a choice to make and launches
+           when there is not, so the hint has to say which one it is doing. */
+        addLine(games.length === 1
+          ? 'Try `game` to play ' + games[0].name + '.'
+          : 'Try `game` to see what is available.', 't-muted');
         return;
       }
       addParts([{ text: 'launching ', className: 't-out' }, { text: hit.name, className: 't-ok' }]);
       window.siteGames.play(hit.id, 'terminal');
+      return;
+    }
+
+    /* One game left listed means there is nothing to choose. Skip the picker
+       and launch it, so `game` is a verb rather than a menu. The picker below
+       comes back on its own the moment a second game is listed. */
+    if (games.length === 1) {
+      addParts([{ text: 'launching ', className: 't-out' }, { text: games[0].name, className: 't-ok' }]);
+      window.siteGames.play(games[0].id, 'terminal');
+      return;
+    }
+
+    if (!games.length) {
+      addLine('no games are available right now', 't-error');
       return;
     }
 
@@ -1007,6 +1035,69 @@ var heroNoise3 = (function () {
         }
         frameId = requestAnimationFrame(flowFrame);
     }
+})();
+
+/* About: the camera-roll strip. CSS grows the hovered pane to the photo's own
+   aspect ratio; this leans it toward the cursor while the pointer is inside it,
+   so the frame reads as a print being tipped rather than a box being zoomed.
+   Only the two rotation angles are written, as custom properties — the rest of
+   the transform stays in bio.css, so the reveal still works with this off. */
+(function () {
+    var slots = document.querySelectorAll('#bio .bio-shot');
+    if (!slots.length) return;
+
+    var pointerMedia = window.matchMedia('(pointer: fine)');
+    var motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var maxTilt = 9;                                  // degrees at a pane's edge
+
+    var rest = function (frame) {
+        frame.style.removeProperty('--bio-tilt-x');
+        frame.style.removeProperty('--bio-tilt-y');
+    };
+
+    Array.prototype.forEach.call(slots, function (slot) {
+        var frame = slot.querySelector('.bio-shot-frame');
+        if (!frame) return;
+
+        /* Measured on enter and held for the gesture: the pane is mid-transition
+           on the way in, so reading it every move would chase its own growth.
+           The slot never resizes, which is what makes one read safe. */
+        var box = null;
+
+        slot.addEventListener('pointerenter', function () {
+            box = slot.getBoundingClientRect();
+        }, { passive: true });
+
+        slot.addEventListener('pointermove', function (event) {
+            if (!pointerMedia.matches || motionMedia.matches) return;
+            if (event.pointerType === 'touch') return;
+            if (!box) box = slot.getBoundingClientRect();
+
+            /* -.5 at one edge of the slot, +.5 at the other. */
+            var dx = (event.clientX - box.left) / box.width - .5;
+            var dy = (event.clientY - box.top) / box.height - .5;
+
+            /* X negates: the cursor above centre should tip the top away and
+               bring the bottom forward, which is the direction that reads as
+               the photo turning to face you. */
+            frame.style.setProperty('--bio-tilt-x', (-dy * maxTilt).toFixed(2) + 'deg');
+            frame.style.setProperty('--bio-tilt-y', (dx * maxTilt).toFixed(2) + 'deg');
+        }, { passive: true });
+
+        slot.addEventListener('pointerleave', function () {
+            box = null;
+            rest(frame);
+        }, { passive: true });
+    });
+
+    /* A pane held mid-tilt when the window loses focus would still be leaning
+       when the visitor comes back to a cursor that has since moved. */
+    window.addEventListener('blur', function () {
+        Array.prototype.forEach.call(slots, function (slot) {
+            var frame = slot.querySelector('.bio-shot-frame');
+            if (frame) rest(frame);
+        });
+    });
 })();
 
 })();

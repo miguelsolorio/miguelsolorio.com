@@ -1,0 +1,61 @@
+{{/* About: the closing note at the end of the home page. Ported from the photo
+     lab (static/bio-photo-variants.html, variation 08, "Tilted ribbon"). The
+     copy's highlights are the hero terminal's syntax colors, and the strip of
+     seven photos cuts the full width of the page at two degrees between the
+     two paragraphs, so the reading breaks for the camera roll and picks back
+     up under it. Hovering a pane grows it in place and lifts it off the
+     strip. Photos live in static/bio-photos as 1600px derivatives. */}}
+<h2 id="about" class="section section--work section--about">About me</h2>
+<div id="bio">
+  <div class="bio-copy">
+    <p>I like <mark class="bio-hl bio-hl--c1">making things</mark> and design is one of the ways I like expressing it. I enjoy <mark class="bio-hl bio-hl--c4">messy problems</mark> where the answer isn't obvious, I like trying new ideas, <mark class="bio-hl bio-hl--c2">building prototypes</mark>, and figuring things out with people who care. Some of the best work I've done has been with teammates who <mark class="bio-hl bio-hl--c3">obsess over the details</mark>.</p>
+  </div>
+
+  <div class="bio-ribbon-clip">
+    <div class="bio-ribbon">
+      {{ $shots := slice
+        (dict "file" "buggy-selfie.jpg"      "w" 1200 "h" 1600 "crop" "high" "cap" "off-roading"      "alt" "Selfie from an off-road buggy, helmets on, desert hills behind")
+        (dict "file" "lunch-table.jpg"       "w" 1198 "h" 1600 "crop" ""     "cap" "croatian lunch"        "alt" "Lunch table from above: grilled fish, salads, and a dice game")
+        (dict "file" "mangroves.jpg"         "w" 1064 "h" 1600 "crop" "low"  "cap" "mangroves"         "alt" "A quiet cove at dusk with one sailboat at anchor")
+        (dict "file" "shoulder-ride.jpg"     "w" 1200 "h" 1600 "crop" "high" "cap" "blueberry picking"     "alt" "A toddler riding on my shoulders through a berry field")
+        (dict "file" "beach-fire-sunset.jpg" "w" 1200 "h" 1600 "crop" "mid"  "cap" "campfire"        "alt" "A beach campfire at sunset with sea stacks on the horizon")
+        (dict "file" "street-selfie.jpg"     "w" 1201 "h" 1600 "crop" "high" "cap" "date night"       "alt" "The two of us on a sunny street corner downtown")
+        (dict "file" "boardwalk.jpg"         "w" 1200 "h" 1600 "crop" ""     "cap" "mtb trails"  "alt" "A kid biking a winding boardwalk through the woods")
+      }}
+      {{ range $shots }}
+        {{/* The slot holds the layout at a fixed size; the figure inside is what
+             grows on hover, out of flow, so nothing else on the page moves.
+             --shot-ar is the photo's own width over its height, and hovering
+             sizes the frame to exactly that, so cover has nothing left to crop
+             and the whole photo shows. */}}
+        <div
+          class="bio-shot{{ with .crop }} bio-shot--{{ . }}{{ end }}"
+          style="--shot-ar: {{ printf "%.4f" (div (float .w) (float .h)) }}"
+        >
+          <figure class="bio-shot-frame">
+            <img
+              src="{{ (printf "bio-photos/%s" .file) | relURL }}"
+              width="{{ .w }}"
+              height="{{ .h }}"
+              alt="{{ .alt }}"
+              loading="lazy"
+              decoding="async"
+            >
+            <figcaption>{{ .cap }}</figcaption>
+          </figure>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+
+  <div class="bio-copy">
+    <p>When I'm not working, I'm usually <mark class="bio-hl bio-hl--c4">trying something new</mark> like planning a trip, finding the latest restaurant, <mark class="bio-hl bio-hl--c3">scaring myself sh*tless</mark> watching a horror movie, or just hanging out with my family. My favorite place is being with <mark class="bio-hl bio-hl--c2">people I love</mark>.</p>
+    <p>My work tends to live somewhere between <mark class="bio-hl bio-hl--c4">design</mark> and <mark class="bio-hl bio-hl--c1">code</mark>, and so does my toolbox. These are the tools I'm spending the most time in lately.</p>
+  </div>
+
+  {{/* The toolbox row closes the section: the paragraph above introduces it,
+       so the marks read as the answer to it rather than a section of their
+       own. */}}
+  {{ partial "toolbox" . }}
+
+</div>

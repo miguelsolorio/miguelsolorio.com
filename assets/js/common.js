@@ -208,8 +208,10 @@
   const CATEGORY_ORDER = ['Tools', 'Featured Work', 'Projects'];
   const COMMANDS = [
     { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Tools' },
+    /* One `play-` entry per game listed by window.siteGames.list(). Hexrush is
+       shelved behind a `hidden` flag in assets/js/games.js and so has no entry
+       here; unshelving it means adding one back. */
     { id: 'play-polarity', label: 'Play Polarity', category: 'Tools', icon: '/polarity.png' },
-    { id: 'play-hexrush', label: 'Play Hexrush', category: 'Tools', icon: '/hexrush.png' },
     { id: 'go-notebooks', label: 'Colab Notebooks', category: 'Featured Work', href: '/colab-notebooks/', glyph: 'notebook' },
     { id: 'go-cli', label: 'CLI Agents', category: 'Featured Work', href: '/cli-agents/', glyph: 'terminal' },
     { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', href: '/onboarding/', glyph: 'flag' },
