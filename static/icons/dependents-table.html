@@ -6,12 +6,6 @@
 <title>Dependents table — hybrid takes</title>
 <link rel="stylesheet" href="/demo-system/demo-system.css">
 <style>
-/* A bench, not a scene. Ten readings of one hybrid: A's labelled header over
-   B's unruled body, with G's percentages folded in. What varies between them is
-   where the share sits, how it is qualified, and how much rule is left.
-
-   Colours are the npm scene's own tokens, repeated here rather than imported so
-   this file can be opened on its own without the embed around it. */
 :root {
   --ink: #33415a;
   --muted: #64748b;
@@ -141,10 +135,6 @@ h1 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: 600; lette
 .take-why { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.5; }
 .take-body { margin-top: auto; padding-top: 0.5rem; }
 
-/* ---- the hybrid's shared bones ------------------------------------------
-   Every take below is this table. The header is labelled and separated by a
-   single rule; the body carries none. Only the share column changes hands. */
-
 table { width: 100%; border-collapse: collapse; font-family: var(--mono); }
 
 caption {
@@ -176,7 +166,6 @@ tbody tr:first-child td { padding-top: 0.7rem; }
 .share { padding-left: 1rem; color: var(--muted); }
 .rank { width: 1.7rem; padding-right: 0.3rem; color: var(--muted); font-size: 0.75rem; }
 
-/* A footer that answers "of what?" in the table rather than above it. */
 tfoot td {
   padding-top: 0.6rem;
   border-top: 1px solid var(--rule);
@@ -184,25 +173,20 @@ tfoot td {
   font-size: 0.75rem;
 }
 
-/* 2 — share as a parenthetical on the figure */
 .t-2 .paren { color: var(--muted); }
 
-/* 3 — share carries the accent, count recedes */
 .t-3 .num { color: var(--muted); }
 .t-3 .share { color: var(--series); }
 
-/* 4 — a meter in the share column */
 .t-4 .meter { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; padding-left: 1rem; }
 .t-4 .track { width: 3.2rem; height: 4px; border-radius: 2px; background: var(--grid); }
 .t-4 .fill { display: block; height: 100%; border-radius: 2px; background: var(--series); }
 .t-4 .pct { min-width: 2.9rem; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
 
-/* 5 — wash behind the row, scaled by share */
 .t-5 td { position: relative; }
 .t-5 .bar { position: absolute; top: 2px; bottom: 2px; left: -0.4rem; border-radius: 3px; background: var(--series-wash); }
 .t-5 .pkg b { position: relative; font-weight: 400; }
 
-/* 6 — zebra instead of rules */
 .t-6 tbody tr:nth-child(odd) { background: var(--zebra); }
 .t-6 td { padding: 0.42rem 0.4rem; }
 .t-6 td:first-child { border-radius: 3px 0 0 3px; }
@@ -210,17 +194,13 @@ tfoot td {
 .t-6 th:first-child { padding-left: 0.4rem; }
 .t-6 th:last-child { padding-right: 0.4rem; }
 
-/* 7 — share stacked under the count */
 .t-7 .stacked { display: block; }
 .t-7 .stacked small { display: block; margin-top: 0.1rem; color: var(--muted); font-size: 0.6875rem; }
 
-/* 8 — cumulative column */
 .t-8 .cum { padding-left: 1rem; color: var(--muted); }
 
-/* 9 — share only */
 .t-9 .share { color: var(--ink); }
 
-/* 10 — two shares, of dependents and of codicons itself */
 .t-10 .of-deps { padding-left: 0.9rem; }
 .t-10 .of-all { padding-left: 0.9rem; color: var(--series); }
 </style>
@@ -257,11 +237,6 @@ tfoot td {
 (function () {
   "use strict";
 
-  /* Names are always given in full. Dropping the scope to save a column would
-     turn @theia/core into "core" and, worse, @workbench-kit/react into "react",
-     which is a different package entirely. Narrow columns truncate with an
-     ellipsis instead: losing the tail of a name is recoverable, showing another
-     package's name is not. */
   var ROWS = [
     { name: "@theia/core", weekly: 29818 },
     { name: "docusaurus-plugin-typedoc-api", weekly: 3030 },
@@ -275,11 +250,9 @@ tfoot td {
     { name: "@altimateai/ui-components", weekly: 764 }
   ];
 
-  /* Every denominator the takes reach for, named once. A percentage is only as
-     honest as the total under it, so none of these is inlined at a call site. */
   var DEPENDENTS = 78;
-  var DEP_TOTAL = 46927;            /* all 78 dependents, weekly */
-  var CODICONS = 577862;            /* the package's own last full week */
+  var DEP_TOTAL = 46927;
+  var CODICONS = 577862;
   var TOP_TEN = ROWS.reduce(function (sum, r) { return sum + r.weekly; }, 0);
   var MAX = ROWS[0].weekly;
 
@@ -289,8 +262,6 @@ tfoot td {
   function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
   function rows(fn) { return ROWS.map(fn).join(""); }
 
-  /* Running total, worked out once so the cumulative take cannot drift from the
-     share take beside it. */
   var CUM = [];
   ROWS.reduce(function (run, r, i) { CUM[i] = run + r.weekly; return CUM[i]; }, 0);
 
@@ -392,14 +363,6 @@ tfoot td {
     }
   ];
 
-  /* Takes 1–8 share one denominator and never name it, so a footer states it
-     once beneath each. Takes 9 and 10 answer the question themselves — 9 in its
-     caption, 10 in its own footer — and are left alone.
-
-     The span is counted off the take's own header rather than set to a number
-     big enough to cover the widest of them: an overlong colspan is a column
-     count the table does not have, and engines are free to lay out the phantom
-     columns rather than clamp them. */
   function footer(html) {
     var span = (html.match(/<th\b/g) || []).length || 1;
     return '<tfoot><tr><td colspan="' + span + '">top 10 of ' + DEPENDENTS + ' dependents · ' +

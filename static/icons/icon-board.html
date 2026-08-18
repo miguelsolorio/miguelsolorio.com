@@ -4,17 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Icon board</title>
-  <!-- Opened on its own this file never gets layouts/partials/header.html, so
-       the browser asks for /favicon.ico and Hugo answers 404. Same inline mark
-       the site header uses. -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
-  <!-- Mirrors the parent site's theme onto this document's root, and follows the
-       OS preference when the file is opened on its own. Runs in <head> to avoid
-       a theme flash. Only the sync runs — the player is opt-in. -->
   <script src="/demo-system/demo-system.js?v=3"></script>
-  <!-- The homepage embeds this file with ?card=1. The class lands on <html>
-       before first paint so the standalone fallback never flashes behind the
-       card's frosted surface. -->
   <script>
     if (new URLSearchParams(location.search).has('card')) {
       document.documentElement.classList.add('is-card');
@@ -22,42 +13,22 @@
   </script>
   <style>
     :root {
-      /* Standalone fallback only — in card mode the body goes transparent and
-         the card's frosted surface supplies the field. Mirrors the neutral
-         stage pair in project.css. */
       --background: linear-gradient(180deg, #fdfdff 0%, #f6f8fa 100%);
-      /* The board is dealt in three tiers of the same violet, the palette the
-         spiral field already uses, so the two icon pieces read as one voice.
-         Kept here rather than in the script so a theme change is a style
-         recalculation: the icons recolour in place. */
       --icon-1: #8b7cff;
       --icon-2: #a294f2;
       --icon-3: #c0b2f7;
-      /* The cells the original board coloured semantically — warning, error,
-         added, info. Their hues would fight the page, so they keep their
-         position and spend the palette's deepest violet instead: the sprinkle
-         survives as composition without importing a second colour system. */
       --icon-mark: #6d5cf0;
-      /* The colour the pointer wakes: the site's primary, the blurple that
-         carries headlines, links and card titles. Held as a token rather than
-         computed per cell so a theme change recolours the field in place. */
       --hot: #3429ff;
 
-      /* Resting opacity of a base icon; the sweep lifts it to 1 and back. */
       --dim: .58;
     }
 
     :root.dark {
       --background: linear-gradient(180deg, #201c28 0%, #18151f 100%);
-      /* Dusty mauve tiers, not the light theme's violet: on the plum card the
-         saturated set reads as electric indigo and fights the rose title. */
       --icon-1: #a494bd;
       --icon-2: #82739c;
       --icon-3: #63567a;
       --icon-mark: #c6b2d9;
-      /* Rose is dark mode's primary — it carries every role the blurple
-         carries in light (see dark.css). The blurple ramp read as an imported
-         purple here, a hue the Rosé Dusk palette does not hold. */
       --hot: #efa9ae;
       --dim: .62;
     }
@@ -89,11 +60,6 @@
       isolation: isolate;
     }
 
-    /* The board carries no surface of its own — it is a field of icons on
-       whatever the page or the card is already showing. It is laid out once at
-       its natural size and fitted with a single transform (contain standalone,
-       cover as a card), so the icons stay crisp at any size instead of being
-       re-flowed on every resize. */
     .board {
       position: absolute;
       top: 50%;
@@ -103,15 +69,9 @@
       grid-auto-rows: 51px;
       place-items: center;
       transform-origin: 50% 50%;
-      /* Overwritten on first layout; keeps the field centred until then. */
       transform: translate(-50%, -50%);
     }
 
-    /* Two lights fall on every icon: the ambient sweep and the pointer. Both
-       are declared as numbers rather than as finished colours or opacities, so
-       one channel can take the louder of the two and the script only ever
-       writes a single value per cell. Registering them is what makes a number
-       animatable and transitionable at all. */
     @property --sweep {
       syntax: '<number>';
       inherits: false;
@@ -130,19 +90,10 @@
       place-items: center;
       width: 51px;
       height: 51px;
-      /* Sensible defaults so a cell renders correctly before — or without —
-         the script's per-cell values. --hot is inherited from the root. */
       --tier: var(--icon-2);
       --lift: 0;
-      /* Deals the board in on load, on the same diagonal the sweep travels. */
       animation: rise .7s cubic-bezier(.2, .7, .3, 1) backwards;
-      /* The pointer sets --near in steps as it moves; the transition is what
-         turns those steps into a smooth swell and a slow release. Everything
-         downstream — size, colour, brightness, stacking — reads the eased
-         value, so this one line times the whole effect. */
       transition: --near .22s ease-out;
-      /* Growing icons ride above their neighbours, and ease back down with
-         --near so a shrinking icon never pops behind the field. */
       z-index: calc(1 + var(--near) * 20);
     }
 
@@ -150,28 +101,16 @@
       display: block;
       width: 20px;
       height: 20px;
-      /* The louder light wins: passing the cursor over a resting icon brightens
-         it immediately instead of waiting for the band to come round. */
       opacity: min(1, calc(var(--dim) + var(--lift) + (1 - var(--dim)) * max(var(--sweep), var(--near))));
-      /* Resting tier at arm's length, the cell's own hot colour under the
-         cursor. Mixed in oklab so the ramp passes through the violets instead
-         of the grey sRGB would put in the middle. */
       color: color-mix(in oklab, var(--tier), var(--hot) calc(var(--near) * 100%));
       transform: scale(calc(1 + var(--near) * .95));
-      /* A slow band of light crossing the grid. The phase offset per cell is a
-         negative delay, so every icon runs the same keyframes and the band is
-         an emergent property of the offsets rather than 336 animations. */
       animation: sweep 11s linear infinite;
     }
 
-    /* Base tiers are dealt along the diagonal the sweep travels, so the depth
-       in the field and the band of light agree instead of cross-hatching. */
     .cell--1 { --tier: var(--icon-1); }
     .cell--2 { --tier: var(--icon-2); }
     .cell--3 { --tier: var(--icon-3); }
 
-    /* Marked cells sit above the resting tier: the original board's colour
-       accents, spending emphasis rather than hue. */
     .cell--mark {
       --tier: var(--icon-mark);
       --lift: .3;
@@ -188,8 +127,6 @@
       100% { --sweep: 0; }
     }
 
-    /* The pointer still colours the field — that is a response, not motion —
-       but nothing grows, drifts, or sweeps on its own. */
     @media (prefers-reduced-motion: reduce) {
       .cell,
       .cell svg {
@@ -213,20 +150,13 @@
       const COLUMNS = 24;
       const ROWS = 14;
 
-      /* The cells the original board coloured, by index in reading order
-         (row * 24 + column) — which is also the sprite's symbol order. The
-         hues are gone but the composition is the set's own, so the marks stay
-         exactly where they were drawn. */
       const MARKED = new Set([
         3, 4, 14, 17, 18, 19, 20, 28, 31, 45, 58, 68, 71, 72, 81, 84, 85, 94,
         97, 110, 111, 123, 124, 136, 149, 162, 176, 188, 190, 191, 201, 204,
         205, 213, 232, 246, 260, 274, 288, 300, 302, 315, 316
       ]);
-      /* Colour tiers are CSS classes, not values — see --icon-1..3 above. */
       const TIERS = 3;
 
-      /* How far the pointer reaches, in cells. Wide enough that a swell of the
-         field moves with the cursor instead of one icon blinking on and off. */
       const RADIUS = 2.7;
 
       const stage = document.querySelector('.stage');
@@ -261,8 +191,6 @@
           use.setAttribute('href', '#icon-' + index);
           svg.appendChild(use);
 
-          /* Both timings ride the same diagonal as the tiers, so the board
-             deals itself in along the line the sweep will keep travelling. */
           cell.style.animationDelay = (diagonal * 22) + 'ms';
           svg.style.animationDelay = (-(diagonal / (COLUMNS + ROWS)) * 11).toFixed(2) + 's';
 
@@ -273,17 +201,9 @@
         board.replaceChildren(cells);
       }
 
-      /* Measured rather than derived: the grid's natural size is the cell
-         metrics in the stylesheet, so ask the layout for it instead of keeping
-         a second copy of those numbers here. A card covers and bleeds past the
-         edge; standalone contains the whole field with a margin of air. */
       function fit() {
         const width = stage.clientWidth;
         const height = stage.clientHeight;
-        /* A lazy iframe is laid out before it is scrolled into view, and a
-           hidden container measures zero. Fitting to that would bake in
-           scale(0) and nothing would ever bring the board back, so leave the
-           last good fit alone and wait to be measured again. */
         if (!width || !height) return;
 
         board.style.transform = 'translate(-50%, -50%)';
@@ -298,9 +218,6 @@
         metrics = null;
       }
 
-      /* The pointer. Cell size on screen depends on the fit above, so the
-         board's painted rect is the only thing worth measuring — and it only
-         changes when the fit does, so it is cached rather than read per frame. */
       let metrics = null;
       let lit = [];
       let point = null;
@@ -322,9 +239,6 @@
         lit = [];
       }
 
-      /* Only the cells inside the radius are written, and only the ones written
-         last frame are cleared, so dragging the cursor across the board costs a
-         couple of dozen style writes a frame instead of 336. */
       function illuminate(x, y) {
         if (!metrics) measure();
 
@@ -342,8 +256,6 @@
             const cell = cells[row * COLUMNS + column];
             if (!cell) continue;
 
-            /* Smoothstep, so the swell eases out into the field rather than
-               ending on the hard edge of a circle. */
             const fade = 1 - distance / RADIUS;
             cell.style.setProperty('--near', (fade * fade * (3 - 2 * fade)).toFixed(3));
             next.push(cell);
@@ -363,24 +275,13 @@
         });
       }
 
-      // Theme changes need no rebuild: demo-system.js flips .dark on the root
-      // and the tier classes repoint at the other palette on their own. Only
-      // a resize changes the fit, because only it changes the geometry.
       build();
-      /* Fit once, now, so the board is never waiting on an event to become
-         visible — an observer that never fires would otherwise leave it at
-         scale nothing. The window listener is the floor; the observer on top
-         catches what a viewport change cannot see, because as an embed the
-         board's box moves without the viewport moving at all: a lazy iframe
-         arriving, a column reflowing. */
       fit();
       window.addEventListener('resize', fit);
       if (typeof ResizeObserver === 'function') {
         new ResizeObserver(fit).observe(stage);
       }
 
-      /* Touch has no cursor to follow, and a tap would strand a lit patch on
-         the board with nothing to move it. */
       if (window.matchMedia('(hover: hover)').matches) {
         stage.addEventListener('pointermove', track);
         stage.addEventListener('pointerleave', () => {

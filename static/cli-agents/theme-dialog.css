@@ -1,37 +1,12 @@
-  /* The theme picker dialog. Layered on cli-animation.css + cli-theme.css +
-     diff-view.css — link all three first. The panel frame and the diff rows
-     come from diff-view.css, the palettes and the code map from cli-theme.css,
-     and the selection row is the animation's own approval option (.tool-opt),
-     so a highlighted theme and a highlighted approval option read identically.
-     This file adds the dialog's two-column shell, the interactive list, and the
-     mapping from a previewed palette onto the panel it is previewed in. */
 
-
-  /* ---------- theme tokens -> scene tokens ---------- */
-  /* The panel is the whole preview surface, so it takes the theme's own
-     background: a terminal window sitting in the page. That is also what keeps
-     the scene legible in the site's light mode, where a dark theme's greys have
-     no contrast against white.
-
-     Each variable below is restated rather than inherited: a custom property
-     declared on :root that references another (--code-punct: var(--code-plain))
-     resolves against :root, not against the element reading it, so an override
-     here has to be explicit or it silently keeps the site palette. */
   .theme-panel {
     --bg:              var(--theme-bg);
     --text:            var(--theme-fg);
     --text-muted:      var(--theme-secondary);
-    /* The quiet tier: the list numbers and the preview gutter. Dark palettes
-       read their secondary as-is; the light remix lives with the palettes in
-       cli-theme.css, and out-specifies this. */
     --theme-quiet:     var(--theme-secondary);
     --border:          var(--theme-border);
     --panel-border:    var(--theme-border);
 
-    /* The CLI fills a highlighted row with an opaque bar. On the page the
-       neighbouring approval scene marks its selection with a tint of the same
-       accent, and matching that is the point of this list, so the theme's focus
-       colour is tinted rather than used flat. */
     --accent-green:    var(--theme-focus);
     --accent-green-bg: color-mix(in srgb, var(--theme-focus) 14%, transparent);
     --surface-hover:   color-mix(in srgb, var(--theme-fg) 10%, transparent);
@@ -47,10 +22,6 @@
     --code-builtin:    var(--theme-builtin);
     --code-line:       var(--theme-quiet);
 
-    /* Theme diff tints are opaque colours sampled against the theme's own
-       background, so they replace both the shared pair and the deepened pair
-       diff-view.css uses for dark mode. The synced default pair hands these
-       back to the site — see the block after this one. */
     --diff-del-bg:     var(--theme-diff-del);
     --diff-add-bg:     var(--theme-diff-add);
     --diff-del-panel:  var(--theme-diff-del);
@@ -59,17 +30,6 @@
     --diff-add:        var(--theme-success);
   }
 
-  /* ---------- synced default themes ---------- */
-  /* Both dialogs open on the CLI default that matches the site's mode, on a
-     page whose every other embed paints the shared tokens. In that synced state
-     the panel hands its palette back to the site, so its selected row and its
-     diff read exactly like the approval scene's rather than a shade off it.
-
-     The handback replaces the --theme-* sources rather than the tokens mapped
-     from them above, so everything downstream follows in one step: the
-     selection pill and its bullet, the settings tabs, the focus rings, and both
-     diff pairs. The aliases are computed at :root, before the panel remap
-     overrides the originals; var()-ing those directly here would be a cycle. */
   :root {
     --site-accent:      var(--accent-green);
     --site-accent-bg:   var(--accent-green-bg);
@@ -78,16 +38,10 @@
     --site-diff-del-bg: var(--diff-del-bg);
     --site-diff-add-bg: var(--diff-add-bg);
   }
-  /* Panels deepen their dark tints past the animation's inline pair, so the
-     dark aliases read the panel pair. */
   :root.dark {
     --site-diff-del-bg: var(--diff-del-panel);
     --site-diff-add-bg: var(--diff-add-panel);
   }
-  /* Only the synced pairings. Cross-mode — Default Dark previewed on the light
-     site, or Default Light on the dark — the panel is a foreign surface like
-     any other theme's and keeps its sampled palette; the light site's opaque
-     pastel tints would sit under white code text on a near-black panel. */
   :root:not(.dark) .theme-panel[data-cli-theme="default-light"],
   :root.dark .theme-panel[data-cli-theme="default"] {
     --theme-focus:     var(--site-accent);
@@ -95,50 +49,23 @@
     --theme-error:     var(--site-diff-del);
     --theme-diff-add:  var(--site-diff-add-bg);
     --theme-diff-del:  var(--site-diff-del-bg);
-    /* The mapping tints the focus colour to 14% for the resting pill; the
-       shared token is the flat 10% the approval scene paints, so the selection
-       tint is handed back as a value rather than left to the mix. */
     --accent-green-bg: var(--site-accent-bg);
   }
-  /* ---------- panel ---------- */
-  /* The panel already paints a surface — the theme's — so the scene behind it
-     must not paint a second one, or the embed shows a white plate around a black
-     dialog in the site's light mode. With the document transparent, the page's
-     own themed stage is the only outer container, and the panel carries the
-     shadow that would otherwise belong to the frame. */
   body.theme-scene {
     background: transparent;
   }
 
-  /* The row text carries no colour of its own, and `color` inherits as a
-     computed value: without this it would keep whatever ink body resolved from
-     the site palette — dark grey on a dark theme in the site's light mode. */
   .theme-panel {
-    /* diff-view.css outlines a panel because a still scene has nothing else to
-       bound it. This one is a painted surface with a shadow, so the outline only
-       draws a second edge a couple of pixels outside the first. The preview box
-       keeps its own border: that one separates two things inside the dialog. */
     border: 0;
-    /* A dialog, not a full-bleed transcript: it sits inset from the stage and
-       centred, so both columns stay flush with its own edges. */
     width: 85%;
     margin: 0 auto;
     padding: 1.6em 1.4em;
     color: var(--theme-fg);
-    /* Kept inside the scene's own padding so the blur is not clipped. The
-       pigment is the site shadow ink — light rgb(35 28 102) =
-       color-mix(#3429ff 30%, #1c1725); dark rgb(56 39 51) =
-       color-mix(#efa9ae 20%, #0a0614); see --shadow-rgb in
-       assets/css/main.css — rather than neutral black, so the dialogs cast
-       the site's colored shadow instead of a gray one. */
     box-shadow: 0 8px 22px rgb(35 28 102 / 0.3), 0 2px 6px rgb(35 28 102 / 0.22);
   }
   :root.dark .theme-panel {
     box-shadow: 0 8px 22px rgb(56 39 51 / 0.55), 0 2px 6px rgb(56 39 51 / 0.4);
   }
-  /* diff-view fades the right edge of a panel so over-long code reads as a
-     horizon. Here the right edge is the preview box's own border, and fading it
-     would look like a rendering artefact. */
   .theme-panel::after {
     content: none;
   }
@@ -147,8 +74,6 @@
     display: grid;
     --theme-column-gap: clamp(12px, 3vw, 40px);
     --theme-list-offset: clamp(20px, 3vw, 40px);
-    /* The two columns run edge to edge inside the panel; the narrowing lives on
-       the panel itself. */
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--theme-column-gap);
   }
@@ -161,11 +86,6 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- selection list ---------- */
-  /* The CLI brackets a clipped list with these two glyphs. Here they step the
-     highlight and wrap at both ends, so both controls stay available. They sit
-     in the quiet tier: an affordance beside the list, not a peer of the theme
-     names, and hover carries them up to the accent. */
   .theme-scroll {
     display: block;
     border: 0;
@@ -181,19 +101,11 @@
   .theme-scroll:hover {
     color: var(--theme-focus);
   }
-  /* The buttons keep a ring, since a glyph that only changes colour on focus is
-     the same cue it already gives on hover — but the browser's default blue one
-     has no business inside a themed terminal panel. */
   .theme-scroll:focus-visible {
     outline: 1.5px solid var(--theme-focus);
     outline-offset: 2px;
   }
 
-  /* The rows fill the column rather than the longest label, so the highlight is
-     a full-width band of the list it belongs to and every row is the same, wider
-     target. The 0.45em the pill bleeds on each side lands in the grid gap.
-     Selector-matched against diff-view.css, which sizes the approval group to its
-     content — right for a still panel, wrong for a list you point at. */
   .theme-panel .theme-list {
     display: grid;
     width: calc(100% - var(--theme-list-offset));
@@ -210,7 +122,6 @@
   }
   .theme-group-title {
     margin-bottom: 0.35em;
-    /* 14px bullet + 6px flex gap + 3ch number column + one text space. */
     margin-left: calc(20px + 4ch);
     color: var(--theme-secondary);
     font-weight: 700;
@@ -221,19 +132,9 @@
     outline: none;
   }
 
-  /* diff-view.css deliberately strips the cursor and the hover tint from the
-     approval options, because in a still scene they are a picture of a control
-     rather than a control. These rows are the real thing, so both come back —
-     matched selector for selector, since that is what the suppression is. */
   .theme-panel .theme-item {
     white-space: nowrap;
     cursor: pointer;
-    /* The approval option pulls its background out past the text with a negative
-       block margin, which is invisible there because only one option is ever
-       tinted. Here a highlighted row and a hovered row sit next to each other, so
-       that overlap shows as two tints bleeding into one another. The pill is
-       shortened to its own line box and the leftover space becomes a gap, which
-       keeps the list's 1.75em rhythm exactly as it was. */
     margin: 0.125em -0.45em;
     padding: 0 0.45em;
     line-height: 1.5;
@@ -241,27 +142,16 @@
   .theme-panel .theme-item:not(.selected):hover {
     background: var(--surface-hover);
   }
-  /* The glyph holds its column on every row so the numbers stay aligned; only
-     the highlighted row shows it. */
   .theme-item .tool-opt-bullet {
     visibility: hidden;
-    /* Never visible unselected, so it takes the selected colour outright —
-       the base blue in cli-animation.css would otherwise animate blue-to-green
-       the instant a row is highlighted, a visible flash. */
     color: var(--accent-green);
   }
   .theme-item.selected .tool-opt-bullet {
     visibility: visible;
   }
-  /* Roving focus lives on the list, so the cue has to land on whichever row is
-     active. A ring would draw a second border inside a dialog that already has
-     one, so the active row deepens its own tint instead. */
   .theme-list:focus-visible .theme-item.selected {
     background: color-mix(in srgb, var(--theme-focus) 26%, transparent);
   }
-  /* Right-aligned, so a two-digit list keeps its periods in one column. The
-     quiet colour loses to the higher-specificity selected rule, so the
-     highlighted row's number keeps its green. */
   .theme-num {
     display: inline-block;
     min-width: 3ch;
@@ -269,9 +159,6 @@
     color: var(--theme-quiet);
   }
 
-  /* The key hints belong to the dialog, not to the list, so they sit under both
-     columns — which is also the only way the line stays unwrapped at the widths
-     the list column alone would give it. */
   .theme-hint {
     margin-top: 1.6em;
     color: var(--theme-secondary);
@@ -279,9 +166,6 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- preview pane ---------- */
-  /* A framed sample of the highlighted theme, so it carries the same border tier
-     as the dialog around it and no fill of its own. */
   .theme-preview {
     overflow: hidden;
     border: 1.5px solid var(--theme-border);
@@ -289,24 +173,15 @@
     padding: 1.7em 1.1em;
     transition: border-color 0.3s ease;
   }
-  /* Two hunks with no context between them: the sample above, the one-line
-     change below. The gutter numbers restart, which is what the CLI prints. */
   .theme-preview .diff-gap {
     margin: 0.9em 0;
     background-color: transparent;
   }
-  /* diff-view sizes a row to its text so a change bar ends where the terminal
-     stopped printing. This preview is a colour sample, not a transcript: the
-     two bars are the theme's add/remove pair, and they only read as a pair if
-     they share an edge. */
   .theme-panel .theme-preview .diff-line {
     width: 100%;
   }
 
   @media (max-width: 34rem) {
-    /* Below this the two columns would each be too narrow for their longest
-       line, and the preview would clip mid-token. The panel gives up its
-       narrowing at the same point — a quarter off a phone is dead space. */
     .theme-panel {
       width: 100%;
     }

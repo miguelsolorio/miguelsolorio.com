@@ -1,31 +1,13 @@
 @layer components {
   .single {
-    /* Shared by every block of media so a caption can cancel exactly the
-       margin the media above it contributed. */
     --media-gap: clamp(2rem, 6vw, 3rem);
-    /* How close a caption sits under its media. Used twice — once as the
-       caption's own top margin, once inside the negative margin that cancels
-       the media's — so both must move together. */
     --caption-lead: .875rem;
-    /* Hoisted out of .separator and h1 below so the grid corrections that
-       cancel them can subtract the same value. */
     --rule-gap: clamp(1.5rem, 4vw, 2rem);
     --heading-lead: clamp(3.5rem, 9vw, 5rem);
-    /* Prose gap. Tailwind's preflight zeroes paragraph margins and nothing
-       restored them, so consecutive prose blocks used to run together. */
     --para-gap: 1.15em;
-    /* Reading measure for prose. Media escapes it via the wide track. */
     --text-measure: 50rem;
-    /* The masthead rule reads as a divider of the prose rather than part of
-       it when it runs a little past its edges, without reaching the media. It
-       sits in the wide track and sizes back down to this. */
     --rule-overhang: 2rem;
     --wide-measure: calc(var(--text-measure) + var(--rule-overhang) + var(--rule-overhang));
-    /* Text sits in the centre track and visuals span the whole shell. Every
-       direct child lands in the text column unless it opts into the wide one,
-       so any block type markdown adds later inherits the prose measure. Below
-       the measure the 1fr side tracks collapse to zero and the two columns
-       become one, which is why there is no breakpoint for this. */
     display: grid;
     grid-template-columns:
       [wide-start] minmax(0, 1fr)
@@ -49,11 +31,6 @@
     grid-column: wide;
   }
 
-  /* Grid rows do not collapse margins: a gap here is the sum of the block
-     above's bottom margin and the block below's top margin, where block flow
-     took the larger of the two. Each rule below subtracts the contribution
-     from above so the spacing matches what these pages had. The caption's own
-     version of this lives with the caption rules further down. */
   .single > :is(img, video, iframe, .project-embed, .video-frame, .stat-block, .quote-card, .quote-grid, .donut-board, .media-caption)
     + :is(img, video, iframe, .project-embed, .video-frame, .stat-block, .quote-card, .quote-grid, .donut-board) {
     margin-top: 0;
@@ -67,18 +44,10 @@
   .single > .separator + h1 {
     margin-top: calc(var(--heading-lead) - var(--rule-gap));
   }
-  /* Prose blocks get their gap on the following block's top edge, not the
-     preceding block's bottom: a bottom margin would sum onto the media gap
-     and the masthead spacing instead of collapsing into them. The exclusions
-     keep the masthead pair and captions on their own spacing. */
   .single > :is(p, ul, ol):not(.title):not(.description):not(.media-caption)
     + :is(p, ul, ol):not(.title):not(.description):not(.media-caption) {
     margin-top: var(--para-gap);
   }
-  /* The page title carries the hero headline's accent, not the body ink —
-     it is the same role one level down, so the two read as one voice. The
-     color sits outside the !important @apply above so the dark override
-     can still take it. */
   .single .title {
     @apply mb-4 font-extrabold m-0 !important;
     @apply text-primary;
@@ -95,8 +64,6 @@
   .single .separator {
     height: 1px;
     @apply block border-0 bg-current opacity-10;
-    /* Sized off the prose rather than the track it sits in; the cap puts it on
-       the media edge once the shell is narrower than that. */
     width: var(--wide-measure);
     max-width: 100%;
     margin-block: var(--rule-gap);
@@ -130,11 +97,6 @@
     height: clamp(20rem, 61.75vw, 45rem);
     margin: 0;
   }
-  /* The feedback sticky-note board is a fixed 1186x610 design of bare notes
-     that scales itself to the frame width, so the frame must keep that exact
-     ratio for the scaled stage to fill it edge to edge. The notes render on a
-     transparent body, so the default embed chrome (rounded shadow card) must
-     not paint a box around them. */
   .single > .feedback-board-embed {
     grid-column: wide;
     margin-block: var(--media-gap);
@@ -149,12 +111,6 @@
     box-shadow: none;
     background: transparent;
   }
-  /* The card-framework diagram is a line drawing, not a screenshot: outlined
-     cards and callouts on a transparent body, standing straight on the page
-     like the sticky-note board above rather than on a themed stage. Same
-     bargain as that board — the frame carries the scene's own 1240x720 ratio
-     so the scaled stage fills it edge to edge, and the default embed chrome
-     must not paint a box around artwork that has no rectangle of its own. */
   .single > .card-framework-embed {
     grid-column: wide;
     margin-block: var(--media-gap);
@@ -169,22 +125,14 @@
     box-shadow: none;
     background: transparent;
   }
-  /* A scene that is nothing but two screenshots wants the screenshots' own
-     proportions, not a height guessed in viewport units, so the frame carries
-     the pair's ratio and meets them exactly at every width — the scene never
-     letterboxes or clips. The default is the Colab pair (1728x931); a pair
-     shaped differently declares its own ratio below and asks for it by class. */
   .single .project-embed--reveal iframe.embed-frame {
     display: block;
     width: 100%;
     height: auto;
     margin: 0;
     aspect-ratio: var(--reveal-ratio, 1728 / 931);
-    /* The pair fills the frame corner to corner, so a rounded frame would clip
-       the shots rather than shape them. */
     border-radius: 0;
   }
-  /* The onboarding theme pair, two shots of a 2400x1800 window. */
   .single .project-embed--reveal-4x3 {
     --reveal-ratio: 4 / 3;
   }
@@ -194,8 +142,6 @@
     font-size: clamp(1.875rem, 5vw, 2.25rem);
     line-height: 1.15;
   }
-  /* Project demos share one stage; data-project-theme supplies the named
-     surface defined alongside the corresponding homepage card. */
   .single .project-embed {
     margin: var(--media-gap) 0;
     padding: clamp(.75rem, 5vw, 3.5rem);
@@ -204,10 +150,6 @@
     background-image: var(--project-theme-artwork);
     background-position: var(--project-theme-position);
     background-size: var(--project-theme-size);
-    /* Shadow pigment for everything standing on this stage — animation frame,
-       screenshot, or cutout art — so the stills cast the same colored shadow
-       as the demo above them. Only the alpha changes between themes; the hue
-       stays put instead of degrading to black in dark mode. */
     --embed-shadow-tint: var(--project-theme-shadow-tint, var(--shadow-rgb));
     --embed-shadow-far: .3;
     --embed-shadow-near: .2;
@@ -235,10 +177,6 @@
     width: 100%;
     height: auto;
   }
-  /* Artwork that is cut out rather than a single rectangular screenshot — a
-     row of panels on transparency — needs its shadow to follow the alpha
-     channel instead of the element box, otherwise one shadow wraps the whole
-     group and the box's own rounded edge shows against the stage. */
   .single .project-embed--cutout > img,
   .single .project-embed--cutout > video,
   .single .project-embed--cutout > .inline-svg {
@@ -247,32 +185,17 @@
     filter: drop-shadow(0 2px 6px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
             drop-shadow(0 12px 28px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
   }
-  /* The 2px/12px shadow above is sized for a single large screenshot. The
-     iterations grid is ~60 icons at ~44px each inside one wide SVG, so that
-     same blur/offset — applied per icon, since drop-shadow follows alpha —
-     blooms into a soft halo bigger than the icon itself and reads as a pale
-     card behind it. Scaled down to match the icons' own size instead. */
   .single .project-embed--cutout > .inline-svg.iterations-icons-embed {
     filter: drop-shadow(0 .5px .75px rgb(var(--embed-shadow-tint) / var(--embed-shadow-near)))
             drop-shadow(0 1.5px 3px rgb(var(--embed-shadow-tint) / var(--embed-shadow-far)));
   }
-  /* Opt-in rounded corners for screenshots via the image shortcode's
-     rounded param. Declared after the cutout rule so a rounded screenshot
-     wins even on a cutout stage. */
   .single .project-embed > img.media-rounded,
   .single img.media-rounded {
     border-radius: .75rem;
   }
-  /* Poster videos show one large play affordance instead of the browser's
-     control bar (common.js swaps them at first play), so the poster reads as
-     a designed thumbnail rather than a chrome-heavy player. The stage has
-     equal padding on all sides, so centering in it centers on the video. */
   .single .project-embed--media {
     position: relative;
   }
-  /* The same affordance for poster videos that stand on the page rather than
-     on a themed stage. The wrapper takes over the media gap so the video's own
-     margin cannot offset the box the button is centred in. */
   .single .video-frame {
     position: relative;
     margin-block: var(--media-gap);
@@ -297,9 +220,6 @@
     backdrop-filter: blur(8px);
     color: #fff;
     cursor: pointer;
-    /* Touch browsers hold :hover on the last thing tapped, so the grown state
-       would stick on a button that is about to be hidden. Pointer devices get
-       the hover; everything gets the press. */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     transition: transform .18s ease, background-color .18s ease;
@@ -316,15 +236,12 @@
     outline: 2px solid #fff;
     outline-offset: 3px;
   }
-  /* Last, so the press reads even on a button that is already focused. */
   .single .video-play-button:active {
     transform: scale(.96);
   }
   .single .video-play-button[hidden] {
     display: none;
   }
-  /* Optical centering lives in the glyph itself — Material's play_arrow
-     path is drawn right of its viewBox center — so the svg needs no nudge. */
   .single .video-play-button svg {
     width: 46%;
     height: auto;
@@ -334,42 +251,21 @@
       transition: none;
     }
   }
-  /* The notebook scene has a transparent canvas and should blend directly
-     into its gradient stage instead of looking like a nested panel. */
   .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame,
   .dark .single .project-embed[data-project-theme="notebooks"] iframe.embed-frame {
     border-radius: 0 !important;
     box-shadow: none;
   }
-  /* The onboarding animation draws its own product frame and shadow. Keep its
-     iframe transparent so the themed stage remains the only outer container.
-     Scoped to the animation rather than the theme: the theme reveal further
-     down that page is a flat pair of screenshots and wants the frame's shadow,
-     the same one the stills beside it cast. */
   .single .onboarding-project-demo iframe.embed-frame,
   .dark .single .onboarding-project-demo iframe.embed-frame {
     border-radius: 0 !important;
     box-shadow: none;
   }
-  /* Opt-in twin of the two rules above for scenes that draw their own panel but
-     share a theme with scenes that do not — the CLI theme picker sits beside
-     animations that still want the frame's surface, so it asks for this by
-     class instead of by theme. */
   .single .project-embed--bare iframe.embed-frame,
   .dark .single .project-embed--bare iframe.embed-frame {
     border-radius: 0 !important;
     box-shadow: none;
   }
-  /* A chart is a drawing, not a screenshot: it stands on the stage without a
-     panel, and its frame takes the proportions of the drawing itself (the
-     star-history svg's 820x500 viewBox) so the scene scales with the column
-     instead of leaving dead height under the chart on narrow screens. The
-     whole stage — not just the drawing on it — is held to the prose measure
-     and centered in the wide track, so a figure this sparse reads as a diagram
-     sized to the text rather than a full-bleed exhibit. */
-  /* The explicit width is load-bearing: auto inline margins opt a grid item
-     out of stretching, so without it the stage would shrink to fit the
-     iframe's 300px intrinsic default instead of the measure. */
   .single .project-embed--chart {
     width: 100%;
     margin-inline: auto;
@@ -385,13 +281,6 @@
     box-shadow: none;
   }
 
-  /* Two stills from the icons page redrawn as text: the codicons build log and
-     the before/after of an icon contribution. Neither is a live scene — each is
-     a fixed block of type, and it scales with the column the way the screenshot
-     it replaces did. The frame takes the block's own proportions and the scene
-     sets its type as a share of that same width, so the two can only ever
-     agree; the ratios below and the vw font sizes in static/icons/*.css are one
-     measurement and have to move together. */
   .single .project-embed--log iframe.embed-frame,
   .single .project-embed--compare iframe.embed-frame {
     display: block;
@@ -400,13 +289,9 @@
     margin: 0;
     aspect-ratio: var(--embed-aspect);
   }
-  /* The log keeps the frame's radius and shadow: there its edge is the terminal
-     panel's edge, so there is no second surface to draw. */
   .single .project-embed--log {
     --embed-aspect: 820 / 481;
   }
-  /* The comparison drops them — it is two code samples set on the stage, not a
-     screenshot of one surface. */
   .single .project-embed--compare {
     --embed-aspect: 820 / 285;
   }
@@ -416,10 +301,6 @@
     box-shadow: none;
   }
 
-  /* The icon board is a field, not a screenshot: it stands on the stage with
-     no panel of its own, and its frame takes the grid's own proportions (24
-     columns by 14 rows of 51px cells) so the set scales with the column
-     instead of stranding dead height beneath it on narrow screens. */
   .single .project-embed--board iframe.embed-frame,
   .dark .single .project-embed--board iframe.embed-frame {
     display: block;
@@ -431,7 +312,6 @@
     box-shadow: none;
   }
 
-  /* Star chart */
   .single .project-embed--chart[data-project-theme="cli"] {
     display: flex;
     align-items: center;
@@ -440,40 +320,23 @@
   .single .project-embed--chart[data-project-theme="cli"] iframe {
     max-width: var(--text-measure);
   }
-  /* Opt out of the themed stage entirely — no surface, no artwork — so the
-     media stands directly on the page instead of on a colored panel. */
   .single .project-embed--transparent,
   .dark .single .project-embed--transparent {
     padding: 0;
     background-color: transparent;
     background-image: none;
   }
-  /* The animation scene carries its own internal padding; a screenshot or
-     screencast does not, so media stages keep the symmetric padding above. */
   .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--media) {
     padding-block: clamp(.75rem, 2vw, 1.5rem);
   }
-  /* ?transparent (set in the head bootstrap) reduces the themed stage to a
-     bare wrapper: no surface, no artwork, no inset — just the media against
-     the page. Media keeps its own radius and shadow.
-     The [data-project-theme] qualifier is load-bearing specificity, not
-     decoration: the notebooks padding-block rule above scores (0,4,0) and
-     would otherwise keep its inset. Every .project-embed carries the
-     attribute — the shortcodes only emit the class when a theme resolves. */
   html.transparent .single .project-embed[data-project-theme] {
     padding: 0;
     background-color: transparent;
     background-image: none;
   }
 
-  /* Captions read as part of the media above them, so they sit close under it
-     and carry the full gap below the pair. Paragraphs are margin-free here, so
-     the caption owns both sides of that spacing. */
   .single .media-caption {
     @apply text-slate-500;
-    /* Centered against left-aligned prose is what stops a caption reading as
-       another paragraph; the narrow measure keeps it under the media it
-       describes rather than spanning the full column. */
     max-width: 34rem;
     margin-block: var(--caption-lead) var(--media-gap);
     margin-inline: auto;
@@ -484,26 +347,17 @@
     letter-spacing: .012em;
     text-align: center;
     text-wrap: balance;
-    /* Italic Inter leans right, so centered text sits a hair left of true
-       center. Nudge it back by roughly the slant of the final glyph. */
     padding-left: .15em;
   }
-  /* The caption is already italic, so emphasis inside it inverts to upright —
-     the standard nesting convention, and the only way *…* in the markdown
-     stays visible. */
   .single .media-caption em,
   .single .media-caption i,
   .single .media-caption cite {
     font-style: normal;
   }
-  /* Titles of tools and products are the usual reason to reach for emphasis in
-     a caption; keep them quiet rather than bolding them out of the line. */
   .single .media-caption strong {
     font-weight: 600;
     font-style: normal;
   }
-  /* Only cancel the media's bottom margin when there is one to cancel; a
-     caption used on its own keeps the plain lead-in above. */
   .single img + .media-caption,
   .single video + .media-caption,
   .single iframe + .media-caption,
@@ -518,12 +372,7 @@
     color: #8c839f;
   }
 
-  /* Figures closing a project page. No surface of their own — the
-     figures sit straight on the page like the prose above them, with the media
-     gap doing all the separating. */
   .single .stat-block {
-    /* Sits on the prose measure so the figures align with the text they
-       close; four figures still fit one row inside it. */
     margin-block: var(--media-gap);
   }
   .single .stat-source {
@@ -532,8 +381,6 @@
     font-size: .75rem;
     letter-spacing: -.01em;
   }
-  /* Before and after as shares of one whole, sitting under the badges that
-     read them. */
   .single .stat-chart {
     display: grid;
     gap: .625rem;
@@ -568,10 +415,6 @@
     font-variant-numeric: tabular-nums;
     letter-spacing: -.01em;
   }
-  /* A slice this narrow only clears its label on a roomy viewport — five
-     percent of the bar is about thirteen pixels on a phone, which no type size
-     rescues. The label never leaves the bar: it waits for the width, and the
-     badge above is the one saying the number until then. */
   @media (max-width: 35rem) {
     .single .stat-chart-seg--tight > span {
       display: none;
@@ -580,9 +423,6 @@
   .single .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    /* Start rather than stretch: once a before/after figure wraps, centring
-       each cell in the tallest one drops every single-line figure half a line
-       and the row loses its shared baseline. */
     align-items: start;
     gap: clamp(1.25rem, 3vw, 1.75rem) 1.5rem;
     margin-top: clamp(1.25rem, 3vw, 1.75rem);
@@ -596,10 +436,6 @@
   .single .stat-text {
     min-width: 0;
   }
-  /* Sized to stand as tall as the figure and its label together, so the glyph
-     reads as the metric's mark rather than a bullet next to it. The stroke
-     scales with the box, so it thins as the icon grows to keep the weight
-     next to the numerals. */
   .single .stat-icon {
     width: clamp(2.25rem, 4.4vw, 3.5rem);
     height: clamp(2.25rem, 4.4vw, 3.5rem);
@@ -610,11 +446,6 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  /* Each glyph keeps the colour its state carries in the product: blue while a
-     pull request is open, purple once it merges, green for a landed commit,
-     amber for a filed issue, and the saturated Kanvas hues for the library
-     states. One tone table in the shortcode sets it on the element, because
-     the same value has to reach a glyph, a key swatch, and a bar segment. */
   .single .stat-value {
     @apply flex flex-wrap items-baseline font-extrabold text-slate-900;
     gap: 0 .28em;
@@ -622,16 +453,9 @@
     font-variant-numeric: tabular-nums;
     letter-spacing: -.05em;
     line-height: 1.06;
-    /* .single opts everything into overflow-wrap: anywhere so long prose
-       tokens cannot escape the measure, but a numeral has no break
-       opportunity of its own to fall back on and would split mid-figure. */
     overflow-wrap: normal;
     word-break: normal;
   }
-  /* How far the figure travelled, tinted by direction. It sits beside the
-     outcome rather than replacing it: the number is the headline and the chip
-     answers "and?". Green up and red down read as direction of change, not as
-     good and bad — fewer stale components is a win that still points down. */
   .single .stat-pill {
     display: inline-flex;
     align-items: center;
@@ -665,8 +489,6 @@
     font-size: .8125rem;
     line-height: 1.35;
   }
-  /* Ties the badge to its segment in the bar above, which is why the charted
-     layout drops the glyph: the swatch is already the key. */
   .single .stat-key {
     display: inline-block;
     width: .625rem;
@@ -676,9 +498,6 @@
     vertical-align: baseline;
   }
 
-  /* A testimonial as the card it was said in. White like the side-project
-     tiles in light, slate in dark; only the linked kind lifts, and less than
-     those tiles do — it is a citation, not a destination. */
   .single .quote-card {
     @apply block bg-white no-underline;
     margin-block: var(--media-gap);
@@ -711,8 +530,6 @@
     align-items: center;
     gap: .875rem;
   }
-  /* .single's img rules reach descendants too — full width, media margins,
-     radius, shadow. Every one of those is taken back for the avatar. */
   .single .quote-avatar {
     width: 3rem;
     height: 3rem;
@@ -725,10 +542,6 @@
     color: #94a3b8;
     background: #f1f5f9;
   }
-  /* The generated stand-in ships a light and a dark drawing in one span and
-     the theme shows one — a pattern tuned for white cannot also sit on
-     slate-800, the same concession the site accent makes. The span, not the
-     svg, is the grid child, so the header's three columns hold. */
   .single .quote-avatar--gen { display: block; }
   .single .quote-avatar--gen svg {
     display: block;
@@ -736,23 +549,6 @@
     height: 100%;
   }
   .single .quote-avatar--gen .qa-dark { display: none; }
-  /* Generated avatars live on two clocks. From page load the pattern
-     wanders inside its disc: the two nested groups each run a slow
-     translate loop — x on one, y plus a slight tilt on the other — whose
-     periods, dealt per avatar by quote-avatars.js (--qa-dx/--qa-dy, with
-     negative --qa-px/--qa-py starting each mid-phase), never match, so the
-     combined path is a drifting wander that takes minutes to repeat and no
-     two avatars move in step. The baked scale overscans the pattern past
-     the clip so the drift never exposes the rim.
-
-     The draw-in waits for .qa-in (scroll into view): --d staggers the
-     elements — halftone dots along the ramp, truchet tiles in reading
-     order — and --qa-ind cascades avatars that arrive together. After it,
-     a gentle shimmer on the avatar's own period (--qa-amb, offset by
-     --qa-off) keeps the surface alive. Base state is fully drawn, and the
-     entrance hides elements only via backwards fill — so reduced motion
-     (and no-JS, which never adds .qa-in) simply shows the finished
-     drawing. */
   .single .quote-avatar--gen .qa-float,
   .single .quote-avatar--gen .qa-anim {
     transform-box: view-box;
@@ -804,8 +600,6 @@
     gap: .125rem;
     min-width: 0;
   }
-  /* .single opts prose into overflow-wrap: anywhere; a name or handle has no
-     good break point, same reasoning as .stat-value. */
   .single .quote-name {
     @apply text-slate-800;
     font-size: 1rem;
@@ -821,7 +615,6 @@
     overflow-wrap: normal;
     word-break: normal;
   }
-  /* Ink for currentColor marks and the wordmark lettering. */
   .single .quote-logo {
     display: inline-flex;
     color: #24292f;
@@ -840,10 +633,6 @@
   }
   .single .quote-text p { margin: 0; }
   .single .quote-text p + p { margin-top: var(--para-gap); }
-  /* The lifted phrase: a tinted pill of the site accent, cloned across line
-     breaks the same way the body links clone their fill. Tailwind's preflight
-     leaves <mark> alone, so both colour and background are set here or the
-     browser default yellow would show. */
   .single .quote-text mark {
     color: #241bc7;
     background: rgb(52 41 255 / .1);
@@ -854,10 +643,6 @@
     box-decoration-break: clone;
     font-weight: 600;
   }
-  /* The post's own attachment, kept inside the card. .single's img rules
-     reach it the way they reach the avatar, so the media margins, the full
-     radius and the drop shadow are all taken back — inside a card it is part
-     of the quote, not a figure of its own. */
   .single .quote-media {
     display: block;
     width: 100%;
@@ -866,9 +651,6 @@
     border-radius: .75rem;
     box-shadow: none;
   }
-  /* The counts the post carried, as the pills they were: one row, wrapping,
-     in the handle's muted ink so they sit under the words without competing
-     with them. */
   .single .quote-stats {
     display: flex;
     flex-wrap: wrap;
@@ -903,29 +685,16 @@
     stroke-linejoin: round;
   }
 
-  /* Quotes wrapped in the quotes shortcode sit inline: up to three to a row,
-     every card the same size, the full width shared equally. A run of two or
-     three keeps to one row; a longer run wraps into rows of three, stretch
-     holding each row's cards to the tallest among them. Below the fold width
-     any run becomes a stack. The wrapper carries the media-gap margin and
-     the cards give up their own, so a run of quotes spaces like one block. */
   .single .quote-grid {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
     gap: clamp(.875rem, 2vw, 1.25rem);
     margin-block: var(--media-gap);
-    /* A shade in from the media edge: text cards read better a touch
-       narrower than a full-bleed image. The definite width keeps a strip of
-       short quotes from shrink-wrapping under the cap, so every strip on a
-       page lands on the same width. */
     width: 100%;
     max-width: 66rem;
     margin-inline: auto;
   }
-  /* The column flow above would lay a fourth card into a fourth track and
-     keep going; past three, trade it for row flow on a three-track template
-     so the cap holds however many cards the run carries. */
   .single .quote-grid:has(> :nth-child(4)) {
     grid-auto-flow: row;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -938,13 +707,7 @@
       grid-template-columns: none;
     }
   }
-  /* Cards sharing a row tighten their chrome so short remarks read as a
-     strip: less padding, smaller avatar and source mark, and text held at
-     the clamp floor. */
   .single .quote-grid .quote-card {
-    /* The standalone card's auto inline margins would shrink-wrap a grid
-       item to its content; zero them (and the width cap) so every card
-       stretches to its equal share of the row. */
     margin: 0;
     max-width: none;
     padding: 1.25rem;
@@ -974,43 +737,19 @@
     margin-top: .875rem;
   }
 
-  /* Two donut share charts — the data figure the onboarding page used to
-     carry as a dark PNG, redrawn as markup so it rides the theme and the
-     viewport. No surface of their own: like the figures that close a project
-     page, the charts sit straight on the page and the media gap does all the
-     separating. Only the ink is set here — the ring's hole and the divisions
-     between its segments are unpainted, so the page shows through them.
-     Segment fills are picked per index by the donut shortcode through
-     --donut-seg-N on the tone class. The SVG's text lives in viewBox units,
-     so the whole figure scales as one drawing, the way the image did. */
   .single .donut-board {
     --donut-label-ink: #334155;
     --donut-line: #94a3b8;
-    /* The hovered callout's ink and leader. Resting ink already clears 9.5:1,
-       so the lift is a step toward the heading colour rather than more
-       contrast for its own sake. */
     --donut-label-ink-hi: #1c1725;
     --donut-line-hi: #1c1725;
     --donut-gap: clamp(1.5rem, 4vw, 3rem);
     margin-block: var(--media-gap);
   }
-  /* Side by side on the media measure, stacking once a chart would drop under
-     the width its callout columns need. Only the charts are in here: auto-fit
-     collapses a track no item occupies, and anything spanning 1 / -1 occupies
-     all of them — a caption inside the row would hold open a column the charts
-     do not fill and shove the pair off centre. */
   .single .donut-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
     gap: var(--donut-gap);
   }
-  /* Slot 0 is the dominant share and takes the ramp's deepest step; 1 through 5
-     walk the tail from palest back down. Both ramps are stepped in OKLCH so
-     every neighbour clears 0.06 lightness — the pair this replaced sat 0.054
-     apart at the pale end, close enough to read as one colour, and its palest
-     step was 1.17:1 against the page, which is not a visible mark at all. The
-     hover colour is the same hue carried to where it reads as a lift without
-     dropping under 4.5:1 as text. */
   .single .donut--teal {
     --donut-seg-0: #045a4d;
     --donut-seg-1: #85b7ab;
@@ -1031,8 +770,6 @@
     --donut-value: #2d5ed4;
     --donut-value-hi: #143ca1;
   }
-  /* A rank below the h1 that introduces the section, on the same family and
-     weight as every other heading on the page. */
   .single .donut-title {
     @apply font-bold text-slate-900;
     margin: 0 0 clamp(.5rem, 1.5vw, 1rem);
@@ -1041,8 +778,6 @@
     text-align: center;
     text-wrap: balance;
   }
-  /* The width/height attributes give the svg an intrinsic ratio; height:auto
-     then tracks the viewBox at every width. */
   .single .donut-svg {
     display: block;
     width: 100%;
@@ -1069,10 +804,6 @@
   .single .donut-dot {
     fill: var(--donut-line);
   }
-  /* The hero share in the hole. A figure, so it wears ink rather than the
-     segment's colour, and proportional digits — tabular would make a number
-     like 15% sit loose at this size. Qualified by the element so it out-ranks
-     the blanket `.donut-svg text` size and fill above. */
   .single .donut-svg text.donut-centre {
     fill: var(--donut-label-ink-hi);
     font-size: 46px;
@@ -1080,21 +811,8 @@
     letter-spacing: -.03em;
   }
 
-  /* Hover. donut-charts.js marks the pointed-at band and its callout with
-     data-hot and puts data-hover on the chart, which is what dims the rest.
-     Both are absent until the script runs, so the resting figure is untouched
-     by any of this.
-
-     Bands drop further than callouts: a dimmed arc is still an arc, but text
-     at the same value stops being readable, and the four small labels are
-     exactly what a reader scans while pointing at the fifth. Weights never
-     change between states — bolding would re-flow the label and make it twitch
-     under the pointer. */
   .single .donut-chart[data-hover] .donut-seg { opacity: .32; }
   .single .donut-chart[data-hover] .donut-callout { opacity: .45; }
-  /* Carries the same [data-hover] ancestor as the dimming rule above it and
-     one attribute more — the pointed-at pair has to out-specify the dim it
-     would otherwise inherit along with its four neighbours. */
   .single .donut-chart[data-hover] .donut-seg[data-hot],
   .single .donut-chart[data-hover] .donut-callout[data-hot] {
     opacity: 1;
@@ -1128,17 +846,12 @@
   }
   .single .donut-caption {
     @apply text-slate-500;
-    /* Outside the row now, so the gap the grid used to supply is its own. */
     margin: calc(var(--donut-gap) + .25rem) 0 0;
     font-size: .8125rem;
     font-style: italic;
     text-align: center;
   }
 
-  /* A trailing media gap used to escape the block-flow container and collapse
-     into the footer's margin; inside a grid it would add to it. Every rule
-     that sets a bottom margin on a direct child of .single ties on
-     specificity, so this reset has to stay below all of them. */
   .single > :last-child {
     margin-bottom: 0;
   }
@@ -1154,18 +867,6 @@
   }
 
   @media (max-width: 25rem) {
-    /* Wrapping the notebook's code cells makes the finished scene taller as
-       the iframe narrows: measured, the tallest state of message-animation and
-       plan-animation grows from 670px at the full column to 757px once the
-       iframe is under ~265px, including the 88px the standalone scrubber
-       reserves below the frame. 47.5rem clears that worst case, and this is
-       the only band where the shortcode's 710 is not already enough.
-
-       The :not() is load-bearing, not decoration. This selector scores (0,4,1)
-       and the reveal's own rule near the top of this file scores (0,3,1), so
-       without the exclusion a definite height lands on a frame that already
-       has width and aspect-ratio — the ratio is dropped, and .reveal-shot's
-       object-fit: cover crops the pair to a sliver. */
     .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--reveal) iframe.embed-frame {
       height: 47.5rem;
     }

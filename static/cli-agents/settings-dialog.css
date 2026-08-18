@@ -1,22 +1,7 @@
-  /* The settings dialog. Layered on theme-dialog.css the same way that file
-     layers on diff-view.css — link cli-animation.css, diff-view.css, and
-     theme-dialog.css first. The palettes, the .theme-panel token mapping, the
-     title, the scroll glyphs, the hint, and the .tool-opt selected treatment
-     all come from those files; this one adds only the settings shell: the
-     search box, the section tabs, and the two-line rows. */
-
-  /* ---------- panel ---------- */
-  /* One column of settings, so the dialog does not stretch to the two-column
-     width the theme picker needs. Width, centring, and padding stay on
-     .theme-panel. */
   .settings-panel {
     max-width: 40rem;
   }
 
-  /* ---------- search ---------- */
-  /* The CLI's filter input, drawn focused: the accent border is the focus ring.
-     --theme-keyword is each palette's AccentBlue, which is the blue the
-     screenshot shows for the default theme and stays coherent per theme. */
   .settings-search {
     border: 1.5px solid var(--theme-keyword);
     border-radius: 6px;
@@ -34,23 +19,17 @@
     white-space: pre-wrap;
     transition: color 0.3s ease;
   }
-  /* The block cursor. Empty query: it wraps the placeholder's first character,
-     the inverted "S" of the screenshot. Non-empty: JS fills it with a no-break
-     space so it renders as a 1ch block after the query. */
   .settings-cursor {
     background: var(--theme-fg);
     color: var(--theme-bg);
     transition: background 0.3s ease, color 0.3s ease;
   }
 
-  /* ---------- section tabs ---------- */
   .settings-tabs {
     display: flex;
     gap: 1.5em;
     margin-bottom: 1em;
   }
-  /* Same reset as the scroll glyphs beside the theme list; resting tabs sit in
-     the quiet tier and lift to the foreground on hover or selection. */
   .settings-tab {
     border: 0;
     padding: 0;
@@ -73,13 +52,10 @@
     outline: 1.5px solid var(--theme-focus);
     outline-offset: 2px;
   }
-  /* A live search ignores sections: the flat filtered list dims the tabs so
-     they read as inert until the query clears. */
   .settings-panel.is-filtering .settings-tab {
     opacity: 0.45;
   }
 
-  /* ---------- settings list ---------- */
   .settings-list {
     list-style: none;
     line-height: 1.5;
@@ -91,8 +67,6 @@
     display: none;
   }
 
-  /* The same pill treatment as the theme rows, slightly taller because each
-     row carries two lines of text. */
   .settings-item {
     display: flex;
     gap: 6px;
@@ -104,10 +78,6 @@
   .settings-item:not(.selected):hover {
     background: var(--surface-hover);
   }
-  /* The bullet holds its column on every row; only the highlighted row shows
-     it. Because it is never visible unselected, it takes the selected colour
-     outright — the base blue in cli-animation.css would otherwise animate
-     blue-to-green the instant a row is highlighted, a visible flash. */
   .settings-item .tool-opt-bullet {
     visibility: hidden;
     color: var(--accent-green);
@@ -115,17 +85,10 @@
   .settings-item.selected .tool-opt-bullet {
     visibility: visible;
   }
-  /* Roving focus lives on the list, so the active row deepens its own tint
-     rather than drawing a second ring inside the dialog. */
   .settings-list:focus-visible .settings-item.selected {
     background: color-mix(in srgb, var(--theme-focus) 26%, transparent);
   }
 
-  /* ---------- row anatomy ---------- */
-  /* A real two-column grid: label and description in the first column, the
-     value in a max-content second column, so a wrapping description stops a
-     full gap short of the value instead of running underneath it. The top
-     wrapper dissolves into the grid so label and value place themselves. */
   .settings-item-main {
     display: grid;
     grid-template-columns: minmax(0, 1fr) max-content;
@@ -136,8 +99,6 @@
   .settings-item-top {
     display: contents;
   }
-  /* The description sits in the quiet tier — --theme-quiet, so light palettes
-     take the same muted mix as the theme picker's numbers. */
   .settings-item-desc {
     display: block;
     grid-column: 1;
@@ -145,8 +106,6 @@
     color: var(--theme-quiet);
     transition: color 0.3s ease;
   }
-  /* Values sit quiet at their default; a modified value (rendered with *)
-     reads in the theme's green. */
   .settings-item-value {
     grid-column: 2;
     justify-self: end;
@@ -157,10 +116,6 @@
   .settings-item.modified .settings-item-value {
     color: var(--theme-success);
   }
-  /* A highlighted row takes the accent for all of its text: the quiet tier is
-     tuned against the panel surface, not the selection tint, so desc and value
-     join the label and bullet in the theme's green. Placed after the .modified
-     rule so selection wins when both apply. */
   .settings-item.selected .settings-item-desc,
   .settings-item.selected .settings-item-value {
     color: var(--accent-green);

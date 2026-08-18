@@ -1,7 +1,6 @@
 (() => {
   'use strict';
 
-// Interactive portfolio terminal
 const portfolioTerminal = document.querySelector('.home-hero-current');
 if (portfolioTerminal) {
   const terminalOutput = document.getElementById('terminal-output');
@@ -18,21 +17,11 @@ if (portfolioTerminal) {
   let selectedSuggestion = 0;
   let suggestionsVisible = false;
 
-  /* Newest first, ordered on the START year because that is the number the eye
-     scans down. The earlier roles are kept below but parked: the block has to
-     clear the terminal's boot view in one screen, and every extra row pushes
-     the newest entry out of sight. Descriptions have to stay short for the same
-     reason a long scope does — one that wraps takes the year column with it,
-     which is what `beyond-traditional:` runs into. */
   const historyRows = [
     ['2023-2026', 'google-colab:', 'data science agents'],
     ['2025', 'gemini-cli:', 'terminal agent'],
     ['2022-2023', 'meta:', 'design systems'],
     ['2018-2022', 'vs-code:', 'developer tools']
-    // ['2016-2018', 'azure-devops:', 'developer workflows'],
-    // ['2014-2016', 'azure:', 'big data tooling'],
-    // ['2012-2014', 'zumobi:', 'mobile design & code'],
-    // ['2011-2012', 'beyond-traditional:', 'web dev']
   ];
 
   const statusRows = [
@@ -49,13 +38,6 @@ if (portfolioTerminal) {
     { spaced: false, parts: [{ text: '  new file   next-chapter.md', className: 't-added' }] }
   ];
 
-  /* Mirrors layouts/index.html: Featured work follows the same weight order as
-     the Featured Work grid, and Side projects follows the same reach-desc
-     order as the Projects grid (data/project_metrics.json), with the
-     zero-reach projects falling in afterward. Descriptions are pulled
-     straight from each project's front matter, lowercased to match this
-     terminal's style. Games are left out here since they have no URL to
-     point at and are already reachable via the `game` command. */
   const workGroups = [
     {
       name: 'Featured work',
@@ -96,9 +78,6 @@ if (portfolioTerminal) {
       run: showHistory
     },
     {
-      /* Hidden, not removed: the boot output still runs `status`, so the
-         command has to keep working when someone types it or arrows back to
-         it in history — it just stops being advertised in the menu and help. */
       name: 'status',
       hidden: true,
       description: 'what is currently in progress',
@@ -122,15 +101,8 @@ if (portfolioTerminal) {
     }
   ];
 
-  /* Sorted here rather than hand-ordered in the literal above: help, the
-     autocomplete list and the "Try:" hints are all derived from this array, so
-     one sort keeps every listing alphabetical no matter where a new command
-     gets appended. */
   commandDefinitions.sort(function (a, b) { return a.name.localeCompare(b.name); });
 
-  /* Every listing draws from this rather than from commandDefinitions, so a
-     `hidden` command drops out of the menu, help and the "Try:" hints at once
-     while `getCommand` can still resolve it by name. */
   const listedCommands = commandDefinitions.filter(function (definition) {
     return !definition.hidden;
   });
@@ -261,8 +233,6 @@ if (portfolioTerminal) {
 
   function showHelp() {
     addLine('Available commands:', 't-out', true);
-    // Rows render as pre-wrap monospace, so padding the name gives a real
-    // column; without it the descriptions rag with each name's length.
     const nameColumn = listedCommands.reduce(function (width, definition) {
       return Math.max(width, definition.name.length);
     }, 0) + 2;
@@ -293,13 +263,6 @@ if (portfolioTerminal) {
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  /* Games live in assets/js/games.js behind window.siteGames, so this only
-     ever lists and dispatches — it never knows what a game is.
-
-     `game` with no argument leaves the terminal in a picker state: the rows
-     become a selection list with the first entry highlighted, and the input
-     keeps focus so arrows move the highlight and Enter commits. Typing
-     anything dismisses it, so the prompt never traps you. */
   let pendingChoice = null;
 
   function paintChoice() {
@@ -354,8 +317,6 @@ if (portfolioTerminal) {
       const hit = window.siteGames.find(query);
       if (!hit) {
         addLine('no such game: ' + query, 't-error');
-        /* `game` on its own lists when there is a choice to make and launches
-           when there is not, so the hint has to say which one it is doing. */
         addLine(games.length === 1
           ? 'Try `game` to play ' + games[0].name + '.'
           : 'Try `game` to see what is available.', 't-muted');
@@ -366,9 +327,6 @@ if (portfolioTerminal) {
       return;
     }
 
-    /* One game left listed means there is nothing to choose. Skip the picker
-       and launch it, so `game` is a verb rather than a menu. The picker below
-       comes back on its own the moment a second game is listed. */
     if (games.length === 1) {
       addParts([{ text: 'launching ', className: 't-out' }, { text: games[0].name, className: 't-ok' }]);
       window.siteGames.play(games[0].id, 'terminal');
@@ -405,9 +363,6 @@ if (portfolioTerminal) {
     ], true);
 
     pendingChoice = { items: games, buttons: buttons, index: 0 };
-    /* The prompt collapses: the selection is the input now. It stays in the
-       DOM and keeps focus, because the hidden input is what receives the
-       arrow keys. */
     portfolioTerminal.classList.add('is-choosing');
     paintChoice();
   }
@@ -515,11 +470,6 @@ if (portfolioTerminal) {
     terminalInput.focus();
   }
 
-  /* Tab completes, but picking an entry — by click or by Enter — is a choice,
-     not a draft, so it runs straight away rather than parking the name in the
-     input and waiting for a second keystroke. Focus goes back to the prompt
-     before the command runs, so a takeover like `game` keeps whatever focus it
-     sets for itself. */
   function runSuggestion(index) {
     selectedSuggestion = index;
     const completedValue = getCompletionValue(terminalInput.value);
@@ -596,8 +546,6 @@ if (portfolioTerminal) {
   });
 
   if (terminalHintLink) {
-    // Same trick the suggestion options use: eat the mousedown so the
-    // input never blurs while the hint link is being clicked.
     terminalHintLink.addEventListener('mousedown', function (event) {
       event.preventDefault();
     });
@@ -637,9 +585,6 @@ if (portfolioTerminal) {
         scrollToBottom();
         return;
       }
-      /* The prompt is collapsed, so a stray character would land in a field
-         nobody can see and silently drop the picker. Swallow it: escape is the
-         way out, and the hint row says so. */
       if (event.key.length === 1 && !event.metaKey && !event.ctrlKey) {
         event.preventDefault();
         return;
@@ -708,7 +653,6 @@ if (portfolioTerminal) {
   if (document.activeElement === document.body) terminalInput.focus({ preventScroll: true });
 }
 
-// "picking up new hobbies" in the hero summary links down to #about — smooth-scrolled by hand since the site has no global scroll-behavior: smooth.
 const hobbiesLink = document.querySelector('.home-hero-hobbies-link');
 if (hobbiesLink) {
   hobbiesLink.addEventListener('click', function (event) {
@@ -719,10 +663,6 @@ if (hobbiesLink) {
   });
 }
 
-/* The games sit in the projects grid alongside the plugins, but they are page
-   takeovers rather than destinations, so their tiles launch window.siteGames
-   instead of navigating. The guard mirrors the command palette's: a games.js
-   that failed to load leaves the tile inert rather than throwing on click. */
 (function () {
   document.querySelectorAll('#side-projects [data-game]').forEach(function (tile) {
     tile.addEventListener('click', function () {
@@ -731,9 +671,6 @@ if (hobbiesLink) {
   });
 })();
 
-// Classic 3D Perlin noise (x, y, time), used by the parked undercurrent
-// module below. (The halftone portrait that shared this field was removed
-// when the aurora shader took over the hero background.)
 var heroNoise3 = (function () {
     var p = new Uint8Array(512);
     var seed = 20260716;
@@ -770,11 +707,6 @@ var heroNoise3 = (function () {
     };
 })();
 
-// Undercurrent: curl-noise flow field behind the homepage hero.
-// Particles ride a slowly evolving Perlin field and leave faint trails in the
-// hero's existing ambient palette. A light cursor pull adds depth immediately;
-// over time the fleet gathers into a loose, orbiting swarm. Trails fade with
-// destination-out compositing, so the gradient, grain, and mask stay untouched.
 (function () {
     var flowHost = document.querySelector('.home-hero-ambient');
     if (!flowHost) return;
@@ -785,17 +717,16 @@ var heroNoise3 = (function () {
 
     var noise3 = heroNoise3;
 
-    // the same hues the aurora blobs used, light and dark
     var PALETTES = {
         light: [
-            { rgb: '139, 124, 255', weight: .55 },   // hero purple
-            { rgb: '196, 181, 253', weight: .3 },    // hero violet
-            { rgb: '255, 143, 112', weight: .15 }    // hero coral
+            { rgb: '139, 124, 255', weight: .55 },
+            { rgb: '196, 181, 253', weight: .3 },
+            { rgb: '255, 143, 112', weight: .15 }
         ],
         dark: [
-            { rgb: '239, 169, 174', weight: .55 },   // rose glow
-            { rgb: '200, 173, 236', weight: .3 },    // iris glow
-            { rgb: '235, 111, 146', weight: .15 }    // love glow
+            { rgb: '239, 169, 174', weight: .55 },
+            { rgb: '200, 173, 236', weight: .3 },
+            { rgb: '235, 111, 146', weight: .15 }
         ]
     };
     var isDarkTheme = function () {
@@ -814,8 +745,6 @@ var heroNoise3 = (function () {
         return palette[0].rgb;
     };
     var pickAlpha = function () {
-        // Light trails need more pigment against the pale lavender wash;
-        // preserve the existing, quieter dark-theme intensity.
         return isDarkTheme() ? .22 + Math.random() * .16 : .38 + Math.random() * .18;
     };
 
@@ -855,11 +784,9 @@ var heroNoise3 = (function () {
         pt.x = Math.random() * w;
         pt.y = Math.random() * h;
         pt.life = 0;
-        pt.ttl = 5 + Math.random() * 5;               // seconds before drifting elsewhere
+        pt.ttl = 5 + Math.random() * 5;
         pt.rgb = pickColor();
         pt.alpha = pickAlpha();
-        // Stable per-particle orbit traits keep the gathering organic instead
-        // of collapsing every trail into one bright point.
         if (pt.swarmAngle === undefined) pt.swarmAngle = Math.random() * Math.PI * 2;
         if (pt.swarmRadius === undefined) pt.swarmRadius = .18 + Math.random() * .82;
         if (pt.swarmSpeed === undefined) pt.swarmSpeed = .035 + Math.random() * .075;
@@ -881,15 +808,13 @@ var heroNoise3 = (function () {
         particles = [];
         for (var i = 0; i < count; i++) {
             var pt = spawn({});
-            pt.life = Math.random() * pt.ttl;         // desync fade-ins on first paint
+            pt.life = Math.random() * pt.ttl;
             particles.push(pt);
         }
     };
     new ResizeObserver(resize).observe(flowHost);
     resize();
 
-    // Theme flips: clear old-hue trails and recolor the fleet. Listening to
-    // the shared theme event avoids reacting to unrelated root class changes.
     document.documentElement.addEventListener('site:themechange', function () {
         flowCtx.setTransform(1, 0, 0, 1, 0, 0);
         flowCtx.clearRect(0, 0, flowCanvas.width, flowCanvas.height);
@@ -899,8 +824,8 @@ var heroNoise3 = (function () {
         }
     });
 
-    var SCALE = .0021;   // spatial frequency of the field
-    var EPS = 14;        // finite-difference step for the curl
+    var SCALE = .0021;
+    var EPS = 14;
     var last = performance.now();
     var frameId = 0;
 
@@ -946,9 +871,6 @@ var heroNoise3 = (function () {
             t += dt;
             var elapsed = (now - startedAt) / 1000;
 
-            // The first beat stays airy. From .5–8.5s the field rapidly
-            // gathers, using smoothstep so the change is never a visible mode
-            // switch. It remains a broad swarm, not a tight cursor spotlight.
             var swarmLinear = Math.max(0, Math.min(1, (elapsed - .5) / 8));
             var swarm = swarmLinear * swarmLinear * (3 - 2 * swarmLinear);
 
@@ -958,9 +880,6 @@ var heroNoise3 = (function () {
                 pointer.y += (pointer.targetY - pointer.y) * pointerEase;
             }
 
-            // Without a cursor the swarm meanders on a slow Lissajous path.
-            // With one, its center only leans toward the pointer, increasingly
-            // as the swarm matures, which keeps the interaction understated.
             var autoX = w * (.5 + Math.sin(t * .115) * .17);
             var autoY = h * (.34 + Math.cos(t * .083) * .11);
             var cursorBlend = pointer.active ? .42 + swarm * .5 : 0;
@@ -972,7 +891,6 @@ var heroNoise3 = (function () {
 
             flowCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-            // fade existing trails toward transparent — the silkiness lives here
             flowCtx.globalCompositeOperation = 'destination-out';
             flowCtx.fillStyle = isDarkTheme() ? 'rgba(0, 0, 0, .05)' : 'rgba(0, 0, 0, .035)';
             flowCtx.fillRect(0, 0, w, h);
@@ -982,7 +900,6 @@ var heroNoise3 = (function () {
             flowCtx.lineCap = 'round';
             for (var i = 0; i < particles.length; i++) {
                 var pt = particles[i];
-                // curl of the noise field = divergence-free swirl, water not wind
                 var n1 = noise3(pt.x * SCALE, (pt.y + EPS) * SCALE, t * .05);
                 var n2 = noise3(pt.x * SCALE, (pt.y - EPS) * SCALE, t * .05);
                 var n3 = noise3((pt.x + EPS) * SCALE, pt.y * SCALE, t * .05);
@@ -990,9 +907,6 @@ var heroNoise3 = (function () {
                 var nx = pt.x + (n1 - n2) * 620 * dt;
                 var ny = pt.y - (n3 - n4) * 620 * dt;
 
-                // Immediate cursor-follow force: deliberately weaker than the
-                // noise field, with a soft distance falloff rather than a hard
-                // interaction radius.
                 if (pointer.active) {
                     var pointerDx = pointer.x - pt.x;
                     var pointerDy = pointer.y - pt.y;
@@ -1004,9 +918,6 @@ var heroNoise3 = (function () {
                     ny += pointerDy * pointerPull * dt;
                 }
 
-                // Mature particles orbit different radii around the shared
-                // anchor. The shrinking radius and strengthening pull create
-                // the long-form swarming behavior without a sudden collapse.
                 if (swarm > 0) {
                     var fieldSize = Math.min(w, h);
                     var openRadius = fieldSize * (.28 + pt.swarmRadius * .34);
@@ -1020,7 +931,6 @@ var heroNoise3 = (function () {
                     ny += (swarmTargetY - pt.y) * swarmPull * dt;
                 }
 
-                // ease in after spawn, ease out before respawn — no popping
                 var fadeIn = Math.min(pt.life / .8, 1);
                 var fadeOut = Math.min((pt.ttl - pt.life) / .8, 1);
                 var a = pt.alpha * Math.min(fadeIn, fadeOut);
@@ -1043,38 +953,25 @@ var heroNoise3 = (function () {
     }
 })();
 
-/* About: the camera-roll strip. CSS grows the hovered pane to the photo's own
-   aspect ratio; this leans it toward the cursor while the pointer is inside it,
-   so the frame reads as a print being tipped rather than a box being zoomed.
-   Only the two rotation angles are written, as custom properties — the rest of
-   the transform stays in bio.css, so the reveal still works with this off. */
 (function () {
     var slots = document.querySelectorAll('#bio .bio-shot');
     if (!slots.length) return;
 
     var pointerMedia = window.matchMedia('(pointer: fine)');
     var motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var maxTilt = 9;                                  // degrees at a pane's edge
-    var edgeGap = 20;                                  // px the end panes land from the window edge
+    var maxTilt = 9;
+    var edgeGap = 20;
 
     var rest = function (frame) {
         frame.style.removeProperty('--bio-tilt-x');
         frame.style.removeProperty('--bio-tilt-y');
     };
 
-    /* Only the strip's first and last panes bleed off the window edge by
-       design (.bio-ribbon above), so only they get a sideways nudge. The
-       reveal always grows centred on the slot first; this just adds how far
-       off that centre the pane has to land so its EDGE_GAP-side edge stops
-       exactly edgeGap from the window, instead of growing straight past it. */
     var edgeSlots = [
         { slot: slots[0], side: 'left' },
         { slot: slots[slots.length - 1], side: 'right' }
     ];
 
-    /* Mirrors bio.css: the hover rule's --bio-lift scale, and .bio-ribbon's own
-       tilt. Both widen the frame's on-screen footprint beyond its raw
-       width/height, so the edge math needs them to land on the real edge. */
     var edgeLift = 1.06;
     var edgeRibbonRotate = 2 * Math.PI / 180;
 
@@ -1087,14 +984,9 @@ var heroNoise3 = (function () {
         var reveal = parseFloat(getComputedStyle(document.getElementById('bio')).getPropertyValue('--bio-shot-reveal')) || 1;
         var ar = parseFloat(getComputedStyle(entry.slot).getPropertyValue('--shot-ar')) || .75;
 
-        /* Local (pre-rotation) box the reveal grows to, scaled up by the same
-           lift the hover rule applies on top of it. */
         var localHeight = entry.slot.offsetHeight * reveal * edgeLift;
         var localWidth = localHeight * ar;
 
-        /* The ribbon's rotate widens the on-screen (axis-aligned) box past its
-           local size; slotBox's own centre already reflects that rotation, so
-           only the half-extent needs the correction. */
         var aabbHalfWidth = (localWidth / 2) * Math.cos(edgeRibbonRotate) + (localHeight / 2) * Math.sin(edgeRibbonRotate);
         var slotCenterX = slotBox.left + slotBox.width / 2;
 
@@ -1120,9 +1012,6 @@ var heroNoise3 = (function () {
         var frame = slot.querySelector('.bio-shot-frame');
         if (!frame) return;
 
-        /* Measured on enter and held for the gesture: the pane is mid-transition
-           on the way in, so reading it every move would chase its own growth.
-           The slot never resizes, which is what makes one read safe. */
         var box = null;
 
         slot.addEventListener('pointerenter', function () {
@@ -1134,13 +1023,9 @@ var heroNoise3 = (function () {
             if (event.pointerType === 'touch') return;
             if (!box) box = slot.getBoundingClientRect();
 
-            /* -.5 at one edge of the slot, +.5 at the other. */
             var dx = (event.clientX - box.left) / box.width - .5;
             var dy = (event.clientY - box.top) / box.height - .5;
 
-            /* X negates: the cursor above centre should tip the top away and
-               bring the bottom forward, which is the direction that reads as
-               the photo turning to face you. */
             frame.style.setProperty('--bio-tilt-x', (-dy * maxTilt).toFixed(2) + 'deg');
             frame.style.setProperty('--bio-tilt-y', (dx * maxTilt).toFixed(2) + 'deg');
         }, { passive: true });
@@ -1151,8 +1036,6 @@ var heroNoise3 = (function () {
         }, { passive: true });
     });
 
-    /* A pane held mid-tilt when the window loses focus would still be leaning
-       when the visitor comes back to a cursor that has since moved. */
     window.addEventListener('blur', function () {
         Array.prototype.forEach.call(slots, function (slot) {
             var frame = slot.querySelector('.bio-shot-frame');

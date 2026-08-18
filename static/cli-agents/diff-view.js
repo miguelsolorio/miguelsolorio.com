@@ -1,15 +1,3 @@
-/* Still diff scenes for the CLI Agents case study.
-
-   Same shape as buildDiffBlock in cli-animation.js, with one difference: line
-   numbers are authored rather than counted. The point of the before/after is
-   that the old renderer numbered lines wrong, so the numbers are content. */
-
-/* ---- rows: [type, lineNumber, text] ---- */
-/* type: ctx | del | add | gap | hidden. gap is the rule between hunks; hidden
-   is the "first N lines hidden" notice. Neither carries a line number. */
-
-/* The old renderer: three extra columns of indent, a coarser context window,
-   and no syntax pass. */
 const APP_CSS_BEFORE = [
   ["hidden", "", "... first 15 lines hidden ..."],
   ["ctx", 16, "    text-align: center;"],
@@ -41,8 +29,6 @@ const APP_CSS_BEFORE = [
   ["ctx", 45, "  @keyframes App-logo-spin {"],
 ];
 
-/* The shipped renderer: tighter context, aligned columns, and the same hunks
-   presented so the change reads at a glance. */
 const APP_CSS_AFTER = [
   ["hidden", "", "... first 12 lines hidden ..."],
   ["ctx", 13, ".App {"],
@@ -100,9 +86,6 @@ const FIBONACCI = [
   ["add", 17, 'print(f"Fibonacci(35): {fibonacci(35)}") # Output: 9227465'],
 ];
 
-/* The theme dialog's preview pane: a short syntax sample over a one-line
-   change, which is what the CLI shows so a theme's code palette and its diff
-   colours can both be judged before the theme is applied. */
 const THEME_PREVIEW = [
   ["ctx", 1, "# function"],
   ["ctx", 2, "def fibonacci(n):"],
@@ -122,10 +105,6 @@ const DIFF_SETS = {
   "theme-preview": { rows: THEME_PREVIEW, language: "python", highlight: true },
 };
 
-/* Prism's core CSS grammar has no token for numbers or hex colours, so every
-   value in the "after" panel would render in the same plain foreground as the
-   "before" one — the panel would stop demonstrating the thing it is there to
-   demonstrate. The shipped CLI colours both. */
 if (window.Prism?.languages?.css) {
   Prism.languages.insertBefore("css", "function", {
     hexcode: /#[\da-f]{3,8}\b/i,
@@ -133,8 +112,6 @@ if (window.Prism?.languages?.css) {
   });
 }
 
-/* A run of changed lines is bounded by anything that is not itself a change, so
-   a hunk rule breaks it the same way a context line does. */
 function isChange(row) {
   return row && (row[0] === "add" || row[0] === "del");
 }
@@ -196,7 +173,4 @@ document.querySelectorAll("[data-diff]").forEach((mount) => {
   if (set) renderDiff(mount, set);
 });
 
-/* These scenes are still frames, but their height depends on the width they are
-   given: the type scales, so the panels get shorter as the column narrows.
-   Rather than have the page guess a height, tell it the real one. */
 DemoSystem.publishHeight();

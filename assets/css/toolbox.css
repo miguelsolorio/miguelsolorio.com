@@ -1,11 +1,3 @@
-/* Toolbox: a static row of logo marks at the end of the home page. Ported
-   from round two of the lab (static/home/toolbox-variations-2.html,
-   variation 09, "Etch and bloom"), stripped of the hover choreography it
-   was named for: no ink-to-color swap, no lift, no tooltip. Every mark
-   shows its full color (or its one brand ink) at rest, with its name and
-   category printed underneath, so the row reads the same under a mouse as
-   it does on a touchscreen. */
-
 @layer components {
   #toolbox {
     display: flex;
@@ -43,14 +35,10 @@
     fill: currentColor;
   }
 
-  /* Single-ink marks: brand color, standing in for the marks that ship
-     multicolor art (VS Code, Oh My Posh, CleanShot, Figma) above. */
   .toolbox-mark--claude { color: #d97757; }
   .toolbox-mark--codex { color: #181818; }
   .toolbox-mark--ghostty { color: #3551f3; }
   .toolbox-mark--opencode { color: #181818; }
-  /* Arc's brand salmon (#fcbfbd) is tuned for dark grounds; deepened on the
-     light page, authentic tone in dark. */
   .toolbox-mark--arc { color: #c25e70; }
   .toolbox-mark--raycast { color: #ff6363; }
   .dark .toolbox-mark--codex,

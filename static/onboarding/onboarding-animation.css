@@ -143,9 +143,6 @@ input:focus-visible {
   transition: background-color .35s ease, color .35s ease;
 }
 
-/* Holds the activity bar + workspace side by side, above the status bar, so
-   the status bar can span the frame's full width instead of stopping at the
-   sidebar's edge. */
 .app-body {
   display: flex;
   min-height: 0;

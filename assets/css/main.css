@@ -14,20 +14,10 @@
 @layer base {
   :root {
     --site-max-width: 72rem;
-    /* The max() floor only matters once header.html opts into
-       viewport-fit=cover: in landscape on a notched phone the notch eats about
-       44px, more than the 4vw gutter, so without it body text slides under the
-       cutout. Both insets are 0 in portrait and on desktop, where this is
-       exactly the clamp it has always been. */
     --site-gutter: max(clamp(1.25rem, 4vw, 3rem), env(safe-area-inset-left), env(safe-area-inset-right));
 
-    /* Site accent, until now only in tailwind.config.js. */
     --primary: #3429ff;
 
-    /* Shadow ink: the primary mixed into the topography shader's dark base —
-       color-mix(in srgb, #3429ff 30%, #1c1725) = rgb(35 28 102) / #231c66.
-       One ink per theme (see .dark below); every shadow draws from it so
-       depth reads as one material across the site. */
     --shadow-rgb: 35 28 102;
 
     --shadow-ring: 0 0 0 1px rgb(var(--shadow-rgb) / .07);
@@ -38,12 +28,6 @@
     --shadow-hover: 0 12px 28px -8px rgb(var(--shadow-rgb) / .38);
   }
 
-  /* Dark halves — Rosé Dusk. The ink swaps to the dark primary's mix:
-     color-mix(in srgb, #efa9ae 20%, #0a0614) = rgb(56 39 51) / #38272f,
-     rose warmed into the palette's mauve shadow black — depth stays warm
-     while rose itself stays reserved for text roles. The ring is the one
-     pigment exception: a dark hairline vanishes on the near-black page,
-     so edges lift with the palette's mauve hairline (210 202 222). */
   .dark {
     --shadow-rgb: 56 39 51;
     --shadow-ring: 0 0 0 1px rgb(210 202 222 / .12);
@@ -54,11 +38,6 @@
     --shadow-hover: 0 12px 28px -8px rgb(var(--shadow-rgb) / .58);
   }
 
-  /* Detail pages give their visuals a wider stage than the home grid, but only
-     a little — media spans the whole shell here, and much past this the
-     screenshots start to overpower the prose they sit with. Both .site-shell
-     instances — the sticky header bar and the content column — inherit this
-     from body, so the logo, media, and footer stay on one edge. */
   body.detail-page {
     --site-max-width: 76rem;
   }
@@ -69,13 +48,6 @@
     box-sizing: border-box;
   }
 
-  /* The horizontal clamp lives on html, not body: a body-only guard is the
-     configuration iOS Safari ignores when panning into overflowing content.
-     `clip` clamps without creating a scroll container; `hidden` is the
-     fallback for browsers that don't know clip yet. Body must NOT carry
-     `overflow-x: hidden` alongside this — once html has its own overflow,
-     body's would stop propagating to the viewport and would turn body into
-     a scroll container, silently unsticking the .site-header. */
   html {
     overflow-x: hidden;
     overflow-x: clip;
@@ -88,7 +60,6 @@
     width: 100%;
     min-width: 0;
     margin: 0;
-    /* clip, never hidden — see the html rule above for why. */
     overflow-x: clip;
   }
 
@@ -98,11 +69,6 @@
     margin-inline: auto;
   }
 
-  /* Site-wide ambient: a fixed, viewport-filling layer behind every page.
-     The topography shader (assets/js/common.js) paints the canvas; the
-     gradient here is the no-WebGL / no-JS fallback, and the ::after grain
-     composites over whichever of the two is showing. z-index -1 keeps it
-     beneath all content while still painting above the body background. */
   .site-ambient {
     position: fixed;
     inset: 0;
@@ -159,12 +125,6 @@
     box-shadow: .2em 0 #3429ff, -.2em 0 #3429ff;
   }
 
-  /* Navigation */
-
-  /* The bar spans the viewport so its tint and blur run edge to edge, while
-     the inner shell keeps the logo and controls on the content grid. The
-     z-index also holds it above the home page's full-viewport ambient hero
-     layer, which reaches up behind the header. */
   .site-header {
     position: sticky;
     top: 0;
@@ -177,10 +137,6 @@
     @apply flex items-center justify-between py-6;
   }
 
-  /* At rest the bar is invisible against the page; common.js drops the `top`
-     class once the page scrolls, which fades in the tint, hairline, and blur.
-     Gating the blur on that class keeps the hero's ambient art unblurred at
-     the top of the home page, where it sits directly behind the header. */
   html:not(.top):not(.incognito) .site-header {
     background-color: rgba(245, 245, 245, .72);
     border-bottom-color: rgba(15, 23, 42, .08);
@@ -189,16 +145,10 @@
     backdrop-filter: blur(12px) saturate(180%);
   }
 
-  /* ?incognito (set by common.js) returns the header to the pre-sticky
-     behaviour: it scrolls away with the page and never picks up the tint, so
-     screenshots and recordings get the whole viewport. */
   html.incognito .site-header {
     position: static;
   }
 
-  /* Size the icons, not the controls: the button and the .social anchors both
-     size to their icon plus padding, which a fixed w/h would fight under
-     border-box. */
   nav svg {
     @apply w-5 h-5;
   }
@@ -213,9 +163,6 @@
     @apply fill-current text-current;
   }
 
-  /* Every header control — the social links and the theme toggle — takes the
-     one hover: the primary fill with white glyphs. No per-service brand colour
-     and no scale; the accent is the same one the body links highlight with. */
   .social a:hover,
   nav #theme-toggle:hover {
     @apply bg-primary;
@@ -248,8 +195,6 @@
   #logo:hover {
     color: var(--primary);
   }
-
-  /* Content */
 
   #content.single {
     @apply w-full max-w-none;

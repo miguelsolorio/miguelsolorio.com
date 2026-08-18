@@ -1,10 +1,3 @@
-/* Palette for the Colab UI refresh wipe. The stage itself lives in
-   /demo-system/reveal.css; this only says what this pair looks like.
-
-   Both shots are the same product at the same moment, so a single tag palette
-   suits them — the shared dark chip reads on the notebook canvas in either
-   theme, and the divider chrome inherited from the stage does the rest. */
-
 :root {
   --reveal-font: "Google Sans", "Helvetica Neue", Arial, sans-serif;
   --reveal-focus: #0b57d0;

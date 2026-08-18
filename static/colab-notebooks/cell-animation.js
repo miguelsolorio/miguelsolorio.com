@@ -1,7 +1,3 @@
-/* ---------------- content ----------------
-   Each cell is a list of lines; each line is a list of [text, tokenClass] pairs.
-   tokenClass: '' plain | 'kw' keyword | 'com' comment | 'str' string | 'prm' param
-*/
 const CELLS = [
   [
     [["# Import the Python SDK", "com"]],
@@ -21,17 +17,16 @@ const CELLS = [
   ],
 ];
 
-/* ---------------- timing (ms) ---------------- */
 const T = {
-  chunkMin: 4,       // delay between streamed chunks
+  chunkMin: 4,
   chunkMax: 12,
-  charsMin: 5,       // characters per chunk
+  charsMin: 5,
   charsMax: 14,
-  linePause: 40,     // pause after each line
-  cellExpand: 250,   // expansion transition before the cell chrome appears
-  cellAppear: 80,    // beat after the chrome appears before streaming
-  cellPause: 120,    // pause after a cell finishes before the next appears
-  startDelay: 500,  // lead-in before the animation begins
+  linePause: 40,
+  cellExpand: 250,
+  cellAppear: 80,
+  cellPause: 120,
+  startDelay: 500,
 };
 
 const ICONS = {
@@ -122,7 +117,7 @@ function buildCell(cellLines) {
 
 async function streamLine(lineEl, tokens, cursor, id) {
   lineEl.classList.add("on");
-  if (!tokens.length) {           // blank line: brief beat
+  if (!tokens.length) {
     lineEl.appendChild(cursor);
     await sleep(T.linePause);
     return;
@@ -145,7 +140,6 @@ async function streamLine(lineEl, tokens, cursor, id) {
   await sleep(T.linePause);
 }
 
-/* stream rich text (with links) into a chat element */
 async function streamRich(el, parts, cursor, id) {
   el.appendChild(cursor);
   for (const [text, cls] of parts) {
@@ -162,12 +156,11 @@ async function streamRich(el, parts, cursor, id) {
   }
 }
 
-/* ---------------- fake mouse ---------------- */
 function placeMouse(x, y, instant = false) {
   if (instant) {
     mouse.style.transition = "none";
     mouse.style.transform = `translate(${x}px, ${y}px)`;
-    void mouse.offsetWidth; // flush so the next move transitions
+    void mouse.offsetWidth;
     mouse.style.transition = "";
   } else {
     mouse.style.transform = `translate(${x}px, ${y}px)`;
@@ -189,7 +182,6 @@ async function clickMouse(btn) {
   btn.classList.remove("pressed");
 }
 
-/* human-speed typing into the chat input */
 async function typePrompt(text, id) {
   const caret = document.createElement("span");
   caret.className = "cursor";
@@ -203,7 +195,6 @@ async function typePrompt(text, id) {
     await sleep(rand(35, 85));
   }
   await sleep(900);
-  // caret stays in the input after sending
 }
 
 async function run(context) {
@@ -213,7 +204,6 @@ async function run(context) {
   notebook.innerHTML = "";
   notebook.classList.remove("active");
 
-  // reset chat: bare input, vertically centered
   chat.classList.add("centered");
   chat.classList.remove("open");
   chatInput.classList.remove("focus");
@@ -228,7 +218,6 @@ async function run(context) {
   sendBtn.textContent = "send";
   chatInput.querySelectorAll(".cursor").forEach((e) => e.remove());
 
-  // reset mouse cursor
   mouse.classList.remove("show", "click");
 
   const rows = CELLS.map(buildCell);
@@ -239,31 +228,28 @@ async function run(context) {
 
   await sleep(T.startDelay);
 
-  // 1. the user types and sends the prompt
   await typePrompt(PROMPT, id);
   if (id !== runId) return;
   inputText.textContent = "";
   placeholder.style.display = "";
-  sendBtn.classList.remove("enabled"); // input is empty again
+  sendBtn.classList.remove("enabled");
   chatUserText.textContent = PROMPT;
-  chat.classList.add("open");     // bare input expands into the card
+  chat.classList.add("open");
   chatUser.classList.add("show");
   await sleep(450);
 
-  // 2. Gemini is thinking (chat stays centered)
   chatAi.classList.add("show", "thinking");
   chatAiText.textContent = "Thinking...";
   await sleep(1000);
 
-  // 3. the notebook cells stream in
   for (let c = 0; c < rows.length; c++) {
     if (id !== runId) return;
     const row = rows[c];
     if (c > 0) rows[c - 1].classList.remove("active", "tagged", "streaming");
-    row.classList.add("visible"); // row expands + fades in
+    row.classList.add("visible");
     if (c === 0) {
       notebook.classList.add("active");
-      chat.classList.remove("centered"); // first cell appears: chat glides down
+      chat.classList.remove("centered");
     }
     await sleep(T.cellExpand);
     row.classList.add("settled", "active", "tagged", "streaming", "added");
@@ -279,12 +265,11 @@ async function run(context) {
     if (c < rows.length - 1) {
       await sleep(T.cellPause);
     } else {
-      row.classList.remove("streaming"); // all cells done: spinner back to star
+      row.classList.remove("streaming");
     }
   }
   if (id !== runId) return;
 
-  // 4. all cells done: replace "Thinking..." with the full response + actions
   await sleep(300);
   chatAi.classList.remove("thinking");
   chatAiText.textContent = "";
@@ -297,7 +282,6 @@ async function run(context) {
   chatCursor.remove();
   chatActions.classList.add("show");
 
-  // 5. the mouse cursor comes in and clicks "Accept & Run"
   await sleep(600);
   const acceptBtn = document.getElementById("acceptRunBtn");
   placeMouse(window.innerWidth * 0.75, window.innerHeight + 40, true);
@@ -308,11 +292,10 @@ async function run(context) {
   await clickMouse(acceptBtn);
   if (id !== runId) return;
 
-  // accepted: actions fade out, message flips to "Executing...", green diff colors clear
   chatActions.classList.remove("show");
   chatAi.classList.add("thinking");
   chatAiText.textContent = "Executing...";
-  sendBtn.classList.remove("enabled");   // send -> stop while executing
+  sendBtn.classList.remove("enabled");
   sendBtn.classList.add("stop");
   sendBtn.textContent = "stop";
   rows.forEach((r) => {
@@ -322,11 +305,10 @@ async function run(context) {
   await sleep(300);
   mouse.classList.remove("show");
 
-  // 6. all cells run at once; they finish one by one
   rows.forEach((r) => r.classList.add("running"));
   for (let c = 0; c < rows.length; c++) {
     if (id !== runId) return;
-    await sleep(c === rows.length - 1 ? 600 : 400); // the last cell "calls the model"
+    await sleep(c === rows.length - 1 ? 600 : 400);
     const row = rows[c];
     row.classList.remove("running");
     row.classList.add("ran");
@@ -334,7 +316,6 @@ async function run(context) {
   }
   if (id !== runId) return;
 
-  // 7. the final cell prints its output
   const lastRow = rows[rows.length - 1];
   const outWrap = document.createElement("div");
   outWrap.className = "cell-output";
@@ -349,7 +330,6 @@ async function run(context) {
   if (id !== runId) return;
   outCursor.remove();
 
-  // 8. execution finished: stop -> send (disabled, since the input is empty)
   sendBtn.classList.remove("stop", "enabled");
   sendBtn.textContent = "send";
   await sleep(300);

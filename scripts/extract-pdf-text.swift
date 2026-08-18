@@ -1,9 +1,3 @@
-// Dumps a PDF's text layer — what an applicant tracking system reads, as
-// opposed to what the page looks like. Run it after build-resume.mjs to check
-// that words stay whole and each job title still sits next to its dates:
-//
-//   swift scripts/extract-pdf-text.swift static/miguel-solorio-resume.pdf
-
 import Foundation
 import PDFKit
 

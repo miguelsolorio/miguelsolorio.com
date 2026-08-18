@@ -5,7 +5,6 @@
         @apply transition-all duration-200 ease-in
     }
 
-    /* Homepage intro */
     intro.home-hero {
         position: relative;
         isolation: isolate;
@@ -15,17 +14,10 @@
         margin-top: 2rem;
         margin-bottom: 6rem;
         padding: 0;
-        /* Clicks anywhere in the hero fire shockwaves through the halftone,
-           and rapid taps double-tap into selecting the headline or summary.
-           Suppressing selection here keeps the interaction feeling tactile;
-           the terminal (below) re-enables it so command output stays
-           copyable. */
         -webkit-user-select: none;
         user-select: none;
     }
 
-    /* The hero's backdrop — the aurora shader — is the site-wide fixed
-       .site-ambient layer (main.css); nothing here draws it. */
     .home-hero * {
         box-sizing: border-box;
     }
@@ -34,10 +26,6 @@
         position: relative;
         z-index: 1;
         display: grid;
-        /* 23rem holds the log lines on one line each, but only at the
-           terminal's 12px type: the longest row is 44 chars (~317px in
-           JetBrains Mono) against 340px of usable width once body padding is
-           taken out. Widen the type and this has to widen with it. */
         grid-template-columns: minmax(0, 1fr) 23rem;
         gap: 4rem;
         align-items: center;
@@ -85,10 +73,6 @@
         text-decoration-color: currentColor;
     }
 
-    /* Terminal window. Follows the page theme; the dark palette lives in the
-       `.dark` override below. The token hues differ between themes rather than
-       being reused — the dark set is tuned against #161221 and would fail
-       contrast on white, yellow and green worst of all. */
     .home-hero-current {
         --t-bg: #ffffff;
         --t-bar: #f1f5f9;
@@ -106,11 +90,6 @@
         overflow: hidden;
         border: 1px solid var(--t-line);
         border-radius: .625rem;
-        /* Frosted panel: 70% terminal fill so the halftone and ambient
-           wash read clearly through the glass without pulling focus off
-           the type. Solid fallback first for browsers without color-mix /
-           backdrop-filter, so the terminal stays opaque and readable if
-           the effect can't be composited. */
         background: var(--t-bg);
         background: color-mix(in srgb, var(--t-bg) 70%, transparent);
         -webkit-backdrop-filter: blur(18px) saturate(1.5);
@@ -120,8 +99,6 @@
         font-family: 'JetBrains Mono', monospace;
         font-size: .75rem;
         line-height: 1.55;
-        /* Restore selection inside the terminal — output and history
-           should stay copyable even though the surrounding hero blocks it. */
         -webkit-user-select: text;
         user-select: text;
     }
@@ -133,8 +110,6 @@
         min-height: 2rem;
         padding: 0 .625rem;
         border-bottom: 1px solid var(--t-line);
-        /* Match the frost — a fully opaque titlebar over a translucent body
-           looks like two stacked windows. */
         background: var(--t-bar);
         background: color-mix(in srgb, var(--t-bar) 65%, transparent);
     }
@@ -180,7 +155,6 @@
         scrollbar-width: thin;
     }
 
-    /* pre-wrap preserves the leading indent on the `modified:` row. */
     .home-hero-row {
         margin: 0;
         white-space: pre-wrap;
@@ -237,11 +211,6 @@
         opacity: .8;
     }
 
-    /* The placeholder as a real layer (intro.html) so /slash can be
-       clicked to open the command menu. Sits under the caret block,
-       and disappears the moment the input holds any text — the
-       input's single-space placeholder exists purely to keep
-       :placeholder-shown meaning "empty". */
     .home-hero-terminal-hint {
         position: absolute;
         top: 0;
@@ -334,7 +303,6 @@
         list-style: none;
         border: 1px solid var(--t-line);
         border-radius: .5rem;
-        /* Solid fallback first; browsers with color-mix get the frosted panel. */
         background: var(--t-bg);
         background: color-mix(in srgb, var(--t-bg) 88%, transparent);
         -webkit-backdrop-filter: blur(10px);
@@ -373,8 +341,6 @@
         color: var(--t-bright);
     }
 
-    /* Longest command is 8 chars ≈ 3.7rem at the terminal's 12px mono, so
-       4.25rem lines the descriptions up in a single column. */
     .home-hero-terminal-suggestion-name {
         flex: 0 0 auto;
         min-width: 4.25rem;
@@ -404,9 +370,6 @@
         text-decoration: underline;
     }
 
-    /* A whole output row that is also a button — the `game` command's picker.
-       Reset to nothing so it reads as terminal output rather than as UI, and
-       borrow the link's underline for the hover and focus states. */
     .home-hero-current .home-hero-terminal-action {
         display: block;
         width: 100%;
@@ -432,8 +395,6 @@
         border-radius: .25rem;
     }
 
-    /* The selected row of the `game` picker. Same treatment as the command
-       suggestion list so the two read as one idea. */
     .home-hero-current .home-hero-terminal-action.is-active {
         margin-inline: -.375rem;
         padding-inline: .375rem;
@@ -450,17 +411,11 @@
         color: var(--t-bright);
     }
 
-    /* Rows go inert once the choice is made — they stay as a record of what
-       was offered, but they are no longer a control. */
     .home-hero-current .home-hero-terminal-action:disabled {
         cursor: default;
         opacity: .55;
     }
 
-    /* While the picker is up the highlighted row IS the input, so the prompt
-       collapses. Collapsed rather than hidden on purpose: display:none and
-       visibility:hidden both blur the field, and the field is what receives
-       the arrow keys. */
     .home-hero-current.is-choosing .home-hero-terminal-controls {
         margin-top: 0;
     }
@@ -501,9 +456,6 @@
         color: var(--t-dim);
     }
 
-    /* Status entries take VS Code's Source Control hues — added green,
-       modified yellow, deleted red — rather than git's own scheme, which
-       paints every staged entry green regardless of type. */
     .home-hero-current .t-added {
         color: var(--t-green);
     }
@@ -546,9 +498,6 @@
         --t-light: #453c5c;
     }
 
-    /* Dark counterpart of the light hero's #3429ff highlight: the palette's
-       rose accent — the one hue reserved for the headline, so it stays the
-       loudest thing on the page. */
     .dark .home-hero h1 {
         color: #efa9ae;
     }
@@ -597,12 +546,9 @@
     .home-hero-current {
         width: min(100%, 23rem);
         max-width: 23rem;
-        /* Scale the type to the viewport so the longest commit row (44 chars)
-           still fits on one line down to ~320px. */
         font-size: clamp(.5rem, calc(3.6vw - 3px), .75rem);
     }
 
-    /* Too narrow to render the session title without truncating it. */
     .home-hero-terminal-title {
         display: none;
     }
@@ -622,26 +568,12 @@
     }
 }
 
-/* Touch browsers zoom the page in whenever a focused input renders under 16px,
-   and the terminal's type is deliberately well under that, so tapping the
-   prompt scaled the whole hero up and pushed most of it off screen. Sizing the
-   prompt row at 16px is the only fix that leaves the viewport's scale alone;
-   pinning that would take pinch-zoom away with it. The bump covers the row and
-   its completion list together, so the input, the mirrored caret layer, the
-   hint, and the suggestions all read one font-size: the caret keeps landing on
-   the character the text shows, and the rows grow into real tap targets. Output
-   above stays small, since the clamp up there is what keeps a 44-char commit
-   row on one line. max() rather than a bare 1rem because the 16px threshold is
-   fixed in CSS pixels, so a reader running a smaller default would land back
-   under it. */
 @media (pointer: coarse) {
     .home-hero-terminal-form,
     .home-hero-terminal-suggestions {
         font-size: max(1rem, 16px);
     }
 
-    /* The base 4.25rem is tuned to the terminal's 12px mono. In ch, the column
-       holds the descriptions in line at whatever size the row renders at. */
     .home-hero-terminal-suggestion-name {
         min-width: 9.5ch;
     }

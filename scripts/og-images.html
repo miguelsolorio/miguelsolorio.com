@@ -9,29 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* ------------------------------------------------------------------
-       Source for the social share card. The card below is a real
-       1200×630 canvas built from the site's own tokens: the blurple and
-       slate light theme, Inter display type, and the topography shader
-       ported from assets/js/common.js.
-
-       To re-export after an edit, open this file with ?og=1. That strips
-       the page down to the card alone, pinned unscaled at 1200×630, so a
-       screenshot at exactly that size is the finished asset. Let Inter
-       finish loading before the shot: a capture that races the webfont
-       silently records the fallback, and the headline comes out narrower
-       than it should. Save the result over assets/og-light.jpg, which the
-       build publishes under a content-hashed name.
-
-       This file sits in scripts/ rather than static/ so Hugo never
-       publishes it. Nine other card directions were explored here before
-       this one won; git history has them.
-       ------------------------------------------------------------------ */
 
     * { box-sizing: border-box; }
 
     :root {
-      /* Lab chrome shadows: the site's light shadow ink (main.css). */
       --lab-ring: 0 0 0 1px rgb(35 28 102 / .07);
       --lab-md: 0 8px 24px rgb(35 28 102 / .1);
     }
@@ -46,8 +27,6 @@
       font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-
-    /* Lab chrome */
 
     .lab {
       max-width: 1280px;
@@ -94,12 +73,6 @@
       outline: 2px solid #3429ff;
       outline-offset: 3px;
     }
-
-    /* ------------------------------------------------------------------
-       The card. .og is a fixed 1200×630 canvas; the frame scales it to
-       fit. Ambient + grain mirror .site-ambient in main.css, and the
-       shader render below replaces the gradient when WebGL is up.
-       ------------------------------------------------------------------ */
 
     .og {
       position: absolute;
@@ -167,8 +140,6 @@
       font-weight: 500;
     }
 
-    /* Lightbox */
-
     #lightbox {
       position: fixed;
       inset: 0;
@@ -203,9 +174,6 @@
       font: 500 13px/1 ui-monospace, SFMono-Regular, monospace;
       text-align: center;
     }
-
-    /* Capture mode (?og=1): the card alone, unscaled at 1200×630, for
-       screenshotting the shipped asset. */
 
     html.capture,
     html.capture body {
@@ -255,13 +223,6 @@
     (() => {
       'use strict';
 
-      /* --------------------------------------------------------------
-         Topography ambient, ported from assets/js/common.js. Rendered
-         once at 2400×1260 with time frozen, snapshotted to a data URI,
-         and layered onto the card's .og-ambient. The CSS gradient above
-         is the no-WebGL fallback, same as the site.
-         -------------------------------------------------------------- */
-
       const TUNE = {
         scale: 1.08,
         intensity: 0.51,
@@ -272,8 +233,6 @@
         relief: 0.22,
       };
 
-      /* Frozen u_time: the stretch of terrain this card was composed
-         against. Changing it reshapes the contours behind the copy. */
       const TIME = 132;
 
       const hex = (h) => [
@@ -402,7 +361,6 @@ void main() {
 
         let gl = null;
         try {
-          /* preserveDrawingBuffer so toDataURL reads back reliably. */
           gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false, stencil: false, preserveDrawingBuffer: true });
         } catch {
           gl = null;
@@ -476,10 +434,6 @@ void main() {
 
       applyAmbient();
 
-      /* Capture mode: ?og=1 strips the lab away and pins the card
-         unscaled at true size, so a 1200×630 screenshot is the finished
-         asset. */
-
       if (Number(new URLSearchParams(window.location.search).get('og')) >= 1) {
         const card = document.querySelector('.og');
         if (card) {
@@ -489,16 +443,12 @@ void main() {
         }
       }
 
-      /* Scale the fixed 1200×630 card to its preview frame. */
-
       const frame = document.querySelector('.og-frame');
       const card = frame.querySelector('.og');
       const ro = new ResizeObserver(([entry]) => {
         card.style.transform = `scale(${entry.contentRect.width / 1200})`;
       });
       ro.observe(frame);
-
-      /* Lightbox: clone the card and show it as close to 1:1 as fits. */
 
       const lightbox = document.getElementById('lightbox');
       const stage = document.getElementById('lightbox-stage');

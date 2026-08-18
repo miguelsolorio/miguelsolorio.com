@@ -1,41 +1,3 @@
-{{/* One donut share chart: a title over a ring of segments with callout
-     labels joined by leader lines — the figure the onboarding data image
-     carried, redrawn from markup so it rides the theme and the viewport.
-
-     Inner lines are "Label | 84%" segments in clockwise order from
-     12 o'clock. An optional third field forces the label column
-     ("Other | 2% | right") when the automatic split — right of the ring for
-     midpoints before 6 o'clock, left after — reads wrong. The value keeps its
-     suffix for display while its numeric part drives the geometry, normalized
-     by the actual sum, so readings that total 99 or 101 still close the ring.
-
-     All coordinates are computed here at build time in viewBox units: the
-     chart is one scalable drawing with no script behind it. The ring is drawn
-     as stroke alone — its hole is simply unpainted, and the divisions between
-     segments are breaks in the dash rather than lines laid over them — so the
-     figure carries no surface and whatever sits behind it shows through.
-     Colors stay in the stylesheet: the template only names each segment's
-     slot through --donut-seg-N on the tone class, and single.css/dark.css
-     decide what the slots hold in each theme. The palette table below records
-     only how many steps each tone carries, so a chart with more segments than
-     colors fails the build instead of wrapping the ramp.
-
-     Callouts: dots sit mid-band at each segment's angular midpoint. Each
-     column is laid out from its lowest dot upward — that label sits level
-     with its dot and the ones above pull up under a minimum row gap — so
-     every leader runs level or descends and lines never cross. A leader
-     starts at the column edge, underlines its label, then breaks 45 degrees
-     to the dot; a level pair degenerates to one straight line.
-
-     Hovering: assets/js/donut-charts.js pairs each band with its callout
-     through the data-seg index stamped on both, so pointing at a segment
-     lifts its label and value on the outside and drops the other four back,
-     while the hole swaps to that segment's share. That is enhancement only —
-     nothing is hidden behind it. Every label and value is already drawn, the
-     sr-only line above speaks the whole table, and with JavaScript off the
-     figure is exactly the static drawing it was before.
-
-     Meant to sit inside {{< donuts >}}, which pairs the charts up. */}}
 {{- $palettes := dict "teal" 6 "blue" 6 -}}
 {{- $title := "" -}}
 {{- with .Get "title" }}{{ $title = strings.Trim . " \t" }}{{ end -}}
@@ -88,20 +50,12 @@
 {{- if and $steps (gt (len $rows) $steps) -}}
   {{- errorf "donut shortcode in %s: %d segments but the %q palette has %d steps" $.Page.File.Path (len $rows) $tone $steps -}}
 {{- end -}}
-{{- /* The drawing frame. The static 360 236 in the rotate pivot below restates
-       $cx/$cy, so the two must move together. The box is cut close around the
-       ring and its callouts: with no surface behind it, dead space inside the
-       viewBox would read as a gap in the page rather than as margin. */ -}}
 {{- $cx := 360.0 -}}
 {{- $cy := 196.0 -}}
 {{- $rOut := 144.0 -}}
 {{- $rIn := 66.0 -}}
 {{- $rMid := div (add $rOut $rIn) 2.0 -}}
 {{- $band := sub $rOut $rIn -}}
-{{- /* Division between segments, in the same hundred the shares are counted
-       in — a touch over two units of arc at this radius. Taken out of the
-       dash so the break is real; a segment thinner than the division keeps a
-       sliver rather than inverting. */ -}}
 {{- $gap := 0.4 -}}
 {{- $total := 0.0 -}}
 {{- range $rows }}{{ $total = add $total .num }}{{ end -}}
@@ -122,8 +76,6 @@
     {{- if lt $mid 180.0 }}{{ $side = "right" }}{{ end -}}
   {{- end -}}
   {{- $dash := math.Max (sub (mul $share 100.0) $gap) 0.15 -}}
-  {{- /* The dash pattern sums to the whole hundred, so the offset may be
-         wound forward a full turn to stay positive. */ -}}
   {{- $offset := sub (mul (sub 1.0 $cum) 100.0) (div $gap 2.0) -}}
   {{- if lt $offset 0.0 }}{{ $offset = add $offset 100.0 }}{{ end -}}
   {{- $segs = $segs | append (merge $row (dict
@@ -137,7 +89,6 @@
 {{- end -}}
 {{- $rowGap := 42.0 -}}
 {{- $minY := 26.0 -}}
-{{- /* How far below its baseline a label's underline runs. */ -}}
 {{- $lead := 9.0 -}}
 {{- $callouts := slice -}}
 {{- range $col := slice "left" "right" -}}
@@ -148,8 +99,6 @@
     {{- $column = $column | append (merge . (dict "labely" $y)) -}}
     {{- $below = $y -}}
   {{- end -}}
-  {{- /* Data dense enough to pull a column above the panel gets clamped back
-         down, trading the no-crossing guarantee for staying in frame. */ -}}
   {{- $above := sub $minY $rowGap -}}
   {{- range sort $column "labely" -}}
     {{- $y := math.Max .labely (add $above $rowGap) -}}
@@ -157,33 +106,16 @@
     {{- $above = $y -}}
   {{- end -}}
 {{- end -}}
-{{- /* The hovered band thickens rather than scaling: a segment here is a dash
-       on a stroked circle, not a shape of its own, so there is nothing to grow
-       outward except its stroke. Both widths ride to CSS as custom properties
-       so the resting figure still draws with no stylesheet at all. */ -}}
 {{- $bandHot := add $band 10.0 -}}
 <div class="donut-chart donut--{{ $tone }}" data-donut>
   <p class="donut-title">{{ $title }}</p>
   <p class="sr-only">{{ $title }}: {{ delimit $spoken ", " }}.</p>
   <svg class="donut-svg" viewBox="0 0 720 356" width="720" height="356" aria-hidden="true" style="--donut-band:{{ printf "%.1f" $band }};--donut-band-hot:{{ printf "%.1f" $bandHot }}">
-    {{- /* Each segment is one stroked circle: pathLength makes the dash
-           pattern percent-native, rotate(-90) moves the dash origin from
-           3 o'clock to 12, and the offset walks each dash to its cumulative
-           start. A circle's path runs clockwise, matching the authored
-           order.
-
-           Only the painted part of a dashed stroke takes pointer events, so
-           each circle is hit-testable exactly over its own band and the gaps
-           between segments fall through — no separate hit layer needed. */ -}}
     <g transform="rotate(-90 360 196)">
       {{- range $segs }}
       <circle class="donut-seg" data-seg="{{ .i }}" data-display="{{ .display }}" cx="360" cy="196" r="{{ printf "%.1f" $rMid }}" pathLength="100" stroke-width="{{ printf "%.1f" $band }}" stroke-dasharray="{{ printf "%.3f" .dash }} {{ printf "%.3f" (sub 100.0 .dash) }}" stroke-dashoffset="{{ printf "%.3f" .offset }}" style="stroke:var(--donut-seg-{{ .i }})"/>
       {{- end }}
     </g>
-    {{- /* The hole carries the hovered share as a hero figure, resting on the
-           largest one. Only the number: the callout it belongs to lights up at
-           the same moment and is already spelling out its name, and a label
-           long enough to overrun the hole has nowhere to wrap to. */ -}}
     <text class="donut-centre" x="360" y="196" text-anchor="middle" dominant-baseline="central">{{ (index $rows 0).display }}</text>
     {{- range $callouts }}
     {{- $lineY := add .labely $lead -}}

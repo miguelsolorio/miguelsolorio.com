@@ -1,7 +1,3 @@
-{{- /* Compact metric label at three significant figures, so 1,796,494 reads
-       "1.8M" rather than rounding a whole 200k away as "2M". A decimal is only
-       added while the scaled value is under 100 (1.8M, 12.9k), and a trailing
-       ".0" is dropped so round numbers stay clean (4k, not 4.0k). */ -}}
 {{- $value := float . -}}
 {{- $unit := "" -}}
 {{- $scaled := $value -}}

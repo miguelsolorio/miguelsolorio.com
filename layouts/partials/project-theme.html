@@ -1,11 +1,3 @@
-{{/* Resolves the project theme for a media shortcode's gradient stage.
-     Returns an empty string when no stage should be rendered.
-
-     theme    — explicit theme name, wins over everything.
-     gradient — opt in using the page's own card_theme. .Get returns a string,
-                so gradient="false" would otherwise be truthy.
-     page     — the calling shortcode's .Page.
-     name     — shortcode name, for the warning message. */}}
 {{ $theme := .theme }}
 {{ $gradient := .gradient | default "" }}
 {{ if and (not $theme) (and (ne $gradient "") (ne $gradient "false")) }}

@@ -1,11 +1,3 @@
-/* Interactive theme picker for the CLI Agents case study.
-
-   The CLI previews a theme as soon as the highlight moves, and only commits it
-   on Enter. There is nothing to commit here, so highlighting *is* applying: the
-   panel carries the theme name as data-cli-theme, and cli-theme.css swaps a
-   palette on that attribute. This file only moves the highlight — and hands the
-   name to cli-theme.js, which repaints every other embed on the page with it. */
-
 const panel = document.querySelector(".theme-panel");
 const list = panel.querySelector(".theme-list");
 const options = Array.from(list.querySelectorAll(".theme-item"));
@@ -18,13 +10,10 @@ function indexOfTheme(theme) {
   return options.findIndex((option) => option.dataset.cliTheme === theme);
 }
 
-/* The list opens on the CLI default matching the site's mode. CliTheme owns
-   that answer so every embed starts on the same row. */
 let active = indexOfTheme(CliTheme.siteDefault());
 if (active < 0) active = 0;
 
 function select(index, broadcast = true) {
-  /* Wrapped so moving past either end continues through the ordered list. */
   active = (index + options.length) % options.length;
 
   options.forEach((option, i) => {
@@ -34,33 +23,20 @@ function select(index, broadcast = true) {
   });
 
   const option = options[active];
-  /* The panel keeps its own copy of the attribute. cli-theme.css hands a synced
-     default back to the site palette by matching .theme-panel, so a dialog that
-     only stamped body would lose that handback. */
   panel.dataset.cliTheme = option.dataset.cliTheme;
   list.setAttribute("aria-activedescendant", option.id);
   if (broadcast) CliTheme.publish(option.dataset.cliTheme);
   else CliTheme.apply(option.dataset.cliTheme);
 }
 
-/* Every other embed on the page repaints with whatever is highlighted here, so
-   this dialog is the one context that answers "what theme is showing?" for a
-   scene that framed in late. */
 CliTheme.claimSource(() => options[active].dataset.cliTheme);
 
-/* Nothing else publishes today, but the subscription keeps the highlight honest
-   if anything ever does. The equality check is what stops select() from
-   publishing straight back into the message that caused it. */
 CliTheme.subscribe((theme) => {
   if (theme === options[active].dataset.cliTheme) return;
   const index = indexOfTheme(theme);
   if (index >= 0) select(index, false);
 });
 
-/* Toggling the site between light and dark resets the pick: the reader is
-   choosing a mode for the whole page, and leaving a dark theme highlighted on a
-   light site would leave every embed contradicting it. Applied, not published —
-   each frame derives the same default from the same class. */
 CliTheme.onSiteModeChange((theme) => {
   const index = indexOfTheme(theme);
   if (index >= 0) select(index, false);
@@ -79,9 +55,6 @@ steppers.forEach((stepper) => {
   });
 });
 
-/* Roving focus stays on the list and the active row is named by
-   aria-activedescendant, so the keys have to be handled here. Enter and Space
-   are deliberately absent: the highlighted theme is already applied. */
 const SEQUENCE_STEPS = {
   ArrowDown: 1,
   ArrowUp: -1,
@@ -100,9 +73,6 @@ function jumpGroup(direction) {
   return options.indexOf(targetGroup[Math.min(rowIndex, targetGroup.length - 1)]);
 }
 
-/* Typed digits accumulate, the way the CLI's own numeric selection does: "1"
-   selects the first theme immediately but stays buffered briefly so 10–12 can
-   follow. */
 const DIGIT_WINDOW = 700;
 let digits = "";
 let digitTimer = 0;
@@ -138,6 +108,4 @@ document.addEventListener("keydown", (event) => {
   select(next);
 });
 
-/* The opening row is the site default every other frame already computed for
-   itself, so this one paints the highlight without announcing it. */
 select(active, false);

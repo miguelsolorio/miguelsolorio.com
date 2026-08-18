@@ -1,25 +1,3 @@
-/* Renders the resume to static/miguel-solorio-resume.pdf.
- *
- * The source of truth is the V2 variation in static/resume-variations.html —
- * this script isolates that one sheet, swaps in an embedded webfont, and
- * prints it through headless Chrome.
- *
- * Two things here are load-bearing for applicant tracking systems, which read
- * the PDF's text layer rather than the page:
- *
- *   1. Inter is embedded as a static woff2 rather than left to the font stack.
- *      Inter isn't installed on most machines, so the stack falls through to
- *      system-ui — and Chrome emits that font's glyph runs in a way text
- *      extractors break mid-word ("Kustomer" comes out "K ustomer"), which
- *      loses the keyword. A static embedded face extracts cleanly.
- *   2. The header grain is already omitted from V2 (see resume-variations.css
- *      comment); mix-blend-mode forces Chrome to rasterize the whole band at
- *      print DPI, which took this file from 170KB to 3.4MB.
- *
- * Verify the text layer after changing anything here — on macOS:
- *   swift scripts/extract-pdf-text.swift static/miguel-solorio-resume.pdf
- */
-
 import { readFile, writeFile, unlink } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -49,9 +27,7 @@ async function resolveChrome() {
     try {
       await readFile(path);
       return path;
-    } catch {
-      /* try the next candidate */
-    }
+    } catch {}
   }
   throw new Error(`Chrome not found. Tried:\n  ${chromePaths.join('\n  ')}\nSet CHROME_PATH to override.`);
 }
@@ -79,18 +55,14 @@ const printCss = `
 const chrome = await resolveChrome();
 const source = await readFile(sourceUrl, 'utf8');
 
-/* Render one variation instead of the full picker. */
 let page = source.replace(
   'variations.forEach((v, i) => {',
   `variations.filter(v => v.id === ${JSON.stringify(VARIATION)}).forEach((v, i) => {`,
 );
 if (page === source) throw new Error('Could not find the variations loop — did resume-variations.html change?');
 
-/* Chrome takes the PDF's Title from the <title> tag; some parsers read it. */
 page = page.replace(/<title>[^<]*<\/title>/, `<title>${DOC_TITLE}</title>`);
 
-/* Route the whole sheet through the embedded face. --sans is what every
-   variation's type is declared against, so overriding it is enough. */
 page = page.replace(
   '</style>',
   `${await fontFaceCss()}

@@ -13,8 +13,6 @@ const COMMANDS = [
   ["privacy", "Display the privacy notice"],
 ];
 
-/* Simulated workspace, keyed by directory prefix: an @path completes one
-   folder at a time, exactly like walking the tree in the terminal. */
 const FILE_TREE = {
   "": ["src/", "public/", "package.json", "README.md"],
   "src/": ["components/", "hooks/", "App.tsx", "main.tsx"],

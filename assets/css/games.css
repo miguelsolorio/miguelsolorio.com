@@ -1,24 +1,12 @@
-/* Game mode overlay — the cabinet that assets/js/games.js builds and drives.
-   The overlay markup is created in JS; everything here is scoped to #arcade.
-
-   Colours come from the site's own token sets: light is the hero terminal's
-   light palette plus the blurple primary, dark is Rosé Dusk plus that
-   terminal's dark tokens. PAL in games.js mirrors these for canvas drawing —
-   keep the two columns in step. */
-
-/* The cabinet borrows the page's own tokens rather than inventing a palette:
-   light is the hero terminal's light set + the blurple primary, dark is Rosé
-   Dusk + that terminal's dark set. Mirrored in JS as PAL for canvas drawing —
-   keep the two columns in step. */
 #arcade {
-  --a-ink: #0f172a;                    /* --t-bright */
-  --a-text: #475569;                   /* --t-text   */
-  --a-dim: #94a3b8;                    /* --t-dim    */
-  --a-faint: #cbd5e1;                  /* --t-light  */
+  --a-ink: #0f172a;
+  --a-text: #475569;
+  --a-dim: #94a3b8;
+  --a-faint: #cbd5e1;
   --a-line: rgba(15, 23, 42, .12);
-  --a-panel: #ffffff;                  /* --t-bg     */
-  --a-raise: #f1f5f9;                  /* --t-bar    */
-  --a-hot: #3429ff;                    /* --primary  */
+  --a-panel: #ffffff;
+  --a-raise: #f1f5f9;
+  --a-hot: #3429ff;
   --a-on-hot: #ffffff;
   --a-good: #16a34a;
   --a-warn: #d97706;
@@ -28,8 +16,6 @@
   --a-scan-blend: multiply;
   --a-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --a-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  /* above the sticky header (20), below the command palette (9999) — the
-     palette has to stay reachable and visible from inside a game */
   position: fixed; inset: 0; z-index: 9500;
   font-family: var(--a-mono);
   color: var(--a-text);
@@ -55,10 +41,6 @@ html.dark #arcade {
 }
 #arcade[hidden] { display: none; }
 
-/* ---- scrim + stage ----
-   The veil is the site's own ambient gradient, with the same grain layered
-   over it, so a full takeover reads as the page dimming into a stage rather
-   than as a black box dropped on top of it. */
 .a-scrim {
   position: absolute; inset: 0; overflow: hidden;
   background: var(--a-veil);
@@ -78,7 +60,6 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 #arcade.show-stage .a-stage-wrap { opacity: 1; }
 #a-canvas { display: block; width: 100%; height: 100%; }
 
-/* scanline veil — sells the cabinet without costing a frame */
 .a-scan {
   position: absolute; inset: 0; pointer-events: none; opacity: 0;
   background: repeating-linear-gradient(180deg, var(--a-scan) 0 1px, transparent 1px 3px);
@@ -87,16 +68,12 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 #arcade.show-stage .a-scan { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .a-scan { display: none; } }
 
-/* ---- HUD ---- */
 .a-hud {
   position: absolute; inset: 0; display: grid;
   grid-template-rows: auto 1fr auto; padding: max(1rem, env(safe-area-inset-top)) 1rem 1rem;
   opacity: 0; transition: opacity .25s ease; pointer-events: none;
 }
 #arcade.show-hud .a-hud { opacity: 1; }
-/* Title left, score centred on the viewport. A three-column grid rather than
-   space-between, so the score sits dead centre instead of drifting with the
-   length of the game's name. */
 .a-hud-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 1rem; }
 .a-hud-top .a-title { grid-column: 1; justify-self: start; }
 .a-hud-top .a-stat { grid-column: 2; justify-self: center; }
@@ -115,11 +92,6 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 .a-title { font-weight: 700; color: var(--a-ink); letter-spacing: .1em; }
 .a-stat b, .a-hint kbd { color: var(--a-ink); }
 .a-title b { color: var(--a-hot); }
-/* Two states, one colour: a level you have reached is a solid primary dot, one
-   you have not is a grey ring. The dot you are on is the same solid primary,
-   scaled up — being ahead of it is the only thing worth a second hue, and it
-   is not worth one. The ring is an inset shadow rather than a border so the
-   dot never changes size between states. */
 .a-pips { display: inline-flex; gap: .3rem; }
 .a-pips i {
   width: .5rem; height: .5rem; border-radius: 50%;
@@ -128,8 +100,6 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 }
 .a-pips i.on, .a-pips i.done { background: var(--a-hot); box-shadow: none; }
 .a-pips i.on { transform: scale(1.25); }
-/* The score is the one chip the player reads mid-fight, so it gets its own
-   scale rather than the shared chip size. */
 .a-stat {
   color: var(--a-dim);
   padding: .5rem 1.1rem;
@@ -138,10 +108,6 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 }
 .a-stat b { color: var(--a-ink); font-size: 1.0625rem; font-variant-numeric: tabular-nums; }
 
-/* Twin gauges — Polarity's readout. Each gauge is a label, its number, and a
-   bar under both; the bar colour is set inline from PAL, because the ammo bar
-   wears the current gun's hue and only JS knows which gun that is. Scoped to
-   .a-gauges so games still calling stats() with a plain string are untouched. */
 .a-gauges { display: flex; align-items: center; gap: 1.1rem; }
 .a-gauge { display: flex; flex-direction: column; gap: .3rem; }
 .a-gauge-line { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; }
@@ -149,8 +115,6 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 .a-gauge b { font-size: .9375rem; line-height: 1; }
 .a-bar { position: relative; width: 6rem; height: .3rem; border-radius: 999px; background: var(--a-faint); overflow: hidden; }
 .a-bar > i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; transition: width .12s linear; }
-/* the last few rounds blink rather than change hue — the bar is already
-   carrying the gun's colour and cannot also carry the warning */
 .a-gauge.is-low b { animation: a-blip 1.05s ease-in-out infinite; }
 @keyframes a-blip { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
 .a-hint { color: var(--a-dim); font-size: .6875rem; letter-spacing: .04em; text-transform: none; }
@@ -161,12 +125,10 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 .a-esc { pointer-events: auto !important; cursor: pointer; }
 .a-esc:hover { border-color: var(--a-hot); color: var(--a-hot); }
 
-/* health / meter bar used by several games */
 .a-meter { position: relative; width: 7rem; height: .375rem; border-radius: 999px; background: var(--a-faint); overflow: hidden; }
 .a-meter span { position: absolute; inset: 0 auto 0 0; background: var(--a-good); transition: width .12s linear, background-color .2s ease; }
 .a-meter.low span { background: var(--a-bad); }
 
-/* ---- banners ---- */
 .a-banner-wrap { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
 .a-banner {
   min-width: min(30rem, 88vw); max-width: min(38rem, 92vw);
@@ -197,11 +159,6 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 .a-score-line div { color: var(--a-dim); }
 .a-score-line b { display: block; margin-top: .2rem; color: var(--a-ink); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
 
-/* ---- touch controls ---- */
-/* Transparent to hit-testing like every other full-bleed layer above: this box
-   owns the bottom 42% of the screen, and it sits last in #arcade at z-index
-   auto, so without this it paints over the banner and swallows the tap on
-   Start / Next level / Play again. The pad and keys below opt back in. */
 .a-touch { position: absolute; inset: auto 0 0 0; height: 42%; display: none; pointer-events: none; }
 #arcade.show-touch .a-touch { display: block; }
 .a-pad {
@@ -232,7 +189,6 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 .a-key.wide { width: auto; min-width: 5.5rem; height: 3rem; border-radius: 999px; padding-inline: 1rem; }
 .a-key:active, .a-key.is-down { background: var(--a-hot); color: var(--a-on-hot); }
 
-/* toast / floating text layer for page-mode games */
 .a-toast-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .a-toast {
   position: absolute; transform: translate(-50%, -50%);
@@ -247,21 +203,8 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
   .a-hud-bottom .a-hint { display: none; }
 }
 
-/* No control hint on a touchscreen. Wide-screen it sits in a corner nothing is
-   ever drawn in, but a finger plays inside the field, and there is no spot that
-   clears both a ship living along the bottom edge and a cursor orbiting the
-   middle: wherever it was parked, it was a box sitting on the thing you steer.
-   The level banner opens with the same instructions and has the screen to
-   itself, so a phone player still reads them, just before the level instead of
-   during it. */
 #arcade.show-touch .a-hud-bottom .a-hint { display: none; }
 
-/* ---- page lock ----
-   Deliberately no `overflow: hidden` on body: main.css documents that once html
-   carries its own overflow, body's stops propagating to the viewport and body
-   becomes a scroll container, silently unsticking .site-header. Fixed
-   positioning already collapses the document height. The gutter replaces the
-   scrollbar so the page doesn't shift underneath the overlay. */
 body.is-game-open {
   position: fixed;
   inset-inline: 0;
@@ -270,12 +213,9 @@ body.is-game-open {
   padding-right: var(--game-gutter, 0);
 }
 
-/* two chips share the bottom-right corner */
 .a-hud-right { display: flex; align-items: flex-end; gap: .5rem; }
 #a-mute { min-width: 5.5rem; justify-content: center; }
 
-/* With touch controls up, the bottom corners belong to the thumbs — the sound
-   and exit chips move to the top right, clear of the pad and the buttons. */
 #arcade.show-touch .a-hud-right {
   position: absolute;
   top: max(1rem, env(safe-area-inset-top));
@@ -290,9 +230,6 @@ body.is-game-open {
   #a-mute { min-width: 0; }
 }
 
-/* ---- reduced motion ----
-   Chrome motion only. The games themselves are motion; a player who opened a
-   shoot-'em-up has opted into that. Toast travel is handled in games.js. */
 @media (prefers-reduced-motion: reduce) {
   .a-scrim, .a-banner, .a-btn, .a-card, .a-pad i, .a-pips i, .a-hud, .a-stage-wrap { transition: none; }
   .a-banner { transform: none; }

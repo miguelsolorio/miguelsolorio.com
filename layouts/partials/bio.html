@@ -1,10 +1,3 @@
-{{/* About: the closing note at the end of the home page. Ported from the photo
-     lab (static/bio-photo-variants.html, variation 08, "Tilted ribbon"). The
-     copy's highlights are the hero terminal's syntax colors, and the strip of
-     seven photos cuts the full width of the page at two degrees between the
-     two paragraphs, so the reading breaks for the camera roll and picks back
-     up under it. Hovering a pane grows it in place and lifts it off the
-     strip. Photos live in static/bio-photos as 1600px derivatives. */}}
 <h2 id="about" class="section section--work section--about">About me</h2>
 <div id="bio">
   <div class="bio-copy">
@@ -23,11 +16,6 @@
         (dict "file" "boardwalk.jpg"         "w" 1200 "h" 1600 "crop" ""     "cap" "mtb trails"  "alt" "A kid biking a winding boardwalk through the woods")
       }}
       {{ range $shots }}
-        {{/* The slot holds the layout at a fixed size; the figure inside is what
-             grows on hover, out of flow, so nothing else on the page moves.
-             --shot-ar is the photo's own width over its height, and hovering
-             sizes the frame to exactly that, so cover has nothing left to crop
-             and the whole photo shows. */}}
         <div
           class="bio-shot{{ with .crop }} bio-shot--{{ . }}{{ end }}"
           style="--shot-ar: {{ printf "%.4f" (div (float .w) (float .h)) }}"
@@ -53,9 +41,6 @@
     <p>My work tends to live somewhere between <mark class="bio-hl bio-hl--c4">design</mark> and <mark class="bio-hl bio-hl--c1">code</mark>, and so does my toolbox. These are the tools I'm spending the most time in lately.</p>
   </div>
 
-  {{/* The toolbox row closes the section: the paragraph above introduces it,
-       so the marks read as the answer to it rather than a section of their
-       own. */}}
   {{ partial "toolbox" . }}
 
 </div>

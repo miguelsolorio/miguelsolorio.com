@@ -1,22 +1,12 @@
-/* About: the closing note at the end of the home page. Ported from the photo
-   lab (static/bio-photo-variants.html, variation 08, "Tilted ribbon"). A strip
-   of seven photos crosses the full page width at two degrees, sitting between
-   the two paragraphs; hovering a pane grows it in place and lifts it. The
-   highlight inks are the hero terminal's syntax palette (hero.css), so the
-   bolded phrases read like tokens in a prompt. */
-
 @layer components {
   .section--about {
     font-size: clamp(2.125rem, 4vw, 2.75rem);
   }
 
   #bio {
-    /* Resting pane height. The hover reveal is a multiple of it, so the growth
-       scales with the strip instead of being a fixed jump the clip can't hold. */
     --bio-shot-h: clamp(12rem, 21vw, 17rem);
     --bio-shot-reveal: 1.24;
 
-    /* The terminal's light palette, for the highlights and the label chip. */
     --bio-c1: #15803d;
     --bio-c2: #1d4ed8;
     --bio-c3: #c2410c;
@@ -46,24 +36,14 @@
   .bio-copy p {
     margin: 0;
   }
-  /* The line-height already leaves half-leading under the last line, so the
-     paragraph break only has to add the rest of a blank line on top of it. */
   .bio-copy p + p {
     margin-block-start: clamp(1rem, 1.6vw, 1.25rem);
   }
 
-  /* The toolbox closes the section, so it sits a step further from the copy
-     than a paragraph break: .toolbox-row carries its own 1.25rem of padding
-     for the tooltip, and this is the gap on top of that, sized so a raised
-     tooltip clears the last line of the paragraph above it. */
   #bio #toolbox {
     margin-block-start: clamp(.75rem, 1.8vw, 1.25rem);
   }
 
-  /* Highlights: weighted so the phrases sit up out of the paragraph the way
-     tokens sit up out of a prompt. The color rules double the class to outrank
-     the mark reset; a single class loses that fight and the marks come out
-     colorless. */
   mark.bio-hl {
     padding-inline: .12em;
     background: transparent;
@@ -79,14 +59,6 @@
   .bio-hl.bio-hl--c4 { color: var(--bio-c4); background: color-mix(in srgb, var(--bio-c4) 10%, transparent); }
   .bio-hl.bio-hl--c5 { color: var(--bio-c5); background: color-mix(in srgb, var(--bio-c5) 10%, transparent); }
 
-  /* The strip breaks out of .site-shell to run the full viewport, and its
-     rotated ends carry on past the edges. Trimming those is html and body's job
-     (both carry overflow-x: clip, main.css), not this element's: a clip here
-     would apply to both axes, since CSS turns a lone `visible` into `hidden`
-     the moment its partner is `clip`, and the bottom of a hovered pane's shadow
-     would be shaved off. The padding is the band's own air, sized to hold the
-     tallest a pane gets: the reveal times the hover scale, half above and half
-     below, plus the tilt and the shadow under it. */
   .bio-ribbon-clip {
     width: 100vw;
     margin-inline: calc(50% - 50vw);
@@ -96,38 +68,21 @@
   .bio-ribbon {
     position: relative;
     display: flex;
-    /* Centred so a revealed pane grows into the clip's padding evenly, top and
-       bottom, rather than pushing its whole growth out of one edge. */
     align-items: center;
     gap: clamp(.625rem, 1.25vw, 1rem);
-    /* Wider than the viewport with a matching negative offset, so the rotated
-       ends stay outside the clip instead of showing their corners. */
     width: 106%;
     margin-left: -3%;
     rotate: -2deg;
   }
 
-  /* Two boxes per photo. The slot is the flex item: it owns the layout and its
-     size never changes, so the strip's height and every other pane stay put.
-     The frame is the part you see, absolutely positioned and centred inside
-     the slot, so when it grows on hover it grows out of flow and moves nothing
-     around it. */
   .bio-shot {
     position: relative;
     flex: 1 1 0%;
     height: var(--bio-shot-h);
-    /* The vanishing point for the frame's tilt. Kept long, so the rotation
-       reads as a card catching the light rather than a fisheye. */
     perspective: 900px;
   }
 
   .bio-shot-frame {
-    /* home.js writes --bio-tilt-x/y from the cursor while a pane is hovered;
-       both rest at 0 so the frame is square-on until it is pointed at.
-       --bio-edge-shift is home.js again, but only for the strip's first and
-       last panes: it nudges the centred reveal sideways so the edge the
-       ribbon deliberately bleeds off-screen (see .bio-ribbon above) slides
-       back into view instead of growing straight into the clip. */
     --bio-tilt-x: 0deg;
     --bio-tilt-y: 0deg;
     --bio-lift: 1;
@@ -138,10 +93,6 @@
     width: 100%;
     height: 100%;
     margin: 0;
-    /* A standalone property so it can ease on the reveal's own timing rather
-       than the tilt's quick follow below. Order still matters: translate
-       centres (plus the edge nudge), then transform tilts around that centre
-       and scales. */
     translate: calc(-50% + var(--bio-edge-shift)) -50%;
     transform: rotateX(var(--bio-tilt-x))
                rotateY(var(--bio-tilt-y))
@@ -150,8 +101,6 @@
     overflow: hidden;
     background: var(--bio-chip);
     box-shadow: var(--shadow-ring), var(--shadow-md);
-    /* The size (and edge nudge) ease together, but the transform stays short
-       so the tilt feels stuck to the cursor instead of trailing it. */
     transition: width .45s cubic-bezier(.3, .9, .2, 1),
                 height .45s cubic-bezier(.3, .9, .2, 1),
                 translate .45s cubic-bezier(.3, .9, .2, 1),
@@ -165,9 +114,6 @@
     object-fit: cover;
   }
 
-  /* The reveal: the frame grows to the photo's own aspect ratio, so cover has
-     nothing left to trim and the full frame is what you see. The clip's block
-     padding is what gives the growth room, so it stays wider than half of it. */
   @media (hover: hover) {
     .bio-shot:hover {
       z-index: 4;
@@ -180,15 +126,10 @@
     }
   }
 
-  /* Every photo is portrait, so these pin the subject once the pane crops it
-     to a shorter frame. */
   .bio-shot--high img { object-position: 50% 28%; }
   .bio-shot--mid img { object-position: 50% 58%; }
   .bio-shot--low img { object-position: 50% 78%; }
 
-  /* Captions ride inside the pane so the strip stays one clean band. The ink is
-     fixed white over its own scrim: it sits on the photo, which does not change
-     with the theme. */
   .bio-shot-frame figcaption {
     position: absolute;
     left: .7rem;
@@ -198,8 +139,6 @@
     color: #fff;
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
     font-size: .625rem;
-    /* Explicit, since the inherited body line-height gives a 10px caption a
-       20px line box and floats it off the bottom edge. */
     line-height: 1.4;
     letter-spacing: .02em;
     text-shadow: 0 1px 3px rgb(10 8 20 / .55);
@@ -237,11 +176,6 @@
       font-size: 1rem;
     }
 
-    /* Seven panes across a phone works out to about fifty pixels each, which is
-       a sliver rather than a photo. So the strip keeps a real pane width and
-       swipes instead, still tilted, still running off both edges. This one has
-       to be a scroll container, so it does clip: there is no hover reveal to
-       cut here, and the padding covers the resting shadow. */
     .bio-ribbon-clip {
       overflow-x: auto;
       overflow-y: hidden;
@@ -274,9 +208,6 @@
   }
 }
 
-/* home.js already declines to write a tilt here, so this is the belt to that
-   braces: the frame still reveals the whole photo, it just does it flat and
-   without easing. */
 @media (prefers-reduced-motion: reduce) {
   .bio-shot-frame {
     --bio-tilt-x: 0deg;

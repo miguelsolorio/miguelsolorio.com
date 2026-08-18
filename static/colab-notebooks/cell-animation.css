@@ -47,7 +47,6 @@
     --demo-color-track: var(--surface-hover-strong);
   }
 
-  /* Colab-inspired dark surfaces and syntax colors. */
   :root.dark {
     --cell-bg: #202124;
     --cell-bg-added: #1b3326;
@@ -99,8 +98,6 @@
   }
 
   body {
-    /* The embedding surface owns the backdrop: transparent on project cards,
-       and purple on the full case-study iframe. */
     background: transparent !important;
     font-family: "Google Sans", "Helvetica Neue", Arial, sans-serif;
     display: flex;
@@ -109,8 +106,6 @@
     min-height: 100vh;
   }
 
-  /* Standalone and case-study embeds reserve a dedicated row for playback so
-     the scrubber does not overlap the final chat card. Card mode hides it. */
   body:not(.is-card) {
     padding-bottom: 88px;
   }
@@ -150,16 +145,12 @@
     flex-direction: column;
     gap: var(--notebook-gap);
     margin-bottom: calc(0px - var(--notebook-gap));
-    /* cancels the frame gap while empty */
     transition: margin-bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   }
   .notebook.active {
     margin-bottom: 0;
   }
 
-  /* ---------- cell row ---------- */
-  /* Collapsed rows animate open via grid-template-rows so the layout grows
-     smoothly (no display:none jump) using only compositor-friendly props. */
   .cell-row {
     position: relative;
     display: grid;
@@ -167,7 +158,6 @@
     opacity: 0;
     transform: translateY(12px);
     margin-bottom: calc(0px - var(--notebook-gap));
-    /* cancels the notebook flex gap while collapsed */
     transition: grid-template-rows 0.4s cubic-bezier(0.32, 0.72, 0, 1),
                 margin-bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1),
                 transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
@@ -183,16 +173,14 @@
     display: flex;
     align-items: flex-start;
     min-height: 0;
-    overflow: hidden;   /* required for the 0fr -> 1fr expansion */
+    overflow: hidden;
   }
-  /* once expanded, let the Gemini tag and toolbar overhang the cell again */
   .cell-row.settled .cell-inner { overflow: visible; }
 
-  /* ---------- gutter ---------- */
   .gutter {
     position: absolute;
     top: 0;
-    right: 100%;      /* hangs outside the column so cells align with the chat */
+    right: 100%;
     width: 70px;
     padding-top: 12px;
     display: flex;
@@ -219,7 +207,6 @@
     transition: opacity 0.25s ease, transform 0.25s ease,
                 background-color 0.3s ease;
   }
-  /* Material Symbols base */
   .msym {
     font-family: "Material Symbols Rounded";
     font-weight: normal;
@@ -250,7 +237,6 @@
     transform: scale(1);
   }
 
-  /* ---------- cell ---------- */
   .cell-wrap {
     position: relative;
     flex: 1;
@@ -263,7 +249,7 @@
     background: var(--cell-bg);
     border: 1.5px solid var(--cell-border);
     border-radius: 10px;
-    overflow: hidden;   /* keeps the attached output inside the rounded corners */
+    overflow: hidden;
     transition: border-color 0.3s ease, box-shadow 0.3s ease,
                 border-top-left-radius 0.25s ease, background-color 0.4s ease;
   }
@@ -311,7 +297,6 @@
   .tok-prm { color: var(--prm); }
   .tok-kw, .tok-com, .tok-str, .tok-prm { transition: color 0.3s ease; }
 
-  /* streaming cursor */
   .cursor {
     display: inline-block;
     width: 2px;
@@ -323,7 +308,6 @@
   }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* ---------- Gemini tag ---------- */
   .gemini-tag {
     position: absolute;
     bottom: calc(100% - 2px);
@@ -355,7 +339,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ---------- toolbar ---------- */
   .toolbar {
     position: absolute;
     top: -21px;
@@ -391,7 +374,6 @@
   }
   .toolbar button:hover { background: var(--surface-hover); }
 
-  /* ---------- chat ---------- */
   .chat {
     width: 100%;
     background: transparent;
@@ -407,8 +389,6 @@
                 box-shadow 0.3s ease, padding 0.3s ease;
   }
   .chat.centered {
-    /* vertically centered hero state; slides back down when the prompt sends */
-    /* transform removed since chat is now a flow element */
   }
   .chat.open {
     background: var(--surface-chat);
@@ -423,7 +403,7 @@
     max-height: 0;
     opacity: 0;
     transform: translateY(12px);
-    margin-top: -16px;   /* cancel the flex gap while hidden */
+    margin-top: -16px;
     overflow: hidden;
     transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
                 margin-top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
@@ -471,7 +451,7 @@
   .chat-ai .chat-spinner {
     display: none;
     flex: none;
-    font-size: 22px;   /* matches the spark size so the swap doesn't shift */
+    font-size: 22px;
     color: var(--spark);
     margin-top: 2px;
     transform-origin: 50% 50%;
@@ -527,13 +507,11 @@
     transition: background-color 0.25s ease, border-color 0.25s ease,
                 box-shadow 0.25s ease;
   }
-  /* bare hero state: blue border + glow */
   .chat-input.focus {
     background: var(--surface);
     border-color: var(--link);
     box-shadow: var(--input-glow);
   }
-  /* grown into the card: blue border only, no glow */
   .chat.open .chat-input {
     background: var(--surface);
     border-color: var(--link);
@@ -557,7 +535,6 @@
     gap: 4px;
   }
   .chat-input-row .msym { font-size: 20px; color: var(--text-secondary); cursor: pointer; }
-  /* icon buttons: circular hover target, kept from growing the pill via -margin */
   .chat-input-row .add-btn,
   .chat-input-row .send-btn {
     flex: none;
@@ -587,7 +564,7 @@
   }
   .chat-input-row .model:hover { background: var(--surface-hover); }
   .chat-input-row .send-btn {
-    color: var(--text-disabled);          /* disabled until there is text */
+    color: var(--text-disabled);
     cursor: default;
   }
   .chat-input-row .send-btn.enabled {
@@ -596,7 +573,6 @@
   }
   .chat-input-row .send-btn.enabled:hover { background: var(--surface-hover); }
   .chat-input-row .send-btn.enabled:active { transform: scale(0.9); }
-  /* while the agent executes, the send button becomes a filled stop button */
   .chat-input-row .send-btn.stop {
     color: var(--text-secondary);
     cursor: pointer;
@@ -605,7 +581,6 @@
   .chat-input-row .send-btn.stop:hover { background: var(--surface-hover); }
   .chat-input-row .send-btn.stop:active { transform: scale(0.9); }
 
-  /* ---------- fake mouse cursor ---------- */
   .mouse {
     position: fixed;
     top: 0;
@@ -647,15 +622,12 @@
   }
   .chat-actions button.pressed { background: var(--surface-pressed); }
 
-  /* ---------- cell execution ---------- */
-  /* accepted cells lose the green diff highlight on the code */
   .cell-row.accepted .line .hl { background: transparent; }
 
   .cell-row.running .cell {
     border-color: var(--active-border);
     box-shadow: var(--running-glow);
   }
-  /* while running, the play button becomes a plain spinner (no circle) */
   .run-btn .run-spinner {
     display: none;
     font-size: 18px;
@@ -673,7 +645,6 @@
     display: block;
     animation: spin 1s linear infinite;
   }
-  /* when done: [n] plus a green check in the gutter */
   .gutter .gutter-check {
     display: none;
     font-size: 16px;
@@ -685,7 +656,6 @@
   .gutter .brackets { transition: color 0.3s ease; }
   .cell-row.ran .brackets { color: var(--gutter-ran); }
 
-  /* output attached to the bottom of the code cell */
   .cell-output {
     display: grid;
     grid-template-rows: 0fr;
@@ -701,10 +671,10 @@
     transition: border-color 0.3s ease;
   }
   .out-dots {
-    visibility: hidden;   /* hidden but keeps the output aligned with the code */
+    visibility: hidden;
     flex: none;
     width: 20px;
-    margin: 2px 12px 0 0;   /* mirrors the run button column */
+    margin: 2px 12px 0 0;
     font-size: 18px;
     color: var(--text-secondary);
     text-align: center;
@@ -743,20 +713,15 @@
                       0 6px 16px -10px rgba(0, 0, 0, 0.75);
     }
 
-    /* The execution gutter intentionally hangs outside the desktop notebook.
-       Narrow card and case-study embeds both need that space back. */
     .gutter {
       display: none;
     }
 
     .frame {
-      /* Reserve enough paint space between the last active cell and chat. */
       gap: clamp(20px, 5vw, 24px);
     }
 
     .notebook {
-      /* The toolbar overhangs its cell by 21px, so keep a visible seam while
-         rows animate in instead of letting it cover the previous cell. */
       --notebook-gap: clamp(24px, 6vw, 28px);
     }
 

@@ -15,10 +15,6 @@
     --diff-add-bg:      #c8ead8;
     --diff-del:         #dc2626;
     --diff-add:         #16a34a;
-    /* The gutter's quiet tier. In light mode diff-view.css panels read this
-       token and the theme picker's list numbers match its recipe, so every
-       embed's line numbers land on the same colour; dark palettes keep their
-       own designed values. */
     --diff-gutter:      color-mix(in srgb, var(--text-muted) 38%, var(--bg));
     --demo-color-accent: var(--accent-blue);
     --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 16%, var(--bg));
@@ -45,7 +41,6 @@
     --diff-add-bg:      rgba(34, 197, 94, 0.12);
     --diff-del:         #f87171;
     --diff-add:         #4ade80;
-    /* 45% keeps the exact composite the old `opacity: .45` gutter produced. */
     --diff-gutter:      color-mix(in srgb, var(--text-muted) 45%, var(--bg));
     --suggestion-active-bg: color-mix(in srgb, var(--accent-purple) 24%, var(--bg));
   }
@@ -94,12 +89,6 @@
     transition: background-color 0.3s ease;
   }
 
-  /* Card mode scales one terminal stage instead of independently sizing its
-     scrolling conversation and footer regions. On the home page the stage is
-     framed like the other featured cards (Kanvas, Onboarding): 85% of the card
-     width, dropped 12% from the top, and running past the bottom edge instead
-     of floating fully inset. The bleed is small enough that the input box and
-     footer — the recognizable part of the terminal — stay inside the crop. */
   body.is-card {
     --cli-card-bleed: clamp(10px, 3.5vh, 24px);
     padding: clamp(16px, 12vh, 96px) clamp(12px, 7.5vw, 112px) 0;
@@ -108,20 +97,15 @@
   body.is-card .cli-stage {
     margin-bottom: calc(var(--cli-card-bleed) * -1);
     border-radius: var(--demo-radius-md);
-    /* Shadow ink: light rgb(35 28 102) = color-mix(#3429ff 30%, #1c1725);
-       dark rgb(56 39 51) = color-mix(#efa9ae 20%, #0a0614); see --shadow-rgb
-       in assets/css/main.css. */
     box-shadow: 0 12px 28px -8px rgb(35 28 102 / 0.38);
   }
   :root.dark body.is-card .cli-stage {
     box-shadow: 0 12px 28px -8px rgb(56 39 51 / 0.55);
   }
-  /* Keep the footer clear of the cropped edge as the bleed scales. */
   body.is-card .bottom-bar {
     margin-bottom: calc(var(--cli-card-bleed) + 14px);
   }
 
-  /* ---------- scrollable content area ---------- */
   .scroll-area {
     flex: 1;
     min-height: 0;
@@ -131,11 +115,9 @@
     scrollbar-width: none;
   }
   .scroll-area::-webkit-scrollbar { display: none; }
-  /* Opt all children out of scroll anchoring, then pin only the sentinel */
   .scroll-area > * { overflow-anchor: none; }
   .scroll-end { overflow-anchor: auto; height: 0; }
 
-  /* ---------- header ---------- */
   .cli-header {
     display: flex;
     align-items: baseline;
@@ -147,7 +129,6 @@
   .cli-name    { font-weight: 700; color: var(--text); transition: color 0.3s ease; }
   .cli-version { color: var(--text-muted); font-weight: 400; transition: color 0.3s ease; }
 
-  /* ---------- tips ---------- */
   .tips {
     color: var(--text);
     margin-bottom: 20px;
@@ -155,12 +136,10 @@
   }
   .tips .hl { color: var(--accent-purple); transition: color 0.3s ease; }
 
-  /* ---------- conversation area ---------- */
   .convo-area {
     margin-top: 24px;
   }
 
-  /* ---------- conversation messages ---------- */
   .msg {
     display: grid;
     grid-template-rows: 0fr;
@@ -199,7 +178,6 @@
     transition: background 0.3s ease;
   }
 
-  /* ---------- resolved tool note ---------- */
   .tool-resolved-wrap {
     display: grid;
     grid-template-rows: 0fr;
@@ -235,7 +213,6 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- status / spinner line ---------- */
   .status-line {
     display: none;
     height: calc(1.65em + 8px);
@@ -252,7 +229,6 @@
   .status-line.show { display: block; opacity: 1; }
   .spin-char { display: inline; }
 
-  /* ---------- approval box ---------- */
   .tool-box {
     display: none;
     width: fit-content;
@@ -278,8 +254,6 @@
     padding: 12px 20px 12px 16px;
   }
 
-  /* Approval panels retain their authored width in the full demo, but must
-     shrink with the terminal when it is embedded in a responsive card. */
   body.is-card .tool-box {
     width: 100%;
     max-width: 100%;
@@ -338,7 +312,6 @@
   body.awaiting-confirm .scroll-area,
   body.awaiting-shell .scroll-area { padding-bottom: 52px; }
 
-  /* ---------- diff block ---------- */
   .diff-wrap {
     display: none;
     width: fit-content;
@@ -386,11 +359,6 @@
   .diff-line-del .diff-sign { color: var(--diff-del); }
   .diff-line-add .diff-sign { color: var(--diff-add); }
   .diff-line-ctx .diff-sign { color: transparent; }
-  /* Changed rows lift their gutter number out of the quiet tier — the sign
-     already carries the red/green, the number just steps up so the whole row
-     reads as content. Mixed a step back toward the surface rather than full
-     text strength, so it holds contrast on the change tint without competing
-     with the code. */
   .diff-line-del .diff-ln,
   .diff-line-add .diff-ln { color: color-mix(in srgb, var(--text) 75%, var(--bg)); }
   .diff-code {
@@ -405,7 +373,6 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- fixed bottom bar (input + footer) ---------- */
   .bottom-bar {
     flex: none;
     position: relative;
@@ -466,8 +433,6 @@
     color: var(--text-muted);
     transition: color 0.18s ease, background-color 0.18s ease;
   }
-  /* File rows carry no description, so the name takes the whole row and stays
-     whole instead of truncating into the empty description column. */
   .suggestions[data-kind="file"] .suggestion-option {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -496,7 +461,6 @@
   .input-text   { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; }
   .placeholder  { color: var(--text-placeholder); transition: color 0.3s ease; }
 
-  /* blinking text cursor in the input */
   .cursor {
     display: inline-block;
     width: 2px;
@@ -507,7 +471,6 @@
     animation: blink 0.9s steps(1) infinite;
     transition: background-color 0.3s ease;
   }
-  /* streaming cursor inside AI message */
   .stream-cursor {
     display: inline-block;
     width: 2px;
@@ -520,7 +483,6 @@
   }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* ---------- footer ---------- */
   .footer {
     font-size: 12.5px;
     display: flex;
@@ -581,17 +543,6 @@
     }
   }
 
-  /* The un-carded twin of the approval-panel reset above. That one fires on
-     .is-card for the home-page card; this one fires on width, for the case
-     study embed — which is not carded but gets just as narrow. Without it the
-     500px floor on .tool-box-inner outlives the terminal around it and
-     .scroll-area's overflow-x: hidden silently eats the answer options.
-
-     33rem, not the 40rem used above, because this is the width where the floor
-     actually stops fitting: .scroll-area spends 32px on padding, so a 528px
-     frame leaves 496px of content box against a 500px panel. Widening the
-     query would stretch the panel to full width across the tablet range, where
-     it still fits at its authored size and has nothing to fix. */
   @media (max-width: 33rem) {
     .tool-box {
       width: 100%;

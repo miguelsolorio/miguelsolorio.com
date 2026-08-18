@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Community feedback sticky notes</title>
   <script>
-    /* Same-origin theme sync, mirroring demo-system.js: follow the parent
-       site's explicit theme; cross-origin embeds fall back to the OS one.
-       Runs in <head> to avoid a theme flash. */
     (function () {
       var root = document.documentElement;
       var media = window.matchMedia("(prefers-color-scheme: dark)");
       var parentRoot = null;
       try {
         if (window.parent !== window) parentRoot = window.parent.document.documentElement;
-      } catch (error) { /* Cross-origin: use the OS preference. */ }
+      } catch (error) {}
 
       function syncTheme() {
         root.classList.toggle("dark", parentRoot ? parentRoot.classList.contains("dark") : media.matches);
@@ -33,9 +30,6 @@
     html, body { overflow: hidden; background: transparent; }
 
     :root {
-      /* Notes sit directly on the page, so only the shadows are themed. The
-         second, deeper shadow is what lifts the highlighted notes off the
-         board — insights literally sit above the rest. */
       --note-shadow: 2px 3px 6px rgba(51, 65, 85, .13);
       --note-shadow-lift: 3px 6px 14px rgba(51, 65, 85, .22);
     }
@@ -45,13 +39,6 @@
       --note-shadow-lift: 3px 6px 16px rgba(2, 6, 16, .55);
     }
 
-    /* Fixed 1186x610 design (five 226px columns, 14px gaps), scaled to the
-       iframe by the script below. The height is the tallest column plus the
-       vertical padding, so no note crops. That padding is the room the lifted
-       insight notes and their shadows need at the top and bottom edges; it is
-       vertical only, so the column arithmetic above still uses the full
-       1186px. Any change to the notes changes the tallest column, so re-measure
-       and keep the aspect-ratio in single.css in step with it. */
     .stage {
       position: absolute;
       top: 0;
@@ -94,10 +81,6 @@
     .note--blue   { background: #7dd5f0; }
     .note--pink   { background: #f9c8e6; }
 
-    /* Notes carrying an insight: lifted off the board, headed by the theme
-       they belong to, with the line that makes the point marked. Themes that
-       came up more than once repeat the same label on each note, so the board
-       shows how often they were said. */
     .note--insight {
       box-shadow: var(--note-shadow-lift);
       transform: translateY(-2px);
@@ -123,8 +106,6 @@
       background: currentColor;
     }
 
-    /* A highlighter swipe: white at low alpha lightens whichever note colour
-       is underneath, so one rule works on all four. */
     .note mark {
       background: rgba(255, 255, 255, .62);
       color: inherit;

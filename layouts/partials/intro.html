@@ -1,7 +1,4 @@
 <intro class="home-hero">
-  {{/* The hero's backdrop is the site-wide topography shader — a fixed canvas
-       in layouts/partials/footer.html, drawn by assets/js/common.js — so this
-       partial only carries content. */}}
   <div class="home-hero-inner">
     <div class="home-hero-copy">
       <h1><span class="home-hero-line">Designing software</span><span class="home-hero-line">for builders</span></h1>
@@ -24,13 +21,6 @@
             <span class="home-hero-terminal-input-wrap">
               <input id="terminal-input" class="home-hero-terminal-input" type="text" inputmode="text" autocapitalize="none" spellcheck="false" aria-autocomplete="list" aria-controls="terminal-suggestions" aria-expanded="false" placeholder=" " />
               <span class="home-hero-terminal-caret-layer" id="terminal-caret-layer" aria-hidden="true"><span id="terminal-caret-text"></span><span class="home-hero-terminal-caret"></span></span>
-              {{/* The placeholder, rebuilt as a real layer so the /slash token
-                   can be a click target that opens the command menu (home.js).
-                   The single-space placeholder on the input keeps
-                   :placeholder-shown reporting "empty", which is what hides
-                   this hint while typing (hero.css). aria-hidden + tabindex=-1
-                   make the link pointer-only sugar — keyboard and AT users
-                   already have the label, the input, and Cmd+Space. */}}
               <span class="home-hero-terminal-hint" aria-hidden="true"> use <button type="button" id="terminal-hint-link" class="home-hero-terminal-hint-link" tabindex="-1">/slash</button> for commands</span>
             </span>
           </form>

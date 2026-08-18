@@ -1,22 +1,6 @@
 (() => {
   'use strict';
 
-  /* Generated quote avatars, drawn fresh on every page load. The two
-     pattern generators — halftone ramps and truchet tile sets — are ported
-     from the retired build-time bake script that wrote the old 40-slot
-     pool; geometry, palette, and composition are unchanged, only the
-     seeds are now random per visit. Each avatar swaps in over the
-     shortcode's neutral disc, so pages without JS keep the
-     disc. Styles alternate down the page and seed pairs are tracked in a
-     set, so no two generated avatars on a page repeat by construction.
-
-     Motion lives in single.css; this file only deals the knobs. Every
-     emitted element carries a --d stagger delay for the scroll-triggered
-     draw-in, and each avatar span gets its own drift periods, phases, and
-     shimmer clock (--qa-*), so the patterns wander slowly inside their
-     discs and a page of avatars never moves in unison. The reduced-motion
-     block in single.css turns all of it off. */
-
   const discs = document.querySelectorAll('[data-gen-avatar]');
   if (!discs.length) return;
 
@@ -24,14 +8,6 @@
   const VARIANCE = 0.5;
   const COLOR_COUNT = 3;
 
-  /* The site accent in each mode — one set cannot serve both card surfaces,
-     the same reason the accent itself flips from indigo to rose. Light is
-     the blurple family on white; dark is Rosé Dusk, so the grounds are
-     mauve steps just above the dark card (#201c28) and the figures are the
-     palette's rose primary (#efa9ae), its iris support (#c4a7e7) and a
-     deeper and paler rose either side of them. Any two figures can land on
-     any ground — pickColors deals a ground plus two of the four — so every
-     pairing has to read on the mauve. */
   const PALETTE = {
     light: { grounds: ['#eef0ff', '#e4e7ff', '#f5f4ff'],
              figures: ['#3429ff', '#241bc7', '#7d8bff', '#b9c1ff'] },
@@ -39,16 +15,9 @@
              figures: ['#efa9ae', '#c4a7e7', '#eb6f92', '#f3cdd2'] },
   };
 
-  /* Hairline ring, baked per variant since the site CSS never sees inside
-     these drawings. Dark takes the mauve the page's own hairlines use. */
   const RING = { light: 'rgba(15,23,42,.1)', dark: 'rgba(210,202,222,.18)' };
 
   const CIRCLE = 'M1,48a47,47 0 1,0 94,0a47,47 0 1,0 -94,0Z';
-
-  /* ---- deterministic randomness, identical to the bake script ----
-     Still seeded even though nothing persists: the light and dark variants
-     of one avatar replay the same geo/col streams, so they share geometry
-     and differ only in palette lookups. */
 
   function mulberry32(a) {
     return () => {
@@ -78,8 +47,6 @@
     return s;
   }
 
-  /* Ground first, then distinct figures; the shuffle consumes a fixed
-     number of draws so light and dark recolour the same picks. */
   function pickColors(col, pal, count) {
     const ground = pal.grounds[Math.floor(col() * pal.grounds.length)];
     const idx = [0, 1, 2, 3];
@@ -91,11 +58,6 @@
     for (let k = 0; k < count - 1; k++) out.push(pal.figures[idx[k]]);
     return out;
   }
-
-  /* ---- the two generators, ported with one addition each: a --d stagger
-     delay per element, spread across 0.6s. Halftone dots stagger along the
-     ramp position t (a wave in the ramp direction); truchet tiles stagger
-     in reading order, both arcs of a tile sharing the tile's delay. ---- */
 
   function genHalftone(geo, col, o) {
     const n = mapDensity(o.density, 6, 11);
@@ -146,12 +108,6 @@
     return out.join('');
   }
 
-  /* ---- assembly, same composition as the bake script: clipped ground
-     rect, generator body, hairline ring. The body sits in a .qa-anim group
-     so the animation CSS never reaches the ring or the ground. The clip id
-     carries a running counter and the variant to stay unique among however
-     many avatars a page shows. ---- */
-
   let counter = 0;
 
   function variantSVG(gen, seeds, mode) {
@@ -170,10 +126,6 @@
       + `</svg>`;
   }
 
-  /* Uniqueness by construction: every dealt seed pair is remembered and a
-     collision rerolls, so two avatars on a page can never share a drawing.
-     With 64 random bits a reroll is next to impossible; the bound only
-     guards a broken crypto source from spinning forever. */
   const dealt = new Set();
   function uniqueSeeds(style) {
     let seeds = randomSeeds();
@@ -184,13 +136,6 @@
     return seeds;
   }
 
-  /* Every avatar wanders on its own clock. The two drift axes get periods
-     from disjoint ranges (their ratio keeps sliding, so the combined path
-     never settles into a visible loop) and negative delays start each loop
-     mid-phase. Phases are stratified — avatar i lands in the i-th slice of
-     the cycle — so a page of avatars is spread out by construction, never
-     bobbing in unison. The shimmer gets its own random period and start
-     offset for the same reason. */
   const spans = [];
   discs.forEach((disc, i) => {
     const style = i % 2 === 0 ? 'halftone' : 'truchet';
@@ -214,10 +159,6 @@
     spans.push(span);
   });
 
-  /* The draw-in waits for the card to scroll into view; the class stays on,
-     so the shimmer keeps running after. Avatars arriving in the same
-     observer batch — a grid row scrolling in together — cascade: each gets
-     an extra 0.15s of entrance delay over the previous one. */
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver((entries) => {
       let batch = 0;

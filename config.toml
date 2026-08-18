@@ -1,32 +1,15 @@
-# Canonical origin, matching the live site's og:url. Internal links stay
-# relative (relativeURLs below); this only feeds absURL and .Permalink,
-# which social scrapers require as full URLs (og:url, og:image).
 baseURL = "https://miguelsolorio.com/"
 relativeURLs = true
 languageCode = "en-us"
 title = "Miguel Solorio"
 disableKinds = ["taxonomy", "term"]
 enableRobotsTXT = true
-# Hugo otherwise injects <meta name="generator"> as the first element of
-# <head>, ahead of the charset declaration.
 disableHugoGeneratorInject = true
 
 [params]
   googleAnalytics = "G-PDB3DT24E5"
-  # Default for <meta name="description"> and og:description; page front
-  # matter (description:) overrides it on case studies.
   description = "I'm a software designer in Seattle who loves developer tools, design systems, and open source. My work spans VS Code, Google Colab, and Gemini CLI."
 
-# Some editors save files atomically by creating a short-lived
-# `name.ext.tmp.<pid>.<id>` file and then renaming it. Exclude those files from
-# Hugo's static mount. The development command pairs this with forceSyncStatic
-# so a watcher event always reconciles the stable files instead of copying the
-# short-lived event path.
-#
-# .DS_Store is excluded for the same reason: Finder writes one into any browsed
-# directory, and the static mount would otherwise copy it into public/ and
-# publish it. Those files list a directory's contents, including names that
-# were since deleted, so they should never reach the server.
 [[module.mounts]]
   source = "static"
   target = "static"

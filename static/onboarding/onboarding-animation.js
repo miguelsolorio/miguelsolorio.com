@@ -51,13 +51,8 @@ function fitStage() {
   }
 
   const playbackSpace = 78;
-  // app-frame draws its own box-shadow (0 24px 55px). Reserve clearance
-  // proportional to the resulting scale — exactly enough that the shadow
-  // isn't clipped by the stage/canvas overflow:hidden — instead of a flat
-  // pixel margin, which either clips at small scales or wastes space at
-  // large ones.
   const SHADOW_BLUR = 55;
-  const SHADOW_TOP_SPREAD = 31; // blur(55) - offset(24)
+  const SHADOW_TOP_SPREAD = 31;
   const availableHeight = Math.max(220, viewportHeight - playbackSpace);
   const widthScale = Math.max(.1, viewportWidth / (1166 + 2 * SHADOW_BLUR));
   const heightScale = Math.max(.1, availableHeight / (720 + SHADOW_TOP_SPREAD));
@@ -199,13 +194,11 @@ async function run(context) {
   const tourNotificationsNext = document.querySelector('#tourNotifications .tour-next');
   const tourStartNext = document.querySelector('#tourStart .tour-next');
 
-  // Establish the page theme and enter onboarding.
   await animationContext.sleep(700);
   await movePointerTo(getStartedButton, 450);
   await clickPointer(() => setScreen("themes"));
   await animationContext.sleep(500);
 
-  // Preview Monokai, return to the page theme, then continue.
   await movePointerTo(monokaiTheme, 460);
   await clickPointer(() => {
     setThemeChoice("monokai");
@@ -224,25 +217,21 @@ async function run(context) {
   await clickPointer(() => setScreen("palette"));
   await animationContext.sleep(700);
 
-  // Let the command palette example read without opening a second overlay.
   await animationContext.sleep(1400);
   await movePointerTo(paletteNextButton, 420);
   await clickPointer(() => setScreen("extensions"));
   await animationContext.sleep(700);
 
-  // Keep the default extension category visible before continuing.
   await animationContext.sleep(1600);
   await movePointerTo(extensionNextButton, 420);
   await clickPointer(() => setScreen("done"));
   await animationContext.sleep(700);
 
-  // Let completion register before entering the product.
   await animationContext.sleep(700);
   await movePointerTo(overviewButton, 420);
   await clickPointer(() => setScreen("final"));
   await animationContext.sleep(900);
 
-  // Reveal each tooltip before moving the cursor toward its action.
   showTour("activity");
   await animationContext.sleep(1000);
   await movePointerTo(tourActivityNext, 360);
@@ -314,8 +303,6 @@ if (cardMode && window.frameElement) {
       }, { threshold: 0.25 });
 
       cardVisibilityObserver.observe(window.frameElement);
-    } catch {
-      // Cross-origin embeds fall back to the player's document visibility.
-    }
+    } catch {}
   });
 }

@@ -1,18 +1,9 @@
-  /* Delta over cell-animation.css. Every token, cell, toolbar, chat and mouse
-     style is inherited from that sheet; this file only adds the pieces unique
-     to the message-interaction scene: the code selection, the floating
-     Chat/Modify/Explain bar, and the composer header + attachment chip. */
-
   :root {
     --sel-bg: #d3e3fd;
     --sel-underline: #0b57d0;
     --chip-bg: #e8eaf4;
     --num: #098658;
     --hero-name: #7b8cde;
-    /* The ceiling the log grows to, two turns tall. Measured: a prompt row is
-       28px, a reply 22px, a reply carrying the review actions 63px. The floor
-       is the tallest single row plus the fade (63 + 20), or the newest message
-       would sit under it. */
     --chat-log-h: 84px;
     --chat-log-fade: 20px;
   }
@@ -25,65 +16,29 @@
     --hero-name: #a9b6f0;
   }
 
-  /* ---------- Gemini accent ---------- */
-  /* The nameplate and the border of the cell it tags are one accent, and on
-     light surfaces cell-animation.css's --gemini reads as a second blue beside
-     the links and the selection underline. Pull both to --link. Dark keeps the
-     inherited fill: white nameplate text needs the darker blue behind it, and
-     there --active-border is already the link colour. */
   :root { --active-border: var(--link); }
   .gemini-tag { background: var(--link); }
   :root.dark .gemini-tag { background: var(--gemini); }
 
-  /* ---------- first paint ---------- */
-  /* Nothing here is presentable until two things have happened: the icon font
-     has resolved, since every Material Symbols ligature lays out at the width
-     of its literal name until it does, and the player has run the scene's
-     opening frame. Painting in between shows a half-built composer, which is
-     the flash. Hold the scene back and reveal it on the player's ready.
-
-     Visibility rather than opacity: any opacity below 1 would make .frame the
-     containing block for the fixed-position action bar. */
   body:not(.scene-ready) .frame,
   body:not(.scene-ready) .mouse { visibility: hidden; }
 
-  /* A grid container with no explicit columns sizes its implicit track to
-     max-content, so once the generated arguments make the call longer than the
-     notebook the whole cell juts out past its neighbours. Clamping the track
-     lets .cell-code scroll inside the cell the way it was meant to. */
   .cell-row { grid-template-columns: minmax(0, 1fr); }
 
-  /* The generated arguments push the call past the notebook's width. Colab
-     would scroll it out of sight; in a demo the new code is the whole point,
-     so wrap instead — the same treatment cell-animation.css already applies at
-     narrow widths, promoted to every size. */
   .cell-code { overflow-x: visible; }
   .line {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
 
-  /* The generated cells carry the same green pending-diff highlight as the
-     other notebook scenes. Where those switch a finished cell to .accepted,
-     this one lands every cell as .added and clears that flag on the first
-     accept, so the line highlight follows .added instead.
-
-     The child combinator matters: streamDiff builds its own .hl inside a slot
-     for the second turn, and that one is green on its own terms, long after
-     .added has gone. Only the wrapper the line itself owns is switched here. */
   .line > .hl { background: transparent; }
   .cell-row.added .line > .hl { background: var(--highlight); }
 
-  /* ---------- landing hero ---------- */
-  /* The greeting and the suggestion chips bracket the composer pill in its
-     empty state, then collapse away once the first prompt is sent. Both use
-     the same collapse recipe as .chat-msg so the card grows and shrinks
-     without a layout jump. */
   .hero,
   .chat-chips {
     max-height: 0;
     opacity: 0;
-    margin-top: -16px;   /* cancel the .chat flex gap while collapsed */
+    margin-top: -16px;
     overflow: hidden;
     transition: max-height 0.45s cubic-bezier(0.32, 0.72, 0, 1),
                 margin-top 0.45s cubic-bezier(0.32, 0.72, 0, 1),
@@ -97,19 +52,12 @@
   }
   .hero.show { max-height: 140px; }
   .chat-chips.show { max-height: 80px; }
-  /* Collapsed is not gone: max-height clamps the content box, so the hero goes
-     on contributing its padding, and both keep a row in the card's flex flow
-     for the rest of the scene. Once the collapse has played out they come out
-     of the layout entirely. */
   .hero.gone,
   .chat-chips.gone { display: none; }
 
   .hero {
     text-align: center;
   }
-  /* carried by the open state, not the element: max-height cannot clamp
-     padding, so leaving it on .hero would keep 4px of the landing in the card
-     after the collapse and make the later display:none a visible jump */
   .hero.show { padding-bottom: 4px; }
   .hero-title,
   .hero-sub {
@@ -145,29 +93,16 @@
   .chat-chips button.hover { background: var(--action-hover); }
   .chat-chips button.pressed { background: var(--surface-pressed); }
 
-  /* The homepage card lays its own outlined project title across the middle of
-     the frame, so the greeting reads as a second heading competing with it.
-     Drop the hero there and let the composer be what the card centres on.
-     Centring the pill takes more than removing the hero: the landing collapses
-     the notebook to nothing, so the chat is the whole frame, and body's flex
-     centring would land on the pill and its suggestions as a group — leaving
-     the pill sitting high by half the chips. Taking the chips out of flow makes
-     the pill the chat's only laid-out row, so the centre falls on the pill
-     itself. They are absolute only through the landing; the collapse that ends
-     it puts them back to display:none for the rest of the scene. */
   body.is-card .hero { display: none; }
   body.is-card .chat { position: relative; }
   body.is-card .chat-chips {
     position: absolute;
-    top: calc(100% + 16px);   /* the .chat flex gap they no longer take part in */
+    top: calc(100% + 16px);
     left: 0;
     right: 0;
     margin-top: 0;
   }
 
-  /* ---------- code selection ---------- */
-  /* Split into two spans so the drag can grow one while the tail shrinks,
-     keeping the line's character positions fixed while the selection sweeps. */
   .sel {
     background: var(--sel-bg);
     border-bottom: 2px solid var(--sel-underline);
@@ -175,7 +110,6 @@
     transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
-  /* ---------- selection action bar ---------- */
   .sel-actions {
     position: fixed;
     top: 0;
@@ -225,13 +159,9 @@
     transition: color 0.3s ease;
   }
 
-  /* cell-animation nudges the spark and spinner down to sit against a wrapped
-     paragraph. Here every assistant line is short, so the nudge just leaves the
-     glyph 3px low against its text; centre it on the first line instead. */
   .chat-ai .chat-spark,
   .chat-ai .chat-spinner { margin-top: 0; }
 
-  /* Parameter names in an answer are code, not prose. */
   .chat-ai-text code {
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     font-size: 0.92em;
@@ -241,17 +171,6 @@
     transition: background-color 0.3s ease;
   }
 
-  /* ---------- message log ---------- */
-  /* Turns accumulate here so the card reads as one continuing conversation.
-     Content-sized up to a ceiling: a hard height would bottom-anchor the early
-     turns and leave blank space above them, which reads as the card having
-     more padding at the top than at the bottom. The ceiling is what stops the
-     card growing with every message — past it, older turns scroll away under
-     the fade instead.
-
-     This only holds still because the log never shrinks: the review actions
-     are the one thing that removes height mid-scene, and the scene always adds
-     the turn that replaces them in the same frame. */
   .chat-log {
     display: flex;
     flex-direction: column;
@@ -259,10 +178,6 @@
     max-height: var(--chat-log-h);
     overflow-y: auto;
     scrollbar-width: none;
-    /* The fade belongs to the line running off the top edge, so it is never
-       taller than the part of that line already cut off — a line sitting whole
-       against the top edge keeps its full contrast. JS measures the clip; with
-       none, both stops sit at 0 and the gradient collapses to a no-op. */
     -webkit-mask-image: linear-gradient(to bottom, transparent 0,
       #000 min(var(--chat-log-fade), var(--chat-log-clip, 0px)));
     mask-image: linear-gradient(to bottom, transparent 0,
@@ -271,8 +186,6 @@
   .chat-log::-webkit-scrollbar { display: none; }
   .chat-log:empty { display: none; }
 
-  /* Inside a scroller the height animation has nothing to protect and would
-     only make scrollHeight a moving target, so rows just fade in. */
   .chat-log .chat-msg {
     max-height: none;
     margin-top: 0;
@@ -280,11 +193,6 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  /* ---------- attachment chip ---------- */
-  /* The chip lives inside the composer pill, stacked above the input row, so
-     the attached selection reads as part of what is about to be sent. A filled
-     token rather than an outlined one keeps it from looking like a second
-     input. */
   .chat-chip {
     display: none;
     min-width: 0;
@@ -299,7 +207,6 @@
   .chat-chip.show { display: inline-flex; }
   .chat-chip .msym { font-size: 18px; }
 
-  /* The same token once it has been sent, sitting under its message. */
   .chat-user-body {
     display: flex;
     flex-direction: column;
@@ -309,8 +216,6 @@
   .chat-chip--sent { margin: 8px 0 0; }
   .chat-user--with-chip { align-items: flex-start; }
 
-  /* A stadium pill only reads as one while it is a single row tall; once the
-     chip stacks on top it needs corners instead. */
   .chat-input.has-chip {
     border-radius: 24px;
     padding-top: 10px;
@@ -336,14 +241,10 @@
     text-overflow: ellipsis;
     transition: color 0.3s ease;
   }
-  /* ---------- fake mouse ---------- */
-  /* The inherited 0.9s glide reads as lag when the pointer is dragging across a
-     selection, so the drag swaps in a near-immediate follow. */
   .mouse.dragging {
     transition: transform 0.06s linear, opacity 0.3s ease;
   }
 
-  /* Numeric literals only appear in the generated diff. */
   .tok-num { color: var(--num); transition: color 0.3s ease; }
 
   @media (max-width: 50rem) {
@@ -361,11 +262,9 @@
   }
 
   @media (max-width: 25rem) {
-    /* The bar would otherwise overflow the cell it points at. */
     .sel-actions button { padding-inline: 6px; }
     .sel-actions button .msym { display: none; }
     .chat-chip-label { max-width: 60vw; }
-    /* Three chips no longer fit on one row; keep the one the demo clicks. */
     .chat-chips button:not(#datasetChip) { display: none; }
   }
 

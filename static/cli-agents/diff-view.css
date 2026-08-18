@@ -1,11 +1,4 @@
-  /* Still scenes for the diff-view case study. Layered on cli-animation.css +
-     cli-theme.css — link both first. Everything structural (.diff-line,
-     .diff-ln, .diff-sign, .tool-*) comes from the first and the code palette
-     from the second; this file only adds what a static scene needs on top of
-     them: the panel frame and the two hunk separators. */
-
   :root {
-    /* The CLI outlines a pending confirmation in its warning colour. */
     --panel-border:  color-mix(in srgb, var(--warn) 42%, transparent);
     --diff-rule:     color-mix(in srgb, var(--text-muted) 22%, var(--bg));
   }
@@ -13,30 +6,14 @@
   :root.dark {
     --panel-border:  color-mix(in srgb, var(--warn) 34%, transparent);
     --diff-rule:     color-mix(in srgb, var(--text-muted) 32%, var(--bg));
-    /* The shared change tints are tuned for the animation's small inline diffs.
-       At this size, and against a panel rather than the page, the dark pair goes
-       muddy well before it reads as red and green. Deepen them for panels only.
-       Held in variables so a panel that carries its own palette — the theme
-       picker's, say — can replace them without out-specifying the rule. */
     --diff-del-panel: rgba(255, 43, 43, 0.16);
     --diff-add-panel: rgba(126, 255, 43, 0.11);
   }
 
-  /* ---------- scene shell ---------- */
-  /* cli-animation.css pins body to the viewport so the terminal can scroll
-     inside it. A still scene wants the opposite: the document should be exactly
-     as tall as its content, so it can report that height to the parent page and
-     have the embedding frame match it. */
   body.diff-scene {
     height: auto;
     overflow: visible;
-    /* The embed already sits on a stage with 3.5rem of its own padding, so the
-       scene keeps only enough to clear the panel's shadow. Every pixel spent
-       here is a character the widest diff line loses. */
     padding: clamp(8px, 2vw, 20px);
-    /* The site's content column caps the embed at roughly 900px, so the upper
-       bound is reached there — landing on the same 13px the animation above
-       this scene uses. */
     font-size: clamp(7.5px, 1.45vw, 13px);
   }
 
@@ -46,7 +23,6 @@
     margin: 0 auto;
   }
 
-  /* ---------- panel ---------- */
   .diff-panel {
     position: relative;
     overflow: hidden;
@@ -57,9 +33,6 @@
     transition: border-color 0.3s ease, background-color 0.3s ease;
   }
 
-  /* Long lines run past the panel at anything below the widest embed, the same
-     way they run past a narrow terminal. Fading the last few characters into
-     the panel makes that read as a horizon rather than as a hard chop. */
   .diff-panel::after {
     content: "";
     position: absolute;
@@ -78,16 +51,10 @@
   .diff-panel .tool-header-sub {
     font-size: inherit;
   }
-  /* The CLI closes the summary with a back-arrow however narrow the terminal
-     gets, so hold it out of the truncation. */
   .diff-panel .tool-header-arrow {
     flex: none;
   }
 
-  /* ---------- diff rows ---------- */
-  /* A terminal paints a background only under the characters it printed, which
-     is why the change bars in the original screenshots end ragged. Rows size to
-     their content instead of filling the block. */
   .diff-panel .diff-body {
     display: flex;
     flex-direction: column;
@@ -99,9 +66,6 @@
     max-width: 100%;
     padding: 0 0.2em 0 0;
     font-size: inherit;
-    /* Rounded run ends belong to the animation, where a run of changed lines is
-       one solid rectangle. Here rows stop at their text, so a radius would land
-       at an arbitrary x between square-cornered neighbours. */
     border-radius: 0;
   }
   .diff-panel .diff-ln {
@@ -115,11 +79,6 @@
     width: 1ch;
     margin-right: 1ch;
   }
-  /* Restates the shared changed-row gutter lift at panel specificity, or the
-     .diff-panel .diff-ln recolour above would win. --code-plain rather than
-     --text so the theme panels' numbers step toward their own foreground, and
-     the panel's --bg (the theme's own surface there) as the mixing base. The
-     "before" renderer is excluded: it has no quiet tier to step up from. */
   .diff-panel:not(.diff-plain) .diff-line-del .diff-ln,
   .diff-panel:not(.diff-plain) .diff-line-add .diff-ln {
     color: color-mix(in srgb, var(--code-plain) 75%, var(--bg));
@@ -128,8 +87,6 @@
   :root.dark .diff-panel:not(.diff-plain) .diff-line-del { background: var(--diff-del-panel); }
   :root.dark .diff-panel:not(.diff-plain) .diff-line-add { background: var(--diff-add-panel); }
 
-  /* Rows the renderer skipped, and the hunk separator that stands in for them.
-     Both are full-width so they read as breaks in the file, not as code. */
   .diff-hidden {
     padding-left: 0.4em;
     color: var(--text-muted);
@@ -137,50 +94,26 @@
     line-height: 1.75;
     transition: color 0.3s ease;
   }
-  /* One hairline, well below the weight of the code it separates: the rule only
-     has to say "lines were skipped here", and anything heavier competes with the
-     change bars for the same glance. */
   .diff-gap {
-    /* Empty, so it needs stretching out of the content-width flex column that
-       keeps the code rows ragged. */
     align-self: stretch;
     height: 1px;
     margin: 0.85em 0;
     background-color: var(--diff-rule);
   }
 
-  /* ---------- the "before" renderer ---------- */
-  /* The original diff coloured whole lines and drew no change bars, so the eye
-     had nothing to lock onto. Removing the backgrounds and the syntax palette
-     from the shared styles reproduces it exactly — this one class is the whole
-     before/after delta. */
   .diff-plain .diff-line-del,
   .diff-plain .diff-line-add {
     background: none;
   }
   .diff-plain .diff-line-del .diff-code { color: var(--diff-del); }
-  /* Whole lines of running text, so the added green needs more weight than the
-     shared token — which is sized for a one-line inline marker. Mixed toward
-     the ink rather than written as a fixed dark green, because a CLI palette
-     repaints this panel and a hex would be the one colour in the scene that
-     ignored the theme: on a light surface the mix darkens, on a dark theme
-     previewed here it lightens, and either way it moves away from the
-     background. On the dark site the token already carries the weight. */
   .diff-plain .diff-line-add .diff-code {
     color: color-mix(in srgb, var(--diff-add) 82%, var(--text));
   }
   :root.dark .diff-plain .diff-line-add .diff-code { color: var(--diff-add); }
-  /* The old renderer had no quiet tier at all: the line numbers and the
-     hidden-lines notice printed in the same default foreground as the code, so
-     the gutter pulled as hard as the diff did. */
   .diff-plain .diff-ln,
   .diff-plain .diff-hidden {
     color: var(--text);
   }
-  /* The old renderer printed its separator as a run of box-drawing characters in
-     the default foreground, wall to wall — two hard rules at full text weight,
-     louder than the changes they separated. Keeping that here is the point of
-     the comparison. */
   .diff-plain .diff-gap {
     height: 4px;
     margin: 0.7em 0;
@@ -189,17 +122,11 @@
     border-bottom: 1px solid var(--text);
   }
 
-  /* ---------- before / after comparison ---------- */
-  /* Two columns at every width. The comparison is the content — stacking it
-     would turn a glance into a scroll — so the type scales down instead and
-     long lines clip at the panel edge the way they do in a narrow terminal. */
   .diff-compare {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(8px, 1.2vw, 16px);
   }
-  /* The two renderers show a different number of context lines, so the panels
-     have to be stretched to a shared height or the comparison lands crooked. */
   .diff-column {
     display: flex;
     min-width: 0;
@@ -209,10 +136,6 @@
   .diff-column .diff-panel {
     flex: 1;
   }
-  /* The labels are the framing device for the whole comparison, so they read as
-     display type rather than as a caption. Sizing them in em off the scene's
-     own font keeps them proportionally larger than the code at every width,
-     rather than crossing under it as the type scales down. */
   .diff-label {
     margin-bottom: clamp(8px, 1.2vw, 16px);
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
@@ -227,8 +150,6 @@
     letter-spacing: -0.02em;
     transition: color 0.3s ease;
   }
-  /* Kept quiet and neutral: the panels below already carry the red and green,
-     and a tinted label would pre-judge the comparison for the reader. */
   .diff-label-note {
     display: block;
     margin-top: 0.5em;
@@ -237,18 +158,10 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- approval prompt ---------- */
-  /* Used by the standalone dialog and by both comparison panels, so the
-     question and options line up with the code above them in every panel. */
   .diff-panel .tool-question {
     margin: 1.4em 0 0.9em;
     font-size: inherit;
   }
-  /* The animation's options fill a narrow approval box; here they sit in a
-     full-width panel, where a selection bar stretching to the far edge reads
-     as a banner. Size the group to its longest option instead: every row ends
-     at the same x, so the selection bar reads as one column of choices rather
-     than as either a banner or a ragged tag. */
   .diff-panel .tool-body {
     display: flex;
     flex-direction: column;
@@ -265,10 +178,6 @@
     background: none;
   }
 
-  /* The old prompt marked the highlighted option with a chevron and recoloured
-     the row in the CLI's purple, with no filled bullet and no selection pill —
-     the same "colour the whole line and hope it reads" approach the old diff
-     took. Its pending-confirmation glyph was purple too. */
   .diff-plain {
     --panel-border: color-mix(in srgb, var(--accent-purple) 42%, transparent);
   }

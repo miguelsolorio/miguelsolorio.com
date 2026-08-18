@@ -1,27 +1,6 @@
-/* Weekly npm downloads for @vscode/codicons across its full life on the
-   registry — the figure that closes the "Impact" section of the icons page.
-
-   These are the real numbers, not a sampled curve: every day from the first
-   publish on 13 July 2021 through 9 August 2026, pulled from npm's own
-   downloads API and summed into weeks that start on a Monday.
-
-   Two liberties, both bounded. Six days came back from the API as zero —
-   2022-07-22, 2023-11-03, 2026-05-13, 2026-06-05, 2026-07-12, 2026-08-11 —
-   which are registry reporting gaps rather than days nobody installed the
-   package; each is filled with the mean of the same weekday one week either
-   side, so a dropped reading doesn't read as a cliff. And the trailing partial
-   week is dropped, so the last point is a whole week like every other one.
-
-   Chart.js draws it. Everything here is geometry and wiring — every colour is
-   read back off the stylesheet as a custom property, so the drawing re-tones
-   with the page's theme without this file knowing which one is up. */
 (function () {
   "use strict";
 
-  /* Weeks are a fixed stride, so only the readings are stored — the x for each
-     one is the first Monday plus seven days per index. The first entry covers
-     the six days from publication to that Sunday; every entry after it is a
-     full week. */
   var WEEK_ONE = "2021-07-12";
   var WEEKLY = [
     109, 234, 290, 556, 1819, 2636, 3412, 6634, 5660, 7751,
@@ -53,8 +32,6 @@
     589550, 603894, 556306, 593005, 577862
   ];
 
-  /* One mark per new year. Five years of weeks is too long a run to label by
-     month without the axis turning into a wall of type. */
   var MONTHS = [
     ["2022-01-01", "2022"],
     ["2023-01-01", "2023"],
@@ -63,11 +40,6 @@
     ["2026-01-01", "2026"]
   ];
 
-  /* A hundred thousand a step. Coarser rules cleared the 1.03M peak in three or
-     four lines, but then the first rule above the axis sat at 300k and the
-     package's first four years — all of them under 60k — had nothing to be read
-     against. Thirteen rules is a lot for one plot; they earn it by giving the
-     early years a scale. */
   var Y_MAX = 1200000;
   var Y_STEP = 100000;
   var MONO = '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
@@ -76,8 +48,6 @@
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
 
-  /* Days since epoch — the x domain is a count, so the scale stays linear and
-     no month is quietly widened to a uniform thirty days. */
   function day(iso) {
     var parts = iso.split("-");
     return Date.UTC(+parts[0], +parts[1] - 1, +parts[2]) / 86400000;
@@ -106,9 +76,6 @@
     TICK_LABELS[day(month[0])] = month[1];
   });
 
-  /* The palette is the stylesheet's. Read on every theme change rather than
-     cached, so a switch re-tones the canvas the same way it re-tones the CSS
-     around it. */
   function palette() {
     var styles = getComputedStyle(document.body);
     function token(name) {
@@ -126,8 +93,6 @@
     };
   }
 
-  /* The wash under the line, rebuilt whenever the plot is resized or re-toned:
-     a canvas gradient is in device pixels, so it cannot outlive either. */
   function fill(context, colors) {
     var area = context.chart.chartArea;
     if (!area) return colors.fillBottom;
@@ -137,9 +102,6 @@
     return gradient;
   }
 
-  /* A hairline dropped from the reading under the pointer. Chart.js draws the
-     tooltip but not this, and without it a tooltip on a curve this busy can
-     sit a long way from the point it is describing. */
   var crosshair = {
     id: "crosshair",
     afterDatasetsDraw: function (chart, args, options) {
@@ -159,9 +121,6 @@
     }
   };
 
-  /* The line draws itself in once, left to right, the way the star chart on the
-     cli-agents page does. Each point animates for one slot and waits out the
-     slots before it, so the head of the line advances at a steady pace. */
   function drawIn(count) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
     var slot = 1600 / count;
@@ -211,9 +170,6 @@
             borderWidth: 2.4,
             borderCapStyle: "round",
             borderJoinStyle: "round",
-            /* Monotone keeps the smoothing from overshooting, so the holiday
-               trough bottoms out at the reading it was given rather than
-               dipping below it. */
             cubicInterpolationMode: "monotone",
             fill: true,
             pointRadius: function (context) {
@@ -311,9 +267,6 @@
     return chart;
   }
 
-  /* Re-tone in place on a theme change: the readings have not moved, only the
-     ink, so the chart is updated rather than rebuilt and the line does not
-     redraw itself from the left every time the page flips. */
   function retone(chart) {
     var colors = palette();
     var dataset = chart.data.datasets[0];
@@ -347,9 +300,6 @@
     Chart.defaults.font.family = MONO;
     var chart = build(canvas);
 
-    /* demo-system.js mirrors the parent page's theme onto this document's root,
-       whether the change came from the site's toggle or the operating system.
-       Watching the class covers both without knowing which fired. */
     var themed = document.documentElement.classList.contains("dark");
     new MutationObserver(function () {
       var dark = document.documentElement.classList.contains("dark");

@@ -1,10 +1,3 @@
-/* Drives the wipe for any reveal scene. The divider position is one number,
-   held in --pos on the stage, so the clip, the rule and the grip all read from
-   a single source and cannot drift apart.
-
-   The scene names its two shots on the stage element — data-left / data-right
-   for the spoken phrase, and the -short pair for the running percentages — so
-   this file never has to know which pair it is wiping between. */
 (function () {
   "use strict";
 
@@ -29,8 +22,6 @@
     return n < 0 ? 0 : n > 100 ? 100 : n;
   }
 
-  /* Spoken, not shown. The tags name the two shots for anyone reading the
-     picture; this says where the divider is for anyone who cannot. */
   function describe(n) {
     var r = Math.round(n);
     if (r <= 0) return "Showing " + RIGHT;
@@ -51,19 +42,12 @@
     return ((event.clientX - box.left) / box.width) * 100;
   }
 
-  /* ---------- pointer ---------- */
-  /* Pointer events cover mouse, touch and pen in one path, and capturing on the
-     stage means a drag that leaves the frame keeps tracking instead of sticking
-     wherever the cursor crossed the edge. */
-
   stage.addEventListener("pointerdown", function (event) {
     dragging = true;
     stopHint();
     stage.classList.add("is-dragging");
     if (stage.setPointerCapture) stage.setPointerCapture(event.pointerId);
     apply(positionFromEvent(event));
-    /* A press on the stage aims the divider; it should also leave the keyboard
-       on the control the reader just grabbed. */
     handle.focus({ preventScroll: true });
     event.preventDefault();
   });
@@ -84,8 +68,6 @@
 
   stage.addEventListener("pointerup", endDrag);
   stage.addEventListener("pointercancel", endDrag);
-
-  /* ---------- keyboard ---------- */
 
   handle.addEventListener("keydown", function (event) {
     var delta = 0;
@@ -124,12 +106,6 @@
     event.preventDefault();
   });
 
-  /* ---------- opening hint ---------- */
-  /* A still frame with a line down it does not say "drag me", so the divider
-     sweeps once when the scene first comes into view and settles back at half.
-     It runs once, yields to the first real input, and is skipped outright when
-     the reader has asked for less motion. */
-
   function stopHint() {
     hintTimers.forEach(clearTimeout);
     hintTimers = [];
@@ -160,19 +136,12 @@
     );
   }
 
-  /* Where the scene actually sits on screen. Embedded, that is the frame's own
-     place in the parent page: measuring the stage from inside the iframe would
-     report "fully visible" from the moment the document loads, and the sweep
-     would play to nobody long before the reader has scrolled down to it. */
   function viewportContext() {
     try {
       if (window.frameElement && window.parent && window.parent !== window) {
         return { box: window.frameElement, view: window.parent };
       }
-    } catch (err) {
-      /* A cross-origin embed cannot be measured from in here; the local box is
-         the best available answer. */
-    }
+    } catch (err) {}
     return { box: stage, view: window };
   }
 
@@ -218,21 +187,12 @@
       observer.observe(context.box);
     }
 
-    /* The observer is the cheap path; measuring on scroll is the guarantee.
-       Some embedding contexts never deliver a record for a frame that is
-       already on screen, and the sweep is the only thing telling a reader the
-       divider moves at all, so it cannot depend on that record arriving. */
     context.view.addEventListener("scroll", check, { passive: true });
     context.view.addEventListener("resize", check);
     check();
   }
 
   whenMostlyVisible(runHint);
-
-  /* ---------- the screenshots ---------- */
-  /* The frame's proportions are set by the embedding page, so nothing here has
-     to measure them. All this watches for is a shot that failed to load, which
-     the stylesheet turns into an empty plate rather than a broken-image mark. */
 
   Array.prototype.forEach.call(
     stage.querySelectorAll(".reveal-shot"),
@@ -246,7 +206,6 @@
         if (!img.naturalWidth) markMissing();
       });
 
-      /* Cached images can finish before this script runs. */
       if (img.complete && !img.naturalWidth) markMissing();
     }
   );

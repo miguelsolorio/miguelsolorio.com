@@ -11,12 +11,6 @@
 </head>
 <body class="demo-scene demo-scene--reveal" data-demo-scene="theme-reveal">
 
-<!-- The same walkthrough twice, one theme each, stacked at full size with the
-     light shot clipped over the dark one so the divider wipes rather than
-     cross-fades — which is the point of the pair: nothing in the layout moves,
-     only the colors the illustration reads out of the theme. The images carry
-     the alt text; the tags repeat it visually, so they stay out of the
-     accessibility tree instead of being announced twice. -->
 <main class="reveal" id="reveal" style="--pos: 50%"
       data-left="the light theme" data-left-short="light"
       data-right="the dark theme" data-right-short="dark">
@@ -25,9 +19,6 @@
        alt="The Python walkthrough in a dark VS Code theme, with the Explorer illustration rendered in matching dark colors">
   <span class="reveal-tag reveal-tag--right" aria-hidden="true">Dark</span>
 
-  <!-- The Light tag lives inside the clipped layer on purpose: when the divider
-       runs to the left edge the label is wiped away with the shot it names, so
-       a tag can never sit over the wrong screenshot. -->
   <div class="reveal-clip">
     <img class="reveal-shot" id="shotLight" src="./theme1.png"
          alt="The same walkthrough in a light VS Code theme, with the Explorer illustration rendered in matching light colors">

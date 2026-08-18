@@ -1,13 +1,3 @@
-{{/* Lays donut charts on one shared card: side by side on the wide measure,
-     stacking once a chart would drop under a readable width — the same trade
-     the quote grid makes. `alt` carries the sentence the plain image this
-     replaces used to speak; `caption` adds a visible figcaption under the
-     charts.
-
-     Only the charts go in the row. The caption has to stay outside it: an
-     auto-fit track is collapsed when nothing occupies it, and a caption
-     spanning 1 / -1 occupies every track it is given — enough to keep a third
-     column alive for two charts and push the pair off centre. */}}
 {{- if not (strings.Trim .Inner " \t\r\n") -}}
   {{- errorf "donuts shortcode in %s: needs {{< donut >}} calls between its opening and closing tags" $.Page.File.Path -}}
 {{- end -}}

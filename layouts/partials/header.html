@@ -2,11 +2,6 @@
 <html id="top" class="top" lang="{{ .Site.LanguageCode | default "en" }}">
   <head>
     <meta charset="utf-8">
-    {{/* viewport-fit=cover is what makes env(safe-area-inset-*) resolve to
-         anything but 0. games.css relies on it to keep the thumb pad and the
-         action button out of the home-indicator swipe zone; --site-gutter in
-         main.css widens to match so page content still clears a landscape
-         notch. */}}
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     {{ if not hugo.IsProduction }}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{{ end }}
     <title>{{ if .IsHome }}{{ .Site.Title }} · {{ .Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
@@ -16,17 +11,9 @@
     <meta property="og:site_name" content="{{ .Site.Title }}">
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
-    {{/* The home card leads with the name; project pages use their own titles.
-         The site name travels separately in og:site_name. */}}
     <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
     <meta property="og:description" content="{{ $description }}">
     <meta property="og:url" content="{{ .Permalink }}">
-    {{/* One card for every scraper: platforms fetch og:image server-side and
-         cache it, so it can't follow the viewer's theme. Exported from
-         scripts/og-images.html (?og=1), saved to assets/og-light.jpg. The
-         published name carries a short content hash, so every art change
-         gets a fresh URL and stale scraper caches never serve the old
-         card; nothing here needs editing on a re-export. */}}
     {{ $og := resources.Get "og-light.jpg" }}
     {{ $og = resources.Copy (printf "og-light-%s.jpg" (substr (md5 $og.Content) 0 8)) $og }}
     <meta property="og:image" content="{{ $og.Permalink }}">
@@ -34,10 +21,6 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Designing software for builders · Miguel Solorio, Software Designer">
     <meta name="twitter:card" content="summary_large_image">
-    {{/* This static pair follows the OS theme on its own. common.js re-points
-         both at the active palette while a manual choice overrides the OS, and
-         restores the pair as soon as that override is dropped — keep it a
-         two-way sync, or the chrome color stays stuck on the old theme. */}}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f0ff">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161320">
 
@@ -75,13 +58,6 @@
     {{ end }}
     <script>
       (function () {
-        /* A manual theme choice is stored as a bare 'dark' or 'light', and only
-           while it disagrees with the OS — assets/js/common.js drops the key
-           the moment the two agree. So this script never has to judge whether a
-           stored choice is still current: honoring it and following the OS land
-           on the same class whenever it isn't. Values this site no longer
-           writes ('dark|YYYY-MM-DD') are ignored here and cleared there, rather
-           than paying a storage write before first paint. */
         var storedTheme = null;
         try {
           storedTheme = localStorage.getItem('color-theme');
@@ -92,10 +68,6 @@
           ? storedTheme === 'dark'
           : window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-        /* ?transparent strips the gradient stage off project media so a
-           screenshot or recording captures the artwork alone. It runs here
-           rather than in common.js — which is deferred — so the stage never
-           paints and then vanishes mid-capture. */
         if (new URLSearchParams(window.location.search).has('transparent')) {
           document.documentElement.classList.add('transparent');
         }

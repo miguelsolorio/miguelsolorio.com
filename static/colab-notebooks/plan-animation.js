@@ -1,35 +1,26 @@
-/* ---------------- content ----------------
-   Plan-mode scene: the user picks Plan from the composer's slash menu, Gemini
-   drafts a five-step Titanic analysis, and Auto run executes it — each cell
-   streams in, runs, and prints its output before the next one starts, while
-   the plan tracker in the chat ticks along.
-   Each cell is a list of lines; each line is a list of [text, tokenClass]
-   pairs. tokenClass: '' plain | 'kw' keyword | 'com' comment | 'str' string
-   | 'prm' param | 'num' number
-*/
 const CELLS = [
-  [ // 1 — Load Titanic dataset
+  [
     [["import", "kw"], [" seaborn ", ""], ["as", "kw"], [" sns", ""]],
     [["import", "kw"], [" pandas ", ""], ["as", "kw"], [" pd", ""]],
     [],
     [["titanic_df = sns.load_dataset(", ""], ["'titanic'", "str"], [")", ""]],
     [["display(titanic_df.head())", ""]],
   ],
-  [ // 2 — Data cleaning and preprocessing
+  [
     [["# Clean missing values", "com"]],
     [["titanic_df[", ""], ["'age'", "str"], ["] = titanic_df[", ""], ["'age'", "str"], ["].fillna(titanic_df[", ""], ["'age'", "str"], ["].median())", ""]],
     [["titanic_df = titanic_df.drop(", ""], ["columns", "prm"], ["=[", ""], ["'deck'", "str"], ["]).dropna()", ""]],
     [["print(titanic_df.isnull().sum().sum(), ", ""], ["'missing values left'", "str"], [")", ""]],
   ],
-  [ // 3 — Univariate analysis
+  [
     [["# Survival distribution", "com"]],
     [["print(titanic_df[", ""], ["'survived'", "str"], ["].value_counts(", ""], ["normalize", "prm"], ["=", ""], ["True", "kw"], ["))", ""]],
   ],
-  [ // 4 — Bivariate analysis
+  [
     [["# Survival rate by sex", "com"]],
     [["print(titanic_df.groupby(", ""], ["'sex'", "str"], [")[", ""], ["'survived'", "str"], ["].mean())", ""]],
   ],
-  [ // 5 — Summarize key insights: charts built from the earlier outputs
+  [
     [["# Visualize key survival patterns", "com"]],
     [["import", "kw"], [" matplotlib.pyplot ", ""], ["as", "kw"], [" plt", ""]],
     [["fig, axes = plt.subplots(", ""], ["1", "num"], [", ", ""], ["2", "num"], [", ", ""], ["figsize", "prm"], ["=(", ""], ["9", "num"], [", ", ""], ["3", "num"], ["))", ""]],
@@ -38,7 +29,6 @@ const CELLS = [
   ],
 ];
 
-/* What each cell prints when it runs. */
 const OUTPUTS = [
   `   survived  pclass     sex   age
 0         0       3    male  22.0
@@ -51,18 +41,12 @@ const OUTPUTS = [
   `sex
 female    0.74
 male      0.19`,
-  null, // 5 — figures instead of text; see CHARTS below
+  null,
 ];
 
-/* The last cell prints figures rather than text. Hand-drawn SVG standing in
-   for the agent's publication-ready output: white panels in both themes,
-   light gridlines instead of spines, a percent scale, round-topped bars that
-   grow from the axis, and value labels that fade in once their bar lands. */
 function chartSvg(title, bars) {
   const W = 300, H = 170, ML = 30, MR = 10, MT = 30, MB = 22, YMAX = 0.8;
   const plotW = W - ML - MR, plotH = H - MT - MB, base = H - MB;
-  /* width/height attributes give the svg an intrinsic size, so flex sizing
-     keeps the aspect ratio even before the viewBox ratio is resolved */
   let svg = `<svg class="chart" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${title}">`;
   svg += `<rect x="0" y="0" width="${W}" height="${H}" fill="#fff"/>`;
   svg += `<text x="${ML}" y="17" font-size="11.5" font-weight="600" fill="#202124">${title}</text>`;
@@ -86,7 +70,6 @@ function chartSvg(title, bars) {
   svg += `</svg>`;
   return svg;
 }
-/* seaborn's muted palette, with the numbers the earlier cells printed */
 const CHARTS =
   chartSvg("Survival rate by sex", [
     { label: "female", value: 0.74, color: "#4c72b0" },
@@ -109,7 +92,6 @@ const PLAN_STEPS = [
   "Summarize key insights",
 ];
 const SUMMARY = "Women and first-class passengers had the highest survival rates — 74% of women survived versus 19% of men.";
-/* one glyph per tracker state; setStep swaps them in the fixed icon box */
 const STEP_ICONS = {
   todo: "fiber_manual_record",
   pending: "history",
@@ -117,38 +99,37 @@ const STEP_ICONS = {
   done: "check_circle",
 };
 
-/* ---------------- timing (ms) ---------------- */
 const T = {
-  chunkMin: 4,          // delay between streamed chunks
+  chunkMin: 4,
   chunkMax: 12,
-  charsMin: 3,          // characters per chunk in chat replies
+  charsMin: 3,
   charsMax: 8,
-  codeCharsMin: 5,      // code streams in larger chunks
+  codeCharsMin: 5,
   codeCharsMax: 14,
-  typeMin: 24,          // per keystroke in the composer
+  typeMin: 24,
   typeMax: 54,
-  linePause: 40,        // pause after each streamed code line
-  startDelay: 350,      // lead-in before the pointer arrives
-  mouseMove: 620,       // pointer glide between targets
-  heroExit: 400,        // hero and chips collapsing as the prompt sends
-  menuOpen: 220,        // beat between the "/" and the menu appearing
-  menuRead: 520,        // pause to read the three modes
-  keyPress: 150,        // Enter flashing the active option
-  chipIn: 300,          // the mode chip settling into the composer
-  sendPause: 420,       // beat between finishing the prompt and sending
-  planThinking: 900,    // spinner before the plan arrives
-  planStep: 140,        // each plan step landing in the card
-  reviewPause: 460,     // beat before the pointer goes for Auto run
-  trackerMorph: 500,    // actions leaving, the log shrinking to the tracker
-  stepActive: 250,      // step spinner before its cell appears
-  cellIn: 230,          // each cell expanding into place
-  runCell: 380,         // a cell's run spinner before its output
-  outputOpen: 280,      // output panel expanding before it prints
-  chartDraw: 600,       // the bars growing up from the axis
-  readOutput: 700,      // dwell on each output before the step ticks off
-  stepDone: 250,        // beat after a step completes
-  summaryThinking: 650, // spinner before the closing summary
-  settle: 420,          // closing beat
+  linePause: 40,
+  startDelay: 350,
+  mouseMove: 620,
+  heroExit: 400,
+  menuOpen: 220,
+  menuRead: 520,
+  keyPress: 150,
+  chipIn: 300,
+  sendPause: 420,
+  planThinking: 900,
+  planStep: 140,
+  reviewPause: 460,
+  trackerMorph: 500,
+  stepActive: 250,
+  cellIn: 230,
+  runCell: 380,
+  outputOpen: 280,
+  chartDraw: 600,
+  readOutput: 700,
+  stepDone: 250,
+  summaryThinking: 650,
+  settle: 420,
 };
 
 const ICONS = {
@@ -180,9 +161,6 @@ let runId = 0;
 const sleep = (milliseconds) => animationContext.sleep(milliseconds);
 const rand = (min, max) => animationContext.rand(min, max);
 
-/* ---------------- cell construction ---------------- */
-/* Mirrors cell-animation.js buildCell: lines start hidden and hold an .hl
-   wrapper the code streams into, so each cell visibly writes itself. */
 function buildCell(cellLines) {
   const row = document.createElement("div");
   row.className = "cell-row";
@@ -223,10 +201,9 @@ function buildCell(cellLines) {
   return row;
 }
 
-/* Streams one line of tokens into its .hl wrapper, trailing the cursor. */
 async function streamLine(lineEl, tokens, cursor, id) {
   lineEl.classList.add("on");
-  if (!tokens.length) {           // blank line: brief beat
+  if (!tokens.length) {
     lineEl.appendChild(cursor);
     await sleep(T.linePause);
     return;
@@ -249,12 +226,11 @@ async function streamLine(lineEl, tokens, cursor, id) {
   await sleep(T.linePause);
 }
 
-/* ---------------- fake mouse ---------------- */
 function placeMouse(x, y, instant = false) {
   if (instant) {
     mouse.style.transition = "none";
     mouse.style.transform = `translate(${x}px, ${y}px)`;
-    void mouse.offsetWidth; // flush so the next move transitions
+    void mouse.offsetWidth;
     mouse.style.transition = "";
   } else {
     mouse.style.transform = `translate(${x}px, ${y}px)`;
@@ -280,9 +256,6 @@ async function clickMouse(btn) {
   if (btn) btn.classList.remove("pressed");
 }
 
-/* ---------------- streaming ---------------- */
-/* Streams [text, tokenClass] parts into an element, trailing a cursor. A
-   'code' class renders as <code>. */
 async function streamParts(el, parts, cursor, id) {
   el.appendChild(cursor);
   for (const [text, cls] of parts) {
@@ -299,13 +272,10 @@ async function streamParts(el, parts, cursor, id) {
   }
 }
 
-/* Streams plain text into an element, trailing a cursor. */
 function streamText(el, text, cursor, id) {
   return streamParts(el, [[text, ""]], cursor, id);
 }
 
-/* human-speed typing into the chat input; reuses the caret the landing put
-   there so focus reads as continuous */
 async function typePrompt(text, id) {
   let caret = chatInput.querySelector(".cursor");
   if (!caret) {
@@ -322,14 +292,8 @@ async function typePrompt(text, id) {
   }
 }
 
-/* ---------------- chat log ---------------- */
-/* A line-height of 1.55 on 14.5px text leaves the log a fraction of a pixel
-   over its own height, which is rounding rather than anything being hidden.
-   Below this the log counts as unscrolled. */
 const FADE_EPSILON = 3;
 
-/* Keeps the newest turn in view; the fade only ever stands for a line actually
-   running off the top edge. See message-animation.js for the full reasoning. */
 function scrollLogToEnd() {
   const target = Math.max(0, chatLog.scrollHeight - chatLog.clientHeight);
   const logTop = chatLog.getBoundingClientRect().top;
@@ -338,7 +302,6 @@ function scrollLogToEnd() {
   for (const row of chatLog.children) {
     const rect = row.getBoundingClientRect();
     const top = rect.top - logTop + shift;
-    /* the first row still on screen is the only one the fade can touch */
     if (top + rect.height > 0.5) {
       clipped = Math.max(0, -top);
       break;
@@ -354,10 +317,6 @@ function scrollLogToEnd() {
   });
 }
 
-/* The same treatment for the notebook: cells accumulate past the scrollport's
-   ceiling and the newest work is kept in view, older cells running out under
-   the top fade. Rows sit --nb-pad-top below the mask origin, so the clip stays
-   zero until something is genuinely cut off. */
 function scrollNotebookToEnd() {
   const target = Math.max(0, notebook.scrollHeight - notebook.clientHeight);
   const nbTop = notebook.getBoundingClientRect().top;
@@ -381,8 +340,6 @@ function scrollNotebookToEnd() {
   });
 }
 
-/* Appends a row and lets it fade in. Seeking replays the whole scene with
-   zero-length sleeps, so in that mode the row is revealed immediately. */
 async function addMessage(html, className) {
   const row = document.createElement("div");
   row.className = "chat-msg " + className;
@@ -400,8 +357,6 @@ async function addMessage(html, className) {
   return row;
 }
 
-/* `chip` carries the selected mode into the history: on send the composer
-   releases it and it reappears under the message it was sent with. */
 function addUserMessage(text, chip) {
   return addMessage(
     `<span class="avatar"><img src="/avatar.png" alt=""></span>` +
@@ -424,8 +379,6 @@ function addUserMessage(text, chip) {
   });
 }
 
-/* The assistant row starts as a spinner and later swaps to the spark plus,
-   optionally, the plan review actions. */
 function addAiMessage() {
   return addMessage(
     `<svg class="chat-spark" width="22" height="22" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.7 4.8 9.9 10.5 10.5C16.8 12.6 12.6 16.8 12 22.5 11.4 16.8 7.2 12.6 1.5 12 7.2 11.4 11.4 7.2 12 1.5z"/></svg>` +
@@ -440,9 +393,6 @@ function addAiMessage() {
   );
 }
 
-/* ---------------- plan card ---------------- */
-/* The head stays empty and hidden through the run — the spinning step icons
-   already read as generating — and appears only as the closing tally. */
 function buildPlanCard() {
   const card = document.createElement("div");
   card.className = "plan-card";
@@ -475,7 +425,6 @@ function setStep(card, index, status) {
   row.querySelector(".plan-step-icon").textContent = STEP_ICONS[status];
 }
 
-/* Auto run: the review card becomes a live tracker. */
 function startTracker(card) {
   card.classList.add("tracking");
   card.querySelectorAll(".plan-step").forEach((row) => {
@@ -489,7 +438,6 @@ function finishTracker(card) {
   card.querySelector(".plan-head-icon").textContent = "check_circle";
 }
 
-/* Clears the composer pill after a prompt is sent. */
 function resetInput() {
   chatInput.querySelectorAll(".cursor").forEach((e) => e.remove());
   inputText.textContent = "";
@@ -497,21 +445,16 @@ function resetInput() {
   sendBtn.classList.remove("enabled");
 }
 
-/* Drops the "/" once a mode is picked. The caret stays put and the
-   placeholder stays hidden: the composer keeps focus with the mode chip
-   attached, waiting for the prompt. */
 function clearInput() {
   inputText.textContent = "";
   sendBtn.classList.remove("enabled");
 }
 
-/* ---------------- scene ---------------- */
 async function run(context) {
   animationContext = context;
   const id = context.id;
   runId = id;
 
-  /* reset */
   notebook.innerHTML = "";
   notebook.classList.remove("active");
   notebook.scrollTop = 0;
@@ -534,13 +477,8 @@ async function run(context) {
   chatInput.querySelectorAll(".cursor").forEach((e) => e.remove());
   mouse.classList.remove("show", "click", "dragging");
 
-  /* Rows are built now but appended one at a time as their step runs: parked
-     collapsed rows still hold ~50px of clipped cell chrome below the visible
-     content, which a scrollable notebook counts as overflow — the scroller
-     would start scrolled and drop the first cell's top line under the fade. */
   const rows = CELLS.map(buildCell);
 
-  /* ---- landing: greeting, suggestion chips, composer already focused ---- */
   hero.classList.add("show");
   chatChips.classList.add("show");
   chatInput.classList.add("focus");
@@ -549,7 +487,6 @@ async function run(context) {
   inputText.after(landingCaret);
   await sleep(T.startDelay);
 
-  /* 1. "/" opens the mode menu with its first option already active */
   await typePrompt("/", id);
   if (id !== runId) return;
   await sleep(T.menuOpen);
@@ -558,7 +495,6 @@ async function run(context) {
   await sleep(T.menuRead);
   if (id !== runId) return;
 
-  /* 2. Enter takes the active option; the mode lands as a chip */
   menuPlan.classList.add("pressed");
   await sleep(T.keyPress);
   menuPlan.classList.remove("pressed");
@@ -571,7 +507,6 @@ async function run(context) {
   await sleep(T.chipIn);
   if (id !== runId) return;
 
-  /* 3. the prompt is typed; the pointer arrives only to send it */
   await typePrompt(PROMPT, id);
   if (id !== runId) return;
   placeMouse(window.innerWidth * 0.5, window.innerHeight + 40, true);
@@ -582,7 +517,6 @@ async function run(context) {
   await clickMouse(null);
   if (id !== runId) return;
 
-  /* 4. the landing clears and the conversation begins */
   resetInput();
   chatChip.classList.remove("show");
   chatInput.classList.remove("has-chip");
@@ -596,13 +530,11 @@ async function run(context) {
   if (id !== runId) return;
   await sleep(T.heroExit);
   if (id !== runId) return;
-  /* the collapse has played out; drop the landing out of the layout */
   hero.classList.add("gone");
   chatChips.classList.add("gone");
   await sleep(T.planThinking);
   if (id !== runId) return;
 
-  /* 5. the plan streams in: intro line, then the five steps */
   planAi.classList.remove("thinking");
   const planText = planAi.querySelector(".chat-ai-text");
   planText.textContent = "";
@@ -624,7 +556,6 @@ async function run(context) {
   }
   if (id !== runId) return;
 
-  /* 6. the review actions appear and the pointer goes for Auto run */
   const planActions = planAi.querySelector(".chat-actions");
   planActions.classList.add("show");
   scrollLogToEnd();
@@ -638,11 +569,6 @@ async function run(context) {
   await clickMouse(autoBtn);
   if (id !== runId) return;
 
-  /* 7. the card becomes a live tracker. The actions leave and, in the same
-     block, the log's ceiling is pinned to the tracker turn's own height: the
-     earlier turns glide away and the tracker sits flush against the chat
-     card's padding, evenly spaced above and below. While the agent works, the
-     send button is a stop button. */
   planActions.classList.remove("show");
   startTracker(card);
   chatLog.style.setProperty("--chat-log-h", planAi.offsetHeight + "px");
@@ -653,19 +579,14 @@ async function run(context) {
   sendBtn.textContent = "stop";
   await sleep(T.trackerMorph);
   if (id !== runId) return;
-  /* the ceiling transition has settled; re-anchor the bottom, since the first
-     scroll was measured against the pre-shrink height */
   scrollLogToEnd();
 
-  /* 8. each step's cell is written, run, and read before the next moves in;
-     the last one draws the figures */
   for (let c = 0; c < rows.length; c++) {
     if (id !== runId) return;
     setStep(card, c, "active");
     await sleep(T.stepActive);
     if (id !== runId) return;
 
-    /* the cell joins the notebook and expands into place, tagged as Gemini's */
     notebook.appendChild(rows[c]);
     if (!context.instant) await context.nextFrame();
     if (id !== runId) return;
@@ -678,7 +599,6 @@ async function run(context) {
     await sleep(T.cellIn * 0.4);
     if (id !== runId) return;
 
-    /* the code writes itself line by line */
     const lineEls = rows[c].querySelectorAll(".line");
     const cursor = document.createElement("span");
     cursor.className = "cursor";
@@ -692,7 +612,6 @@ async function run(context) {
     await sleep(150);
     if (id !== runId) return;
 
-    /* auto-accepted: the diff wash clears as the cell runs */
     rows[c].classList.remove("added");
     rows[c].classList.add("accepted", "running");
     await sleep(T.runCell);
@@ -701,8 +620,6 @@ async function run(context) {
     rows[c].classList.add("ran");
     rows[c].querySelector(".brackets").textContent = `[${c + 1}]`;
 
-    /* the output prints — text for the analysis cells, figures for the last —
-       and gets a moment to be read */
     const outWrap = document.createElement("div");
     outWrap.className = "cell-output";
     outWrap.innerHTML =
@@ -722,7 +639,6 @@ async function run(context) {
       if (id !== runId) return;
       outCursor.remove();
     } else {
-      /* the figures land and the bars grow up from the axis */
       if (context.instant) outWrap.classList.add("drawn");
       else await context.nextFrame().then(() => outWrap.classList.add("drawn"));
       await sleep(T.chartDraw);
@@ -732,7 +648,6 @@ async function run(context) {
     await sleep(T.readOutput);
     if (id !== runId) return;
 
-    /* the final step stays active: its summary still has to be written */
     if (c < rows.length - 1) {
       setStep(card, c, "done");
       await sleep(T.stepDone);
@@ -740,7 +655,6 @@ async function run(context) {
   }
   if (id !== runId) return;
 
-  /* 9. still on the last step, the findings are summarized in the chat */
   rows[rows.length - 1].classList.remove("active", "tagged");
   const sumAi = await addAiMessage();
   if (id !== runId) return;
@@ -762,28 +676,17 @@ async function run(context) {
   finishTracker(card);
   scrollLogToEnd();
 
-  /* 10. done: the kernel goes quiet */
   sendBtn.classList.remove("stop");
   sendBtn.textContent = "send";
   await sleep(T.settle);
 }
 
-/* This scene uses icon-font glyphs throughout the tracker and menu, so it
-   cannot start until the font resolves: until then every Material Symbols
-   ligature lays out as its literal name and the notebook measures far taller
-   than it renders. */
 function start() {
-  /* No cardStartMs: the landing composer is the hook, so card mode plays from
-     the top. (The card hides the greeting above it — see message-animation's
-     card-mode block.) */
   window.planDemo = DemoSystem.createPlayer({
     run,
     cardLoopDelay: 3000,
     icons: { playing: "⏸", paused: "▶", done: "↺" },
   });
-  /* ready resolves once run() has laid down the opening frame — and after the
-     measure pass, which replays the whole scene instantly and would otherwise
-     be visible as a blink of the final state. */
   const reveal = () => document.body.classList.add("scene-ready");
   window.planDemo.ready.then(reveal, reveal);
 }

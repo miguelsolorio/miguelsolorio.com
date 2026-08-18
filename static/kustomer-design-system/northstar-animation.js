@@ -153,20 +153,16 @@ async function run(context) {
     return;
   }
 
-  // 0–1.2s: establish the full customer-service workspace.
   await context.sleep(1200);
 
-  // 1.2–3.6s: collapse the primary navigation.
   await movePointerTo(primaryCollapse, 650, 2, 1);
   await context.sleep(100);
   await clickPointer(() => setPrimaryCollapsed(true));
   await context.sleep(800);
   await context.sleep(630);
 
-  // 3.6–3.95s: settle, then move directly to the context panels.
   await context.sleep(350);
 
-  // 3.95–7.05s: promote Insights above Details.
   insightsCard.classList.add("is-pointer-target");
   await movePointerTo(insightsCard.querySelector(".drag-handle"), 850, 4, 4);
   await context.sleep(130);
@@ -174,7 +170,6 @@ async function run(context) {
   await flipPanels(true, 650);
   await context.sleep(1250);
 
-  // 7.05–10.15s: return Details to the first position.
   detailsCard.classList.add("is-pointer-target");
   await movePointerTo(detailsCard.querySelector(".drag-handle"), 700, 4, 4);
   await context.sleep(130);
@@ -182,7 +177,6 @@ async function run(context) {
   await flipPanels(false, 650);
   await context.sleep(1400);
 
-  // 10.15–12.75s: finish on the clean final composition.
   pointer.classList.remove("is-visible");
   await context.sleep(2600);
 }
@@ -227,7 +221,5 @@ if (cardMode && window.frameElement) {
     });
     parentObserver.observe(window.frameElement);
     window.addEventListener("pagehide", () => parentObserver.disconnect(), { once: true });
-  } catch (error) {
-    // Cross-origin embeds still use DemoSystem's document-level visibility handling.
-  }
+  } catch (error) {}
 }

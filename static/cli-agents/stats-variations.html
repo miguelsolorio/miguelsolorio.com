@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gemini CLI contribution stats — variations</title>
     <style>
-      /* Tokens mirror the site: neutral-100/slate-900 page, slate ink,
-         #3429ff accent in light and the indigo-300 link colour in dark. */
       :root {
         color-scheme: light;
         --page: #f5f5f5;
@@ -20,17 +18,12 @@
         --accent: #3429ff;
         --accent-ink: #241bc7;
         --accent-soft: rgba(52, 41, 255, .09);
-        /* Shadow ink: light rgb(35 28 102) = color-mix(#3429ff 30%, #1c1725);
-           dark rgb(56 39 51) = color-mix(#efa9ae 20%, #0a0614); see
-           --shadow-rgb in assets/css/main.css. */
         --shadow: 0 12px 28px -8px rgb(35 28 102 / .3);
-        /* CLI project stage, lifted from assets/css/project.css */
         --stage-surface: #eaf2fa;
         --stage-art:
           radial-gradient(ellipse 78% 145% at -6% 18%, #dce8fc 0%, rgba(220, 232, 252, .55) 34%, transparent 68%),
           radial-gradient(ellipse 86% 155% at 108% 82%, #e4f2f8 0%, rgba(228, 242, 248, .5) 36%, transparent 70%),
           linear-gradient(145deg, #eef6fe 10%, #e8f4fa 90%);
-        /* Terminal palette, lifted from static/cli-agents/cli-animation.css */
         --term-bg: #ffffff;
         --term-text: #1f1f1f;
         --term-muted: #5f6368;
@@ -160,9 +153,6 @@
         line-height: 1.5;
       }
 
-      /* Every stat block below is scoped to .stat-* classes prefixed by the
-         variation number, so a pick can be lifted out on its own. */
-
       .stat-icon {
         width: 1em;
         height: 1em;
@@ -174,7 +164,6 @@
         stroke-linejoin: round;
       }
 
-      /* 01 — Number band ------------------------------------------------- */
       .v01 {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -206,7 +195,6 @@
         text-transform: uppercase;
       }
 
-      /* 02 — Terminal readout -------------------------------------------- */
       .v02 {
         padding: clamp(.75rem, 5vw, 3.5rem);
         border-radius: .75rem;
@@ -248,7 +236,6 @@
         .v02-row .bar { display: none; }
       }
 
-      /* 03 — Ledger ------------------------------------------------------- */
       .v03 { border-top: 2px solid var(--heading); }
       .v03-row {
         display: flex;
@@ -276,7 +263,6 @@
         letter-spacing: -.03em;
       }
 
-      /* 04 — Metric cards -------------------------------------------------- */
       .v04 {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
@@ -307,7 +293,6 @@
         line-height: 1.35;
       }
 
-      /* 05 — Ratio bars ---------------------------------------------------- */
       .v05-row { margin-top: 1.5rem; }
       .v05-row:first-child { margin-top: 0; }
       .v05-row .head {
@@ -353,7 +338,6 @@
         letter-spacing: -.03em;
       }
 
-      /* 06 — Prose line ---------------------------------------------------- */
       .v06 {
         max-width: 48rem;
         color: var(--ink);
@@ -378,7 +362,6 @@
         letter-spacing: 0;
       }
 
-      /* 07 — Hero plus supporting ------------------------------------------ */
       .v07 {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
@@ -434,7 +417,6 @@
         .v07 { grid-template-columns: minmax(0, 1fr); }
       }
 
-      /* 08 — Pills ---------------------------------------------------------- */
       .v08 { display: flex; flex-wrap: wrap; gap: .625rem; }
       .v08 span {
         display: inline-flex;
@@ -455,7 +437,6 @@
         font-variant-numeric: tabular-nums;
       }
 
-      /* 09 — Stage card ------------------------------------------------------ */
       .v09 {
         padding: clamp(.75rem, 5vw, 3.5rem);
         border-radius: .75rem;
@@ -502,7 +483,6 @@
         line-height: 1.35;
       }
 
-      /* 10 — Spec sheet ------------------------------------------------------- */
       .v10 {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
@@ -585,7 +565,6 @@
         <button id="theme-toggle" type="button">Dark mode</button>
       </header>
 
-      <!-- 01 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">01</span><h2>Number band</h2>
@@ -600,7 +579,6 @@
         </div>
       </section>
 
-      <!-- 02 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">02</span><h2>Terminal readout</h2>
@@ -621,7 +599,6 @@
         </div>
       </section>
 
-      <!-- 03 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">03</span><h2>Ledger</h2>
@@ -651,7 +628,6 @@
         </div>
       </section>
 
-      <!-- 04 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">04</span><h2>Metric cards</h2>
@@ -666,7 +642,6 @@
         </div>
       </section>
 
-      <!-- 05 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">05</span><h2>Ratio bars</h2>
@@ -685,7 +660,6 @@
         </div>
       </section>
 
-      <!-- 06 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">06</span><h2>Prose line</h2>
@@ -698,7 +672,6 @@
         </p>
       </section>
 
-      <!-- 07 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">07</span><h2>Hero plus supporting</h2>
@@ -719,7 +692,6 @@
         </div>
       </section>
 
-      <!-- 08 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">08</span><h2>Pills</h2>
@@ -734,7 +706,6 @@
         </div>
       </section>
 
-      <!-- 09 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">09</span><h2>Stage card</h2>
@@ -754,7 +725,6 @@
         </div>
       </section>
 
-      <!-- 10 -->
       <section class="variation">
         <div class="variation-head">
           <span class="num">10</span><h2>Spec sheet</h2>

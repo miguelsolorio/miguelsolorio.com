@@ -1,7 +1,4 @@
 
-/* ---------- todo tray ----------
-   The tray opens with a height animation instead of popping in: it lives in
-   the bottom bar, and a one-frame reflow there shoves the input box down. */
 .todo-tray {
   max-height: 0;
   overflow: hidden;
@@ -126,7 +123,6 @@
   text-decoration: line-through;
 }
 
-/* ---------- summary bullets ---------- */
 .msg-bullets {
   list-style: none;
   margin-top: 8px;

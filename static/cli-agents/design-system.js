@@ -1,15 +1,6 @@
 (function (window, document) {
   "use strict";
 
-  /* The reference sheet's only script: read out the palette's live values,
-     drive the theme dropdown, run the spinner and its timer, and report the
-     document height to the embedding page. No demo player — the sheet is a
-     still with one moving character. */
-
-  /* ---------- live token readouts ---------- */
-  /* Each chip paints with var(--token); the value line underneath reads the
-     browser's resolved color back out, so the sheet always reports what the
-     active palette actually shipped — the site pair or a CLI theme. */
   var swatches = Array.prototype.slice.call(document.querySelectorAll(".ds-swatch[data-token]"));
 
   swatches.forEach(function (swatch) {
@@ -17,9 +8,6 @@
     if (chip) chip.style.background = "var(" + swatch.dataset.token + ")";
   });
 
-  /* Chips animate their background between palettes, so reading one back
-     mid-transition would print an in-between colour. The probe carries no
-     transition: it resolves each token's destination value instantly. */
   var probe = document.createElement("div");
   probe.style.position = "absolute";
   probe.style.visibility = "hidden";
@@ -32,9 +20,6 @@
     return window.getComputedStyle(probe).backgroundColor;
   }
 
-  /* Literal tokens resolve to rgb()/rgba(); tokens built with color-mix() —
-     the diff gutter — come back as color(srgb r g b / a) with 0–1 channels.
-     Both flatten to the same hex + alpha readout. */
   function formatColor(resolved) {
     var srgb = resolved.indexOf("color(srgb") === 0;
     var match = resolved.match(/\(([^)]+)\)/);
@@ -57,22 +42,13 @@
     });
   }
 
-  /* demo-system.js toggles .dark on <html>; watching the class covers both the
-     parent site's toggle and the OS preference in standalone views. */
   new MutationObserver(renderValues).observe(document.documentElement, {
     attributes: true,
     attributeFilter: ["class"]
   });
 
-  /* ---------- theme, driven by the theme picker ---------- */
-  /* The sheet carries no picker of its own. cli-theme.js stamps whatever the
-     theme dialog is showing onto body, the matching palette in cli-theme.css
-     lights up, and its bridge maps that onto the component tokens — so all this
-     file has to do is re-read the swatches whenever the name changes. Nothing
-     is posted back: the sheet can only ever mirror the dialogs. */
   if (window.CliTheme) window.CliTheme.subscribe(renderValues);
 
-  /* ---------- spinner + status timer ---------- */
   var SPINS = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏".split("");
   var spinChar = document.getElementById("dsSpinChar");
   var statusText = document.getElementById("dsStatusText");
@@ -91,9 +67,6 @@
     }, 120);
   }
 
-  /* ---------- height reporting ---------- */
-  /* Same contract as the diff scenes: the sheet's height depends on how the
-     grids wrap at the width it is given, so tell the page the real number. */
   renderValues();
   DemoSystem.publishHeight();
 })(window, document);

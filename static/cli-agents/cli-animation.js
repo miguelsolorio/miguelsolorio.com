@@ -1,11 +1,9 @@
 const ui = CliComponents.mount({ project: "~/playground" });
 
-/* ---- content ---- */
 const PROMPT1 = "create a react todo app";
 const THINKING = [
   "Refining Proposed Plan",
 ];
-/* AI response segments: [text, cls] — cls: ''|'bold'|'hl'|'cli-diamond' */
 const AI_RESP = [
   ["Okay, I can help you create a React To-Do app. Here's my plan:\n\n  1. ", ""],
   ["Scaffolding:", "bold"],
@@ -28,7 +26,6 @@ const AI_SCAFFOLD = [
   ["Great! I'll begin scaffolding the React project using Vite. Running the setup command now.", ""],
 ];
 
-/* ---- diff data ---- */
 const DIFF_FILE = "src/App.jsx";
 const DIFF_LINES = [
   ["ctx", "import { useState } from 'react'"],
@@ -188,7 +185,6 @@ ui.refs.inputBox.addEventListener("click", () => {
   }
 });
 
-/* ---- main animation loop ---- */
 async function run(context) {
   const id = ui.beginRun(context);
   ui.reset();
@@ -301,10 +297,6 @@ async function run(context) {
   await context.sleep(400);
 }
 
-/* No onThemeChange hook: the highlighted code reads the shared --code-* tokens
-   in cli-theme.css, which already answer to both the site's light/dark pair and
-   a picked CLI theme. Swapping a pair of Prism stylesheets, as this used to,
-   could only ever track the first of the two. */
 window.cliDemo = DemoSystem.createPlayer({
   run,
   cardStartMs: 1800,

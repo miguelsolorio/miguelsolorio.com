@@ -1,16 +1,5 @@
-  /* Delta over cell-animation.css + message-animation.css. Those sheets own the
-     cells, chat, hero, chips, log and mouse; this file adds only what the
-     plan-mode scene introduces: the composer's slash-command menu, the plan
-     card that becomes a live step tracker, and a notebook that scrolls once
-     the generated cells outgrow the frame. */
-
   :root {
     --plan-done: #188038;
-    /* The plan reply is the tallest turn this scene keeps in view — the intro
-       line, the five steps, and the action row; message-animation's two-turn
-       84px ceiling would clip it. Held just under that turn's height as it is
-       during the run (actions gone, no header), so the log stays pinned at the
-       ceiling when Auto run swaps the actions away rather than dipping. */
     --chat-log-h: 192px;
   }
 
@@ -18,42 +7,22 @@
     --plan-done: #81c995;
   }
 
-  /* ---------- notebook scrollport ---------- */
-  /* Four generated cells plus their outputs outgrow the embed, so the notebook
-     becomes the thing that scrolls, the way the real product does. The catch:
-     the gutter hangs 70px outside the column, and the Gemini tag and toolbar
-     overhang the newest cell's top edge — an overflow clip at the content box
-     would take them all. Padding the scrollport by exactly those overhangs,
-     and cancelling every pad with an equal negative margin, keeps each cell at
-     its current layout position while the clip box grows to enclose them. */
   .notebook {
-    /* The active glow is 40px blur + 8px spread with a 4px downward offset, so
-       it reaches 48px sideways, 44px up and 52px down — the pads must enclose
-       all of it (and the tag/toolbar overhang) or it cuts off at a hard edge. */
     --nb-pad-top: 44px;
-    --nb-pad-left: 70px;     /* exact .gutter width, which also clears the glow */
+    --nb-pad-left: 70px;
     --nb-pad-right: 48px;
     --nb-pad-bottom: 52px;
     --nb-fade: 24px;
-    /* at the base 20px the newest cell's tag would sit on the previous output */
     --notebook-gap: 28px;
     width: calc(100% + var(--nb-pad-left) + var(--nb-pad-right));
     padding: var(--nb-pad-top) var(--nb-pad-right) var(--nb-pad-bottom) var(--nb-pad-left);
     margin-top: calc(0px - var(--nb-pad-top));
     margin-left: calc(0px - var(--nb-pad-left));
     margin-right: calc(0px - var(--nb-pad-right));
-    /* while empty the notebook must occupy nothing: cancel the vertical pads
-       plus the frame's 20px flex gap. The base sheet used --notebook-gap for
-       the gap cancel, but cell spacing and frame gap are no longer the same
-       number here. */
     margin-bottom: calc(-20px - var(--nb-pad-bottom));
-    /* border-box: pads included, so the visible window stays 288px — the same
-       as the old 336px cap with its slimmer pads */
     max-height: 384px;
     overflow-y: auto;
     scrollbar-width: none;
-    /* same trick as .chat-log: the fade only ever covers what the top edge has
-       actually clipped, measured by scrollNotebookToEnd() into --nb-clip */
     -webkit-mask-image: linear-gradient(to bottom, transparent 0,
       #000 min(var(--nb-fade), var(--nb-clip, 0px)));
     mask-image: linear-gradient(to bottom, transparent 0,
@@ -62,7 +31,6 @@
   .notebook::-webkit-scrollbar { display: none; }
   .notebook.active { margin-bottom: calc(0px - var(--nb-pad-bottom)); }
 
-  /* ---------- slash-command menu ---------- */
   .chat-input { position: relative; }
   .slash-menu {
     position: absolute;
@@ -130,9 +98,6 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- plan card / tracker ---------- */
-  /* No card chrome: the plan reads as part of the reply, the way the product
-     renders it — the status glyphs carry the structure. */
   .plan-card {
     margin-top: 8px;
     opacity: 0;
@@ -144,8 +109,6 @@
     transform: none;
   }
 
-  /* During the run the spinning step icons already say "generating", so the
-     header only appears once everything is done, as the closing tally. */
   .plan-head {
     display: none;
     align-items: center;
@@ -184,8 +147,6 @@
     opacity: 1;
     transform: none;
   }
-  /* A fixed box keeps rows from shifting as the glyph swaps between the
-     resting dot, the clock, the spinner and the check. */
   .plan-step-icon {
     flex: none;
     width: 18px;
@@ -198,7 +159,6 @@
     transform-origin: 50% 50%;
     transition: color 0.3s ease;
   }
-  /* the resting bullet: fiber_manual_record shrunk to a dot */
   .plan-step[data-status="todo"] .plan-step-icon { font-size: 8px; }
   .plan-step[data-status="active"] .plan-step-icon {
     color: var(--gemini);
@@ -215,9 +175,6 @@
     transition: color 0.3s ease;
   }
 
-  /* ---------- primary chat action ---------- */
-  /* Auto run carries the turn, so it gets the Gemini fill the cell tag uses
-     rather than the text-button treatment of its neighbours. */
   .chat-actions button.primary {
     background: var(--gemini);
     color: #fff;
@@ -232,18 +189,12 @@
     filter: brightness(0.9);
   }
 
-  /* ---------- mode chip ---------- */
-  /* The attachment-chip pattern carries the selected mode; its label is a mode
-     name, not code, so it drops the mono face. */
   .chat-chip--mode .chat-chip-label {
     font-family: "Google Sans", "Helvetica Neue", Arial, sans-serif;
     font-size: 13.5px;
     font-weight: 500;
   }
 
-  /* ---------- chart output ---------- */
-  /* The last cell prints figures. The panels stay white in both themes, the
-     way real matplotlib output renders in Colab. */
   .out-charts {
     flex: 1;
     min-width: 0;
@@ -261,9 +212,6 @@
     border-radius: 10px;
   }
   .chart text { font-family: "Google Sans", "Helvetica Neue", Arial, sans-serif; }
-  /* Bars grow up from the axis once the figure lands; each bar carries its
-     own inline transition-delay, so the columns rise in sequence and each
-     value label fades in just after its bar. */
   .chart .bar {
     transform-box: fill-box;
     transform-origin: bottom;
@@ -277,14 +225,10 @@
   }
   .cell-output.drawn .bar-value { opacity: 1; }
 
-  /* ---------- homepage card ---------- */
-  /* The card is a third the height of the case-study embed; tighten both
-     scrollers so the composer and tracker stay the focus. */
   body.is-card { --chat-log-h: 148px; }
   body.is-card .notebook { max-height: min(384px, 38vh); }
 
   @media (max-width: 50rem) {
-    /* the gutter is display:none at this width and the glows pull in to ~8px */
     .notebook {
       --nb-pad-left: 12px;
       --nb-pad-right: 12px;

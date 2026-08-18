@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Getting Started card framework</title>
   <script>
-    /* Same-origin theme sync, mirroring feedback-notes.html: follow the parent
-       site's explicit theme; cross-origin embeds fall back to the OS one.
-       Runs in <head> to avoid a theme flash. */
     (function () {
       var root = document.documentElement;
       var media = window.matchMedia("(prefers-color-scheme: dark)");
       var parentRoot = null;
       try {
         if (window.parent !== window) parentRoot = window.parent.document.documentElement;
-      } catch (error) { /* Cross-origin: use the OS preference. */ }
+      } catch (error) {}
 
       function syncTheme() {
         root.classList.toggle("dark", parentRoot ? parentRoot.classList.contains("dark") : media.matches);
@@ -29,22 +26,12 @@
     })();
   </script>
   <style>
-    /* Nothing here paints a background: the cards are outlines, and the page
-       behind the iframe supplies every surface in both modes. Ink and accent
-       come from onboarding-animation.css so the diagram matches the animated
-       scene at the top of the page — the light half of its :root, the dark
-       half of its [data-product-theme="dark"] block. The card outline is the
-       exception: with no fill behind it, it does all the work of describing
-       the card, so it uses the site's own hairlines rather than the product's,
-       which were drawn to sit on an editor surface. */
     :root {
       --product-text: #20242a;
       --product-muted: #626b76;
       --product-faint: #929ba6;
       --card-outline: #cbd5e1;
       --product-accent: #147dc2;
-      /* Callout ink tracks the page's own headings rather than the product's,
-         so the annotations read as the site talking about the UI. */
       --annotation-ink: #0f172a;
       --radius-surface: 8px;
     }
@@ -62,12 +49,6 @@
 
     html, body { overflow: hidden; background: transparent; }
 
-    /* Fixed 1240x720 design, scaled to the iframe by the script below. The
-       frame carries the same ratio, so the scene meets it exactly at every
-       width instead of letterboxing. The width is set by the card column
-       sitting dead centre with the wider of the two callouts clearing the
-       edge — which leaves more air on the Extensions side than on the Out of
-       the box side, the cost of centring the cards rather than the drawing. */
     .stage {
       position: absolute;
       top: 0;
@@ -81,9 +62,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Everything the eye sees lives in here so the script can centre the whole
-       drawing in one transform once the labels have taken their real width —
-       which differs by however the visitor's browser resolves the font stack. */
     .content { position: absolute; inset: 0; }
 
     .column {
@@ -109,8 +87,6 @@
 
     .card + .card { margin-top: 14px; }
 
-    /* Featured walkthrough: the ribbon eats the top-left corner, so the whole
-       content block is indented past it rather than wrapping around it. */
     .card--featured { padding: 20px 44px 22px 58px; }
 
     .ribbon {
@@ -164,8 +140,6 @@
       background: var(--product-accent);
     }
 
-    /* Collapsed walkthroughs: a single row of icon plus title. Built-ins carry
-       a line icon in the product accent; extensions carry their own badge. */
     .card--row {
       display: flex;
       height: 64px;
@@ -286,8 +260,6 @@
       var column = document.getElementById('column');
       var svg = document.getElementById('annotations');
 
-      /* Offset walking rather than getBoundingClientRect: the stage carries a
-         scale transform, and these numbers have to stay in design space. */
       function box(el) {
         var top = 0, left = 0, node = el;
         while (node && node !== content) {
@@ -332,17 +304,14 @@
       var extension = group('extension');
       var showMore = box(document.getElementById('showMore'));
 
-      /* Left bracket: "[" hugging the three walkthroughs VS Code ships with. */
       var leftSpine = builtin.left - 30;
       draw('M' + (builtin.left - 6) + ' ' + builtin.top + ' H' + leftSpine + ' V' + builtin.bottom + ' H' + (builtin.left - 6));
       label('Out of the box', leftSpine - 34, (builtin.top + builtin.bottom) / 2, 'right');
 
-      /* Right bracket: "]" hugging the two extensions contribute. */
       var rightSpine = extension.right + 30;
       draw('M' + (extension.right + 6) + ' ' + extension.top + ' H' + rightSpine + ' V' + extension.bottom + ' H' + (extension.right + 6));
       label('Extensions', rightSpine + 34, (extension.top + extension.bottom) / 2, 'left');
 
-      /* Arrow pointing up at the overflow link. */
       var arrowX = Math.round((builtin.left + builtin.right) / 2);
       var arrowTop = showMore.bottom + 16;
       var arrowBottom = arrowTop + 68;
@@ -350,14 +319,6 @@
       draw('M' + (arrowX - 11) + ' ' + (arrowTop + 14) + ' L' + arrowX + ' ' + arrowTop + ' L' + (arrowX + 11) + ' ' + (arrowTop + 14));
       label('Overflow', arrowX, arrowBottom + 34, 'center');
 
-      /* Place the drawing now that the labels have measured themselves — their
-         width depends on however the visitor's browser resolved the font stack.
-         The cards are what the eye lines up on, so they take the horizontal
-         centre and the callouts fall either side of them, wide label and all.
-         Vertically there is nothing to align against, so the whole drawing —
-         the column plus the labels that reach above and below it — is what gets
-         centred. The brackets and arrow always sit inside the span the labels
-         and the column describe, so those alone bound the ink. */
       var columnBox = box(column);
       var ink = { left: columnBox.left, right: columnBox.right, top: columnBox.top, bottom: columnBox.bottom };
       labels.forEach(function (item) {
@@ -375,10 +336,6 @@
       var dx = centreX - (columnBox.left + columnBox.right) / 2;
       var dy = centreY - (ink.top + ink.bottom) / 2;
 
-      /* With the cards pinned to the centre, a font wider than the one this was
-         drawn against pushes the left callout off the edge rather than merely
-         crowding it. Scaling about the centre by whichever side reaches furthest
-         keeps the drawing whole; on the drawn-for metrics this resolves to 1. */
       var reachX = Math.max(centreX - (ink.left + dx), (ink.right + dx) - centreX);
       var reachY = Math.max(centreY - (ink.top + dy), (ink.bottom + dy) - centreY);
       var shrink = Math.min(1, centreX / reachX, centreY / reachY);

@@ -1,12 +1,4 @@
 @layer components {
-  /* One neutral stage for every project. The cards used to carry six aurora
-     hue families, but the site background is now the slate topography shader
-     (assets/js/common.js), and five saturated washes on top of a drawn map
-     read as noise. The named-theme hooks stay — cards keep their attribute
-     and project pages frame embeds with the same tokens — but they all
-     resolve to the same quiet slate-on-white surface. Contrast now comes
-     from elevation (clean surface, hairline ring, soft shadow) instead of
-     pigment, so the artwork and the blurple titles carry the color. */
   [data-project-theme] {
     --project-theme-surface: #fafbfc;
     --project-theme-artwork: linear-gradient(180deg, #fdfdff 0%, #f6f8fa 100%);
@@ -14,22 +6,12 @@
     --project-theme-position: 50% 50%;
     --project-theme-transform: none;
     --project-theme-hover-transform: none;
-    /* Shadow pigment for anything elevated on the stage — the site shadow
-       ink (--shadow-rgb, main.css). Space-separated so alpha can vary per
-       placement; themed stages may override it (see the cli steel pair). */
     --project-theme-shadow-tint: var(--shadow-rgb);
   }
-  /* Dark half: one quiet step above the near-black page, held in the page's
-     own mauve family so cards read as lifted panels of the same material the
-     topography draws on. */
   .dark [data-project-theme] {
     --project-theme-surface: #1c1824;
     --project-theme-artwork: linear-gradient(180deg, #201c28 0%, #18151f 100%);
   }
-  /* Powder steel, cli only: the cli-agents embeds keep a stage of their own —
-     the theme's old blue desaturated toward steel so it reads as material
-     beside the blurple contour ink instead of as another voice of it. Bloom
-     geometry is the pair of ellipses the theme has always carried. */
   [data-project-theme="cli"] {
     --project-theme-surface: #ecf1f7;
     --project-theme-artwork:
@@ -48,13 +30,6 @@
       linear-gradient(145deg, #182030 10%, #1d2738 90%);
     --project-theme-shadow-tint: 30 42 68;
   }
-  /* The iterations icon grid (icons.md) was exported with its ink as literal
-     white/#F4F4F4 fills, since the original Figma canvas was dark. That ink
-     now uses currentColor so it reads on either stage. A few icons (the
-     editor/save/browser mockups) draw a solid panel with border/detail
-     accents cut into it — those accents use --icon-gap, the card's own
-     surface color, so they read as a bezel/cutout against the solid panel
-     instead of collapsing into it when fill and stroke matched. */
   .iterations-icons {
     color: #2d2d2d;
     --icon-gap: var(--project-theme-surface);
@@ -63,7 +38,6 @@
     color: #f4f4f4;
   }
 
-  /* Projects */
   .section {
     @apply text-3xl font-bold;
     margin-top: clamp(5rem, 11vw, 8rem);
@@ -92,54 +66,20 @@
     --project-aurora-size: 100% 100%;
     --project-aurora-transform: scale(1);
     --project-aurora-hover-transform: scale(1.04);
-    /* Frosted, not solid: the topography reads through the card so the grid
-       sits on the shader rather than masking it. The alpha lives on this one
-       layer — background-image paints over background-color, so a translucent
-       color under the opaque --project-aurora would still come out sealed.
-       --project-aurora stays opaque for the ::after wash, which needs full
-       pigment to have anything to blend.
-
-       The alpha has to be this low to read at all. Card ink and the page
-       behind it are both near-white (#fdfdff over an #f2f0ff field), so
-       alpha alone moves the composite by only a couple of RGB steps —
-       .66 and .50 are indistinguishable. What actually reads as glass is
-       the contour lines surviving the blur, which is why the radius below
-       is the other half of this setting. */
     --project-surface: linear-gradient(180deg, rgba(253, 253, 255, .34) 0%, rgba(246, 248, 250, .42) 100%);
-    /* The hover half of the transparency. It rides on background-color
-       instead of a fourth layer: the color paints under the translucent
-       --project-surface gradient, so the two stack to ~.7 coverage on hover
-       against ~.38 at rest, and unlike a gradient it interpolates smoothly.
-       Kept off ::before deliberately — that layer sits above the artwork and
-       is the frost, so folding the two together would mean one can't move
-       without the other. */
     background-color: transparent;
     background-image: var(--project-surface);
     background-position: var(--project-aurora-position);
     background-size: var(--project-aurora-size);
     border-radius: 1rem;
-    /* Blur so the contour lines survive as motion and shape behind the card
-       instead of competing with the artwork as legible drawing. The radius
-       is a legibility dial, not a taste one: the lines are only a few px
-       wide, so anything past ~12px averages them into flat field and the
-       card goes back to looking sealed no matter how low the alpha is. */
     -webkit-backdrop-filter: blur(10px) saturate(1.4);
     backdrop-filter: blur(10px) saturate(1.4);
-    /* Separation from the near-white topography field is elevation, not
-       pigment: a hairline ink ring and a soft shadow lift the card off
-       the contour lines without adding a competing wash. */
     box-shadow: var(--shadow-ring), var(--shadow-sm);
     container-type: inline-size;
     height: clamp(18rem, 33.333cqw, 24rem);
     isolation: isolate;
     transition: background-color .35s ease;
   }
-  /* The hover frost: a blur pass over the card's OWN artwork, so the title
-     lands on a soft field instead of on legible UI. It works because of the
-     isolation above — that makes .project the backdrop root for its children,
-     so this layer's backdrop-filter samples the media beneath it rather than
-     the page behind the card. Keep the two together; dropping either one
-     silently kills the effect. z-10 puts it over the media and under .title. */
   .project::before {
     content: '';
     @apply absolute inset-0 z-10 pointer-events-none;
@@ -149,9 +89,6 @@
     opacity: 0;
     transition: opacity .35s ease;
   }
-  /* A single soft-light wash shared by every card. It carries no hue of its
-     own anymore — it exists so hover can breathe a little light into the
-     surface, in step with the media zoom. */
   .project::after {
     content: '';
     position: absolute;
@@ -166,14 +103,8 @@
     transform: var(--project-aurora-transform);
     transition: opacity .45s ease, transform .8s cubic-bezier(.2,.8,.2,1);
   }
-  /* The six per-slot aurora compositions are gone — every card shares the
-     neutral surface defined on .project above, and the grid's variety now
-     comes entirely from the artwork inside each card. */
   .dark .project {
     --project-aurora: linear-gradient(180deg, #201c28 0%, #18151f 100%);
-    /* Held a touch more opaque than light mode: the dark contour ink is the
-       higher-contrast pair, so the same alpha would let it read through as
-       drawing rather than as texture. */
     --project-surface: linear-gradient(180deg, rgba(32, 28, 40, .46) 0%, rgba(24, 21, 31, .54) 100%);
     background-color: transparent;
   }
@@ -188,15 +119,9 @@
   .dark .project:focus-visible .title {
     color: #efa9ae;
   }
-  /* The light focus ring is the brand blurple; against the mauve page the
-     rose primary is the visible one. */
   .dark .project:focus-visible {
     outline-color: #efa9ae;
   }
-  /* Themed cards keep the shared frosted surface — --project-theme-surface is
-     the opaque stage for the embed on the project page (single.css), and
-     painting it here would seal the card back up. The theme still supplies
-     the artwork wash and its transform. */
   .project.project--themed {
     --project-aurora: var(--project-theme-artwork);
     --project-aurora-size: var(--project-theme-size);
@@ -295,9 +220,6 @@
   .project:focus-visible::before {
     opacity: 1;
   }
-  /* Hover firms the glass up: this paints under --project-surface, so the two
-     stack from ~.38 coverage at rest to ~.7 here and the topography behind
-     the card recedes without ever fully sealing. */
   .project:hover,
   .project:focus-visible {
     background-color: rgba(253, 253, 255, .55);
@@ -334,12 +256,8 @@
     }
   }
 
-  /* Side Projects */
   #side-projects {
     @apply grid;
-    /* The 12.5rem floor is capped at half the row, so narrow viewports fall to two
-       columns instead of one full-width tile with a stranded 56px icon. The .5rem
-       subtrahend is half the maximum gap. */
     grid-template-columns: repeat(auto-fill, minmax(min(12.5rem, calc(50% - .5rem)), 1fr));
     gap: clamp(.625rem, 2vw, 1rem);
     margin-top: clamp(1.75rem, 4vw, 2.5rem);
@@ -355,9 +273,6 @@
     transform: translateY(-4px);
     box-shadow: var(--shadow-hover);
   }
-  /* The game tiles are buttons rather than links, so they need the type and
-     box sizing a <button> does not inherit. Everything else — background,
-     border, hover lift, dark palette — comes from .side-project above. */
   .side-project--game {
     width: 100%;
     font: inherit;

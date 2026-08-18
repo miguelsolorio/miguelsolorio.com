@@ -1,8 +1,5 @@
 :root {
-  /* Naming: --demo-* tokens and .demo-* components are shared; scene styles
-     stay behind a .demo-scene--<name> root and may override semantic roles. */
 
-  /* Color roles. Scenes may override these without changing the controls. */
   --demo-color-accent: #1a73e8;
   --demo-color-text: #202124;
   --demo-color-muted: #5f6368;
@@ -11,7 +8,6 @@
   --demo-color-control-hover: #e4e6e8;
   --demo-color-track: #dadce0;
 
-  /* Shared layout, shape, depth, and motion tokens. */
   --demo-space-1: 4px;
   --demo-space-2: 8px;
   --demo-space-3: 12px;
@@ -20,9 +16,6 @@
   --demo-radius-sm: 6px;
   --demo-radius-md: 10px;
   --demo-radius-round: 999px;
-  /* Shadow ink: light rgb(35 28 102) = color-mix(#3429ff 30%, #1c1725);
-     dark rgb(56 39 51) = color-mix(#efa9ae 20%, #0a0614); see --shadow-rgb
-     in assets/css/main.css. */
   --demo-shadow-control: 0 1px 4px rgb(35 28 102 / 38%);
   --demo-motion-fast: 120ms;
   --demo-motion-base: 200ms;
@@ -149,7 +142,6 @@
   display: none;
 }
 
-/* These state classes deliberately apply to the whole scene. */
 .is-paused *,
 .is-paused *::before,
 .is-paused *::after {

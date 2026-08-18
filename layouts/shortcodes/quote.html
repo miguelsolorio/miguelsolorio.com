@@ -1,45 +1,3 @@
-{{/* A testimonial pulled into the page as the card it came from: avatar,
-     name and handle on the left, the mark of wherever it was said on the
-     right, and the words below with the load-bearing phrase lifted out in
-     the site accent. ==two equals signs== around a phrase make it a
-     highlight; the markers pass through markdown untouched and are swapped
-     for <mark> after rendering, because Goldmark strips raw HTML from
-     content and a marker has to survive the trip. Literal "==" cannot
-     appear in quote text for the same reason.
-
-     `source` names a row in the table below. Each row is a complete inline
-     <svg> rather than a bare path, so a mark that needs its own viewBox,
-     brand fill, or lettering (the UserTesting wordmark) costs the same one
-     line as a monochrome one. Marks drawn in currentColor pick up the
-     theme's ink from .quote-logo; marks with a brand colour keep it in both
-     themes.
-
-     `link` turns the whole card into the citation: one anchor around
-     everything, opening in a new tab. The quote text may not contain links
-     of its own in that case, because anchors do not nest. Without `link`
-     the card is an inert div. Either way the body-link underline animation
-     never applies — main.css and dark.css exclude .quote-card by class.
-
-     `stats` is the row of counts the card carried where it was said, written
-     as space-separated mark:count pairs. A mark naming a row in the icon
-     table below draws that icon — the four Twitter engagements — and anything
-     else is printed as written, which is how a GitHub reaction ("👍:19")
-     costs nothing extra. Counts print verbatim, so thousands keep whatever
-     separator the source showed.
-
-     `media` hangs the post's own attachment under the words, since a tweet
-     that was mostly its screenshot loses its point without it. It resolves
-     like `avatar` and requires `media_alt`.
-
-     `avatar` resolves like the image shortcode's src (page-relative into
-     static/<page>/). Left out, the neutral disc below renders and
-     assets/js/quote-avatars.js (loaded by the footer whenever a page uses
-     this shortcode) swaps it for a freshly generated halftone or truchet
-     pattern drawing on every page load — random per visit, styles
-     alternating down the page and seeds tracked per page, so no two
-     generated avatars on a page repeat. Each swap carries a light and a
-     dark drawing and the theme shows one, the same concession the site
-     accent makes. The disc is the no-JS (and pre-swap) fallback. */}}
 {{- $logos := dict
   "twitter" (dict "label" "Twitter" "svg" `<svg viewBox="0 0 24 24"><path fill="#1DA1F2" d="M23.953 4.57a10 10 0 0 1-2.825.775 4.958 4.958 0 0 0 2.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 0 0-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 0 0-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 0 1-2.228-.616v.06a4.923 4.923 0 0 0 3.946 4.827 4.996 4.996 0 0 1-2.212.085 4.936 4.936 0 0 0 4.604 3.417 9.867 9.867 0 0 1-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0 0 7.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0 0 24 4.59z"/></svg>`)
   "usertesting" (dict "label" "UserTesting" "svg" `<svg viewBox="0 0 138 34"><path fill="#4353FF" d="M8 2h44a8 8 0 0 1 8 8v10a8 8 0 0 1-8 8H22l-10 6 2-6H8a8 8 0 0 1-8-8V10a8 8 0 0 1 8-8Z"/><text x="30" y="21.5" text-anchor="middle" fill="#fff" font-family="Inter, ui-sans-serif, sans-serif" font-size="15" font-weight="700">User</text><text x="64" y="21.5" fill="currentColor" font-family="Inter, ui-sans-serif, sans-serif" font-size="15" font-weight="700">Testing</text></svg>`)
@@ -47,8 +5,6 @@
   "reddit" (dict "label" "Reddit" "svg" `<svg viewBox="0 0 24 24"><path fill="#FF4500" d="M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485l-2.286 2.286C.775 23.225 1.097 24 1.738 24H12c6.627 0 12-5.373 12-12S18.627 0 12 0Zm4.388 3.199c1.104 0 1.999.895 1.999 1.999 0 1.105-.895 2-1.999 2-.946 0-1.739-.657-1.947-1.539v.002c-1.147.162-2.032 1.15-2.032 2.341v.007c1.776.067 3.4.567 4.686 1.363.473-.363 1.064-.58 1.707-.58 1.547 0 2.802 1.254 2.802 2.802 0 1.117-.655 2.081-1.601 2.531-.088 3.256-3.637 5.876-7.997 5.876-4.361 0-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538 0-1.548 1.255-2.802 2.803-2.802.645 0 1.239.218 1.712.585 1.275-.79 2.881-1.291 4.64-1.365v-.01c0-1.663 1.263-3.034 2.88-3.207.188-.911.993-1.595 1.959-1.595Zm-8.085 8.376c-.784 0-1.459.78-1.506 1.797-.047 1.016.64 1.429 1.426 1.429.786 0 1.371-.369 1.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406 0c-.786 0-1.385.824-1.338 1.841.047 1.017.634 1.385 1.418 1.385.785 0 1.473-.413 1.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703 4.013c-.974 0-1.907.048-2.77.135-.147.015-.241.168-.183.305.483 1.154 1.622 1.964 2.953 1.964 1.33 0 2.47-.81 2.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z"/></svg>`)
   "hackernews" (dict "label" "Hacker News" "svg" `<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FF6600"/><path fill="#fff" d="M11.06 13.6 7.42 6.8h1.9l2.12 4.28c.03.07.07.15.11.23l.07.15.05.11.03.08.09.19.08.18.14-.3.16-.34.06-.11.1-.22c.05-.08.08-.16.12-.23L14.6 6.8h1.98l-3.68 6.87v4.53h-1.84V13.6Z"/></svg>`)
 -}}
-{{- /* The engagement marks, drawn as strokes in currentColor so they take
-       the muted ink the counts do and read as one row. */ -}}
 {{- $statIcons := dict
   "like" (dict "label" "likes" "svg" `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>`)
   "repost" (dict "label" "reposts" "svg" `<svg viewBox="0 0 24 24"><path d="m17 1 4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4m14-2v2a4 4 0 0 1-4 4H3"/></svg>`)
@@ -67,8 +23,6 @@
 {{- if and $media (not $mediaAlt) -}}
   {{- errorf "quote shortcode in %s: media needs a media_alt describing it" $.Page.File.Path -}}
 {{- end -}}
-{{- /* mark:count, whitespace separated. Splitting on runs of non-space keeps
-       a count's own comma out of it, which a comma-separated list could not. */ -}}
 {{- $stats := slice -}}
 {{- range findRE `\S+` (.Get "stats") -}}
   {{- $parts := split . ":" -}}
@@ -84,8 +38,6 @@
 {{- $logo := dict -}}
 {{- with .Get "source" -}}
   {{- $key := lower (strings.Trim . " \t") -}}
-  {{- /* errorf fails the build without stopping execution, so the table is
-         indexed only behind a real branch — same shape as the stats tones. */ -}}
   {{- if isset $logos $key -}}
     {{- $logo = index $logos $key -}}
   {{- else -}}
@@ -101,9 +53,6 @@
 {{- if ne (mod (len (findRE `==` $inner)) 2) 0 -}}
   {{- errorf "quote shortcode in %s: unbalanced == highlight markers" $.Page.File.Path -}}
 {{- end -}}
-{{- /* Block display keeps one DOM shape: a one-paragraph quote and the
-       two-paragraph kind both arrive wrapped in <p>, so the CSS has a
-       single path. */ -}}
 {{- $html := $.Page.RenderString (dict "display" "block") $inner -}}
 {{- $html = replaceRE `==(.+?)==` `<mark>$1</mark>` $html -}}
 {{- if and $link (findRE `<a[\s>]` $html) -}}
@@ -142,8 +91,6 @@
       {{- with .icon }}
       <span class="quote-stat-mark" aria-hidden="true">{{ .svg | safeHTML }}</span>
       {{- else }}
-      {{- /* An emoji names itself to a screen reader, so it stands in for the
-             label an icon needs. */}}
       <span class="quote-stat-mark">{{ .mark }}</span>
       {{- end }}
       <span class="quote-stat-count">{{ .count }}</span>

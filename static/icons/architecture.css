@@ -1,18 +1,4 @@
-/* Before and after Codicons: the three theme-specific SVGs an icon used to
-   need, beside the single reference that replaced them.
-
-   The point of the picture is how little is left, so the After side is set back
-   to a whisper and only the line that does the work is held at full strength.
-   Nothing is cropped or omitted to make that happen — the surrounding
-   contribution is all still there, just quiet.
-
-   The scene stands bare on the embed's stage; every length is set from the root
-   font size, and that size is a share of the frame's width. The frame is
-   aspect-locked in single.css, so the ratio holds at every column width and the
-   two samples can never outgrow the box they are given. */
-
 :root {
-  /* 16px at the 820px design width the aspect ratio was struck from. */
   font-size: 1.95122vw;
 
   --code-ink: #1f2328;
@@ -21,9 +7,6 @@
   --code-str: #2b7de0;
   --code-const: #5b7a9c;
   --code-prop: #7f46ff;
-  /* How far back the untouched part of the contribution sits. Set as one value
-     because both sides of the comparison are read at a glance and a second
-     tier would only invite the eye to rank them. */
   --code-hush: 0.42;
 }
 
@@ -54,8 +37,6 @@ body {
   font-size: 1rem;
 }
 
-/* Each column is only as wide as the sample it holds, so the pair sits centred
-   with the gap between them rather than stretched across the frame. */
 .compare {
   display: flex;
   align-items: flex-start;
@@ -101,9 +82,6 @@ body {
   color: var(--code-prop);
 }
 
-/* The After sample is one line of news inside an ordinary contribution. The
-   rest is held back so the eye lands on it without the surrounding code having
-   to be cut away. */
 .code--after .code-line {
   opacity: var(--code-hush);
 }

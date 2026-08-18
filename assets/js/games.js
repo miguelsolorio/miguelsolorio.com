@@ -1,28 +1,9 @@
-/* Game mode — a small arcade that takes over the viewport.
- *
- * Ported from the standalone lab in prototypes/game-modes-2.html, minus the
- * scaffolding that lab needed and this file does not: the page replica, the
- * replica terminal, the full-screen launcher, and the DOM undo-registry. Both
- * games here draw only to a canvas and never touch page content, so the exit
- * path is "remove the overlay" rather than "put the document back".
- *
- * Entry points live elsewhere: `/game` in the home page terminal (home.js) and
- * two commands in the palette (common.js). Both reach this file through
- * window.siteGames, mirroring the window.siteTheme precedent.
- *
- * Loaded on every page, so nothing here may run at parse time beyond building
- * the module objects — the overlay DOM is created on first play().
- */
 (function () {
   'use strict';
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
-  /* Reduced motion is read live, not once: the setting can change mid-session
-     and the shader in common.js already treats it that way. It suppresses
-     chrome motion — shake, scanlines, toast travel, transitions — never
-     gameplay, which is the thing the player opted into. */
   var motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
   var REDUCED = motionMedia.matches;
   if (motionMedia.addEventListener) {
@@ -34,9 +15,6 @@
     set: function (key, value) { try { window.localStorage.setItem(key, value); } catch (error) {} }
   };
 
-  /* ==========================================================================
-     1 · SFX — a pocket synth, built lazily on the first gesture.
-     ========================================================================== */
   var Sfx = (function () {
     var ac = null, master = null, muted = storage.get('game-muted') === '1';
 
@@ -51,8 +29,6 @@
       return ac;
     }
     function resume() { var a = ctx(); if (a && a.state === 'suspended') a.resume(); }
-    /* Suspended on exit so Safari does not hold the audio session — and with it
-       the ducking of whatever else the visitor was listening to. */
     function suspend() { if (ac && ac.state === 'running') ac.suspend(); }
 
     function tone(freq, dur, opts) {
@@ -104,23 +80,8 @@
     };
   }());
 
-  /* ==========================================================================
-     2 · INPUT — one router, three devices.
-
-     Games never read a keycode. They read `move` (a unit vector from
-     WASD/arrows OR the thumb pad), `pointer` (position in stage pixels), and
-     named actions which each collapse several bindings. That is the whole
-     reason both games play on a phone.
-     ========================================================================== */
   var Input = (function () {
     var keys = Object.create(null), tapped = Object.create(null);
-    /* dx/dy are travel accumulated since the last frameEnd, not since the last
-       event: a finger emits several moves per frame, so a game reading only the
-       newest position would drop most of the drag. Summing the per-event diffs
-       gives exactly the finger's travel, which is what lets a game move a ship
-       by the same distance the thumb moved. `id` is the one pointer that owns
-       the stage; the buttons and the pad bubble their own events up here and
-       must never be mistaken for it. */
     var pointer = { x: 0, y: 0, dx: 0, dy: 0, id: null, down: false, tap: false, up: false, moved: false };
     var stick = { x: 0, y: 0, active: false };
     var pads = { a: false, b: false, aTap: false, bTap: false };
@@ -150,25 +111,17 @@
         if (e.target.closest && e.target.closest('.a-btn, .a-key, .a-pad, .a-esc')) return;
         var p = stagePoint(e, host);
         pointer.x = p.x; pointer.y = p.y; pointer.down = true; pointer.tap = true; pointer.moved = false;
-        /* a re-grab starts a new drag, never a jump from where the last one ended */
         pointer.dx = 0; pointer.dy = 0; pointer.id = e.pointerId;
         if (e.pointerType === 'touch') touchMode = true;
         if (host.setPointerCapture && e.pointerId != null) host.setPointerCapture(e.pointerId);
       });
       host.addEventListener('pointermove', function (e) {
-        /* One pointer owns the stage at a time. The A/B buttons and the pad sit
-           inside the host and bubble their moves up here, so without this test a
-           second thumb rolling on BOMB reads as the first one teleporting. */
         if (pointer.down && e.pointerId !== pointer.id) return;
         var p = stagePoint(e, host);
         if (Math.abs(p.x - pointer.x) + Math.abs(p.y - pointer.y) > 2) pointer.moved = true;
         if (pointer.down) { pointer.dx += p.x - pointer.x; pointer.dy += p.y - pointer.y; }
         pointer.x = p.x; pointer.y = p.y;
       });
-      /* Same ownership test on the way up: a button's pointerup bubbles here
-         too, and letting go of TNT used to end an orbit that was still running
-         on the other thumb. dx/dy deliberately survive the release, so the last
-         few pixels before a lift still count; frameEnd clears them next frame. */
       function release(e) {
         if (e && pointer.id != null && e.pointerId !== pointer.id) return;
         if (pointer.down) pointer.up = true;
@@ -217,9 +170,6 @@
     function reset() {
       keys = Object.create(null); tapped = Object.create(null);
       pointer.down = false; pointer.tap = false; pointer.up = false;
-      /* frameEnd normally clears the drag, and it does not run while the loop
-         is stopped: without this, pausing mid-drag would hand the game every
-         pixel travelled during the pause the moment it resumed. */
       pointer.dx = 0; pointer.dy = 0; pointer.id = null;
       stick.x = stick.y = 0; pads.a = pads.b = false;
     }
@@ -261,19 +211,7 @@
     };
   }());
 
-  /* ==========================================================================
-     3 · TRACK. Game mode is a takeover, not a navigation, so analytics records
-     one page view for the page underneath and then nothing at all, however
-     long someone spends inside Polarity. Two events close that gap: one when a
-     game is opened, one carrying the time spent in it.
-
-     gtag() only exists in production (header.html gates it on
-     hugo.IsProduction), so every call here is a silent no-op on localhost and
-     behind an ad blocker.
-     ========================================================================== */
   var Track = (function () {
-    /* One run per play() call. A restart ends the run it replaces and opens a
-       new one, so two 40-second attempts never file as one 80-second sitting. */
     var run = null;
     var progressOf = function () { return null; };
 
@@ -282,17 +220,12 @@
       try { window.gtag('event', name, params); } catch (error) {}
     }
 
-    /* Only visible time counts. A game left open behind another tab is not
-       being played, and a phone locked mid-level would otherwise report a
-       nine-hour run. */
     function elapsed() {
       return run.since ? performance.now() - run.since : 0;
     }
 
     function report(reason) {
       var seconds = Math.round(elapsed() / 1000);
-      /* A continuation is only worth an event if time actually passed in it:
-         reopening the tab and closing it straight away is not a second visit. */
       if (run.part > 1 && seconds < 1) return;
       var at = progressOf();
       send('game_end', {
@@ -304,9 +237,6 @@
         game_level: at ? at.level : 0,
         game_score: at ? at.score : 0,
         duration_seconds: seconds,
-        /* Duplicated into `value` because GA4 charts that one in the stock
-           Events report: the average sitting is legible there without first
-           registering duration_seconds as a custom metric. */
         value: seconds
       });
     }
@@ -318,9 +248,6 @@
     }
 
     function start(def, source) {
-      /* A live run at this point can only be the banner's Play again (same
-         game) or the palette opening a different one over the top, since
-         Cmd+Shift+P survives a game. Every other path came through close(). */
       if (run) stop(run.id === def.id ? 'restart' : 'switch');
       run = {
         id: def.id, name: def.name, source: source || 'direct',
@@ -334,11 +261,6 @@
       });
     }
 
-    /* visibilitychange is the last callback that reliably fires on mobile: a
-       tab swiped away on iOS may never see pagehide or unload. So the clock is
-       reported every time the page hides, and a run that comes back files its
-       remaining time as a second part. Two events that sum to the real total
-       beat one that never arrives at all. */
     function hide() {
       if (!run.since) return;
       report('page_hidden');
@@ -352,29 +274,13 @@
     });
 
     return {
-      /* Arcade hands over a reader rather than the numbers themselves: g is
-         nulled by teardown() before close() gets to report, and the
-         page-hidden flush above has no call site inside Arcade at all. */
       watch: function (fn) { progressOf = fn; },
       start: start,
-      /* Recorded as it happens rather than read at the end: someone who beats
-         the game and then sits on the victory banner for a minute still won. */
       result: function (r) { if (run) run.result = r; },
       stop: stop
     };
   }());
 
-  /* ==========================================================================
-     4 · PAL — the arcade's colours ARE the site's colours.
-
-     Both columns are lifted from the stylesheets: light is the hero terminal's
-     light palette (hero.css) plus the blurple primary; dark is Rosé Dusk
-     (dark.css) plus that terminal's dark token set. Nothing here is invented,
-     so a game drawn from PAL is drawn in the same pigments as the page.
-
-     The object identity is stable and sync() mutates it in place — games hold a
-     reference and must keep seeing the current theme after the toggle.
-     ========================================================================== */
   var PAL = (function () {
     var LIGHT = {
       dark: false,
@@ -387,30 +293,12 @@
       dim: '#94a3b8',
       faint: '#cbd5e1',
       accent: '#3429ff',
-      /* The site's light terminal hues are tuned for 12px type on white, which
-         leaves them muddy once they become filled shapes moving at speed. These
-         stay in the same hue families, pushed up in chroma so pickups pop off
-         the page. The `text*` pairs are the original type-safe values — bright
-         amber is a great crate and an illegible caption, so shapes take the top
-         row and anything drawn as words takes the bottom one. */
       green: '#22c55e', yellow: '#f59e0b', purple: '#8b5cf6', red: '#f43f5e',
       textGreen: '#15803d', textYellow: '#b45309', textPurple: '#6d28d9', textRed: '#be123c',
 
-      /* "Sunset": rose-magenta and orange for Spread and Lance, sitting 46°–90°
-         from each other and from the other two guns so no pair can be confused,
-         and landing on the same OKLCH lightness curve as the row above (yellows
-         high, blues low, the way the eye already expects) — that shared
-         brightness is what lets unrelated hues read as one set.
-         The other two guns borrow rather than own: Pulse takes `accent`, the
-         site primary, because the gun you can never lose should be the brand,
-         and Seeker takes `yellow`, which the bomb used to hold. */
       gunSpread: '#e900bb', gunLance: '#ff6a23',
       textGunSpread: '#bd0098', textGunLance: '#b84400',
 
-      /* The bomb, now that Seeker has the gold. Black is a light-mode idea — on
-         the mauve page a black sphere is just a hole — so the dark value is a
-         near-black lifted clear of the page and the silhouette is closed with
-         an `ink` rim, which darkens on white and lightens on black. */
       bomb: '#0f172a',
 
       onBright: '#0f172a',
@@ -428,20 +316,11 @@
       faint: '#453c5c',
       accent: '#efa9ae',
       green: '#95d5a5', yellow: '#f6c177', purple: '#c4a7e7', red: '#eb6f92',
-      /* Rosé Dusk is already tuned against a near-black page, so type and shape
-         can share one value here. */
       textGreen: '#95d5a5', textYellow: '#f6c177', textPurple: '#c4a7e7', textRed: '#eb6f92',
 
-      /* The same two Sunset hues lifted to L ≈ 0.84 for the mauve page, where
-         type and shape share one value like everything else here. Pulse again
-         takes `accent` — the rose that is this theme's primary — and Seeker
-         `yellow`. */
       gunSpread: '#ff96de', gunLance: '#ffc4ad',
       textGunSpread: '#ff96de', textGunLance: '#ffc4ad',
 
-      /* Well above the page rather than true black. Anything closer and the
-         rim and halo end up carrying the shape on their own, which reads as a
-         hole punched in the stage instead of an unlit object sitting on it. */
       bomb: '#3b3350',
 
       onBright: '#110e1a',
@@ -465,13 +344,11 @@
       for (var k in src) P[k] = src[k];
       return P;
     };
-    /* rgba() from any palette key, e.g. PAL.a('red', .35) */
     P.a = function (key, alpha) { return 'rgba(' + rgbOf(P[key] || key) + ',' + alpha + ')'; };
     P.sync();
     return P;
   }());
 
-  /* small shared drawing helpers the games lean on */
   var D = {
     round: function (c, x, y, w, h, r) {
       r = Math.min(r, w / 2, h / 2);
@@ -502,16 +379,13 @@
   };
   var clamp = D.clamp, lerp = D.lerp;
 
-  /* ==========================================================================
-     5 · ARCADE — the cabinet: registry, loop, HUD, banners.
-     ========================================================================== */
   var Arcade = (function () {
     var games = [];
     var el = null, c2d = null;
     var W = 0, H = 0, DPR = 1;
-    var mode = 'off';                 // off | playing | banner | paused
-    var resumeMode = null;            // what to return to when un-paused
-    var hudInset = 0;                 // px from stage top to below the HUD's top row; 0 = needs measuring
+    var mode = 'off';
+    var resumeMode = null;
+    var hudInset = 0;
     var current = null, g = null;
     var raf = 0, last = 0;
     var bannerActions = [];
@@ -545,8 +419,6 @@
         '</div>' +
       '</div>';
 
-    /* The overlay is built on first play, not at load: this file ships on every
-       page and most visits never open a game. */
     function ensureDOM() {
       if (el) return;
       var root = document.createElement('div');
@@ -592,24 +464,17 @@
       var w = el.root.clientWidth, h = el.root.clientHeight;
       if (w === W && h === H && dpr === DPR) return;
       DPR = dpr; W = w; H = h;
-      hudInset = 0;               /* the top row restacks under the narrow breakpoint */
+      hudInset = 0;
       el.canvas.width = Math.floor(W * DPR); el.canvas.height = Math.floor(H * DPR);
       c2d.setTransform(DPR, 0, 0, DPR, 0, 0);
       if (g && current) { g.W = W; g.H = H; if (current.resize) current.resize(g); }
     }
 
-    /* Where the HUD's top row ends, so canvas chrome (Polarity's boss bar) can
-       sit under the score chip instead of behind it. Measured rather than
-       hard-coded: the row is one line wide-screen and two stacked lines under
-       the narrow breakpoint, and the chips are text-sized. Cached, because
-       reading it every frame would force a layout against a HUD that rewrites
-       its own innerHTML every frame. */
     function measureHud() {
       if (!el || !el.hudTop) return;
       hudInset = el.hudTop.getBoundingClientRect().bottom - el.root.getBoundingClientRect().top;
     }
 
-    /* ---------- particles + juice, shared by both games ---------- */
     function Particles() {
       var list = [];
       return {
@@ -670,7 +535,6 @@
         .onfinish = function () { d.remove(); };
     }
 
-    /* ---------- HUD ---------- */
     function setPips(n, at) {
       var h = '';
       for (var i = 0; i < n; i++) h += '<i class="' + (i < at ? 'done' : i === at ? 'on' : '') + '"></i>';
@@ -678,10 +542,9 @@
     }
     function setStats(html) { el.stats.innerHTML = html; }
 
-    /* ---------- banners ---------- */
     function showBanner(cfg) {
       mode = 'banner';
-      if (g) g.shakeAmount = 0;      /* a score you have to read should hold still */
+      if (g) g.shakeAmount = 0;
       bannerActions = cfg.actions || [];
       var h = '';
       if (cfg.kicker) h += '<div class="a-banner-kicker">' + cfg.kicker + '</div>';
@@ -710,8 +573,6 @@
     function hideBanner() { el.banner.classList.remove('is-open'); el.banner.innerHTML = ''; bannerActions = []; }
     function runAction(a) { if (!a) return; hideBanner(); Sfx.blip(760); if (a.run) a.run(); }
 
-    /* Entering play blurs whatever button was focused: otherwise Space both
-       fires the weapon and re-activates that button. */
     function beginPlay() {
       if (document.activeElement && document.activeElement !== el.root && el.root.contains(document.activeElement)) {
         document.activeElement.blur();
@@ -721,7 +582,6 @@
       last = performance.now();
     }
 
-    /* ---------- game context ---------- */
     function makeCtx(def) {
       var seed = 1337;
       var ctx = {
@@ -734,13 +594,11 @@
         rnd: function () { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; },
         range: function (a, b) { return a + ctx.rnd() * (b - a); },
         pick: function (arr) { return arr[Math.floor(ctx.rnd() * arr.length) % arr.length]; },
-        /* input surface */
         move: function () { return Input.moveVec(); },
         key: Input.key, tap: Input.tap,
         pointer: Input.pointer,
         fire: Input.fire, fireTap: Input.fireTap, alt: Input.alt, altTap: Input.altTap,
         moveTap: Input.moveTap, isTouch: Input.isTouch,
-        /* output surface */
         stats: setStats, toast: toast,
         hudBottom: function () { return hudInset || 60; },
         shake: function (a) { ctx.shakeAmount = Math.min(28, ctx.shakeAmount + a); },
@@ -762,7 +620,6 @@
       return ctx;
     }
 
-    /* ---------- level flow ---------- */
     function startLevel(i) {
       g.level = i; g.levelDef = current.levels[i]; g.over = false;
       g.particles.clear(); g.shakeAmount = 0; g.hitstopLeft = 0; g.t = 0;
@@ -773,10 +630,6 @@
       showBanner({
         kicker: 'Level ' + (i + 1) + ' of ' + current.levels.length,
         title: d.name,
-        /* On a touchscreen this banner is the only place the controls are
-           stated, since the hint chip is hidden there. A level only needs its
-           own touchNote if the note names a mouse or a key, which is useless
-           advice on the device actually showing it. */
         body: (Input.isTouch() && d.touchNote) || d.note || '',
         actions: [{ label: i === 0 ? 'Start' : 'Go', primary: true, run: beginPlay }]
       });
@@ -822,7 +675,7 @@
       beginPlay();
     }
     function restart() {
-      var id = current && current.id;   /* teardown nulls `current` — grab it first */
+      var id = current && current.id;
       if (id) play(id); else close();
     }
     function victory() {
@@ -838,11 +691,10 @@
       });
     }
 
-    /* ---------- loop ---------- */
     function frame(now) {
       raf = requestAnimationFrame(frame);
-      PAL.sync();               /* the theme toggle stays live mid-game */
-      sizeCanvas();             /* also catches a DPR change with no resize event */
+      PAL.sync();
+      sizeCanvas();
       var dt = Math.min(0.05, (now - last) / 1000); last = now;
       if (mode === 'playing') {
         if (g.hitstopLeft > 0) { g.hitstopLeft -= dt; dt *= 0.06; }
@@ -850,12 +702,7 @@
         current.update(g, dt);
         g.particles.update(dt);
       }
-      /* Decay outside the playing branch too. A death sets a big shake and then
-         immediately opens a banner — leave the decay inside `playing` and the
-         stage jitters behind the score screen for as long as it is up. */
       if (g) g.shakeAmount *= Math.exp(-6 * dt);
-      /* After update(), so the score chip is populated and the row is at its
-         real height the first time we read it. */
       if (!hudInset) measureHud();
       if (g && current) {
         c2d.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -868,11 +715,6 @@
       Input.frameEnd();
     }
 
-    /* ---------- page lock ----------
-       No `overflow: hidden` on body: main.css documents that once html carries
-       its own overflow, body's stops propagating to the viewport and body turns
-       into a scroll container, silently unsticking the site header. Fixed
-       positioning already collapses the document height. */
     function lockPage() {
       scrollLock = window.scrollY;
       var gutter = window.innerWidth - document.documentElement.clientWidth;
@@ -890,9 +732,6 @@
       window.scrollTo(0, scrollLock);
       broadcast(false);
     }
-    /* The palette overlay is deliberately left interactive — Cmd+Shift+P has to
-       survive a game. Everything else goes out of the accessibility tree, which
-       also parks the terminal's aria-live log while it is invisible. */
     function setPageInert(on) {
       ['nav.site-header', '.site-shell.site-content'].forEach(function (sel) {
         var node = $(sel);
@@ -907,8 +746,6 @@
       );
     }
 
-    /* ---------- open / close ---------- */
-    /* How far the run got, for whichever analytics event reports it next. */
     Track.watch(function () {
       return g ? { level: g.level + 1, score: Math.round(g.score) } : null;
     });
@@ -918,8 +755,6 @@
       if (!def) return false;
       ensureDOM();
       Sfx.resume();
-      /* Ahead of teardown(), which nulls g: a restart has to file the run it
-         is replacing with that run's own score rather than a blank one. */
       Track.start(def, source);
 
       var wasOff = mode === 'off';
@@ -938,15 +773,13 @@
       el.root.setAttribute('aria-label', def.name + ' — game mode');
 
       el.name.textContent = def.name;
-      /* Desktop copy unconditionally: CSS hides this chip outright on a
-         touchscreen, where the level banner carries the instructions instead. */
       el.controls.innerHTML = def.controls;
       el.keyA.textContent = (def.touch && def.touch.a) || 'A';
       el.keyB.textContent = (def.touch && def.touch.b) || 'B';
       el.keyB.style.display = (def.touch && def.touch.b) ? '' : 'none';
       el.pad.style.display = hasPad ? '' : 'none';
 
-      W = H = 0;                /* force sizeCanvas past its unchanged-size guard */
+      W = H = 0;
       sizeCanvas();
       Input.enable(true); Input.reset();
       g = makeCtx(def);
@@ -969,7 +802,7 @@
 
     function close() {
       if (mode === 'off' || !el) return;
-      Track.stop('exit');       /* ahead of teardown(), for the same reason */
+      Track.stop('exit');
       teardown();
       el.root.className = '';
       el.root.hidden = true;
@@ -977,16 +810,12 @@
       mode = 'off'; resumeMode = null;
       Sfx.suspend();
       unlockPage();
-      /* preventScroll matters: whatever launched the game is usually the
-         terminal input near the top of the page, and a plain focus() would
-         scroll it into view and undo the scroll position we just restored. */
       if (returnFocus instanceof HTMLElement && returnFocus.isConnected) {
         returnFocus.focus({ preventScroll: true });
       }
       returnFocus = null;
     }
 
-    /* ---------- pause, for anything that takes over the keyboard ---------- */
     function pause() {
       if (mode === 'off' || mode === 'paused') return;
       resumeMode = mode;
@@ -1003,7 +832,6 @@
       cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
     }
 
-    /* ---------- global keys ---------- */
     window.addEventListener('keydown', function (e) {
       if (mode === 'off' || mode === 'paused') return;
       if (e.code === 'Escape') { e.preventDefault(); close(); return; }
@@ -1014,18 +842,13 @@
         }
         return;
       }
-      /* playing: swallow the keys the browser would otherwise spend on
-         scrolling or on activating a focused chip */
       if (e.code === 'Space' || e.code.indexOf('Arrow') === 0) e.preventDefault();
     }, true);
 
-    /* The palette takes the keyboard; the game must not also consume it. */
     document.documentElement.addEventListener('site:palette', function (e) {
       if (e.detail && e.detail.open) pause(); else unpause();
     });
 
-    /* A theme flip while paused would otherwise go unnoticed until resume —
-       the palette's own Toggle Dark Mode command is exactly that case. */
     document.documentElement.addEventListener('site:themechange', function () {
       PAL.sync();
       if (!raf && g && current && el && !el.hidden) {
@@ -1038,22 +861,12 @@
     return {
       add: function (def) {
         games.push(def);
-        /* insertion order would otherwise be whatever the file happens to
-           register first; sorting keeps the terminal picker, its numbering and
-           the palette entries in one order. It sorts on the declared `order`
-           rather than the name so the running order is a choice — Polarity is
-           the front door and stays game 1 whatever gets added later. Anything
-           registered without an order falls in behind, alphabetically. */
         games.sort(function (a, b) {
           var ao = typeof a.order === 'number' ? a.order : 999;
           var bo = typeof b.order === 'number' ? b.order : 999;
           return ao - bo || a.name.localeCompare(b.name);
         });
       },
-      /* `hidden` games drop out of every listing (the terminal picker, the
-         help hints, the palette) but stay registered, so `find` can still
-         resolve one by name and `play` can still run it. Same trade the
-         terminal's `status` command makes: shelved, not deleted. */
       list: function () {
         return games.filter(function (x) { return !x.hidden; }).map(function (x) {
           return { id: x.id, name: x.name, blurb: x.blurb, from: x.from };
@@ -1062,8 +875,6 @@
       find: function (q) {
         q = String(q).toLowerCase();
         var n = parseInt(q, 10);
-        /* numbers index the visible list, which is what the picker numbered.
-           A hidden game is reachable by name only. */
         var shown = games.filter(function (x) { return !x.hidden; });
         var hit = (!isNaN(n) && shown[n - 1]) ||
           games.filter(function (x) { return x.id === q; })[0] ||
@@ -1078,33 +889,14 @@
   }());
 
 
-  /* ==========================================================================
-     GAME 01 · POLARITY — rebuilt
-     The two colours no longer mean two polarities. They mean life and death:
-     green orbs are health, red is trying to kill you, and grey rocks do not
-     care either way. You start on 3 lives and can carry 6. The trigger belongs
-     to whichever device you touched last: on the keyboard it is yours, and on a
-     mouse or thumb pad — where there is no spare finger for it — the guns run
-     themselves and the click is freed up for the bomb.
-
-     The escalation is deliberately global, not per-wave: `killed` never resets
-     inside a run, so clearing level 1 quickly makes level 2 harder. The game
-     tunes itself to how well you are actually playing.
-     ========================================================================== */
   Arcade.add({
     id: 'polarity', name: 'Polarity', mode: 'stage', order: 1,
     from: 'Ikaruga',
     blurb: 'Green orbs keep you alive, red wants you dead, and the rocks are just in the way. Six lives is the ceiling.',
-    /* Both halves have to be complete on their own, because you only ever read
-       the half you are already playing. The keyboard half used to stop at fire,
-       which left the bomb key undiscoverable — `click to bomb` is no help to
-       someone who never touches the mouse. Arrows have always worked too. */
-    /* the arrows are spaced because ←→ set tight enough to touch reads as a
-       single ↔, which is not a key anyone has */
     controls: '<kbd>WASD</kbd>/<kbd>↑ ↓ ← →</kbd> fly + <kbd>Space</kbd> fire + <kbd>Shift</kbd> bomb' +
               '&nbsp;·&nbsp; or steer with the mouse — it fires itself, click bombs',
     touch: { pad: false, a: 'BOMB' },
-    lives: 1,                       /* the game runs its own life count */
+    lives: 1,
     victory: 'GOAT status: confirmed.',
     levels: [
       { name: 'Newbie', note: 'Steer with the mouse and the guns run themselves; touch a key and the trigger becomes yours. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', touchNote: 'Drag anywhere to fly and the guns run themselves. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', quota: 14, spawn: 1.45, rock: 6.5 },
@@ -1112,16 +904,12 @@
       { name: 'GOAT', note: 'Twenty-eight of them, thicker rock cover, and then whatever has been sending them.', quota: 28, spawn: 0.8, rock: 4, boss: true }
     ],
 
-    /* Every colour is a site token, resolved live so the theme toggle works
-       mid-game. Red and green keep their semantic jobs — enemy and health —
-       and simply take whichever value the current theme defines. */
     get RED()   { return PAL.red; },
     get WHITE() { return PAL.ink; },
     get GOLD()  { return PAL.yellow; },
     get GREEN() { return PAL.green; },
     get STONE() { return PAL.dim; },
 
-    /* enemy tiers, unlocked by cumulative kills — the "progressively harder" dial */
     TIERS: [
       { at: 0,  name: 'grunt',   hp: 3,  sp: 46,  r: 15, sides: 4, fire: 1.9,  shots: 1, bullet: 210, score: 100 },
       { at: 10, name: 'runner',  hp: 4,  sp: 96,  r: 13, sides: 3, fire: 1.5,  shots: 1, bullet: 300, score: 150 },
@@ -1130,8 +918,6 @@
       { at: 52, name: 'spiral',  hp: 14, sp: 52,  r: 19, sides: 8, fire: 0.85, shots: 8, bullet: 190, score: 450 }
     ],
 
-    /* Every gun is the same four numbers, so a pickup is legible the moment it
-       lands: how often, how hard, how many, how far it goes through. */
     WEAPONS: {
       basic:   { name: 'Pulse',  rate: 0.155, dmg: 1.9, shots: 1, ammo: Infinity, speed: 820, pal: 'accent' },
       spread:  { name: 'Spread', rate: 0.21,  dmg: 1.7, shots: 3, ammo: 70, arc: 0.20, speed: 760, pal: 'gunSpread' },
@@ -1160,7 +946,7 @@
     },
 
     init: function (g) {
-      g.state.killed = 0;          /* survives across levels on purpose */
+      g.state.killed = 0;
       g.state.lives = 3;
     },
 
@@ -1175,12 +961,10 @@
       if (s.lives == null) s.lives = 3;
       s.p = { x: g.W / 2, y: g.H * 0.78, r: 9, sp: 340, iframe: 0, cool: 0 };
       s.bullets = []; s.shots = []; s.enemies = []; s.drops = []; s.rocks = [];
-      /* no free bomb: the first one has to be earned off a drop */
       s.weapon = 'basic'; s.ammo = Infinity; s.bombs = 0; s.blast = 0;
       s.spawnIn = 0.9; s.quota = L.quota; s.cleared = 0; s.boss = null;
       s.rockIn = L.rock * 0.5; s.giftIn = g.range(7, 11);
       s.streak = 0;
-      /* input modality: the trigger is manual only once a key is touched */
       s.keyboard = false; s.pointerSeen = false; s.lastPx = -1; s.lastPy = -1; s.pTravel = 0;
     },
 
@@ -1189,10 +973,9 @@
     spawn: function (g) {
       var s = g.state;
       var tier = this.tierFor(s.killed);
-      /* a slice of the older tiers keeps the field varied instead of uniform */
       var idx = this.TIERS.indexOf(tier);
       if (idx > 0 && g.rnd() < 0.45) tier = this.TIERS[Math.max(0, idx - 1 - Math.floor(g.rnd() * 2))];
-      var ramp = 1 + s.killed * 0.016;           /* everything scales, slowly */
+      var ramp = 1 + s.killed * 0.016;
       s.enemies.push({
         x: g.range(60, g.W - 60), y: -40,
         tier: tier, r: tier.r, sides: tier.sides,
@@ -1215,21 +998,16 @@
 
     spawnBoss: function (g) {
       var s = g.state;
-      var hp = 220 + s.killed * 4;               /* tuned down: the trigger is manual now */
+      var hp = 220 + s.killed * 4;
       s.boss = { x: g.W / 2, y: -140, r: 66, hp: hp, max: hp, t: 0, cool: 1.4, hurt: 0 };
       g.toast(g.W / 2, g.H * 0.3, 'FINAL BOSS', PAL.textRed, { size: '1.9rem', dur: 1600, rise: 8 });
       Sfx.boom();
     },
 
-    /* Enemy fire is destructible: two player hits and it pops. That turns the
-       bullet wall from a thing you dodge into a thing you can also negotiate
-       with, which is what makes the boss patterns survivable. */
     bullet: function (g, x, y, a, sp) {
       g.state.bullets.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, r: 5, hp: 2, hit: 0 });
     },
 
-    /* one drop function for all four kinds — `kind` is chosen by the caller so
-       the comeback weighting lives at the call site, where the context is */
     dropAt: function (g, x, y, kind, big) {
       g.state.drops.push({
         x: x, y: y, vx: g.range(-40, 40), vy: g.range(30, 80),
@@ -1238,7 +1016,6 @@
       });
     },
 
-    /* what a kill leaves behind: health when you need it, hardware when you don't */
     rollDrop: function (g, x, y, fat) {
       var s = g.state;
       var r = g.rnd();
@@ -1325,13 +1102,10 @@
       if (i === -1) return false;
       s.enemies.splice(i, 1);
       s.killed++; s.cleared++; s.streak++;
-      /* the streak bonus is capped: uncapped it compounds into seven figures
-         on a good run and the number stops meaning anything */
       g.score += target.tier.score + Math.min(s.streak, 25) * 12;
       g.particles.burst(target.x, target.y, 22, { color: this.RED, speed: 270, square: true });
       Sfx.hit(); g.shake(4);
       this.rollDrop(g, target.x, target.y, target.tier.hp > 8);
-      /* crossing a tier boundary is announced, because it explains the spike */
       var t0 = this.tierFor(s.killed - 1), t1 = this.tierFor(s.killed);
       if (t0 !== t1) {
         g.toast(g.W / 2, g.H * 0.22, t1.name.toUpperCase() + 'S INBOUND', PAL.textYellow, { size: '1.3rem', dur: 1400 });
@@ -1343,16 +1117,9 @@
     update: function (g, dt) {
       var s = g.state, p = s.p, L = g.levelDef;
 
-      /* --- input modality ---
-         Whichever device you touched last owns the ship. On the keyboard the
-         trigger is yours; on a mouse or a thumb pad there is no spare finger
-         for it, so the guns run themselves and the click is freed up for the
-         bomb. Switching back is just picking the other device up again. */
       var kb = g.key('KeyW') || g.key('KeyA') || g.key('KeyS') || g.key('KeyD') ||
                g.key('ArrowUp') || g.key('ArrowDown') || g.key('ArrowLeft') || g.key('ArrowRight') ||
                g.key('Space') || g.key('ShiftLeft') || g.key('ShiftRight');
-      /* Accumulate the travel rather than testing it per frame: a slow drag
-         moves well under a pixel per frame and would never register. */
       var pDelta = s.lastPx < 0 ? 0 : Math.abs(g.pointer.x - s.lastPx) + Math.abs(g.pointer.y - s.lastPy);
       s.lastPx = g.pointer.x; s.lastPy = g.pointer.y;
       s.pTravel = pDelta > 0 ? s.pTravel + pDelta : s.pTravel * 0.9;
@@ -1362,27 +1129,16 @@
       else if (pMoved || g.pointer.down || Input.stick.active) s.keyboard = false;
       var auto = !s.keyboard;
 
-      /* --- ship ---
-         Three ways in, one live at a time. Keys move at a fixed speed. A finger
-         drags the ship by exactly its own travel: relative, not absolute, so
-         the ship never jumps to the thumb and the thumb never ends up parked on
-         the thing it is steering. A mouse gets pointed at rather than dragged,
-         and the ship flies to it. */
       var mv = g.move();
       if (mv.x || mv.y) {
         p.x = clamp(p.x + mv.x * p.sp * dt, 14, g.W - 14);
         p.y = clamp(p.y + mv.y * p.sp * dt, 60, g.H - 20);
       } else if (g.isTouch()) {
-        /* The clamp eats the overshoot on purpose: hold the ship into an edge
-           and it leaves the moment you reverse, instead of first retracing
-           however far past the edge you pushed. */
         if (g.pointer.dx || g.pointer.dy) {
           p.x = clamp(p.x + g.pointer.dx, 14, g.W - 14);
           p.y = clamp(p.y + g.pointer.dy, 60, g.H - 20);
         }
       } else if (auto && s.pointerSeen) {
-        /* fly to the cursor rather than snap to it — a snapped ship has no
-           momentum to read, and the drops' magnetism stops feeling like pull */
         var follow = 1 - Math.exp(-15 * dt);
         p.x = clamp(lerp(p.x, g.pointer.x, follow), 14, g.W - 14);
         p.y = clamp(lerp(p.y, g.pointer.y, follow), 60, g.H - 20);
@@ -1390,12 +1146,10 @@
       p.iframe -= dt; p.cool -= dt;
       s.blast = Math.max(0, s.blast - dt * 1.5);
 
-      /* --- trigger --- */
       if ((auto || g.fire()) && p.cool <= 0) this.fire(g);
       var bombTap = g.altTap() || Input.pads.aTap || (auto && !g.isTouch() && g.pointer.tap);
       if (bombTap && s.bombs > 0) this.bomb(g);
 
-      /* --- spawning --- */
       if (!s.boss) {
         s.spawnIn -= dt;
         if (s.spawnIn <= 0 && s.cleared + s.enemies.length < s.quota) {
@@ -1409,7 +1163,6 @@
       }
       s.rockIn -= dt;
       if (s.rockIn <= 0) { this.spawnRock(g); s.rockIn = L.rock * g.range(0.6, 1.4); }
-      /* an ambient gift on a slow timer, so a dry patch of kills is survivable */
       s.giftIn -= dt;
       if (s.giftIn <= 0) {
         s.giftIn = g.range(8, 13);
@@ -1417,7 +1170,6 @@
         this.dropAt(g, g.range(60, g.W - 60), -20, r < 0.5 ? 'health' : r < 0.85 ? 'weapon' : 'bomb');
       }
 
-      /* --- rocks --- */
       for (var rk = s.rocks.length - 1; rk >= 0; rk--) {
         var R = s.rocks[rk];
         R.x += R.vx * dt; R.y += R.vy * dt; R.rot += R.rotV * dt;
@@ -1431,7 +1183,6 @@
         }
       }
 
-      /* --- enemies --- */
       for (var i = s.enemies.length - 1; i >= 0; i--) {
         var e = s.enemies[i];
         e.t += dt; e.hurt = Math.max(0, e.hurt - dt * 4);
@@ -1456,11 +1207,8 @@
         if (e.y > g.H + 60) s.enemies.splice(i, 1);
       }
 
-      /* --- boss --- */
       if (s.boss) {
         var B = s.boss; B.t += dt; B.hurt = Math.max(0, B.hurt - dt * 4);
-        /* Rests just clear of its own health bar, which hangs off the HUD — on a
-           narrow screen that row stacks and pushes everything down. */
         B.y = lerp(B.y, Math.max(155, g.hudBottom() + 36 + B.r), 1 - Math.exp(-1.5 * dt));
         B.x = g.W / 2 + Math.sin(B.t * 0.55) * (g.W * 0.28);
         B.cool -= dt;
@@ -1472,7 +1220,6 @@
           else for (var q3 = 0; q3 < 12; q3++) this.bullet(g, B.x, B.y, Math.PI / 2 + (q3 - 5.5) * 0.16, 215);
           Sfx.tone(150, 0.06, { type: 'sawtooth', gain: 0.1 });
         }
-        /* the boss keeps feeding you supplies, or the fight is unwinnable */
         if (Math.floor(B.t * 0.4) !== Math.floor((B.t - dt) * 0.4)) {
           var rr = g.rnd();
           this.dropAt(g, g.range(60, g.W - 60), -20, rr < 0.55 ? 'health' : rr < 0.9 ? 'weapon' : 'bomb');
@@ -1480,7 +1227,6 @@
         if (D.dist(B.x, B.y, p.x, p.y) < B.r + p.r) { this.hurtPlayer(g, 'Rammed it.'); if (s.lives <= 0) return; }
       }
 
-      /* --- player shots --- */
       for (var j = s.shots.length - 1; j >= 0; j--) {
         var sh = s.shots[j];
         if (sh.homing) {
@@ -1502,7 +1248,6 @@
         sh.x += sh.vx * dt; sh.y += sh.vy * dt;
         if (sh.y < -30 || sh.y > g.H + 30 || sh.x < -30 || sh.x > g.W + 30) { s.shots.splice(j, 1); continue; }
 
-        /* rocks stop everything that is not a lance */
         var stopped = false;
         for (var rr2 = s.rocks.length - 1; rr2 >= 0; rr2--) {
           var RK = s.rocks[rr2];
@@ -1571,13 +1316,11 @@
         }
       }
 
-      /* --- enemy bullets: no absorbing any more, every one of them bites --- */
       for (var k3 = s.bullets.length - 1; k3 >= 0; k3--) {
         var bu = s.bullets[k3];
         bu.hit = Math.max(0, bu.hit - dt * 6);
         bu.x += bu.vx * dt; bu.y += bu.vy * dt;
         if (bu.x < -30 || bu.x > g.W + 30 || bu.y < -30 || bu.y > g.H + 30) { s.bullets.splice(k3, 1); continue; }
-        /* rocks are cover — the one thing that makes them worth keeping around */
         var eaten = false;
         for (var rc = 0; rc < s.rocks.length; rc++) {
           if (D.dist(bu.x, bu.y, s.rocks[rc].x, s.rocks[rc].y) < s.rocks[rc].r) {
@@ -1593,12 +1336,10 @@
         }
       }
 
-      /* --- drops --- */
       for (var d2 = s.drops.length - 1; d2 >= 0; d2--) {
         var dr = s.drops[d2];
         dr.t += dt;
         dr.vy = Math.min(150, dr.vy + 60 * dt);
-        /* mild magnetism so a drop you clearly earned isn't lost to a pixel */
         var dd = D.dist(dr.x, dr.y, p.x, p.y);
         if (dd < 130) { dr.vx += (p.x - dr.x) / dd * 260 * dt; dr.vy += (p.y - dr.y) / dd * 260 * dt; }
         dr.x += dr.vx * dt; dr.y += dr.vy * dt;
@@ -1608,11 +1349,6 @@
         this.collect(g, dr);
       }
 
-      /* Two gauges, and only two. Lives and bombs are drawn on the ship itself
-         — reading them off a chip at the top of the screen meant looking away
-         from the only thing that can kill you. What is left up here is the mag
-         (draining right to left) and the wave (filling left to right); two bars
-         moving opposite ways are legible without reading either number. */
       var W = this.gun(g);
       var cap = W.ammo === Infinity ? 1 : W.ammo;
       var infinite = s.ammo === Infinity;
@@ -1622,14 +1358,11 @@
             s.boss.hp / s.boss.max, PAL.red, PAL.textRed)
         : this.gauge('ENEMIES', Math.max(0, s.quota - s.cleared), s.cleared / s.quota, PAL.accent);
       g.stats('<span class="a-gauges">' +
-        /* the bar wears the gun's own colour, so a crate you just flew through
-           is legible in the HUD before you have fired a shot with it */
         this.gauge('AMMO', infinite ? '∞' : s.ammo, infinite ? 1 : s.ammo / cap,
           PAL[W.pal] || PAL.accent, low ? PAL.textRed : null, low) +
         right + '</span>');
     },
 
-    /* One gauge: label, its number, and the bar under both. */
     gauge: function (label, value, pct, colour, valueColour, low) {
       return '<span class="a-gauge' + (low ? ' is-low' : '') + '">' +
         '<span class="a-gauge-line">' +
@@ -1658,7 +1391,6 @@
       }
       if (dr.kind === 'weapon') {
         var w = this.WEAPONS[dr.weapon];
-        /* picking up the gun you already hold tops it up instead of resetting */
         s.ammo = (s.weapon === dr.weapon && s.ammo !== Infinity) ? s.ammo + w.ammo : w.ammo;
         s.weapon = dr.weapon;
         g.toast(p.x, p.y - 34, w.name.toUpperCase() + ' · ' + s.ammo, PAL['text' + w.pal.charAt(0).toUpperCase() + w.pal.slice(1)] || PAL[w.pal], { size: '1.15rem' });
@@ -1668,25 +1400,12 @@
         return;
       }
       s.bombs = Math.min(3, s.bombs + 1);
-      /* the pickup reads in ink, not gold — gold now means Seeker, and what you
-         just flew through was black. The blast it makes later is still fire. */
       g.toast(p.x, p.y - 34, '+1 BOMB', PAL.ink, { size: '1.1rem' });
       g.particles.burst(p.x, p.y, 14, { color: PAL.ink, speed: 190 });
       Sfx.chord([300, 400], 0.16, { type: 'sawtooth', gain: 0.2 });
       g.score += 80;
     },
 
-    /* A glyph of what the gun actually does, drawn centred at the origin in the
-       current fillStyle. Shared by the crate and by the ship, because the whole
-       point is that the mark on your cursor is the mark you picked up. */
-    /* Three primitives, one per gun, and nothing for Pulse — it never drops a
-       crate, and the unarmed hull says "unarmed" by having no mark at all.
-       Spread splays three lines about their own bases, so the glyph opens the
-       way the gun's 0.20 rad arc does. Lance is one line at nearly twice the
-       weight: fewer shots, more of each. Seeker is a disc, the only closed
-       shape here, which is what survives the hull's waterline clip.
-       Everything strokes from the caller's fillStyle, so a glyph never carries
-       a colour of its own — the crate and the hull hand it theirs. */
     glyph: function (c, id, k) {
       c.save(); c.scale(k, k);
       c.strokeStyle = c.fillStyle; c.lineCap = 'round';
@@ -1712,17 +1431,14 @@
       c.closePath();
     },
 
-    /* ---------------------------------------------------------------- draw */
     draw: function (g) {
       var self = this, c = g.c, s = g.state, p = s.p;
       var RED = PAL.red, WHITE = PAL.ink, GREEN = PAL.green, STONE = PAL.dim;
 
-      /* the field warms toward red as your lives fall */
       var danger = clamp(1 - (s.lives - 1) / 5, 0, 1);
       c.fillStyle = PAL.a('red', (0.02 + danger * 0.06).toFixed(3));
       c.fillRect(0, 0, g.W, g.H);
 
-      /* rocks: lumpy heptagons, so they never read as enemies */
       for (var rk = 0; rk < s.rocks.length; rk++) {
         var R = s.rocks[rk];
         c.save(); c.translate(R.x, R.y); c.rotate(R.rot);
@@ -1769,8 +1485,6 @@
         c.restore();
         c.fillStyle = B.hurt > 0 ? PAL.ink : PAL.bg;
         c.beginPath(); c.arc(B.x, B.y, B.r * 0.34, 0, 6.2832); c.fill();
-        /* Hangs below the HUD's top row rather than at a fixed y: the score chip
-           owns the top centre, and the bar used to draw straight behind it. */
         var bw = Math.min(g.W * 0.62, 520), bh = 8;
         var bx = (g.W - bw) / 2, by = g.hudBottom() + 14;
         c.fillStyle = PAL.a('faint', .7); D.round(c, bx, by, bw, bh, 4); c.fill();
@@ -1778,7 +1492,6 @@
         D.text(c, 'BOSS', bx - 10, by + bh / 2, 10, PAL.textRed, 'right');
       }
 
-      /* player shots, drawn per weapon so the pickup is felt as well as read */
       for (var j = 0; j < s.shots.length; j++) {
         var sh = s.shots[j];
         var scol = PAL[sh.pal];
@@ -1806,18 +1519,15 @@
           c.fillStyle = bu.hit > 0 ? PAL.ink : RED;
           c.beginPath(); c.arc(bu.x, bu.y, rr, 0, 6.2832); c.fill();
         });
-        /* one hit in, the ring breaks open — you can see what is nearly gone */
         c.strokeStyle = PAL.a('red', cracked ? .3 : .55); c.lineWidth = 1;
         c.beginPath();
         if (cracked) { c.arc(bu.x, bu.y, rr + 3, 0.6, 5.0); } else { c.arc(bu.x, bu.y, rr + 3, 0, 6.2832); }
         c.stroke();
       }
 
-      /* drops */
       for (var d = 0; d < s.drops.length; d++) {
         var dr = s.drops[d];
         if (dr.kind === 'health') {
-          /* green glowing orb: a soft core, a breathing halo, a cross */
           var rad = dr.big ? 12 : 9;
           var pulse = 1 + Math.sin(dr.t * 5) * 0.12;
           c.save(); c.translate(dr.x, dr.y);
@@ -1849,12 +1559,6 @@
           this.glyph(c, dr.weapon, 1);
           c.restore();
         } else {
-          /* The bomb: a black sphere and a lit fuse. Every other drop glows in
-             its own colour, which a black one cannot do — so it glows `ink`
-             instead, and gets the theme it is standing on for free: a cast
-             shadow under the sphere on the white page, a halo around it on the
-             mauve one. The rim closes the silhouette where the halo is doing
-             the least work. */
           c.save(); c.translate(dr.x, dr.y); c.rotate(dr.t * 1.4);
           D.glow(c, PAL.a('ink', .4), 10, function () {
             c.fillStyle = PAL.bomb; c.beginPath(); c.arc(0, 0, 9, 0, 6.2832); c.fill();
@@ -1867,27 +1571,14 @@
         }
       }
 
-      /* --- the ship ---
-         The hull is always the colour of whatever it is firing, glyph and all,
-         so the crate you walked into and the cursor you are flying end up the
-         same object and you never have to read the HUD to know you're armed.
-         Unarmed that colour is the site primary, because Pulse is the one gun
-         you can never lose — the hull only stops being the brand while you are
-         carrying something you can run out of. */
       var armed = s.weapon !== 'basic';
       var wpn = this.WEAPONS[s.weapon], wcol = PAL[wpn.pal];
       var hullCol = wcol;
       var flick = p.iframe > 0 && Math.floor(g.t * 22) % 2 === 0;
       if (!flick) {
         var self2 = this;
-        /* The hull is the ammo gauge. Colour fills it from the wings up and
-           drains toward them as you fire, so the count lives on the one object
-           you are already staring at — the chip at the top of the screen is
-           the confirmation, not the source. Infinite ammo simply reads full. */
         var fuel = (!armed || s.ammo === Infinity) ? 1 : clamp(s.ammo / wpn.ammo, 0, 1);
         var TOP = -17, BOT = 13, level = BOT - (BOT - TOP) * fuel;
-        /* the glyph, clipped to one side of the fuel line — drawn twice so it
-           reads both on the charged colour and on the washed-out remainder */
         var glyphIn = function (y0, y1, col) {
           if (y1 - y0 < 0.5) return;
           c.save();
@@ -1903,27 +1594,16 @@
         if (armed) {
           if (fuel < 1) {
             c.save(); self2.hull(c); c.clip();
-            /* spent rounds wash back toward the stage rather than to a fixed
-               grey, so the empty half works on either theme */
             c.fillStyle = PAL.a('bg', .82);
             c.fillRect(-14, TOP - 1, 28, level - TOP + 1);
-            /* a bright meniscus at the waterline: without it the boundary
-               reads as a rendering seam instead of a gauge */
             c.fillStyle = wcol; c.fillRect(-14, level - 1, 28, 2);
             c.restore();
           }
           c.strokeStyle = PAL.a('ink', .45); c.lineWidth = 1.5; c.lineJoin = 'round';
           self2.hull(c); c.stroke();
-          /* the glyph sits low in the hull, where the triangle is widest, and
-             takes the same dark ink the crates use so it reads on any gun hue */
           glyphIn(level, BOT + 3, PAL.onBright);
           glyphIn(TOP - 1, level, PAL.ink);
         } else {
-          /* Unarmed there is no waterline to read — Pulse never runs out, and a
-             full gauge drawn every frame says nothing — so the hull takes a
-             punched dot instead of a glyph. The ink hairline earns its keep on
-             the dark theme, where the rose primary sits a few degrees off the
-             enemy red and the silhouette needs the separation. */
           c.strokeStyle = PAL.a('ink', .5); c.lineWidth = 1.5; c.lineJoin = 'round';
           self2.hull(c); c.stroke();
           c.fillStyle = PAL.bg; c.beginPath(); c.arc(0, -1, 3.4, 0, 6.2832); c.fill();
@@ -1931,13 +1611,8 @@
         c.restore();
       }
 
-      /* --- health above the cursor, the same idea as the enemy bars.
-         Row one is the first three lives; a second row appears above it only
-         once you are carrying extras, so "over full" is visible at a glance. --- */
       this.lifeBars(g, c, p.x, p.y - 28, s.lives);
 
-      /* bombs, tucked under the ship — same black, same rim, since a 3.4px
-         black dot on the dark theme is otherwise nothing at all */
       for (var b = 0; b < s.bombs; b++) {
         c.beginPath();
         c.arc(p.x - (s.bombs - 1) * 6 + b * 12, p.y + p.r + 12, 3.4, 0, 6.2832);
@@ -1945,7 +1620,6 @@
         c.strokeStyle = PAL.a('ink', .45); c.lineWidth = 1; c.stroke();
       }
 
-      /* bomb shockwave */
       if (s.blast > 0) {
         c.strokeStyle = PAL.a('yellow', (s.blast * 0.8).toFixed(2));
         c.lineWidth = 4 + s.blast * 14;
@@ -1963,9 +1637,6 @@
           D.round(c, sx, cy, sw, H, 2); c.fill();
         }
       }
-      /* Row two sits above row one and only exists when it has something to
-         say. It used to be cyan, which read as a second, different resource —
-         it is not. Six lives, one colour. */
       if (lives > 3) {
         row(y - H - gapY, lives - 3, PAL.green, PAL.a('faint', .7));
       }
@@ -1974,27 +1645,14 @@
   });
 
 
-  /* ==========================================================================
-     GAME 02 · HEXRUSH — rebuilt
-     Three changes from the first cut:
-       · the cursor turns half again as fast, so the walls feel readable;
-       · wall speed now RAMPS across each level instead of starting at full
-         tilt — the first ten seconds of every level are a warm-up;
-       · TNT rides in the gap of some rings. Thread the gap to pick it up,
-         then press fire to blow the closing walls off the board.
-     ========================================================================== */
   Arcade.add({
     id: 'hexrush', name: 'Hexrush', mode: 'stage', order: 2,
-    /* Shelved, not removed: it stays registered so `game hexrush` and
-       siteGames.play('hexrush') still work, but it is off the home page, out
-       of the command palette and out of the terminal's game list. Drop this
-       flag to put it back everywhere. */
     hidden: true,
     from: 'Super Hexagon',
     blurb: 'Left, right, don\'t touch the walls. It opens slowly now, and the gaps sometimes carry dynamite.',
     controls: '<kbd>←</kbd> <kbd>→</kbd> orbit, or point the mouse where you want to be &nbsp;·&nbsp; <kbd>Space</kbd>/click detonates TNT',
     touch: { pad: false, a: 'TNT' },
-    lives: 1,                      /* one clip ends the run — that is the genre */
+    lives: 1,
     victory: 'Certified GOAT.',
     levels: [
       { name: 'Newbie', note: 'Survive 30 seconds. One hit ends the run. It starts slow and speeds up. Grab the orange TNT out of a gap, then press fire to clear the board.', touchNote: 'Touch where you want to be and the cursor comes to you. Survive 30 seconds, and one hit ends the run. It starts slow and speeds up. Grab the orange TNT out of a gap, then tap TNT to clear the board.', dur: 30, sides: 6, from: 115, to: 250, spin: 0.34, gap: 230, tnt: 0.30, pattern: 0 },
@@ -2002,8 +1660,8 @@
       { name: 'GOAT', note: 'Fifty seconds. Five sides, spinning both ways, patterns that need you already moving. TNT is rarer here.', dur: 50, sides: 5, from: 210, to: 465, spin: 1.5, gap: 190, tnt: 0.15, pattern: 2 }
     ],
 
-    TURN: 6.8,          /* was 4.6 — the single biggest feel change */
-    DEAD: 40,           /* aim ignored inside this radius: core 22, cursor tip 48 */
+    TURN: 6.8,
+    DEAD: 40,
 
     preview: function (c, w, h, t) {
       c.save(); c.translate(w / 2, h / 2); c.rotate(t * 0.5);
@@ -2036,7 +1694,6 @@
       s.ang = 0; s.rot = 0; s.rotV = L.spin;
       s.walls = []; s.spawnIn = 0.35; s.left = L.dur;
       s.pulse = 0; s.tnt = 0; s.blast = 0; s.speed = L.from;
-      /* input modality, same rule as Polarity: last device touched wins */
       s.keyboard = false; s.pointerSeen = false; s.lastPx = -1; s.lastPy = -1; s.pTravel = 0;
       s.R = Math.min(g.W, g.H) * 0.52;
       s.core = 22;
@@ -2070,17 +1727,10 @@
         g.win('Still here, somehow.'); return;
       }
 
-      /* --- the ramp: 0 at the start of the level, 1 at the end --- */
       var prog = 1 - clamp(s.left / L.dur, 0, 1);
-      var eased = prog * prog * (3 - 2 * prog);          /* smoothstep: gentle opening, honest finish */
+      var eased = prog * prog * (3 - 2 * prog);
       s.speed = lerp(L.from, L.to, eased);
 
-      /* --- input ---
-         Keys nudge the cursor; a mouse or a finger points at where you want it
-         instead, which removes the acceleration bookkeeping without removing
-         the traversal. That target is still clamped to the same turn rate, so
-         pointing across the field costs the same time it would cost to hold a
-         key — flinging the cursor cannot teleport you. */
       var pDelta = s.lastPx < 0 ? 0 : Math.abs(g.pointer.x - s.lastPx) + Math.abs(g.pointer.y - s.lastPy);
       s.lastPx = g.pointer.x; s.lastPy = g.pointer.y;
       s.pTravel = pDelta > 0 ? s.pTravel + pDelta : s.pTravel * 0.9;
@@ -2095,20 +1745,11 @@
       if (!dir && Input.stick.x) dir = Math.sign(Input.stick.x);
 
       var step = this.TURN * dt;
-      /* A finger aims exactly the way a mouse does: the cursor turns toward
-         whatever you are touching. Holding a half used to spin the cursor for
-         as long as you held it, so a touch you meant as `go there` never
-         arrived anywhere, it just kept going round. Touch aims while it is
-         down; a mouse has no down state to wait for, so it aims whenever it
-         has been seen. */
       var aiming = g.isTouch() ? g.pointer.down : (!s.keyboard && s.pointerSeen);
       if (dir) {
         s.ang += dir * step;
       } else if (aiming) {
         var ax = g.pointer.x - g.W / 2, ay = g.pointer.y - g.H / 2;
-        /* Over the core the bearing swings a whole quadrant for a pixel of
-           travel, so a finger parked on the middle holds its angle rather than
-           spinning on the noise. Outside that, aim is honest. */
         if (ax * ax + ay * ay > this.DEAD * this.DEAD) {
           var want = Math.atan2(ay, ax);
           var diff = ((want - s.ang + Math.PI * 3) % 6.2832) - Math.PI;
@@ -2116,18 +1757,15 @@
         }
       }
 
-      /* --- field spin, also eased in --- */
       var spin = L.spin * (0.35 + 0.65 * eased);
       if (L.pattern >= 1 && Math.sin(g.t * 0.42) < 0) spin = -spin;
       if (L.pattern >= 2) spin *= 1 + Math.sin(g.t * 1.3) * 0.5;
       s.rotV = spin;
       s.rot += s.rotV * dt;
 
-      /* --- detonate --- */
       var boom = g.tap('Space') || g.tap('Enter') || Input.pads.aTap || (!g.isTouch() && g.pointer.tap);
       if (boom && s.tnt > 0) this.detonate(g);
 
-      /* --- spawn --- */
       s.spawnIn -= dt;
       if (s.spawnIn <= 0) {
         var pats = this.patterns(s.sides);
@@ -2141,8 +1779,6 @@
         for (var i = 0; i < chosen.length; i++) {
           var slots = chosen[i];
           var wall = { r: baseR + i * 46, slots: slots, thick: 22, tnt: -1 };
-          /* park the charge in an opening, so collecting it is the same motion
-             as surviving the ring — no side trip, just a tighter line */
           if (i === 0 && g.rnd() < L.tnt) {
             var open = [];
             for (var o = 0; o < s.sides; o++) if (slots.indexOf(o) === -1) open.push(o);
@@ -2150,11 +1786,9 @@
           }
           s.walls.push(wall);
         }
-        /* interval derives from distance, not time, so the ramp cannot crowd you */
         s.spawnIn = (L.gap * (chosen.length > 1 ? 1.5 : 1)) / s.speed;
       }
 
-      /* --- advance + collide --- */
       var pa = ((s.ang - s.rot) % 6.2832 + 6.2832) % 6.2832;
       var slotSize = 6.2832 / s.sides;
       var playerSlot = Math.floor(pa / slotSize);
@@ -2186,7 +1820,6 @@
 
       s.pulse = Math.max(0, s.pulse - dt * 3);
       s.blast = Math.max(0, s.blast - dt * 1.6);
-      /* no clock here — the big one sits directly below and is the whole point */
       g.stats('tnt <b style="color:' + PAL.textYellow + '">' +
         (s.tnt ? '◈'.repeat(s.tnt) : '—') + '</b> &nbsp; blown <b>' + s.blown + '</b> &nbsp; score <b>' + Math.round(g.score) + '</b>');
     },
@@ -2240,7 +1873,6 @@
           c.arc(0, 0, Math.max(0, wl.r), (slot + 1) * slotSize, slot * slotSize, true);
           c.closePath(); c.fill();
         }
-        /* the charge, sitting in the opening */
         if (wl.tnt >= 0) {
           var a = (wl.tnt + 0.5) * slotSize;
           var tr = wl.r + wl.thick / 2;
@@ -2260,13 +1892,10 @@
       }
 
       var pump = s.core * (1 + s.pulse * 0.18);
-      /* the core steps back to ink so the accent can belong to the cursor —
-         the same rule as Polarity: what you steer is the brand mark */
       c.fillStyle = PAL.a('ink', .82); D.poly(c, 0, 0, pump, s.sides, 0); c.fill();
       c.fillStyle = PAL.a('bg', .9); D.poly(c, 0, 0, pump * 0.62, s.sides, 0); c.fill();
       c.restore();
 
-      /* detonation shockwave */
       if (s.blast > 0) {
         var rr = (1 - s.blast) * s.R * 1.15;
         c.strokeStyle = PAL.a('yellow', (s.blast * 0.85).toFixed(2));
@@ -2276,8 +1905,6 @@
 
       var pr = s.core + 14;
       c.save(); c.translate(cx, cy);
-      /* the cursor sits right beside the accent-coloured core, so it carries a
-         page-coloured outline — without it the two merge on the light theme */
       D.glow(c, PAL.accent, 14, function () {
         c.fillStyle = PAL.accent;
         c.beginPath();
@@ -2289,11 +1916,6 @@
       });
       c.restore();
 
-      /* clock + the speed ramp, so the warm-up is visible rather than just felt.
-         Pinned under the HUD's top row rather than at a fixed y: that row is one
-         line wide-screen and two stacked lines on a phone, where it also carries
-         the safe-area inset, and the clock used to draw straight through the
-         score chip. Same measured inset the boss bar uses. */
       var top = g.hudBottom() + 14;
       D.text(c, s.left.toFixed(2), cx, top + 17, 34, PAL.a('ink', .92));
       var bw = Math.min(340, g.W - 80), barY = top + 41;
@@ -2301,7 +1923,6 @@
       c.fillStyle = PAL.accent; D.round(c, cx - bw / 2, barY, bw * (1 - s.left / L.dur), 5, 3); c.fill();
       D.text(c, 'speed ' + Math.round(s.speed), cx, barY + 18, 10, PAL.dim);
 
-      /* held charges, bottom centre, where a thumb can see them */
       for (var t = 0; t < 3; t++) {
         var on = t < s.tnt;
         c.save(); c.translate(cx - 30 + t * 30, g.H - 96); c.rotate(0.4);
@@ -2309,15 +1930,10 @@
         D.round(c, -9, -7, 18, 14, 3); c.fill();
         c.restore();
       }
-      /* clear of the control chips along the bottom edge of the HUD */
       if (s.tnt > 0) D.text(c, g.isTouch() ? 'TNT ready' : 'SPACE or click to detonate', cx, g.H - 70, 11, PAL.textYellow);
     }
   });
 
-  /* ==========================================================================
-     6 · The public surface. Mirrors window.siteTheme: a small frozen object,
-     no DOM handles, no live game definitions handed out.
-     ========================================================================== */
   window.siteGames = Object.freeze({
     list: Arcade.list,
     find: Arcade.find,

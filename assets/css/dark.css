@@ -1,10 +1,4 @@
 @layer components {
-    /* Rosé Dusk: mauve near-blacks with one rose accent. Rose (#efa9ae) is
-       dark mode's primary — it carries every role the blurple carries in
-       light (headline, links, card titles, focus) — while iris stays a
-       supporting hue for terminal purple and hairlines. The mauve surfaces
-       sit between the demos' purple half (#c58af9 / #d7afff) and the rose,
-       so the fixed embed palettes read as family rather than as guests. */
     .dark body {
         background-color: #110e1a;
         color: #a79fb8;
@@ -16,9 +10,6 @@
         color: #ede7f2;
     }
 
-    /* Scrolled header: the same tint recipe as light mode, keyed to
-       the mauve page. The hairline lifts rather than darkens, since a darker
-       line would disappear into the page. */
     html.dark:not(.top):not(.incognito) .site-header {
         background-color: rgba(25, 22, 32, .72);
         border-bottom-color: rgba(210, 202, 222, .13);
@@ -34,18 +25,10 @@
         color: #ede7f2;
     }
 
-    /* The page title follows the hero headline onto the rose accent rather
-       than the near-white the in-body headings take, so the loudest type on
-       a detail page matches the loudest type on the home page. */
     .dark .single .title {
         color: #efa9ae;
     }
 
-    /* Body links: the light resting blue (#241bc7) all but vanishes on the
-       mauve page, so rest on the rose primary instead. The hover fill is
-       overridden too — the shared light fill (white on #3429ff) is the one
-       blue this palette doesn't speak. Dark ink on the rose fill clears
-       contrast where white would not. */
     .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)) {
         color: #efa9ae;
         background-image: linear-gradient(#efa9ae, #efa9ae);
@@ -56,8 +39,6 @@
         box-shadow: .2em 0 #efa9ae, -.2em 0 #efa9ae;
     }
 
-    /* Header controls keep the accent treatment in the rose primary with dark
-       ink — the light bg-primary blurple fights the palette. */
     .dark .social a:hover,
     .dark nav #theme-toggle:hover {
         background-color: #efa9ae;
@@ -103,8 +84,6 @@
     .dark .single .stat-source {
         color: #8c839f;
     }
-    /* Glyph colours from the palette's terminal set (hero.css --t-*), so the
-       stat icons and the hero prompt speak the same five hues. */
     .dark .single .stat-icon--pr { color: #9ccfd8; }
     .dark .single .stat-icon--merge { color: #c4a7e7; }
     .dark .single .stat-icon--commit { color: #95d5a5; }
@@ -148,14 +127,6 @@
         color: #8c839f;
     }
 
-    /* The donut charts keep the original figure's shape: the main hue at full
-       strength and the small slices as paler steps of it. The steps themselves
-       are re-cut for the near-black page — light mode's ramp does not simply
-       invert, and each mode's is stepped against its own surface so the pale
-       end stays a visible mark instead of dissolving into the page.
-
-       Resting label ink steps back from the old near-white: the hover state
-       needs somewhere to go, and #f5f0fa is already the top of the range. */
     .dark .single .donut-board {
         --donut-label-ink: #b8afc9;
         --donut-line: #7d748f;

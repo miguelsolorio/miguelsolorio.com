@@ -1,28 +1,10 @@
-/* Weekly npm downloads for @vscode/codicons. The plot is Chart.js on a canvas;
-   everything around it — title, the three figures below, package link — is
-   ordinary markup, so the only thing the script draws is the drawing.
-
-   The scene puts no surface under itself: it stands on the embed's themed
-   stage. Every colour lives here, including the ones the canvas needs, which
-   npm-downloads.js reads back off this element as custom properties and
-   re-reads whenever the page's theme changes. The script never names a colour.
-
-   Type is set in px rather than as a share of the frame, unlike the build log
-   above it: the frame is a fixed height and the chart reflows into whatever
-   width the column gives it, so an axis label stays legible on a phone instead
-   of scaling down with the plot. */
-
 .npm-scene {
   --chart-ink: #33415a;
   --chart-ink-muted: #64748b;
   --chart-grid: rgb(51 65 90 / 12%);
   --chart-series: #2b7de0;
-  /* The wash under the line. Held in the series hue so the fill reads as the
-     line's own shadow rather than a second colour. */
   --chart-fill-top: rgb(43 125 224 / 26%);
   --chart-fill-bottom: rgb(43 125 224 / 0%);
-  /* The tooltip is the one panel in the scene, so it carries the only surface
-     and edge here. */
   --chart-panel: #ffffff;
   --chart-panel-edge: rgb(51 65 90 / 14%);
 
@@ -64,16 +46,6 @@
   text-align: center;
 }
 
-/* Chart.js sizes its canvas from the parent box, so the plot has to be the
-   thing that flexes: the title and the strip below take what they need and the
-   drawing gets the rest of the frame.
-
-   The basis is nought rather than auto, and that is load-bearing. On auto the
-   plot's base size is its own content — but its content is a canvas Chart.js
-   has just sized from the plot, so the two chase each other and the figure
-   grows past the frame instead of the drawing giving way. Measured from nought
-   there is nothing to chase: the strip below takes what it needs first and the
-   drawing takes what is left. */
 .npm-plot {
   position: relative;
   min-height: 0;
@@ -87,14 +59,6 @@
   text-align: center;
 }
 
-/* What the line adds up to: how much, how fast, how widely. A definition list
-   because that is what they are, wrapped a pair at a time so each figure keeps
-   its own label; column-reverse then lifts the value above the term without
-   disturbing the order they are read out in.
-
-   The gap is bound once and the divider is placed from it, since the rule sits
-   halfway into a space it does not own and the two would otherwise have to be
-   kept in step by hand. */
 .npm-stats {
   --npm-stat-gap: clamp(1.25rem, 5vw, 2.75rem);
 
@@ -112,8 +76,6 @@
   gap: 0.15em;
 }
 
-/* The divider belongs between the figures, so it hangs off the second one and
-   is drawn only while the two are still side by side. */
 .npm-stat + .npm-stat {
   position: relative;
 }
@@ -127,9 +89,6 @@
   content: "";
 }
 
-/* Three figures will not sit in a phone-width column, so there they wrap. A
-   rule drawn into the gap only reads as a divider while the row is intact —
-   once a figure moves to a second line it would be pointing at nothing. */
 @media (width < 30rem) {
   .npm-stat + .npm-stat::before {
     content: none;
@@ -150,20 +109,6 @@
   font-size: clamp(0.625rem, 1.6vw, 0.75rem);
 }
 
-/* ---- held, not live ------------------------------------------------------
-   The table these dress is commented out of npm-downloads.html for now: it read
-   as too much under the plot, and whether it comes back is still open. Kept
-   here so bringing it back is uncommenting the markup and nothing else. If that
-   call goes the other way, this block goes with it.
-
-   The ten packages that depend on codicons most, under the figures. A labelled
-   header over an unruled body: one rule to say the columns have names, and none
-   after it, so the block stays quiet beneath a plot that is already busy.
-
-   The share is drawn rather than only stated — a wash behind each name, scaled
-   against the largest reading. @theia/core is most of this table on its own, so
-   the wash runs the full width there and barely shows below it. That is the
-   finding, not a fault in the drawing. */
 .npm-deps {
   width: 100%;
   border-collapse: collapse;
@@ -181,10 +126,6 @@
   white-space: nowrap;
 }
 
-/* The header cells carry the figure-column classes too, but `.npm-deps th` is
-   the more specific selector and was quietly winning both the padding and the
-   alignment back — which ran "weekly" and "share" into one another. Restated
-   here at a weight that holds. */
 .npm-deps th.npm-dep-num {
   padding-left: 0.75rem;
   text-align: right;
@@ -198,11 +139,6 @@
   padding-top: 0.5rem;
 }
 
-/* The wash and the name are siblings in one cell, so the name is given its own
-   positioned box rather than left as bare inline content the wash paints over.
-   The cell is squeezed to nothing and then told to take everything, which is
-   how a table hands the leftover width to one column and lets the two figure
-   columns size to their content. */
 .npm-dep-name {
   position: relative;
   overflow: hidden;
@@ -244,9 +180,6 @@
   color: var(--chart-ink-muted);
 }
 
-/* Below the measure the middle column is the one to lose: the share says what
-   the row is worth relative to the rest, which is the thing a narrow reading
-   is least able to work out for itself. */
 @media (width < 26rem) {
   .npm-deps th:nth-child(2),
   .npm-deps td:nth-child(2) {
@@ -254,7 +187,6 @@
   }
 
   .npm-deps tfoot td {
-    /* One column fewer to span. */
     padding-top: 0.45rem;
   }
 }
@@ -262,8 +194,6 @@
 .npm-source {
   margin: clamp(0.5rem, 1.6vw, 0.875rem) 0 0;
   font-size: clamp(0.625rem, 1.6vw, 0.8125rem);
-  /* The URL is one long unbroken token; below the measure it breaks rather
-     than pushing the scene sideways. */
   overflow-wrap: anywhere;
 }
 
@@ -278,8 +208,6 @@
   text-decoration: underline;
 }
 
-/* The figures are what the line arrives at, so they wait for it rather than
-   sitting there ahead of it. */
 .npm-meta {
   opacity: 0;
   animation: npm-fade 0.6s ease-out 1.5s forwards;

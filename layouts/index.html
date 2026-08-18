@@ -45,11 +45,6 @@
 
     <h2 class="section section--work section--side-projects">Projects</h2>
     <div id="side-projects">
-      {{/* Reach lives in data/project_metrics.json, not front matter, so pair each
-           page with its count before sorting. Figma "users" and Marketplace
-           "installs" rank together — they render as one download metric. Projects
-           with no entry (reach 0) fall to the end, where they keep Hugo's page
-           order — so `weight` is what ranks them, and weight 0 sorts last. */}}
       {{ $ranked := slice }}
       {{ range where .Site.RegularPages "Params.project" "==" "small" }}
         {{ $metrics := index $.Site.Data.project_metrics .File.ContentBaseName }}
@@ -60,9 +55,6 @@
       {{ range sort $ranked "reach" "desc" }}
         {{ $metrics := .metrics }}
         {{ with .page }}
-          {{/* A `game` project has no URL to point at — it takes the page over
-               from window.siteGames — so its tile is a button that launches the
-               id, wired up in assets/js/home.js. */}}
           {{ if .Params.game }}
             <button
               type="button"

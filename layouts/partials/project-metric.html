@@ -13,8 +13,6 @@
 {{- end -}}
 <span class="side-project-metric side-project-metric--{{ $type }}" aria-label="{{ $display }} {{ $label }}">
   {{- if or (eq $type "users") (eq $type "installs") -}}
-    {{/* Figma "users" and Marketplace "installs" both mean "people who got it",
-         so they share one glyph and read as a single metric across the grid. */}}
     <svg class="side-project-metric-icon" viewBox="0 0 16 16" aria-hidden="true">
       <path d="M8 2.5v7m0 0 2.75-2.75M8 9.5 5.25 6.75M3 11.5v1.25c0 .69.56 1.25 1.25 1.25h7.5c.69 0 1.25-.56 1.25-1.25V11.5"></path>
     </svg>
@@ -29,8 +27,6 @@
   {{- end -}}
   <span aria-hidden="true">{{ $display }}</span>
   {{- with $count -}}
-    {{/* The Marketplace leads with the review count, so the score never stands
-         alone without the sample size behind it. */}}
     <span class="side-project-metric-count" aria-hidden="true">({{ . }})</span>
   {{- end -}}
 </span>

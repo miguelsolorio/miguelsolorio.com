@@ -1,14 +1,3 @@
-/* Star History — GitHub stars for the three terminal agents across the six
-   months around Gemini CLI's launch.
-
-   The series below are read off the star-history.com chart for the same three
-   repositories over the same window: each entry is a sampled (date, stars)
-   reading, not every star event, which is how star-history itself plots a
-   repository this size. GitHub's stargazers API stops paginating at 40,000
-   entries, so the tail of the red line cannot be re-derived from the API.
-
-   Everything here is geometry: the stylesheet owns every color, so the drawing
-   re-tones with the page's theme without this file knowing which one is up. */
 (function () {
   "use strict";
 
@@ -105,21 +94,16 @@
     }
   ];
 
-  /* The launch, called out because it is the whole shape of the red line. */
   var LAUNCH = { date: "2025-06-25", label: "Launched June 25" };
 
   var TITLE = "Star History";
 
   var VIEW = { w: 820, h: 500 };
-  /* Top of the plot clears the title; everything else is margin for the tick
-     labels that sit outside the frame. */
   var PLOT = { left: 70, right: 800, top: 56, bottom: 452 };
   var X_FROM = day("2025-02-22");
   var X_TO = day("2025-09-05");
   var Y_MAX = 76000;
   var Y_TICKS = [20000, 40000, 60000];
-  /* Abbreviated with the year on every tick: the window is one year wide, but
-     a reader landing on the chart shouldn't have to hunt for which one. */
   var MONTHS = [
     ["2025-03-01", "Mar '25"],
     ["2025-04-01", "Apr '25"],
@@ -130,8 +114,6 @@
     ["2025-09-01", "Sep '25"]
   ];
 
-  /* Days since epoch — the x domain is a count, so the scale stays linear and
-     no month is quietly widened to a uniform thirty days. */
   function day(iso) {
     var parts = iso.split("-");
     return Date.UTC(+parts[0], +parts[1] - 1, +parts[2]) / 86400000;
@@ -150,10 +132,6 @@
     return Math.round(value * 10) / 10;
   }
 
-  /* Monotone cubic (Fritsch-Carlson): the curve is smoothed the way
-     star-history draws it, but a tangent is flattened wherever smoothing would
-     otherwise overshoot — so launch week rises and never dips below a reading
-     it already passed. */
   function curve(points) {
     var len = points.length;
     if (len < 2) return "";
@@ -333,16 +311,12 @@
         );
       });
       svg.appendChild(group);
-      /* The draw-in dashes the line by its own length, which is only knowable
-         once the path is in the document. */
       line.style.setProperty(
         "--chart-line-length",
         Math.ceil(line.getTotalLength())
       );
     });
 
-    /* Top-left of the plot is the one region every line stays out of, so the
-       key sits inside the frame rather than stealing height from it. */
     var legend = el("g", { class: "chart-legend" });
     SERIES.forEach(function (series, index) {
       var top = PLOT.top + 34 + index * 26;

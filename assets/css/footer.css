@@ -11,10 +11,6 @@
     color: #334155;
   }
 
-  /* Footer links take the body-link treatment wholesale — same rest colour,
-     same underline, same primary highlight on hover (main.css). Nothing to
-     declare here; the rule that used to strip it back is gone on purpose. */
-
   .site-footer-base {
     display: grid;
     grid-template-columns: 1fr auto;

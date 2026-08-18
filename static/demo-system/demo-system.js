@@ -1,10 +1,6 @@
 (function (window, document) {
   "use strict";
 
-  /* Shared contract for standalone and embedded demos. Scene scripts provide
-     run(context); this module owns theme, timing, seeking, controls, and pause
-     state so new demos do not need to reimplement the animation engine. */
-
   var ROOT = document.documentElement;
   var STATE_CLASSES = ["is-playing", "is-paused", "is-seeking", "is-done"];
   var themeSubscribers = [];
@@ -13,9 +9,7 @@
 
   try {
     if (window.parent !== window) parentRoot = window.parent.document.documentElement;
-  } catch (error) {
-    /* Cross-origin embeds use the operating-system preference. */
-  }
+  } catch (error) {}
 
   function getDarkTheme() {
     return parentRoot ? parentRoot.classList.contains("dark") : themeMedia.matches;
@@ -29,12 +23,8 @@
     });
   }
 
-  /* Run immediately when this file is loaded in <head> to avoid a theme flash. */
   syncTheme();
   if (parentRoot) {
-    /* common.js emits this event on every explicit theme change. Listening on
-       the parent root avoids passing a parent-document node to a child-realm
-       MutationObserver, which some embedded browsers reject. */
     parentRoot.addEventListener("site:themechange", syncTheme);
   } else if (themeMedia.addEventListener) {
     themeMedia.addEventListener("change", syncTheme);
@@ -195,7 +185,6 @@
       else renderButton();
       hook("onPauseChange", effectivePaused, pauseDetail());
       if (!effectivePaused) {
-        /* Restart the wall clock without charging time spent while paused. */
         lastFrame = 0;
         ensureFrame();
       }
@@ -226,7 +215,7 @@
       if (activeRun) {
         activeRun.controller.abort();
         activeRun.cleanups.splice(0).forEach(function (cleanup) {
-          try { cleanup(); } catch (error) { /* Cleanup must not block the next run. */ }
+          try { cleanup(); } catch (error) {}
         });
       }
       activeRun = null;
@@ -442,8 +431,6 @@
             hasIntersected = true;
             setAutomaticPause("outside-viewport", false);
           } else if (hasIntersected) {
-            /* Ignore the observer's initial offscreen result. Embedded frames
-               can receive it before layout, which must not block autoplay. */
             setAutomaticPause("outside-viewport", true);
           }
         }, { threshold: config.visibilityThreshold || 0 });
@@ -542,7 +529,6 @@
         } else {
           start = replay();
         }
-        /* Runtime errors are already forwarded to onError by execute(). */
         start.catch(function () {});
         readyResolve(api);
       } catch (error) {
@@ -575,16 +561,6 @@
     return api;
   }
 
-  /* Still scenes whose height is a function of the width they are given tell
-     the page the real number rather than have the shortcode guess one.
-     common.js listens for demo:height and sizes the frame; the shortcode's
-     height attribute stays the fallback.
-
-     Opt-in, never automatic: a scene that sizes itself from the frame —
-     anything on height/min-height: 100vh, or a fit() that reads
-     window.innerHeight — would be reporting the frame's own height back at
-     the frame. That rules out every scene built on createPlayer, so this is
-     deliberately not wired into it. */
   function reportHeight() {
     if (window.parent === window) return;
     var height = Math.ceil(document.documentElement.getBoundingClientRect().height);

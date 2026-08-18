@@ -1,8 +1,6 @@
 const GOAL = "implemnet the research plan and todos in @research.md";
 const INTRO = "Reading research.md now. I'll track the plan as todos and work through them one at a time.";
 
-/* Each step: todo label, spinner label, agent message streamed before the work,
-   the resolved tool row printed when it lands, and how long the "work" takes. */
 const TODO_GROUPS = [
   {
     label: "Research & synthesis",
@@ -59,8 +57,6 @@ const FINAL_BULLETS = [
 
 const GLYPHS = { pending: "☐", in_progress: "»", completed: "✓" };
 
-/* Simulated workspace, keyed by directory prefix: an @path completes one
-   folder at a time, exactly like walking the tree in the terminal. */
 const FILE_TREE = {
   "": ["research.md", "data/", "reports/", "README.md"],
 };
@@ -76,7 +72,6 @@ const todoList = document.getElementById("todoList");
 const liveRegion = ui.refs.liveRegion;
 let todoStatuses = STEPS.map(() => "pending");
 
-/* ---------- todo tray ---------- */
 function renderTodos() {
   todoList.replaceChildren();
   let completed = 0;
