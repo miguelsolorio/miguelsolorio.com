@@ -286,7 +286,7 @@
        being played, and a phone locked mid-level would otherwise report a
        nine-hour run. */
     function elapsed() {
-      return run.banked + (run.since ? performance.now() - run.since : 0);
+      return run.since ? performance.now() - run.since : 0;
     }
 
     function report(reason) {
@@ -324,7 +324,7 @@
       if (run) stop(run.id === def.id ? 'restart' : 'switch');
       run = {
         id: def.id, name: def.name, source: source || 'direct',
-        result: 'unfinished', banked: 0, since: performance.now(), part: 1
+        result: 'unfinished', since: performance.now(), part: 1
       };
       send('game_start', {
         game_id: run.id,
@@ -342,7 +342,7 @@
     function hide() {
       if (!run.since) return;
       report('page_hidden');
-      run.banked = 0; run.since = 0; run.part++;
+      run.since = 0; run.part++;
     }
     function show() { if (!run.since) run.since = performance.now(); }
 
