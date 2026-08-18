@@ -719,11 +719,6 @@
       el.root.focus({ preventScroll: true });
       mode = 'playing';
       last = performance.now();
-      /* Restart the hint's fade on every entry into play: readable again after
-         each banner, and out of the way again a few seconds later. */
-      el.controls.classList.remove('is-fading');
-      void el.controls.offsetWidth;
-      el.controls.classList.add('is-fading');
     }
 
     /* ---------- game context ---------- */
@@ -778,8 +773,9 @@
       showBanner({
         kicker: 'Level ' + (i + 1) + ' of ' + current.levels.length,
         title: d.name,
-        /* Same fallback shape as touchHint above: a level only needs a
-           touchNote if its note names a mouse or a key, which is useless
+        /* On a touchscreen this banner is the only place the controls are
+           stated, since the hint chip is hidden there. A level only needs its
+           own touchNote if the note names a mouse or a key, which is useless
            advice on the device actually showing it. */
         body: (Input.isTouch() && d.touchNote) || d.note || '',
         actions: [{ label: i === 0 ? 'Start' : 'Go', primary: true, run: beginPlay }]
@@ -935,21 +931,16 @@
       el.root.hidden = false;
 
       current = def;
-      /* One source of truth for the thumb pad: it decides both whether the pad
-         is on screen and whether the CSS keeps the bottom 42% clear for it. A
-         pad-less game owns only the button corner, so its touch hint can sit
-         far lower than one that has to clear an 8.5rem circle. */
       var hasPad = !(def.touch && def.touch.pad === false);
       var cls = 'show-hud show-stage show-scrim';
-      if (Input.isTouch()) cls += hasPad ? ' show-touch show-pad' : ' show-touch';
+      if (Input.isTouch()) cls += ' show-touch';
       el.root.className = cls;
       el.root.setAttribute('aria-label', def.name + ' — game mode');
 
       el.name.textContent = def.name;
-      el.controls.innerHTML = (Input.isTouch() && def.touchHint) ? def.touchHint : def.controls;
-      /* the fade fills forwards, so without this a second game would open with
-         the previous one's hint already faded out behind its banner */
-      el.controls.classList.remove('is-fading');
+      /* Desktop copy unconditionally: CSS hides this chip outright on a
+         touchscreen, where the level banner carries the instructions instead. */
+      el.controls.innerHTML = def.controls;
       el.keyA.textContent = (def.touch && def.touch.a) || 'A';
       el.keyB.textContent = (def.touch && def.touch.b) || 'B';
       el.keyB.style.display = (def.touch && def.touch.b) ? '' : 'none';
@@ -1105,7 +1096,6 @@
        single ↔, which is not a key anyone has */
     controls: '<kbd>WASD</kbd>/<kbd>↑ ↓ ← →</kbd> fly + <kbd>Space</kbd> fire + <kbd>Shift</kbd> bomb' +
               '&nbsp;·&nbsp; or steer with the mouse — it fires itself, click bombs',
-    touchHint: 'Drag anywhere to fly · guns fire themselves · tap BOMB',
     touch: { pad: false, a: 'BOMB' },
     lives: 1,                       /* the game runs its own life count */
     victory: 'GOAT status: confirmed.',
@@ -1991,12 +1981,11 @@
     from: 'Super Hexagon',
     blurb: 'Left, right, don\'t touch the walls. It opens slowly now, and the gaps sometimes carry dynamite.',
     controls: '<kbd>←</kbd> <kbd>→</kbd> orbit, or point the mouse where you want to be &nbsp;·&nbsp; <kbd>Space</kbd>/click detonates TNT',
-    touchHint: 'Touch where you want to be · TNT button detonates',
     touch: { pad: false, a: 'TNT' },
     lives: 1,                      /* one clip ends the run — that is the genre */
     victory: 'Certified GOAT.',
     levels: [
-      { name: 'Newbie', note: 'Survive 30 seconds. One hit ends the run. It starts slow and speeds up. Grab the orange TNT out of a gap, then press fire to clear the board.', touchNote: 'Survive 30 seconds. One hit ends the run. It starts slow and speeds up. Grab the orange TNT out of a gap, then tap TNT to clear the board.', dur: 30, sides: 6, from: 115, to: 250, spin: 0.34, gap: 230, tnt: 0.30, pattern: 0 },
+      { name: 'Newbie', note: 'Survive 30 seconds. One hit ends the run. It starts slow and speeds up. Grab the orange TNT out of a gap, then press fire to clear the board.', touchNote: 'Touch where you want to be and the cursor comes to you. Survive 30 seconds, and one hit ends the run. It starts slow and speeds up. Grab the orange TNT out of a gap, then tap TNT to clear the board.', dur: 30, sides: 6, from: 115, to: 250, spin: 0.34, gap: 230, tnt: 0.30, pattern: 0 },
       { name: 'Mid', note: 'Forty seconds. Faster ceiling, and the field starts reversing direction under you.', dur: 40, sides: 6, from: 165, to: 355, spin: 0.95, gap: 205, tnt: 0.22, pattern: 1 },
       { name: 'GOAT', note: 'Fifty seconds. Five sides, spinning both ways, patterns that need you already moving. TNT is rarer here.', dur: 50, sides: 5, from: 210, to: 465, spin: 1.5, gap: 190, tnt: 0.15, pattern: 2 }
     ],
