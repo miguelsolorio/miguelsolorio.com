@@ -23,7 +23,7 @@
     justify-content: center;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: 1.5rem 2.25rem;
+    gap: 1.5rem 4rem;
     padding: 1.25rem 0;
   }
 
@@ -31,12 +31,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: inherit;
+    text-decoration: none;
   }
 
   .toolbox-mark {
     display: block;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.8rem;
+    height: 2.8rem;
     flex: 0 0 auto;
     fill: currentColor;
   }
@@ -57,13 +59,33 @@
   .dark .toolbox-mark--arc { color: #fcbfbd; }
 
   .toolbox-name {
-    margin-top: .375rem;
+    margin-top: .7rem;
     color: #64748b;
-    font-size: .5625rem;
+    font-size: .7rem;
     font-weight: 500;
     white-space: nowrap;
+    padding-inline: .2em;
+    margin-inline: -.2em;
+    background-image: linear-gradient(#3429ff, #3429ff);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    box-decoration: inset 0 0 0 transparent;
+    transition: color .22s ease, background-size .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s cubic-bezier(.2, .8, .2, 1);
   }
   .dark .toolbox-name { color: #8c839f; }
+
+  .toolbox-item:hover .toolbox-name,
+  .toolbox-item:focus-visible .toolbox-name {
+    color: #fff;
+    background-size: 100% 100%;
+    box-shadow: .2em 0 #3429ff, -.2em 0 #3429ff;
+  }
+  .dark .toolbox-item:hover .toolbox-name,
+  .dark .toolbox-item:focus-visible .toolbox-name {
+    color: #110e1a;
+    box-shadow: .2em 0 #efa9ae, -.2em 0 #efa9ae;
+  }
 
   @media (max-width: 40rem) {
     .toolbox-row { gap: 1.25rem 1.5rem; }

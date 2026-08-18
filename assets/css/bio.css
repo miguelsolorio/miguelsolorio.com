@@ -18,9 +18,10 @@
 
     /* The terminal's light palette, for the highlights and the label chip. */
     --bio-c1: #15803d;
-    --bio-c2: #0369a1;
-    --bio-c3: #b45309;
+    --bio-c2: #1d4ed8;
+    --bio-c3: #c2410c;
     --bio-c4: #6d28d9;
+    --bio-c5: #a16207;
     --bio-chip: #ffffff;
     --bio-chip-line: rgb(15 23 42 / .12);
     --bio-dim: #94a3b8;
@@ -28,16 +29,17 @@
 
   .dark #bio {
     --bio-c1: #95d5a5;
-    --bio-c2: #9ccfd8;
-    --bio-c3: #f6c177;
+    --bio-c2: #93c5fd;
+    --bio-c3: #f0a875;
     --bio-c4: #c4a7e7;
+    --bio-c5: #f9e2af;
     --bio-chip: #161221;
     --bio-chip-line: rgb(210 202 222 / .15);
     --bio-dim: #7e7599;
   }
 
   .bio-copy {
-    max-width: 44rem;
+    max-width: 46rem;
     font-size: 1.125rem;
     line-height: 1.7;
   }
@@ -75,6 +77,7 @@
   .bio-hl.bio-hl--c2 { color: var(--bio-c2); background: color-mix(in srgb, var(--bio-c2) 10%, transparent); }
   .bio-hl.bio-hl--c3 { color: var(--bio-c3); background: color-mix(in srgb, var(--bio-c3) 10%, transparent); }
   .bio-hl.bio-hl--c4 { color: var(--bio-c4); background: color-mix(in srgb, var(--bio-c4) 10%, transparent); }
+  .bio-hl.bio-hl--c5 { color: var(--bio-c5); background: color-mix(in srgb, var(--bio-c5) 10%, transparent); }
 
   /* The strip breaks out of .site-shell to run the full viewport, and its
      rotated ends carry on past the edges. Trimming those is html and body's job
@@ -120,29 +123,38 @@
 
   .bio-shot-frame {
     /* home.js writes --bio-tilt-x/y from the cursor while a pane is hovered;
-       both rest at 0 so the frame is square-on until it is pointed at. */
+       both rest at 0 so the frame is square-on until it is pointed at.
+       --bio-edge-shift is home.js again, but only for the strip's first and
+       last panes: it nudges the centred reveal sideways so the edge the
+       ribbon deliberately bleeds off-screen (see .bio-ribbon above) slides
+       back into view instead of growing straight into the clip. */
     --bio-tilt-x: 0deg;
     --bio-tilt-y: 0deg;
     --bio-lift: 1;
+    --bio-edge-shift: 0px;
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100%;
     height: 100%;
     margin: 0;
-    /* Order matters: centre first, then tilt around that centre, then scale. */
-    transform: translate(-50%, -50%)
-               rotateX(var(--bio-tilt-x))
+    /* A standalone property so it can ease on the reveal's own timing rather
+       than the tilt's quick follow below. Order still matters: translate
+       centres (plus the edge nudge), then transform tilts around that centre
+       and scales. */
+    translate: calc(-50% + var(--bio-edge-shift)) -50%;
+    transform: rotateX(var(--bio-tilt-x))
                rotateY(var(--bio-tilt-y))
                scale(var(--bio-lift));
     border-radius: .625rem;
     overflow: hidden;
     background: var(--bio-chip);
     box-shadow: var(--shadow-ring), var(--shadow-md);
-    /* The size eases, but the transform stays short so the tilt feels stuck to
-       the cursor instead of trailing it. */
+    /* The size (and edge nudge) ease together, but the transform stays short
+       so the tilt feels stuck to the cursor instead of trailing it. */
     transition: width .45s cubic-bezier(.3, .9, .2, 1),
                 height .45s cubic-bezier(.3, .9, .2, 1),
+                translate .45s cubic-bezier(.3, .9, .2, 1),
                 transform .18s ease-out,
                 box-shadow .35s ease;
   }

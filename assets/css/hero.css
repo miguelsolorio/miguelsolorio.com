@@ -73,6 +73,18 @@
         line-height: 1.65;
     }
 
+    .home-hero-hobbies-link {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-color: rgba(100, 116, 139, .35);
+        text-underline-offset: .18em;
+    }
+
+    .home-hero-hobbies-link:hover,
+    .home-hero-hobbies-link:focus-visible {
+        text-decoration-color: currentColor;
+    }
+
     /* Terminal window. Follows the page theme; the dark palette lives in the
        `.dark` override below. The token hues differ between themes rather than
        being reused — the dark set is tuned against #161221 and would fail

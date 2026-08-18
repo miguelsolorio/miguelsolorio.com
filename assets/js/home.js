@@ -91,11 +91,6 @@ if (portfolioTerminal) {
 
   const commandDefinitions = [
     {
-      name: 'help',
-      description: 'show available commands',
-      run: showHelp
-    },
-    {
       name: 'history',
       description: 'see the work timeline',
       run: showHistory
@@ -713,6 +708,17 @@ if (portfolioTerminal) {
   if (document.activeElement === document.body) terminalInput.focus({ preventScroll: true });
 }
 
+// "picking up new hobbies" in the hero summary links down to #about — smooth-scrolled by hand since the site has no global scroll-behavior: smooth.
+const hobbiesLink = document.querySelector('.home-hero-hobbies-link');
+if (hobbiesLink) {
+  hobbiesLink.addEventListener('click', function (event) {
+    const section = document.getElementById('about');
+    if (!section) return;
+    event.preventDefault();
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
 /* The games sit in the projects grid alongside the plugins, but they are page
    takeovers rather than destinations, so their tiles launch window.siteGames
    instead of navigating. The guard mirrors the command palette's: a games.js
@@ -1049,11 +1055,66 @@ var heroNoise3 = (function () {
     var pointerMedia = window.matchMedia('(pointer: fine)');
     var motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
     var maxTilt = 9;                                  // degrees at a pane's edge
+    var edgeGap = 20;                                  // px the end panes land from the window edge
 
     var rest = function (frame) {
         frame.style.removeProperty('--bio-tilt-x');
         frame.style.removeProperty('--bio-tilt-y');
     };
+
+    /* Only the strip's first and last panes bleed off the window edge by
+       design (.bio-ribbon above), so only they get a sideways nudge. The
+       reveal always grows centred on the slot first; this just adds how far
+       off that centre the pane has to land so its EDGE_GAP-side edge stops
+       exactly edgeGap from the window, instead of growing straight past it. */
+    var edgeSlots = [
+        { slot: slots[0], side: 'left' },
+        { slot: slots[slots.length - 1], side: 'right' }
+    ];
+
+    /* Mirrors bio.css: the hover rule's --bio-lift scale, and .bio-ribbon's own
+       tilt. Both widen the frame's on-screen footprint beyond its raw
+       width/height, so the edge math needs them to land on the real edge. */
+    var edgeLift = 1.06;
+    var edgeRibbonRotate = 2 * Math.PI / 180;
+
+    function applyEdgeShift(entry) {
+        if (!pointerMedia.matches || motionMedia.matches) return;
+        var frame = entry.slot.querySelector('.bio-shot-frame');
+        if (!frame) return;
+
+        var slotBox = entry.slot.getBoundingClientRect();
+        var reveal = parseFloat(getComputedStyle(document.getElementById('bio')).getPropertyValue('--bio-shot-reveal')) || 1;
+        var ar = parseFloat(getComputedStyle(entry.slot).getPropertyValue('--shot-ar')) || .75;
+
+        /* Local (pre-rotation) box the reveal grows to, scaled up by the same
+           lift the hover rule applies on top of it. */
+        var localHeight = entry.slot.offsetHeight * reveal * edgeLift;
+        var localWidth = localHeight * ar;
+
+        /* The ribbon's rotate widens the on-screen (axis-aligned) box past its
+           local size; slotBox's own centre already reflects that rotation, so
+           only the half-extent needs the correction. */
+        var aabbHalfWidth = (localWidth / 2) * Math.cos(edgeRibbonRotate) + (localHeight / 2) * Math.sin(edgeRibbonRotate);
+        var slotCenterX = slotBox.left + slotBox.width / 2;
+
+        var shift = entry.side === 'left'
+            ? edgeGap - (slotCenterX - aabbHalfWidth)
+            : (window.innerWidth - edgeGap) - (slotCenterX + aabbHalfWidth);
+
+        frame.style.setProperty('--bio-edge-shift', shift.toFixed(2) + 'px');
+    }
+
+    function clearEdgeShift(entry) {
+        var frame = entry.slot.querySelector('.bio-shot-frame');
+        if (frame) frame.style.removeProperty('--bio-edge-shift');
+    }
+
+    edgeSlots.forEach(function (entry) {
+        if (!entry.slot) return;
+        entry.slot.addEventListener('pointerenter', function () { applyEdgeShift(entry); }, { passive: true });
+        entry.slot.addEventListener('pointerleave', function () { clearEdgeShift(entry); }, { passive: true });
+    });
 
     Array.prototype.forEach.call(slots, function (slot) {
         var frame = slot.querySelector('.bio-shot-frame');
