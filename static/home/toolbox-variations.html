@@ -1,0 +1,1363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Toolbox variations</title>
+    <style>
+      /* Tokens mirror the site. Light: bg-neutral-100 page, slate ink, #3429ff
+         accent (assets/css/main.css, tailwind.config.js). Dark: Rosé Dusk
+         (assets/css/dark.css): #110e1a page, #a79fb8 ink, #efa9ae rose accent,
+         #201c28 / #3a3444 cards. Shadows from --shadow-rgb (main.css:29-52).
+         Terminal palette from assets/css/hero.css:80-92 and 522-534. */
+      :root {
+        color-scheme: light;
+        --page: #f5f5f5;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --hairline: rgba(15, 23, 42, .10);
+        --heading: #1e293b;
+        --ink: #334155;
+        --muted: #64748b;
+        --faint: #94a3b8;
+        --accent: #3429ff;
+        --accent-ink: #241bc7;
+        --shadow-rgb: 35 28 102;
+        --shadow-ring: 0 0 0 1px rgb(var(--shadow-rgb) / .07);
+        --shadow-sm: 0 1px 12px rgb(var(--shadow-rgb) / .06);
+        --shadow-md: 0 8px 24px rgb(var(--shadow-rgb) / .1);
+        --shadow-lg: 0 16px 32px -12px rgb(var(--shadow-rgb) / .15);
+        --shadow-xl: 0 24px 64px -16px rgb(var(--shadow-rgb) / .15);
+        --shadow-hover: 0 12px 28px -8px rgb(var(--shadow-rgb) / .38);
+        /* Ambient fallback gradient (main.css:109). */
+        --ambient: linear-gradient(180deg, #f2f0ff 0%, #f8f7ff 45%, #f5f5f5 100%);
+        /* Hero terminal set (hero.css:80-92). */
+        --t-bg: #ffffff;
+        --t-bar: #f1f5f9;
+        --t-line: rgba(15, 23, 42, .12);
+        --t-text: #475569;
+        --t-dim: #94a3b8;
+        --t-bright: #0f172a;
+        --t-green: #15803d;
+        --t-cyan: #0369a1;
+        --t-yellow: #b45309;
+        --t-purple: #6d28d9;
+        --t-red: #b91c1c;
+        --t-light: #cbd5e1;
+      }
+
+      html.dark {
+        color-scheme: dark;
+        --page: #110e1a;
+        --card: #201c28;
+        --border: #3a3444;
+        --hairline: rgba(210, 202, 222, .13);
+        --heading: #ede7f2;
+        --ink: #a79fb8;
+        --muted: #8c839f;
+        --faint: #6e6584;
+        --accent: #efa9ae;
+        --accent-ink: #efa9ae;
+        --shadow-rgb: 56 39 51;
+        --shadow-ring: 0 0 0 1px rgb(210 202 222 / .12);
+        --shadow-sm: 0 1px 12px rgb(var(--shadow-rgb) / .38);
+        --shadow-md: 0 8px 24px rgb(var(--shadow-rgb) / .45);
+        --shadow-lg: 0 16px 32px -12px rgb(var(--shadow-rgb) / .5);
+        --shadow-xl: 0 24px 64px -16px rgb(var(--shadow-rgb) / .55);
+        --shadow-hover: 0 12px 28px -8px rgb(var(--shadow-rgb) / .58);
+        --ambient: linear-gradient(180deg, #161320 0%, #1a1626 48%, #110e1a 100%);
+        --t-bg: #161221;
+        --t-bar: #221c32;
+        --t-line: rgba(210, 202, 222, .15);
+        --t-text: #cec6de;
+        --t-dim: #7e7599;
+        --t-bright: #f5f0fa;
+        --t-green: #95d5a5;
+        --t-cyan: #9ccfd8;
+        --t-yellow: #f6c177;
+        --t-purple: #c4a7e7;
+        --t-red: #eb6f92;
+        --t-light: #453c5c;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Ambient approximation: the home page's fixed gradient + grain fallback
+         (main.css:104-137), so the frosted treatments have a real backdrop to
+         blur, the way they will sit over the topography shader in production. */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background: var(--ambient);
+        pointer-events: none;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: .11;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.72'/%3E%3C/svg%3E");
+        background-size: 180px 180px;
+        mix-blend-mode: soft-light;
+        pointer-events: none;
+      }
+      html.dark body::after { opacity: .15; mix-blend-mode: overlay; }
+
+      main {
+        width: min(72rem, calc(100% - 2 * clamp(1.25rem, 4vw, 3rem)));
+        margin-inline: auto;
+        padding: clamp(2.5rem, 6vw, 4.5rem) 0 6rem;
+      }
+
+      .page-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+
+      h1 {
+        margin: 0;
+        color: var(--heading);
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: 800;
+        letter-spacing: -.05em;
+        line-height: .98;
+      }
+
+      .intro {
+        max-width: 44rem;
+        margin: 1.125rem 0 0;
+        font-size: 1.0625rem;
+        line-height: 1.55;
+      }
+
+      .intro code {
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: .875em;
+      }
+
+      #theme-toggle {
+        flex: 0 0 auto;
+        border: 1px solid var(--border);
+        border-radius: .625rem;
+        padding: .5rem .875rem;
+        background: var(--card);
+        color: var(--ink);
+        font: inherit;
+        font-size: .8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: border-color .2s ease, color .2s ease;
+      }
+      #theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+      .variation {
+        margin-top: clamp(2.5rem, 6vw, 4rem);
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .variation-head {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: .625rem;
+        margin-bottom: 1.5rem;
+      }
+      .variation-head .num {
+        color: var(--accent);
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: .1em;
+      }
+      .variation-head h2 {
+        margin: 0;
+        color: var(--heading);
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: -.015em;
+      }
+      .variation-head .why {
+        flex: 1 1 18rem;
+        color: var(--muted);
+        font-size: .8125rem;
+        line-height: 1.5;
+      }
+
+      /* Mock of the real section heading each treatment would sit under
+         (.section--side-projects tier, assets/css/project.css:67-83). */
+      .sec-h {
+        margin: 0 0 clamp(1.5rem, 3.5vw, 2.25rem);
+        color: var(--heading);
+        font-size: clamp(2.125rem, 4vw, 2.75rem);
+        font-weight: 700;
+        letter-spacing: -.05em;
+        line-height: 1;
+      }
+
+      /* Logo marks. Real brand paths (simple-icons and official assets); the
+         two macOS-only apps ship their actual app icons as embedded PNGs.
+         Color rides on currentColor so each variation can pick monochrome or
+         brand ink; the .lg-* classes below are the brand inks. */
+      .lg {
+        width: 1em;
+        height: 1em;
+        flex: 0 0 auto;
+        display: inline-block;
+        fill: currentColor;
+        vertical-align: -.125em;
+      }
+      .lg-vscode { color: #007acc; }
+      .lg-claude { color: #d97757; }
+      .lg-codex { color: #181818; }
+      .lg-ghostty { color: #3551f3; }
+      .lg-opencode { color: #181818; }
+      .lg-raycast { color: #ff6363; }
+      /* Arc's brand salmon (#fcbfbd) is tuned for dark tiles; deepened here so
+         the mark holds on the light page, authentic tone returns in dark. */
+      .lg-arc { color: #c25e70; }
+      html.dark .lg-codex, html.dark .lg-opencode { color: #ece9f1; }
+      html.dark .lg-ghostty { color: #7c8cf8; }
+      html.dark .lg-vscode { color: #2fa3e8; }
+      html.dark .lg-arc { color: #fcbfbd; }
+
+      /* 01 — Quiet rows --------------------------------------------------- */
+      .v01 { border-top: 2px solid var(--heading); }
+      .v01 dl { margin: 0; }
+      .v01-row {
+        display: grid;
+        grid-template-columns: 9.5rem 1fr;
+        gap: 1rem;
+        align-items: baseline;
+        padding: 1.0625rem 0;
+        border-bottom: 1px solid var(--hairline);
+        margin: 0;
+      }
+      .v01-row dt {
+        color: var(--muted);
+        font-size: .6875rem;
+        font-weight: 600;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+      }
+      .v01-row dd {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem 1.375rem;
+      }
+      .v01-tool {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        color: var(--heading);
+        font-size: .9375rem;
+        font-weight: 500;
+      }
+      .v01 .lg { font-size: 1.0625rem; }
+      @media (max-width: 40rem) {
+        .v01-row { grid-template-columns: 1fr; gap: .5rem; padding: .9375rem 0; }
+      }
+
+      /* 02 — Logo chip grid ----------------------------------------------- */
+      .v02 { display: flex; flex-direction: column; gap: 1.125rem; }
+      .v02-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .5rem .75rem;
+      }
+      .v02-label {
+        flex: 0 0 auto;
+        min-width: 7.5rem;
+        color: var(--muted);
+        font-size: .6875rem;
+        font-weight: 600;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+      }
+      .v02-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .4375rem;
+        padding: .375rem .8125rem .375rem .5625rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--card);
+        color: var(--heading);
+        font-size: .8125rem;
+        font-weight: 500;
+        transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+      }
+      .v02-chip:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+      .v02-chip .lg { font-size: .9375rem; }
+      @media (max-width: 40rem) {
+        .v02 { gap: 1.375rem; }
+        .v02-label { min-width: 100%; }
+      }
+
+      /* 03 — Terminal readout --------------------------------------------- */
+      .v03 { max-width: 44rem; }
+      .v03-term {
+        overflow: hidden;
+        border: 1px solid var(--t-line);
+        border-radius: .625rem;
+        /* Frost recipe from the hero terminal (hero.css:97-105): solid
+           fallback first, color-mix + backdrop blur where supported. */
+        background: var(--t-bg);
+        background: color-mix(in srgb, var(--t-bg) 70%, transparent);
+        -webkit-backdrop-filter: blur(18px) saturate(1.5);
+        backdrop-filter: blur(18px) saturate(1.5);
+        box-shadow: var(--shadow-xl);
+        color: var(--t-text);
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: .75rem;
+        line-height: 1.7;
+      }
+      .v03-bar {
+        display: grid;
+        grid-template-columns: 3.25rem 1fr 3.25rem;
+        align-items: center;
+        min-height: 2rem;
+        padding: 0 .625rem;
+        border-bottom: 1px solid var(--t-line);
+        background: var(--t-bar);
+        background: color-mix(in srgb, var(--t-bar) 65%, transparent);
+      }
+      .v03-lights { display: flex; gap: .4375rem; }
+      .v03-lights i { width: .625rem; height: .625rem; border-radius: 50%; background: var(--t-light); }
+      .v03-title {
+        overflow: hidden;
+        color: var(--t-dim);
+        font-size: .6875rem;
+        text-align: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .v03-body { padding: .875rem 1rem 1rem; }
+      .v03-ps1 { color: var(--t-green); }
+      .v03-cmd { color: var(--t-bright); font-weight: 600; }
+      .v03-row { display: flex; align-items: baseline; gap: 1ch; }
+      .v03-row .k { flex: 0 0 auto; width: 10ch; color: var(--t-dim); }
+      .v03-row .vals { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1ch; }
+      .v03-tool { display: inline-flex; align-items: center; gap: .5ch; white-space: nowrap; }
+      .v03-tool .lg { font-size: .8125rem; }
+      .v03-sep { color: var(--t-dim); }
+      .v03-caret {
+        display: inline-block;
+        width: .55em;
+        height: 1.05em;
+        margin-top: .25rem;
+        background: var(--t-text);
+        vertical-align: text-bottom;
+        animation: v03-blink 1.1s steps(1) infinite;
+      }
+      @keyframes v03-blink { 50% { opacity: 0; } }
+      @media (max-width: 40rem) {
+        .v03-row { flex-wrap: wrap; }
+        .v03-row .k { width: 100%; }
+        .v03-row .vals { padding-left: 2ch; }
+      }
+
+      /* 04 — Command palette ---------------------------------------------- */
+      .v04 { display: flex; justify-content: center; }
+      .v04-panel {
+        width: 100%;
+        max-width: 640px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        /* Palette chrome verbatim (command-palette.css:39-55). */
+        background: #ffffff;
+        background: color-mix(in srgb, #ffffff 88%, transparent);
+        -webkit-backdrop-filter: blur(24px);
+        backdrop-filter: blur(24px);
+        box-shadow: var(--shadow-ring), var(--shadow-md), var(--shadow-xl);
+        pointer-events: none;
+        user-select: none;
+      }
+      html.dark .v04-panel {
+        border-color: #3a3444;
+        background: #201c28;
+        background: color-mix(in srgb, #201c28 88%, transparent);
+      }
+      .v04-input {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        padding: .95rem 1.125rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+        font-size: 1rem;
+      }
+      html.dark .v04-input { border-color: rgba(210, 202, 222, .09); color: #e0d9ec; }
+      .v04-input i {
+        width: 2px;
+        height: 1.2em;
+        background: #3429ff;
+        border-radius: 1px;
+      }
+      html.dark .v04-input i { background: #efa9ae; }
+      .v04-cat {
+        padding: .625rem 1.125rem .2rem;
+        color: #64748b;
+        font-size: .68rem;
+        font-weight: 600;
+      }
+      html.dark .v04-cat { color: #8c839f; }
+      .v04-item {
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        margin: 0 .5rem;
+        padding: .5rem .625rem;
+        border-radius: 9px;
+      }
+      .v04-item.active { background: #ede9fe; }
+      html.dark .v04-item.active { background: rgba(239, 169, 174, .14); }
+      .v04-ico {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        flex: 0 0 auto;
+        border: 1px solid #f1f5f9;
+        border-radius: 6px;
+        background: #f8fafc;
+      }
+      html.dark .v04-ico { border-color: #3a3444; background: #2a2434; }
+      .v04-ico .lg { font-size: 14px; }
+      .v04-name { color: #334155; font-size: .875rem; font-weight: 500; }
+      html.dark .v04-name { color: #cfc7dd; }
+      .v04-item.active .v04-name { color: #3429ff; }
+      html.dark .v04-item.active .v04-name { color: #efa9ae; }
+      .v04-foot {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        margin-top: .375rem;
+        padding: .55rem .9rem;
+        border-top: 1px solid #f1f5f9;
+        background: rgba(248, 250, 252, .55);
+        color: #94a3b8;
+        font-size: .75rem;
+      }
+      html.dark .v04-foot { border-color: rgba(210, 202, 222, .09); background: rgba(34, 28, 46, .55); color: #6e6584; }
+      .v04-action { display: flex; align-items: center; gap: .4rem; margin-left: auto; color: #64748b; font-weight: 500; }
+      html.dark .v04-action { color: #8c839f; }
+      .v04-foot kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: .1em .38em;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        background: #f8fafc;
+        color: #64748b;
+        font-family: inherit;
+        font-size: .7rem;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+      html.dark .v04-foot kbd { border-color: #3a3444; background: #2a2434; color: #8c839f; }
+
+      /* 05 — macOS dock --------------------------------------------------- */
+      .v05 { padding: 2.25rem 0 .25rem; }
+      .v05-wrap { display: flex; justify-content: center; }
+      .v05-shelf {
+        display: flex;
+        align-items: flex-end;
+        gap: .5rem;
+        padding: .625rem .75rem;
+        border: 1px solid var(--hairline);
+        border-radius: 1.375rem;
+        background: var(--card);
+        background: color-mix(in srgb, var(--card) 55%, transparent);
+        -webkit-backdrop-filter: blur(18px) saturate(1.4);
+        backdrop-filter: blur(18px) saturate(1.4);
+        box-shadow: var(--shadow-ring), var(--shadow-lg);
+      }
+      .v05-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .v05-tile {
+        display: grid;
+        place-items: center;
+        width: 3.25rem;
+        height: 3.25rem;
+        overflow: hidden;
+        border-radius: .875rem;
+        transform-origin: bottom center;
+        transition: transform .18s cubic-bezier(.2, .8, .2, 1);
+      }
+      .v05-tile .lg { font-size: 1.75rem; color: #fff; }
+      .v05-tile--full { display: block; }
+      .v05-tile--full .lg { display: block; width: 100%; height: 100%; font-size: 0; }
+      /* Constructed app tiles: brand ground, white mark, matching each app's
+         real icon where one exists. */
+      .v05-tile[data-tool="vscode"] { background: linear-gradient(150deg, #31a8e0, #0065a9); }
+      .v05-tile[data-tool="claude"] { background: #d97757; }
+      .v05-tile[data-tool="codex"] { background: #0d0d11; }
+      .v05-tile[data-tool="ghostty"] { background: linear-gradient(160deg, #5a70f7, #2b3ed6); }
+      .v05-tile[data-tool="opencode"] { background: #0d0d11; }
+      .v05-tile[data-tool="omp"] { background: #262b3d; }
+      .v05-tile[data-tool="omp"] .lg { font-size: 2rem; }
+      .v05-tile[data-tool="figma"] { background: #1e1e1e; }
+      .v05-tile[data-tool="arc"] { background: linear-gradient(160deg, #ff8fab, #7b5bd6); }
+      .v05-tile[data-tool="raycast"] { background: #ff6363; }
+      .v05-tile[data-tool="gifski"] { background: transparent; }
+      .v05-item:hover .v05-tile { transform: translateY(-10px) scale(1.3); }
+      .v05-item:hover + .v05-item .v05-tile,
+      .v05-item:has(+ .v05-item:hover) .v05-tile { transform: translateY(-4px) scale(1.12); }
+      .v05-item::after {
+        content: attr(data-name);
+        position: absolute;
+        bottom: calc(100% + .875rem);
+        left: 50%;
+        translate: -50% 0;
+        padding: .25rem .625rem;
+        border: 1px solid var(--border);
+        border-radius: .5rem;
+        background: var(--card);
+        box-shadow: var(--shadow-md);
+        color: var(--heading);
+        font-size: .6875rem;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .12s ease;
+      }
+      .v05-item:hover::after { opacity: 1; }
+      .v05-sep { align-self: center; width: 1px; height: 2.5rem; background: var(--hairline); }
+      .v05-name { display: none; }
+      @media (pointer: coarse) {
+        .v05-item:hover .v05-tile,
+        .v05-item:hover + .v05-item .v05-tile,
+        .v05-item:has(+ .v05-item:hover) .v05-tile { transform: none; }
+        .v05-item::after { display: none; }
+        .v05-name {
+          display: block;
+          margin-top: .375rem;
+          color: var(--muted);
+          font-size: .5625rem;
+          font-weight: 500;
+        }
+      }
+      @media (max-width: 40rem) {
+        .v05 { padding-top: 1rem; }
+        .v05-shelf { flex-wrap: wrap; justify-content: center; row-gap: .75rem; }
+        .v05-sep { display: none; }
+      }
+
+      /* 06 — Bento grid --------------------------------------------------- */
+      .v06 {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: clamp(.625rem, 2vw, 1rem);
+      }
+      .v06-tile {
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1.125rem 1.25rem 1.25rem;
+        /* Home card frost: translucent surface so the ambient reads through
+           (project.css:95-127 convention). */
+        background: var(--card);
+        background: color-mix(in srgb, var(--card) 72%, transparent);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        box-shadow: var(--shadow-ring), var(--shadow-sm);
+        transition: transform .18s ease, box-shadow .18s ease;
+      }
+      .v06-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+      .v06-tile--terminal { grid-column: span 2; }
+      .v06-tile--utilities { grid-column: span 4; }
+      .v06-cat {
+        margin: 0 0 .875rem;
+        color: var(--muted);
+        font-size: .6875rem;
+        font-weight: 600;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+      }
+      .v06-tools { display: flex; flex-wrap: wrap; gap: .625rem 1.375rem; }
+      .v06-tool {
+        display: inline-flex;
+        align-items: center;
+        gap: .5625rem;
+        color: var(--heading);
+        font-size: .9375rem;
+        font-weight: 500;
+      }
+      .v06-tool .lg { font-size: 1.25rem; }
+      .v06-tool--hero { font-size: 1.125rem; font-weight: 600; }
+      .v06-tool--hero .lg { font-size: 1.625rem; }
+      @media (max-width: 64rem) {
+        .v06 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .v06-tile--utilities { grid-column: span 2; }
+      }
+      @media (max-width: 40rem) {
+        .v06 { grid-template-columns: 1fr; }
+        .v06-tile--terminal, .v06-tile--utilities { grid-column: span 1; }
+      }
+
+      /* 07 — Spec sheet --------------------------------------------------- */
+      .v07 {
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: .8125rem;
+        line-height: 2;
+      }
+      .v07-note { color: var(--faint); }
+      .v07-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 3.5rem;
+        margin-top: .25rem;
+      }
+      .v07-line { display: flex; align-items: baseline; gap: 1ch; min-width: 0; }
+      .v07-line .k { flex: 0 0 auto; width: 9ch; color: var(--muted); }
+      .v07-line .eq { color: var(--accent); }
+      .v07-line .vals { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1ch; min-width: 0; }
+      .v07-tool { display: inline-flex; align-items: center; gap: .5ch; color: var(--heading); white-space: nowrap; }
+      .v07-tool .lg { font-size: .8125rem; }
+      .v07-colon { color: var(--faint); }
+      @media (max-width: 40rem) {
+        .v07-grid { grid-template-columns: 1fr; }
+      }
+
+      /* 08 — Editorial prose ---------------------------------------------- */
+      .v08 {
+        max-width: 38rem;
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.125rem;
+        line-height: 1.65;
+      }
+      .v08 a {
+        display: inline-flex;
+        align-items: center;
+        gap: .3125rem;
+        color: var(--accent-ink);
+        font-weight: 500;
+        text-decoration: none;
+        background-image: linear-gradient(currentColor, currentColor);
+        background-size: 100% 1px;
+        background-position: 0 100%;
+        background-repeat: no-repeat;
+        transition: color .12s ease, background-color .12s ease, box-shadow .12s ease;
+      }
+      .v08 a .lg { font-size: 1em; }
+      .v08 a:hover, .v08 a:focus-visible {
+        color: #fff;
+        background-color: var(--accent-ink);
+        background-image: none;
+        box-shadow: .15em 0 var(--accent-ink), -.15em 0 var(--accent-ink);
+        border-radius: 1px;
+      }
+      html.dark .v08 a:hover, html.dark .v08 a:focus-visible { color: #110e1a; }
+      .v08 a:hover .lg, .v08 a:focus-visible .lg { color: currentColor; }
+
+      /* 09 — Marquee ------------------------------------------------------ */
+      .v09 {
+        overflow: hidden;
+        padding: .75rem 0;
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+        mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+      }
+      .v09-track { display: flex; width: max-content; animation: v09-scroll 34s linear infinite; }
+      .v09:hover .v09-track, .v09:focus-within .v09-track { animation-play-state: paused; }
+      .v09-set { display: flex; align-items: center; gap: 3.25rem; padding-right: 3.25rem; }
+      .v09-item {
+        display: inline-flex;
+        align-items: center;
+        gap: .6875rem;
+        color: var(--heading);
+        font-size: 1.125rem;
+        font-weight: 600;
+        letter-spacing: -.015em;
+        white-space: nowrap;
+      }
+      .v09-item .lg { font-size: 1.5rem; }
+      @keyframes v09-scroll { to { transform: translateX(-50%); } }
+
+      /* 10 — File tree ---------------------------------------------------- */
+      .v10 {
+        max-width: 22rem;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: .625rem;
+        background: var(--card);
+        background: color-mix(in srgb, var(--card) 80%, transparent);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow-ring), var(--shadow-sm);
+        font-size: .8125rem;
+        user-select: none;
+      }
+      .v10-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .5625rem .875rem;
+        border-bottom: 1px solid var(--hairline);
+        color: var(--muted);
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: .09em;
+      }
+      .v10-head svg { width: .875rem; height: .875rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+      .v10-body { padding: .375rem 0 .625rem; }
+      .v10 details > summary {
+        display: flex;
+        align-items: center;
+        gap: .4375rem;
+        padding: .3125rem .875rem;
+        color: var(--heading);
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+      }
+      .v10 details > summary::-webkit-details-marker { display: none; }
+      .v10 details > summary:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+      .v10-chev {
+        width: .8125rem;
+        height: .8125rem;
+        fill: none;
+        stroke: var(--muted);
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: rotate .15s ease;
+      }
+      .v10 details[open] > summary .v10-chev { rotate: 90deg; }
+      .v10-folder {
+        width: .9375rem;
+        height: .9375rem;
+        fill: none;
+        stroke: var(--muted);
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .v10-files { position: relative; }
+      .v10-files::before {
+        content: "";
+        position: absolute;
+        top: .125rem;
+        bottom: .125rem;
+        left: 1.28rem;
+        width: 1px;
+        background: var(--hairline);
+      }
+      .v10-file {
+        display: flex;
+        align-items: center;
+        gap: .5625rem;
+        padding: .28rem .875rem .28rem 2.0625rem;
+        color: var(--ink);
+      }
+      .v10-file:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); color: var(--heading); }
+      .v10-file .lg { font-size: .9375rem; }
+
+      /* Motion opt-out ---------------------------------------------------- */
+      @media (prefers-reduced-motion: reduce) {
+        .v02-chip, .v05-tile, .v06-tile, .v10-chev, #theme-toggle { transition: none; }
+        .v02-chip:hover, .v06-tile:hover { transform: none; }
+        .v05-item:hover .v05-tile,
+        .v05-item:hover + .v05-item .v05-tile,
+        .v05-item:has(+ .v05-item:hover) .v05-tile { transform: none; }
+        .v03-caret { animation: none; }
+        .v09 { -webkit-mask-image: none; mask-image: none; }
+        .v09-track { width: auto; animation: none; flex-wrap: wrap; }
+        .v09-set[aria-hidden="true"] { display: none; }
+        .v09-set { flex-wrap: wrap; gap: 1.25rem 2.5rem; padding-right: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+      <defs>
+        <clipPath id="cs-clip"><rect width="96" height="96" rx="21"/></clipPath>
+
+        <!-- Single-path brand marks: simple-icons (visualstudiocode pinned
+             from v12, openai from v14; claude/arc/raycast/ghostty/opencode
+             current). Painted with currentColor via the .lg-* inks. -->
+        <symbol id="logo-vscode" viewBox="0 0 24 24"><path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"/></symbol>
+        <symbol id="logo-claude" viewBox="0 0 24 24"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></symbol>
+        <symbol id="logo-codex" viewBox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></symbol>
+        <symbol id="logo-ghostty" viewBox="0 0 24 24"><path d="M12 0C6.7 0 2.4 4.3 2.4 9.6v11.146c0 1.772 1.45 3.267 3.222 3.254a3.18 3.18 0 0 0 1.955-.686 1.96 1.96 0 0 1 2.444 0 3.18 3.18 0 0 0 1.976.686c.75 0 1.436-.257 1.98-.686.715-.563 1.71-.587 2.419-.018.59.476 1.355.743 2.182.699 1.705-.094 3.022-1.537 3.022-3.244V9.601C21.6 4.3 17.302 0 12 0M6.069 6.562a1 1 0 0 1 .46.131l3.578 2.065v.002a.974.974 0 0 1 0 1.687L6.53 12.512a.975.975 0 0 1-.976-1.687L7.67 9.602 5.553 8.38a.975.975 0 0 1 .515-1.818m7.438 2.063h4.7a.975.975 0 1 1 0 1.95h-4.7a.975.975 0 0 1 0-1.95"/></symbol>
+        <symbol id="logo-opencode" viewBox="0 0 24 24"><path d="M22 24H2V0h20zM17 4.8H7v14.4h10z"/></symbol>
+        <symbol id="logo-arc" viewBox="0 0 24 24"><path d="M23.9371 8.5089c.1471-.7147.0367-1.4661-.3364-2.0967-.4203-.7094-1.1035-1.1876-1.9075-1.3506a2.9178 2.9178 0 0 0-.5623-.0578h-.0105c-1.3768 0-2.5329.988-2.8061 2.3385-.1629.7935-.4782 1.5607-.9196 2.2701a.263.263 0 0 1-.2363.1205.2627.2627 0 0 1-.2209-.1468l-2.8587-5.9906c-.3626-.762-1.0142-1.361-1.8235-1.5975-1.3873-.4099-2.8166.2838-3.4052 1.524L5.897 9.7333c-.0788.1629-.31.1576-.3784-.0053v-.0052a2.8597 2.8597 0 0 0-2.6642-1.7972c-.3784 0-.7515.0736-1.1088.2207-1.4714.6148-2.1283 2.349-1.5187 3.8203.557 1.3295 1.4714 2.5855 2.659 3.668.084.0788.1103.1997.063.3048l-.9563 2.0074c-.6727 1.4188-.1314 3.1477 1.2664 3.8571.4099.2049.846.31 1.298.31 1.1035 0 2.123-.6411 2.5959-1.6395l.825-1.7289a.254.254 0 0 1 .3048-.1366c1.0037.2732 2.0127.4204 3.0058.4204 1.1193 0 2.2229-.1682 3.2896-.4782a.2626.2626 0 0 1 .3101.1366l.8145 1.7131c.4834 1.0195 1.4924 1.7131 2.6169 1.7184.4572 0 .8986-.0999 1.3138-.3101 1.403-.7094 1.939-2.4435 1.2664-3.8676L19.875 15.787c-.0473-.1051-.0263-.226.0578-.3048 1.9864-1.8497 3.4525-4.2723 4.0043-6.9733ZM6.2121 20.0172a1.835 1.835 0 0 1-.6764.7622 1.8352 1.8352 0 0 1-.9788.2835c-.2733 0-.5518-.063-.8093-.1891-.9038-.4467-1.2454-1.5713-.8093-2.4804l.7935-1.6658c.0684-.1471.2575-.1997.3837-.1051.1681.1209.3415.2365.5202.3521.6989.4467 1.4293.825 2.1808 1.1351.1419.0578.205.2154.1419.352l-.7462 1.5555Zm5.0763-2.0442c-4.2092 0-8.6548-2.8534-10.1262-6.4951a1.8286 1.8286 0 0 1 1.009-2.3805c.2259-.0893.4571-.1366.683-.1366.7252 0 1.4084.431 1.6974 1.1456.9196 2.2806 4.0043 4.2092 6.7368 4.2092.4204 0 .8408-.042 1.256-.1156a.2643.2643 0 0 1 .2837.1419l1.3768 2.9007c.0683.1471-.0105.3205-.1629.3626-.8986.2365-1.8182.3678-2.7536.3678Zm-.599-4.9291.6358-1.3348c.0526-.1051.205-.1051.2575 0l.6201 1.3033c.042.0841-.0158.1891-.1051.2049-.268.0368-.536.0578-.7988.0578a5.0634 5.0634 0 0 1-.4887-.0263c-.1103-.0157-.1629-.1208-.1208-.2049Zm8.4604 7.8246a1.831 1.831 0 0 1-2.0329-.2788 1.8292 1.8292 0 0 1-.4316-.5778l-4.987-10.4836c-.0998-.2102-.3994-.2102-.4939 0l-1.545 3.2529a.2623.2623 0 0 1-.3205.1366c-1.051-.3626-2.0495-.9774-2.7904-1.7184a.2552.2552 0 0 1-.0473-.2943l3.3421-7.031c.1156-.247.2943-.4677.5203-.6201 1.051-.6884 2.2806-.2575 2.7378.7041l6.8577 14.4248c.4309.9144.0946 2.0389-.8093 2.4856Zm-1.4451-9.6481a.258.258 0 0 1 .0315-.2732c.783-1.0037 1.3558-2.1756 1.6028-3.421.1734-.867.9354-1.4714 1.7919-1.4714.1472 0 .2943.0158.4467.0526.9722.2417 1.5344 1.2507 1.3295 2.2333-.4835 2.3017-1.6816 4.3879-3.3159 6.0222-.1313.1314-.3468.0946-.4256-.0683l-1.4609-3.0742Z"/></symbol>
+        <symbol id="logo-raycast" viewBox="0 0 24 24"><path d="M6.004 15.492v2.504L0 11.992l1.258-1.249Zm2.504 2.504H6.004L12.008 24l1.253-1.253zm14.24-4.747L24 11.997 12.003 0 10.75 1.251 15.491 6h-2.865L9.317 2.692 8.065 3.944l2.06 2.06H8.691v9.31H18v-1.432l2.06 2.06 1.252-1.252-3.312-3.32V8.506ZM6.63 5.372 5.38 6.625l1.342 1.343 1.251-1.253Zm10.655 10.655-1.247 1.251 1.342 1.343 1.253-1.251zM3.944 8.059 2.692 9.31l3.312 3.314v-2.506zm9.936 9.937h-2.504l3.314 3.312 1.25-1.252z"/></symbol>
+
+        <!-- Figma's five modules, official geometry and colors. -->
+        <symbol id="logo-figma" viewBox="0 0 24 24">
+          <path fill="#f24e1e" d="M12 0H8a4 4 0 0 0 0 8h4Z"/>
+          <path fill="#ff7262" d="M12 0h4a4 4 0 0 1 0 8h-4Z"/>
+          <path fill="#a259ff" d="M12 8H8a4 4 0 0 0 0 8h4Z"/>
+          <circle fill="#1abcfe" cx="16" cy="12" r="4"/>
+          <path fill="#0acf83" d="M8 16a4 4 0 1 0 4 4v-4Z"/>
+        </symbol>
+
+        <!-- Oh My Posh: vector redraw of the three powerline segments and
+             cursor from the official logo (ohmyposh.dev). -->
+        <symbol id="logo-omp" viewBox="0 0 24 24">
+          <path fill="#fcae1e" d="M2 7h3.5l3 5-3 5H2a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/>
+          <path fill="#f0621e" d="M6.6 7h5.9l3 5-3 5H6.6l3-5Z"/>
+          <path fill="#1793d1" d="M13.6 7h5.4l3 5-3 5h-5.4l3-5Z"/>
+          <rect fill="currentColor" x="20.6" y="15.4" width="3.4" height="1.7" rx=".4"/>
+        </symbol>
+
+        <!-- The two macOS apps ship their real app icons (cleanshot.com
+             apple-touch-icon, gif.ski icon), embedded so nothing fetches. -->
+        <symbol id="logo-cleanshot" viewBox="0 0 96 96"><image href="data:image/png;base64,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" width="96" height="96" clip-path="url(#cs-clip)"/></symbol>
+        <symbol id="logo-gifski" viewBox="0 0 96 96"><image href="data:image/png;base64,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" width="96" height="96"/></symbol>
+
+        <!-- Stroke glyphs for the file tree, site glyph style (common.js). -->
+        <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5.5 7 6.5-7 6.5"/></symbol>
+        <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 6.5a1.5 1.5 0 0 1 1.5-1.5h4l2 2.5h8a1.5 1.5 0 0 1 1.5 1.5v8.5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5Z"/></symbol>
+        <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
+      </defs>
+    </svg>
+
+    <main>
+      <header class="page-head">
+        <div>
+          <h1>Tools of choice</h1>
+          <p class="intro">
+            Ten treatments of one new section for the end of the home page: eleven tools in four
+            groups (IDE, agents, terminal, utilities), every one wearing its real mark. Built from
+            the site's own tokens: neutral-100 page, slate ink, <code>#3429ff</code> accent,
+            Rosé Dusk in the dark, the hero terminal palette, and the command palette chrome.
+            Toggle dark mode; both states ship. Pick a number and it becomes the real section.
+          </p>
+        </div>
+        <button id="theme-toggle" type="button">Dark mode</button>
+      </header>
+
+      <!-- 01 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">01</span><h2>Quiet rows</h2>
+          <p class="why">A uses page in miniature: labels left, names right, one hairline per group. Reads as prose furniture, not a widget.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v01">
+          <dl>
+            <div class="v01-row">
+              <dt>IDE</dt>
+              <dd>
+                <span class="v01-tool"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>VS Code</span>
+              </dd>
+            </div>
+            <div class="v01-row">
+              <dt>Agents</dt>
+              <dd>
+                <span class="v01-tool"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>Claude Code</span>
+                <span class="v01-tool"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>Codex</span>
+              </dd>
+            </div>
+            <div class="v01-row">
+              <dt>Terminal</dt>
+              <dd>
+                <span class="v01-tool"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>Ghostty</span>
+                <span class="v01-tool"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>OpenCode</span>
+                <span class="v01-tool"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>Oh My Posh</span>
+              </dd>
+            </div>
+            <div class="v01-row">
+              <dt>Utilities</dt>
+              <dd>
+                <span class="v01-tool"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>Figma</span>
+                <span class="v01-tool"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>CleanShot</span>
+                <span class="v01-tool"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>Gifski</span>
+                <span class="v01-tool"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>Arc</span>
+                <span class="v01-tool"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>Raycast</span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">02</span><h2>Logo chip grid</h2>
+          <p class="why">Every tool as a pill with its mark in brand color. Wraps anywhere, scans fast, and the logos do the talking.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v02">
+          <div class="v02-group">
+            <span class="v02-label">IDE</span>
+            <span class="v02-chip"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>VS Code</span>
+          </div>
+          <div class="v02-group">
+            <span class="v02-label">Agents</span>
+            <span class="v02-chip"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>Claude Code</span>
+            <span class="v02-chip"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>Codex</span>
+          </div>
+          <div class="v02-group">
+            <span class="v02-label">Terminal</span>
+            <span class="v02-chip"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>Ghostty</span>
+            <span class="v02-chip"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>OpenCode</span>
+            <span class="v02-chip"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>Oh My Posh</span>
+          </div>
+          <div class="v02-group">
+            <span class="v02-label">Utilities</span>
+            <span class="v02-chip"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>Figma</span>
+            <span class="v02-chip"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>CleanShot</span>
+            <span class="v02-chip"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>Gifski</span>
+            <span class="v02-chip"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>Arc</span>
+            <span class="v02-chip"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>Raycast</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">03</span><h2>Terminal readout</h2>
+          <p class="why">The hero terminal answers one more command. Same frost, same palette, and the marks render like a modern ls.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v03">
+          <div class="v03-term">
+            <div class="v03-bar">
+              <span class="v03-lights"><i></i><i></i><i></i></span>
+              <span class="v03-title">~/tools</span>
+              <span></span>
+            </div>
+            <div class="v03-body">
+              <div><span class="v03-ps1">~</span> <span class="v03-cmd">tools</span></div>
+              <div class="v03-row">
+                <span class="k">ide</span>
+                <span class="vals">
+                  <span class="v03-tool"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>vs-code</span>
+                </span>
+              </div>
+              <div class="v03-row">
+                <span class="k">agents</span>
+                <span class="vals">
+                  <span class="v03-tool"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>claude-code</span>
+                  <span class="v03-sep">·</span>
+                  <span class="v03-tool"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>codex</span>
+                </span>
+              </div>
+              <div class="v03-row">
+                <span class="k">terminal</span>
+                <span class="vals">
+                  <span class="v03-tool"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>ghostty</span>
+                  <span class="v03-sep">·</span>
+                  <span class="v03-tool"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>opencode</span>
+                  <span class="v03-sep">·</span>
+                  <span class="v03-tool"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>oh-my-posh</span>
+                </span>
+              </div>
+              <div class="v03-row">
+                <span class="k">utilities</span>
+                <span class="vals">
+                  <span class="v03-tool"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>figma</span>
+                  <span class="v03-sep">·</span>
+                  <span class="v03-tool"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>cleanshot</span>
+                  <span class="v03-sep">·</span>
+                  <span class="v03-tool"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>gifski</span>
+                  <span class="v03-sep">·</span>
+                  <span class="v03-tool"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>arc</span>
+                  <span class="v03-sep">·</span>
+                  <span class="v03-tool"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>raycast</span>
+                </span>
+              </div>
+              <div><span class="v03-ps1">~</span> <span class="v03-caret"></span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">04</span><h2>Command palette</h2>
+          <p class="why">The site's ⌘K panel repurposed as the section itself: grouped rows, icon tiles, one active row for warmth.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v04">
+          <div class="v04-panel">
+            <div class="v04-input">tools<i></i></div>
+            <div class="v04-cat">IDE</div>
+            <div class="v04-item active">
+              <span class="v04-ico"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg></span>
+              <span class="v04-name">VS Code</span>
+            </div>
+            <div class="v04-cat">Agents</div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg></span>
+              <span class="v04-name">Claude Code</span>
+            </div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg></span>
+              <span class="v04-name">Codex</span>
+            </div>
+            <div class="v04-cat">Terminal</div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg></span>
+              <span class="v04-name">Ghostty</span>
+            </div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg></span>
+              <span class="v04-name">OpenCode</span>
+            </div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg></span>
+              <span class="v04-name">Oh My Posh</span>
+            </div>
+            <div class="v04-cat">Utilities</div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg></span>
+              <span class="v04-name">Figma</span>
+            </div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg></span>
+              <span class="v04-name">CleanShot</span>
+            </div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg></span>
+              <span class="v04-name">Gifski</span>
+            </div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg></span>
+              <span class="v04-name">Arc</span>
+            </div>
+            <div class="v04-item">
+              <span class="v04-ico"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg></span>
+              <span class="v04-name">Raycast</span>
+            </div>
+            <div class="v04-foot">
+              <span class="v04-action">Open <kbd>↵</kbd></span>
+              <span class="v04-action"><kbd>⌘</kbd><kbd>K</kbd></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">05</span><h2>macOS dock</h2>
+          <p class="why">The toolbox as a dock shelf: full-color app tiles, hover magnification, tooltips. The most playful of the ten.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v05">
+          <div class="v05-wrap">
+            <div class="v05-shelf">
+              <div class="v05-item" data-name="VS Code">
+                <span class="v05-tile" data-tool="vscode"><svg class="lg" aria-hidden="true"><use href="#logo-vscode"/></svg></span>
+                <span class="v05-name">VS Code</span>
+              </div>
+              <span class="v05-sep"></span>
+              <div class="v05-item" data-name="Claude Code">
+                <span class="v05-tile" data-tool="claude"><svg class="lg" aria-hidden="true"><use href="#logo-claude"/></svg></span>
+                <span class="v05-name">Claude Code</span>
+              </div>
+              <div class="v05-item" data-name="Codex">
+                <span class="v05-tile" data-tool="codex"><svg class="lg" aria-hidden="true"><use href="#logo-codex"/></svg></span>
+                <span class="v05-name">Codex</span>
+              </div>
+              <span class="v05-sep"></span>
+              <div class="v05-item" data-name="Ghostty">
+                <span class="v05-tile" data-tool="ghostty"><svg class="lg" aria-hidden="true"><use href="#logo-ghostty"/></svg></span>
+                <span class="v05-name">Ghostty</span>
+              </div>
+              <div class="v05-item" data-name="OpenCode">
+                <span class="v05-tile" data-tool="opencode"><svg class="lg" aria-hidden="true"><use href="#logo-opencode"/></svg></span>
+                <span class="v05-name">OpenCode</span>
+              </div>
+              <div class="v05-item" data-name="Oh My Posh">
+                <span class="v05-tile" data-tool="omp"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg></span>
+                <span class="v05-name">Oh My Posh</span>
+              </div>
+              <span class="v05-sep"></span>
+              <div class="v05-item" data-name="Figma">
+                <span class="v05-tile" data-tool="figma"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg></span>
+                <span class="v05-name">Figma</span>
+              </div>
+              <div class="v05-item" data-name="CleanShot">
+                <span class="v05-tile v05-tile--full" data-tool="cleanshot"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg></span>
+                <span class="v05-name">CleanShot</span>
+              </div>
+              <div class="v05-item" data-name="Gifski">
+                <span class="v05-tile v05-tile--full" data-tool="gifski"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg></span>
+                <span class="v05-name">Gifski</span>
+              </div>
+              <div class="v05-item" data-name="Arc">
+                <span class="v05-tile" data-tool="arc"><svg class="lg" aria-hidden="true"><use href="#logo-arc"/></svg></span>
+                <span class="v05-name">Arc</span>
+              </div>
+              <div class="v05-item" data-name="Raycast">
+                <span class="v05-tile" data-tool="raycast"><svg class="lg" aria-hidden="true"><use href="#logo-raycast"/></svg></span>
+                <span class="v05-name">Raycast</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">06</span><h2>Bento grid</h2>
+          <p class="why">Four frosted tiles sized by group. Balanced, modern, and each logo sits in color inside quiet cards.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v06">
+          <div class="v06-tile">
+            <p class="v06-cat">IDE</p>
+            <div class="v06-tools">
+              <span class="v06-tool v06-tool--hero"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>VS Code</span>
+            </div>
+          </div>
+          <div class="v06-tile">
+            <p class="v06-cat">Agents</p>
+            <div class="v06-tools">
+              <span class="v06-tool"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>Claude Code</span>
+              <span class="v06-tool"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>Codex</span>
+            </div>
+          </div>
+          <div class="v06-tile v06-tile--terminal">
+            <p class="v06-cat">Terminal</p>
+            <div class="v06-tools">
+              <span class="v06-tool"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>Ghostty</span>
+              <span class="v06-tool"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>OpenCode</span>
+              <span class="v06-tool"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>Oh My Posh</span>
+            </div>
+          </div>
+          <div class="v06-tile v06-tile--utilities">
+            <p class="v06-cat">Utilities</p>
+            <div class="v06-tools">
+              <span class="v06-tool"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>Figma</span>
+              <span class="v06-tool"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>CleanShot</span>
+              <span class="v06-tool"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>Gifski</span>
+              <span class="v06-tool"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>Arc</span>
+              <span class="v06-tool"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>Raycast</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">07</span><h2>Spec sheet</h2>
+          <p class="why">Dotfile energy: KEY=value pairs in mono with the marks as syntax color. For people who read .env files for fun.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v07">
+          <div class="v07-note"># ~/.tools</div>
+          <div class="v07-grid">
+            <div class="v07-line">
+              <span class="k">EDITOR</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>code</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">DESIGN</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>figma</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">AGENTS</span><span class="eq">=</span>
+              <span class="vals">
+                <span class="v07-tool"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>claude-code</span>
+                <span class="v07-colon">:</span>
+                <span class="v07-tool"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>codex</span>
+              </span>
+            </div>
+            <div class="v07-line">
+              <span class="k">CAPTURE</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>cleanshot</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">TERM</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>ghostty</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">GIFS</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>gifski</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">CLI</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>opencode</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">BROWSER</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>arc</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">PROMPT</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>oh-my-posh</span></span>
+            </div>
+            <div class="v07-line">
+              <span class="k">LAUNCHER</span><span class="eq">=</span>
+              <span class="vals"><span class="v07-tool"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>raycast</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">08</span><h2>Editorial prose</h2>
+          <p class="why">One paragraph, every tool linked inline with its mark. The most human treatment and the cheapest to maintain.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <p class="v08">
+          Most of my day runs through a short list of tools. Designs start in
+          <a href="https://figma.com"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>Figma</a>
+          and ship from
+          <a href="https://code.visualstudio.com"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>VS Code</a>,
+          with
+          <a href="https://claude.com/product/claude-code"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>Claude Code</a>
+          and
+          <a href="https://openai.com/codex"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>Codex</a>
+          doing the heavy lifting on branches. The terminal is
+          <a href="https://ghostty.org"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>Ghostty</a>,
+          dressed up by
+          <a href="https://ohmyposh.dev"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>Oh My Posh</a>
+          and never far from
+          <a href="https://opencode.ai"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>OpenCode</a>.
+          Everything worth sharing goes through
+          <a href="https://cleanshot.com"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>CleanShot</a>
+          or gets squeezed into a GIF by
+          <a href="https://gif.ski"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>Gifski</a>,
+          <a href="https://arc.net"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>Arc</a>
+          handles the browsing, and
+          <a href="https://raycast.com"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>Raycast</a>
+          glues the whole thing together.
+        </p>
+      </section>
+
+      <!-- 09 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">09</span><h2>Marquee</h2>
+          <p class="why">A slow logo ticker with edge fades; hover pauses it. Motion earns attention at the end of a long page.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v09">
+          <div class="v09-track">
+            <div class="v09-set">
+              <span class="v09-item"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>VS Code</span>
+              <span class="v09-item"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>Claude Code</span>
+              <span class="v09-item"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>Codex</span>
+              <span class="v09-item"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>Ghostty</span>
+              <span class="v09-item"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>OpenCode</span>
+              <span class="v09-item"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>Oh My Posh</span>
+              <span class="v09-item"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>Figma</span>
+              <span class="v09-item"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>CleanShot</span>
+              <span class="v09-item"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>Gifski</span>
+              <span class="v09-item"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>Arc</span>
+              <span class="v09-item"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>Raycast</span>
+            </div>
+            <div class="v09-set" aria-hidden="true">
+              <span class="v09-item"><svg class="lg lg-vscode"><use href="#logo-vscode"/></svg>VS Code</span>
+              <span class="v09-item"><svg class="lg lg-claude"><use href="#logo-claude"/></svg>Claude Code</span>
+              <span class="v09-item"><svg class="lg lg-codex"><use href="#logo-codex"/></svg>Codex</span>
+              <span class="v09-item"><svg class="lg lg-ghostty"><use href="#logo-ghostty"/></svg>Ghostty</span>
+              <span class="v09-item"><svg class="lg lg-opencode"><use href="#logo-opencode"/></svg>OpenCode</span>
+              <span class="v09-item"><svg class="lg"><use href="#logo-omp"/></svg>Oh My Posh</span>
+              <span class="v09-item"><svg class="lg"><use href="#logo-figma"/></svg>Figma</span>
+              <span class="v09-item"><svg class="lg"><use href="#logo-cleanshot"/></svg>CleanShot</span>
+              <span class="v09-item"><svg class="lg"><use href="#logo-gifski"/></svg>Gifski</span>
+              <span class="v09-item"><svg class="lg lg-arc"><use href="#logo-arc"/></svg>Arc</span>
+              <span class="v09-item"><svg class="lg lg-raycast"><use href="#logo-raycast"/></svg>Raycast</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="variation">
+        <div class="variation-head">
+          <span class="num">10</span><h2>File tree</h2>
+          <p class="why">The stack as a VS Code explorer: group folders, tool files, indent guides. A wink at the years spent drawing these icons.</p>
+        </div>
+        <h2 class="sec-h">Tools of Choice</h2>
+        <div class="v10">
+          <div class="v10-head">
+            <span>TOOLS-OF-CHOICE</span>
+            <svg aria-hidden="true"><use href="#i-dots"/></svg>
+          </div>
+          <div class="v10-body">
+            <details open>
+              <summary><svg class="v10-chev" aria-hidden="true"><use href="#i-chev"/></svg><svg class="v10-folder" aria-hidden="true"><use href="#i-folder"/></svg>ide</summary>
+              <div class="v10-files">
+                <div class="v10-file"><svg class="lg lg-vscode" aria-hidden="true"><use href="#logo-vscode"/></svg>code</div>
+              </div>
+            </details>
+            <details open>
+              <summary><svg class="v10-chev" aria-hidden="true"><use href="#i-chev"/></svg><svg class="v10-folder" aria-hidden="true"><use href="#i-folder"/></svg>agents</summary>
+              <div class="v10-files">
+                <div class="v10-file"><svg class="lg lg-claude" aria-hidden="true"><use href="#logo-claude"/></svg>claude</div>
+                <div class="v10-file"><svg class="lg lg-codex" aria-hidden="true"><use href="#logo-codex"/></svg>codex</div>
+              </div>
+            </details>
+            <details open>
+              <summary><svg class="v10-chev" aria-hidden="true"><use href="#i-chev"/></svg><svg class="v10-folder" aria-hidden="true"><use href="#i-folder"/></svg>terminal</summary>
+              <div class="v10-files">
+                <div class="v10-file"><svg class="lg lg-ghostty" aria-hidden="true"><use href="#logo-ghostty"/></svg>ghostty</div>
+                <div class="v10-file"><svg class="lg lg-opencode" aria-hidden="true"><use href="#logo-opencode"/></svg>opencode</div>
+                <div class="v10-file"><svg class="lg" aria-hidden="true"><use href="#logo-omp"/></svg>oh-my-posh</div>
+              </div>
+            </details>
+            <details open>
+              <summary><svg class="v10-chev" aria-hidden="true"><use href="#i-chev"/></svg><svg class="v10-folder" aria-hidden="true"><use href="#i-folder"/></svg>utilities</summary>
+              <div class="v10-files">
+                <div class="v10-file"><svg class="lg" aria-hidden="true"><use href="#logo-figma"/></svg>figma</div>
+                <div class="v10-file"><svg class="lg" aria-hidden="true"><use href="#logo-cleanshot"/></svg>cleanshot</div>
+                <div class="v10-file"><svg class="lg" aria-hidden="true"><use href="#logo-gifski"/></svg>gifski</div>
+                <div class="v10-file"><svg class="lg lg-arc" aria-hidden="true"><use href="#logo-arc"/></svg>arc</div>
+                <div class="v10-file"><svg class="lg lg-raycast" aria-hidden="true"><use href="#logo-raycast"/></svg>raycast</div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        var button = document.getElementById('theme-toggle');
+        var root = document.documentElement;
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          root.classList.add('dark');
+        }
+        var sync = function () {
+          button.textContent = root.classList.contains('dark') ? 'Light mode' : 'Dark mode';
+        };
+        button.addEventListener('click', function () {
+          root.classList.toggle('dark');
+          sync();
+        });
+        sync();
+      }());
+    </script>
+  </body>
+</html>

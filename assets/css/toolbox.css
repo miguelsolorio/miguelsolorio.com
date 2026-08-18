@@ -1,0 +1,175 @@
+/* Toolbox: the dock row at the end of the home page. Ported from
+   the standalone lab in static/home/toolbox-variations.html (variation 05,
+   "macOS dock"). Constructed app tiles — brand ground, white mark — matching
+   each app's real icon where one exists; VS Code shows its full-color mark
+   on white and CleanShot ships its actual app icon. Magnification is
+   CSS-only, with :has() supplying the neighbor falloff; browsers without
+   :has() just magnify the hovered tile. */
+
+@layer components {
+  .section--toolbox {
+    font-size: clamp(2.125rem, 4vw, 2.75rem);
+  }
+
+  #toolbox {
+    display: flex;
+    justify-content: center;
+  }
+
+  .toolbox-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  /* No shelf chrome: the tiles sit directly on the ambient. */
+  .toolbox-shelf {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+
+  .toolbox-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .toolbox-tile {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    overflow: hidden;
+    border-radius: .875rem;
+    transform-origin: bottom center;
+    transition: transform .18s cubic-bezier(.2, .8, .2, 1);
+  }
+
+  .toolbox-mark {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    fill: currentColor;
+    color: #fff;
+  }
+
+  .toolbox-tile--full { display: block; }
+  .toolbox-tile--full .toolbox-mark {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* VS Code: the full-color mark (static/code.svg) on white, like the real
+     app icon. The ring keeps the white edge legible on the near-white page. */
+  .toolbox-tile[data-tool="vscode"] { background: #ffffff; box-shadow: var(--shadow-ring); }
+  .toolbox-tile[data-tool="vscode"] .toolbox-mark { width: 2.125rem; height: 2.125rem; }
+  .toolbox-tile[data-tool="claude"] { background: #d97757; }
+  /* Clawd is wider than tall; a touch more width keeps its optical weight
+     level with the square marks. */
+  .toolbox-tile[data-tool="claude"] .toolbox-mark { width: 2rem; height: 2rem; }
+  .toolbox-tile[data-tool="codex"] { background: #0d0d11; }
+  .toolbox-tile[data-tool="ghostty"] { background: linear-gradient(160deg, #5a70f7, #2b3ed6); }
+  .toolbox-tile[data-tool="opencode"] { background: #0d0d11; }
+  .toolbox-tile[data-tool="omp"] { background: #262b3d; }
+  .toolbox-tile[data-tool="omp"] .toolbox-mark { width: 2rem; height: 2rem; }
+  .toolbox-tile[data-tool="figma"] { background: #1e1e1e; }
+  .toolbox-tile[data-tool="arc"] { background: linear-gradient(160deg, #ff8fab, #7b5bd6); }
+  .toolbox-tile[data-tool="raycast"] { background: #ff6363; }
+  .dark .toolbox-tile[data-tool="vscode"] { box-shadow: none; }
+
+  .toolbox-item:hover .toolbox-tile {
+    transform: translateY(-10px) scale(1.3);
+  }
+  .toolbox-item:hover + .toolbox-item .toolbox-tile,
+  .toolbox-item:has(+ .toolbox-item:hover) .toolbox-tile {
+    transform: translateY(-4px) scale(1.12);
+  }
+
+  /* Tooltip, macOS style: name pill above the magnified tile. */
+  .toolbox-item::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: calc(100% + .875rem);
+    left: 50%;
+    translate: -50% 0;
+    padding: .25rem .625rem;
+    border: 1px solid #e2e8f0;
+    border-radius: .5rem;
+    background: #ffffff;
+    box-shadow: var(--shadow-md);
+    color: #1e293b;
+    font-size: .6875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease;
+  }
+  .toolbox-item:hover::after { opacity: 1; }
+
+  .toolbox-sep {
+    align-self: center;
+    width: 1px;
+    height: 2.5rem;
+    background: rgba(15, 23, 42, .1);
+  }
+
+  /* Names stay readable to screen readers; visible labels appear on touch. */
+  .toolbox-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Rosé Dusk */
+  .dark .toolbox-item::after {
+    border-color: #3a3444;
+    background: #201c28;
+    color: #ede7f2;
+  }
+  .dark .toolbox-sep { background: rgba(210, 202, 222, .13); }
+
+  /* Touch: no magnification or tooltips; permanent labels instead. */
+  @media (pointer: coarse) {
+    .toolbox-item:hover .toolbox-tile,
+    .toolbox-item:hover + .toolbox-item .toolbox-tile,
+    .toolbox-item:has(+ .toolbox-item:hover) .toolbox-tile { transform: none; }
+    .toolbox-item::after { display: none; }
+    .toolbox-name {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: .375rem 0 0;
+      overflow: visible;
+      clip-path: none;
+      color: #64748b;
+      font-size: .5625rem;
+      font-weight: 500;
+    }
+    .dark .toolbox-name { color: #8c839f; }
+  }
+
+  @media (max-width: 40rem) {
+    .toolbox-shelf {
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 1rem;
+    }
+    .toolbox-sep { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toolbox-tile,
+    .toolbox-item::after { transition: none; }
+    .toolbox-item:hover .toolbox-tile,
+    .toolbox-item:hover + .toolbox-item .toolbox-tile,
+    .toolbox-item:has(+ .toolbox-item:hover) .toolbox-tile { transform: none; }
+  }
+}

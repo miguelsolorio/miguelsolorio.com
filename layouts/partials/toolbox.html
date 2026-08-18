@@ -1,0 +1,82 @@
+{{/* Toolbox: the dock row at the end of the home page. Ported from
+     the standalone lab in static/home/toolbox-variations.html (variation 05,
+     "macOS dock"). Marks are real brand assets: simple-icons paths (OpenAI
+     pinned from v14, the rest current), Clawd the Claude Code pixel mascot
+     (from the official VS Code extension's clawd.svg), Figma's official five
+     modules, Oh My Posh's powerline segments redrawn from ohmyposh.dev, the
+     full-color VS Code mark from static/code.svg, and the actual CleanShot
+     app icon in static/home/. */}}
+<h2 class="section section--work section--toolbox">Toolbox</h2>
+<div id="toolbox">
+  <svg class="toolbox-defs" width="0" height="0" aria-hidden="true">
+    <defs>
+      <clipPath id="toolbox-cs-clip"><rect width="96" height="96" rx="21"/></clipPath>
+      <symbol id="logo-vscode" viewBox="0 0 96 96"><image href="/code.svg" width="96" height="96"/></symbol>
+      <symbol id="logo-claude" viewBox="0 0 47 38"><path d="M5.08191 10.0769V0.938461H9.37422V10.0769H5.08191ZM9.23305 10.0769V0.938461H13.5254V10.0769H9.23305ZM13.3842 10.0769V0.938461H17.6765V10.0769H13.3842ZM17.5353 10.0769V0.938461H21.8276V10.0769H17.5353ZM21.6865 10.0769V0.938461H25.9788V10.0769H21.6865ZM25.8376 10.0769V0.938461H30.1299V10.0769H25.8376ZM29.9888 10.0769V0.938461H34.2811V10.0769H29.9888ZM34.1399 10.0769V0.938461H38.4322V10.0769H34.1399ZM38.291 10.0769V0.938461H42.5834V10.0769H38.291ZM0.930769 19.0769V9.93846H5.22308V19.0769H0.930769ZM5.08191 19.0769V9.93846H9.37422V19.0769H5.08191ZM9.23305 19.0769V14.5077H13.5254V19.0769H9.23305ZM13.3842 19.0769V9.93846H17.6765V19.0769H13.3842ZM17.5353 19.0769V9.93846H21.8276V19.0769H17.5353ZM21.6865 19.0769V9.93846H25.9788V19.0769H21.6865ZM25.8376 19.0769V9.93846H30.1299V19.0769H25.8376ZM29.9888 19.0769V9.93846H34.2811V19.0769H29.9888ZM34.1399 19.0769V14.5077H38.4322V19.0769H34.1399ZM38.291 19.0769V9.93846H42.5834V19.0769H38.291ZM42.4422 19.0769V9.93846H46.7345V19.0769H42.4422ZM5.08191 28.0769V18.9385H9.37422V28.0769H5.08191ZM9.23305 28.0769V18.9385H13.5254V28.0769H9.23305ZM13.3842 28.0769V18.9385H17.6765V28.0769H13.3842ZM17.5353 28.0769V18.9385H21.8276V28.0769H17.5353ZM21.6865 28.0769V18.9385H25.9788V28.0769H21.6865ZM25.8376 28.0769V18.9385H30.1299V28.0769H25.8376ZM29.9888 28.0769V18.9385H34.2811V28.0769H29.9888ZM34.1399 28.0769V18.9385H38.4322V28.0769H34.1399ZM38.291 28.0769V18.9385H42.5834V28.0769H38.291ZM5.08191 37.0769V27.9385H9.37422V37.0769H5.08191ZM13.3842 37.0769V27.9385H17.6765V37.0769H13.3842ZM29.9888 37.0769V27.9385H34.2811V37.0769H29.9888ZM38.291 37.0769V27.9385H42.5834V37.0769H38.291Z"/></symbol>
+      <symbol id="logo-codex" viewBox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></symbol>
+      <symbol id="logo-ghostty" viewBox="0 0 24 24"><path d="M12 0C6.7 0 2.4 4.3 2.4 9.6v11.146c0 1.772 1.45 3.267 3.222 3.254a3.18 3.18 0 0 0 1.955-.686 1.96 1.96 0 0 1 2.444 0 3.18 3.18 0 0 0 1.976.686c.75 0 1.436-.257 1.98-.686.715-.563 1.71-.587 2.419-.018.59.476 1.355.743 2.182.699 1.705-.094 3.022-1.537 3.022-3.244V9.601C21.6 4.3 17.302 0 12 0M6.069 6.562a1 1 0 0 1 .46.131l3.578 2.065v.002a.974.974 0 0 1 0 1.687L6.53 12.512a.975.975 0 0 1-.976-1.687L7.67 9.602 5.553 8.38a.975.975 0 0 1 .515-1.818m7.438 2.063h4.7a.975.975 0 1 1 0 1.95h-4.7a.975.975 0 0 1 0-1.95"/></symbol>
+      <symbol id="logo-opencode" viewBox="0 0 24 24"><path d="M22 24H2V0h20zM17 4.8H7v14.4h10z"/></symbol>
+      <symbol id="logo-arc" viewBox="0 0 24 24"><path d="M23.9371 8.5089c.1471-.7147.0367-1.4661-.3364-2.0967-.4203-.7094-1.1035-1.1876-1.9075-1.3506a2.9178 2.9178 0 0 0-.5623-.0578h-.0105c-1.3768 0-2.5329.988-2.8061 2.3385-.1629.7935-.4782 1.5607-.9196 2.2701a.263.263 0 0 1-.2363.1205.2627.2627 0 0 1-.2209-.1468l-2.8587-5.9906c-.3626-.762-1.0142-1.361-1.8235-1.5975-1.3873-.4099-2.8166.2838-3.4052 1.524L5.897 9.7333c-.0788.1629-.31.1576-.3784-.0053v-.0052a2.8597 2.8597 0 0 0-2.6642-1.7972c-.3784 0-.7515.0736-1.1088.2207-1.4714.6148-2.1283 2.349-1.5187 3.8203.557 1.3295 1.4714 2.5855 2.659 3.668.084.0788.1103.1997.063.3048l-.9563 2.0074c-.6727 1.4188-.1314 3.1477 1.2664 3.8571.4099.2049.846.31 1.298.31 1.1035 0 2.123-.6411 2.5959-1.6395l.825-1.7289a.254.254 0 0 1 .3048-.1366c1.0037.2732 2.0127.4204 3.0058.4204 1.1193 0 2.2229-.1682 3.2896-.4782a.2626.2626 0 0 1 .3101.1366l.8145 1.7131c.4834 1.0195 1.4924 1.7131 2.6169 1.7184.4572 0 .8986-.0999 1.3138-.3101 1.403-.7094 1.939-2.4435 1.2664-3.8676L19.875 15.787c-.0473-.1051-.0263-.226.0578-.3048 1.9864-1.8497 3.4525-4.2723 4.0043-6.9733ZM6.2121 20.0172a1.835 1.835 0 0 1-.6764.7622 1.8352 1.8352 0 0 1-.9788.2835c-.2733 0-.5518-.063-.8093-.1891-.9038-.4467-1.2454-1.5713-.8093-2.4804l.7935-1.6658c.0684-.1471.2575-.1997.3837-.1051.1681.1209.3415.2365.5202.3521.6989.4467 1.4293.825 2.1808 1.1351.1419.0578.205.2154.1419.352l-.7462 1.5555Zm5.0763-2.0442c-4.2092 0-8.6548-2.8534-10.1262-6.4951a1.8286 1.8286 0 0 1 1.009-2.3805c.2259-.0893.4571-.1366.683-.1366.7252 0 1.4084.431 1.6974 1.1456.9196 2.2806 4.0043 4.2092 6.7368 4.2092.4204 0 .8408-.042 1.256-.1156a.2643.2643 0 0 1 .2837.1419l1.3768 2.9007c.0683.1471-.0105.3205-.1629.3626-.8986.2365-1.8182.3678-2.7536.3678Zm-.599-4.9291.6358-1.3348c.0526-.1051.205-.1051.2575 0l.6201 1.3033c.042.0841-.0158.1891-.1051.2049-.268.0368-.536.0578-.7988.0578a5.0634 5.0634 0 0 1-.4887-.0263c-.1103-.0157-.1629-.1208-.1208-.2049Zm8.4604 7.8246a1.831 1.831 0 0 1-2.0329-.2788 1.8292 1.8292 0 0 1-.4316-.5778l-4.987-10.4836c-.0998-.2102-.3994-.2102-.4939 0l-1.545 3.2529a.2623.2623 0 0 1-.3205.1366c-1.051-.3626-2.0495-.9774-2.7904-1.7184a.2552.2552 0 0 1-.0473-.2943l3.3421-7.031c.1156-.247.2943-.4677.5203-.6201 1.051-.6884 2.2806-.2575 2.7378.7041l6.8577 14.4248c.4309.9144.0946 2.0389-.8093 2.4856Zm-1.4451-9.6481a.258.258 0 0 1 .0315-.2732c.783-1.0037 1.3558-2.1756 1.6028-3.421.1734-.867.9354-1.4714 1.7919-1.4714.1472 0 .2943.0158.4467.0526.9722.2417 1.5344 1.2507 1.3295 2.2333-.4835 2.3017-1.6816 4.3879-3.3159 6.0222-.1313.1314-.3468.0946-.4256-.0683l-1.4609-3.0742Z"/></symbol>
+      <symbol id="logo-raycast" viewBox="0 0 24 24"><path d="M6.004 15.492v2.504L0 11.992l1.258-1.249Zm2.504 2.504H6.004L12.008 24l1.253-1.253zm14.24-4.747L24 11.997 12.003 0 10.75 1.251 15.491 6h-2.865L9.317 2.692 8.065 3.944l2.06 2.06H8.691v9.31H18v-1.432l2.06 2.06 1.252-1.252-3.312-3.32V8.506ZM6.63 5.372 5.38 6.625l1.342 1.343 1.251-1.253Zm10.655 10.655-1.247 1.251 1.342 1.343 1.253-1.251zM3.944 8.059 2.692 9.31l3.312 3.314v-2.506zm9.936 9.937h-2.504l3.314 3.312 1.25-1.252z"/></symbol>
+      <symbol id="logo-figma" viewBox="0 0 24 24">
+        <path fill="#f24e1e" d="M12 0H8a4 4 0 0 0 0 8h4Z"/>
+        <path fill="#ff7262" d="M12 0h4a4 4 0 0 1 0 8h-4Z"/>
+        <path fill="#a259ff" d="M12 8H8a4 4 0 0 0 0 8h4Z"/>
+        <circle fill="#1abcfe" cx="16" cy="12" r="4"/>
+        <path fill="#0acf83" d="M8 16a4 4 0 1 0 4 4v-4Z"/>
+      </symbol>
+      <symbol id="logo-omp" viewBox="0 0 24 24">
+        <path fill="#fcae1e" d="M2 7h3.5l3 5-3 5H2a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/>
+        <path fill="#f0621e" d="M6.6 7h5.9l3 5-3 5H6.6l3-5Z"/>
+        <path fill="#1793d1" d="M13.6 7h5.4l3 5-3 5h-5.4l3-5Z"/>
+        <rect fill="#ffffff" x="20.6" y="15.4" width="3.4" height="1.7" rx=".4"/>
+      </symbol>
+      <symbol id="logo-cleanshot" viewBox="0 0 96 96"><image href="/home/cleanshot-icon.png" width="96" height="96" clip-path="url(#toolbox-cs-clip)"/></symbol>
+    </defs>
+  </svg>
+  <div class="toolbox-shelf">
+    <div class="toolbox-item" data-name="VS Code">
+      <span class="toolbox-tile" data-tool="vscode"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-vscode"/></svg></span>
+      <span class="toolbox-name">VS Code</span>
+    </div>
+    <span class="toolbox-sep" aria-hidden="true"></span>
+    <div class="toolbox-item" data-name="Claude Code">
+      <span class="toolbox-tile" data-tool="claude"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-claude"/></svg></span>
+      <span class="toolbox-name">Claude Code</span>
+    </div>
+    <div class="toolbox-item" data-name="Codex">
+      <span class="toolbox-tile" data-tool="codex"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-codex"/></svg></span>
+      <span class="toolbox-name">Codex</span>
+    </div>
+    <span class="toolbox-sep" aria-hidden="true"></span>
+    <div class="toolbox-item" data-name="Ghostty">
+      <span class="toolbox-tile" data-tool="ghostty"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-ghostty"/></svg></span>
+      <span class="toolbox-name">Ghostty</span>
+    </div>
+    <div class="toolbox-item" data-name="OpenCode">
+      <span class="toolbox-tile" data-tool="opencode"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-opencode"/></svg></span>
+      <span class="toolbox-name">OpenCode</span>
+    </div>
+    <div class="toolbox-item" data-name="Oh My Posh">
+      <span class="toolbox-tile" data-tool="omp"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-omp"/></svg></span>
+      <span class="toolbox-name">Oh My Posh</span>
+    </div>
+    <span class="toolbox-sep" aria-hidden="true"></span>
+    <div class="toolbox-item" data-name="Figma">
+      <span class="toolbox-tile" data-tool="figma"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-figma"/></svg></span>
+      <span class="toolbox-name">Figma</span>
+    </div>
+    <div class="toolbox-item" data-name="CleanShot">
+      <span class="toolbox-tile toolbox-tile--full" data-tool="cleanshot"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-cleanshot"/></svg></span>
+      <span class="toolbox-name">CleanShot</span>
+    </div>
+    <div class="toolbox-item" data-name="Arc">
+      <span class="toolbox-tile" data-tool="arc"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-arc"/></svg></span>
+      <span class="toolbox-name">Arc</span>
+    </div>
+    <div class="toolbox-item" data-name="Raycast">
+      <span class="toolbox-tile" data-tool="raycast"><svg class="toolbox-mark" aria-hidden="true"><use href="#logo-raycast"/></svg></span>
+      <span class="toolbox-name">Raycast</span>
+    </div>
+  </div>
+</div>
