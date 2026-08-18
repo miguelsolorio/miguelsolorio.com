@@ -609,3 +609,28 @@
         display: none;
     }
 }
+
+/* Touch browsers zoom the page in whenever a focused input renders under 16px,
+   and the terminal's type is deliberately well under that, so tapping the
+   prompt scaled the whole hero up and pushed most of it off screen. Sizing the
+   prompt row at 16px is the only fix that leaves the viewport's scale alone;
+   pinning that would take pinch-zoom away with it. The bump covers the row and
+   its completion list together, so the input, the mirrored caret layer, the
+   hint, and the suggestions all read one font-size: the caret keeps landing on
+   the character the text shows, and the rows grow into real tap targets. Output
+   above stays small, since the clamp up there is what keeps a 44-char commit
+   row on one line. max() rather than a bare 1rem because the 16px threshold is
+   fixed in CSS pixels, so a reader running a smaller default would land back
+   under it. */
+@media (pointer: coarse) {
+    .home-hero-terminal-form,
+    .home-hero-terminal-suggestions {
+        font-size: max(1rem, 16px);
+    }
+
+    /* The base 4.25rem is tuned to the terminal's 12px mono. In ch, the column
+       holds the descriptions in line at whatever size the row renders at. */
+    .home-hero-terminal-suggestion-name {
+        min-width: 9.5ch;
+    }
+}

@@ -59,7 +59,11 @@
   width: 100%;
   padding: 0.95rem 1.125rem;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-size: 1rem;
+  /* Never below 16px: touch browsers zoom the page in on a focused input that
+     renders under that, and the threshold is fixed in CSS pixels, so a bare
+     1rem would drop under it for a reader running a smaller default. Same
+     floor the hero terminal's prompt row carries (hero.css). */
+  font-size: max(1rem, 16px);
   font-weight: 400;
   line-height: 1.5;
   color: #1e293b;
