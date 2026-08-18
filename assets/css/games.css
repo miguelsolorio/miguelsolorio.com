@@ -247,18 +247,30 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
   .a-hud-bottom .a-hint { display: none; }
 
   /* Except when it's the touch hint, which games.js writes for exactly these
-     screens — hiding it here left a phone player with no instructions at all.
-     Lifted above the 42% .a-touch owns so it clears the pad and the buttons,
-     and centred because the sound/exit chips have moved to the top corner. */
+     screens: hiding it here left a phone player with no instructions at all.
+     Centred, because the sound and exit chips have moved to the top corner,
+     and parked just above the button row and the canvas tray under it. Only a
+     game that actually puts a thumb pad down there needs the full 42% that
+     .a-touch reserves, and .show-pad comes off the same flag that shows it. */
   #arcade.show-touch .a-hud-bottom .a-hint {
     display: inline-flex;
     position: absolute;
-    left: 50%; bottom: calc(42% + .75rem);
+    left: 50%; bottom: max(7.5rem, calc(env(safe-area-inset-bottom) + 5.5rem));
     transform: translateX(-50%);
     max-width: calc(100% - 2rem);
     text-align: center;
   }
+  #arcade.show-touch.show-pad .a-hud-bottom .a-hint { bottom: calc(42% + .75rem); }
 }
+
+/* The hint is instructions, and instructions stop being information a few
+   seconds in. Wide-screen it sits in a corner nothing is drawn in and can stay.
+   On touch it's a chip parked on the play field, and no one position is clear
+   of both a ship that lives along the bottom and a cursor that orbits the
+   middle, so it says its piece and gets out. games.js restarts the class on
+   every entry into play, so each banner is followed by a legible hint. */
+#arcade.show-touch .a-hint.is-fading { animation: a-hint-out .5s ease 8s both; }
+@keyframes a-hint-out { to { opacity: 0; } }
 
 /* ---- page lock ----
    Deliberately no `overflow: hidden` on body: main.css documents that once html
@@ -301,4 +313,6 @@ body.is-game-open {
   .a-scrim, .a-banner, .a-btn, .a-card, .a-pad i, .a-pips i, .a-hud, .a-stage-wrap { transition: none; }
   .a-banner { transform: none; }
   .a-gauge.is-low b { animation: none; }
+  /* The 8s delay is information timing, not motion; only the crossfade goes. */
+  #arcade.show-touch .a-hint.is-fading { animation-duration: 1ms; }
 }

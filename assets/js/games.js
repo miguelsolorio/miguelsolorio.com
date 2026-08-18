@@ -114,7 +114,14 @@
      ========================================================================== */
   var Input = (function () {
     var keys = Object.create(null), tapped = Object.create(null);
-    var pointer = { x: 0, y: 0, down: false, tap: false, up: false, moved: false };
+    /* dx/dy are travel accumulated since the last frameEnd, not since the last
+       event: a finger emits several moves per frame, so a game reading only the
+       newest position would drop most of the drag. Summing the per-event diffs
+       gives exactly the finger's travel, which is what lets a game move a ship
+       by the same distance the thumb moved. `id` is the one pointer that owns
+       the stage; the buttons and the pad bubble their own events up here and
+       must never be mistaken for it. */
+    var pointer = { x: 0, y: 0, dx: 0, dy: 0, id: null, down: false, tap: false, up: false, moved: false };
     var stick = { x: 0, y: 0, active: false };
     var pads = { a: false, b: false, aTap: false, bTap: false };
     var touchMode = window.matchMedia('(pointer: coarse)').matches;
@@ -128,7 +135,10 @@
       keys[e.code] = true; tapped[e.code] = true;
     }, true);
     window.addEventListener('keyup', function (e) { keys[e.code] = false; }, true);
-    window.addEventListener('blur', function () { keys = Object.create(null); pointer.down = false; });
+    window.addEventListener('blur', function () {
+      keys = Object.create(null);
+      pointer.down = false; pointer.id = null; pointer.dx = 0; pointer.dy = 0;
+    });
 
     function stagePoint(e, host) {
       var r = host.getBoundingClientRect();
@@ -140,15 +150,30 @@
         if (e.target.closest && e.target.closest('.a-btn, .a-key, .a-pad, .a-esc')) return;
         var p = stagePoint(e, host);
         pointer.x = p.x; pointer.y = p.y; pointer.down = true; pointer.tap = true; pointer.moved = false;
+        /* a re-grab starts a new drag, never a jump from where the last one ended */
+        pointer.dx = 0; pointer.dy = 0; pointer.id = e.pointerId;
         if (e.pointerType === 'touch') touchMode = true;
         if (host.setPointerCapture && e.pointerId != null) host.setPointerCapture(e.pointerId);
       });
       host.addEventListener('pointermove', function (e) {
+        /* One pointer owns the stage at a time. The A/B buttons and the pad sit
+           inside the host and bubble their moves up here, so without this test a
+           second thumb rolling on BOMB reads as the first one teleporting. */
+        if (pointer.down && e.pointerId !== pointer.id) return;
         var p = stagePoint(e, host);
         if (Math.abs(p.x - pointer.x) + Math.abs(p.y - pointer.y) > 2) pointer.moved = true;
+        if (pointer.down) { pointer.dx += p.x - pointer.x; pointer.dy += p.y - pointer.y; }
         pointer.x = p.x; pointer.y = p.y;
       });
-      function release() { if (pointer.down) pointer.up = true; pointer.down = false; }
+      /* Same ownership test on the way up: a button's pointerup bubbles here
+         too, and letting go of TNT used to end an orbit that was still running
+         on the other thumb. dx/dy deliberately survive the release, so the last
+         few pixels before a lift still count; frameEnd clears them next frame. */
+      function release(e) {
+        if (e && pointer.id != null && e.pointerId !== pointer.id) return;
+        if (pointer.down) pointer.up = true;
+        pointer.down = false; pointer.id = null;
+      }
       host.addEventListener('pointerup', release);
       host.addEventListener('pointercancel', release);
       host.addEventListener('contextmenu', function (e) { if (enabled) e.preventDefault(); });
@@ -192,6 +217,10 @@
     function reset() {
       keys = Object.create(null); tapped = Object.create(null);
       pointer.down = false; pointer.tap = false; pointer.up = false;
+      /* frameEnd normally clears the drag, and it does not run while the loop
+         is stopped: without this, pausing mid-drag would hand the game every
+         pixel travelled during the pause the moment it resumed. */
+      pointer.dx = 0; pointer.dy = 0; pointer.id = null;
       stick.x = stick.y = 0; pads.a = pads.b = false;
     }
     function anyDown(list) { for (var i = 0; i < list.length; i++) if (keys[list[i]]) return true; return false; }
@@ -201,7 +230,7 @@
       bind: bind, bindPad: bindPad, bindKey: bindKey, reset: reset,
       frameEnd: function () {
         tapped = Object.create(null);
-        pointer.tap = false; pointer.up = false;
+        pointer.tap = false; pointer.up = false; pointer.dx = 0; pointer.dy = 0;
         pads.aTap = false; pads.bTap = false;
       },
       enable: function (v) { enabled = v; if (!v) reset(); },
@@ -233,7 +262,110 @@
   }());
 
   /* ==========================================================================
-     3 · PAL — the arcade's colours ARE the site's colours.
+     3 · TRACK. Game mode is a takeover, not a navigation, so analytics records
+     one page view for the page underneath and then nothing at all, however
+     long someone spends inside Polarity. Two events close that gap: one when a
+     game is opened, one carrying the time spent in it.
+
+     gtag() only exists in production (header.html gates it on
+     hugo.IsProduction), so every call here is a silent no-op on localhost and
+     behind an ad blocker.
+     ========================================================================== */
+  var Track = (function () {
+    /* One run per play() call. A restart ends the run it replaces and opens a
+       new one, so two 40-second attempts never file as one 80-second sitting. */
+    var run = null;
+    var progressOf = function () { return null; };
+
+    function send(name, params) {
+      if (typeof window.gtag !== 'function') return;
+      try { window.gtag('event', name, params); } catch (error) {}
+    }
+
+    /* Only visible time counts. A game left open behind another tab is not
+       being played, and a phone locked mid-level would otherwise report a
+       nine-hour run. */
+    function elapsed() {
+      return run.banked + (run.since ? performance.now() - run.since : 0);
+    }
+
+    function report(reason) {
+      var seconds = Math.round(elapsed() / 1000);
+      /* A continuation is only worth an event if time actually passed in it:
+         reopening the tab and closing it straight away is not a second visit. */
+      if (run.part > 1 && seconds < 1) return;
+      var at = progressOf();
+      send('game_end', {
+        game_id: run.id,
+        game_name: run.name,
+        game_source: run.source,
+        game_result: run.result,
+        game_end_reason: reason,
+        game_level: at ? at.level : 0,
+        game_score: at ? at.score : 0,
+        duration_seconds: seconds,
+        /* Duplicated into `value` because GA4 charts that one in the stock
+           Events report: the average sitting is legible there without first
+           registering duration_seconds as a custom metric. */
+        value: seconds
+      });
+    }
+
+    function stop(reason) {
+      if (!run) return;
+      report(reason);
+      run = null;
+    }
+
+    function start(def, source) {
+      /* A live run at this point can only be the banner's Play again (same
+         game) or the palette opening a different one over the top, since
+         Cmd+Shift+P survives a game. Every other path came through close(). */
+      if (run) stop(run.id === def.id ? 'restart' : 'switch');
+      run = {
+        id: def.id, name: def.name, source: source || 'direct',
+        result: 'unfinished', banked: 0, since: performance.now(), part: 1
+      };
+      send('game_start', {
+        game_id: run.id,
+        game_name: run.name,
+        game_source: run.source,
+        game_input: Input.isTouch() ? 'touch' : 'keyboard'
+      });
+    }
+
+    /* visibilitychange is the last callback that reliably fires on mobile: a
+       tab swiped away on iOS may never see pagehide or unload. So the clock is
+       reported every time the page hides, and a run that comes back files its
+       remaining time as a second part. Two events that sum to the real total
+       beat one that never arrives at all. */
+    function hide() {
+      if (!run.since) return;
+      report('page_hidden');
+      run.banked = 0; run.since = 0; run.part++;
+    }
+    function show() { if (!run.since) run.since = performance.now(); }
+
+    document.addEventListener('visibilitychange', function () {
+      if (!run) return;
+      if (document.visibilityState === 'hidden') hide(); else show();
+    });
+
+    return {
+      /* Arcade hands over a reader rather than the numbers themselves: g is
+         nulled by teardown() before close() gets to report, and the
+         page-hidden flush above has no call site inside Arcade at all. */
+      watch: function (fn) { progressOf = fn; },
+      start: start,
+      /* Recorded as it happens rather than read at the end: someone who beats
+         the game and then sits on the victory banner for a minute still won. */
+      result: function (r) { if (run) run.result = r; },
+      stop: stop
+    };
+  }());
+
+  /* ==========================================================================
+     4 · PAL — the arcade's colours ARE the site's colours.
 
      Both columns are lifted from the stylesheets: light is the hero terminal's
      light palette (hero.css) plus the blurple primary; dark is Rosé Dusk
@@ -371,7 +503,7 @@
   var clamp = D.clamp, lerp = D.lerp;
 
   /* ==========================================================================
-     4 · ARCADE — the cabinet: registry, loop, HUD, banners.
+     5 · ARCADE — the cabinet: registry, loop, HUD, banners.
      ========================================================================== */
   var Arcade = (function () {
     var games = [];
@@ -587,6 +719,11 @@
       el.root.focus({ preventScroll: true });
       mode = 'playing';
       last = performance.now();
+      /* Restart the hint's fade on every entry into play: readable again after
+         each banner, and out of the way again a few seconds later. */
+      el.controls.classList.remove('is-fading');
+      void el.controls.offsetWidth;
+      el.controls.classList.add('is-fading');
     }
 
     /* ---------- game context ---------- */
@@ -674,6 +811,7 @@
         });
         return;
       }
+      Track.result('lost');
       showBanner({
         kicker: 'Game over',
         title: msg || 'That\'s the run.',
@@ -693,6 +831,7 @@
     }
     function victory() {
       Sfx.win();
+      Track.result('won');
       setTimeout(function () { Sfx.chord([784, 1047, 1319], 0.4, { type: 'triangle', gain: .3 }); }, 220);
       showBanner({
         kicker: 'All ' + current.levels.length + ' levels',
@@ -773,11 +912,19 @@
     }
 
     /* ---------- open / close ---------- */
-    function play(id) {
+    /* How far the run got, for whichever analytics event reports it next. */
+    Track.watch(function () {
+      return g ? { level: g.level + 1, score: Math.round(g.score) } : null;
+    });
+
+    function play(id, source) {
       var def = games.filter(function (x) { return x.id === id; })[0];
       if (!def) return false;
       ensureDOM();
       Sfx.resume();
+      /* Ahead of teardown(), which nulls g: a restart has to file the run it
+         is replacing with that run's own score rather than a blank one. */
+      Track.start(def, source);
 
       var wasOff = mode === 'off';
       teardown();
@@ -788,17 +935,25 @@
       el.root.hidden = false;
 
       current = def;
+      /* One source of truth for the thumb pad: it decides both whether the pad
+         is on screen and whether the CSS keeps the bottom 42% clear for it. A
+         pad-less game owns only the button corner, so its touch hint can sit
+         far lower than one that has to clear an 8.5rem circle. */
+      var hasPad = !(def.touch && def.touch.pad === false);
       var cls = 'show-hud show-stage show-scrim';
-      if (Input.isTouch()) cls += ' show-touch';
+      if (Input.isTouch()) cls += hasPad ? ' show-touch show-pad' : ' show-touch';
       el.root.className = cls;
       el.root.setAttribute('aria-label', def.name + ' — game mode');
 
       el.name.textContent = def.name;
       el.controls.innerHTML = (Input.isTouch() && def.touchHint) ? def.touchHint : def.controls;
+      /* the fade fills forwards, so without this a second game would open with
+         the previous one's hint already faded out behind its banner */
+      el.controls.classList.remove('is-fading');
       el.keyA.textContent = (def.touch && def.touch.a) || 'A';
       el.keyB.textContent = (def.touch && def.touch.b) || 'B';
       el.keyB.style.display = (def.touch && def.touch.b) ? '' : 'none';
-      el.pad.style.display = (def.touch && def.touch.pad === false) ? 'none' : '';
+      el.pad.style.display = hasPad ? '' : 'none';
 
       W = H = 0;                /* force sizeCanvas past its unchanged-size guard */
       sizeCanvas();
@@ -823,6 +978,7 @@
 
     function close() {
       if (mode === 'off' || !el) return;
+      Track.stop('exit');       /* ahead of teardown(), for the same reason */
       teardown();
       el.root.className = '';
       el.root.hidden = true;
@@ -949,12 +1105,12 @@
        single ↔, which is not a key anyone has */
     controls: '<kbd>WASD</kbd>/<kbd>↑ ↓ ← →</kbd> fly + <kbd>Space</kbd> fire + <kbd>Shift</kbd> bomb' +
               '&nbsp;·&nbsp; or steer with the mouse — it fires itself, click bombs',
-    touchHint: 'Drag the pad to fly · guns fire themselves · A bombs',
-    touch: { pad: true, a: 'BOMB' },
+    touchHint: 'Drag anywhere to fly · guns fire themselves · tap BOMB',
+    touch: { pad: false, a: 'BOMB' },
     lives: 1,                       /* the game runs its own life count */
     victory: 'GOAT status: confirmed.',
     levels: [
-      { name: 'Newbie', note: 'Steer with the mouse and the guns run themselves; touch a key and the trigger becomes yours. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', touchNote: 'Drag the pad to fly and the guns run themselves. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', quota: 14, spawn: 1.45, rock: 6.5 },
+      { name: 'Newbie', note: 'Steer with the mouse and the guns run themselves; touch a key and the trigger becomes yours. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', touchNote: 'Drag anywhere to fly and the guns run themselves. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', quota: 14, spawn: 1.45, rock: 6.5 },
       { name: 'Mid', note: 'Every kill so far has made them faster and tougher, and that doesn\'t reset between levels. Watch for weapon crates.', quota: 22, spawn: 1.05, rock: 5 },
       { name: 'GOAT', note: 'Twenty-eight of them, thicker rock cover, and then whatever has been sending them.', quota: 28, spawn: 0.8, rock: 4, boss: true }
     ],
@@ -1209,12 +1365,25 @@
       else if (pMoved || g.pointer.down || Input.stick.active) s.keyboard = false;
       var auto = !s.keyboard;
 
-      /* --- ship --- */
+      /* --- ship ---
+         Three ways in, one live at a time. Keys move at a fixed speed. A finger
+         drags the ship by exactly its own travel: relative, not absolute, so
+         the ship never jumps to the thumb and the thumb never ends up parked on
+         the thing it is steering. A mouse gets pointed at rather than dragged,
+         and the ship flies to it. */
       var mv = g.move();
       if (mv.x || mv.y) {
         p.x = clamp(p.x + mv.x * p.sp * dt, 14, g.W - 14);
         p.y = clamp(p.y + mv.y * p.sp * dt, 60, g.H - 20);
-      } else if (auto && !g.isTouch() && s.pointerSeen) {
+      } else if (g.isTouch()) {
+        /* The clamp eats the overshoot on purpose: hold the ship into an edge
+           and it leaves the moment you reverse, instead of first retracing
+           however far past the edge you pushed. */
+        if (g.pointer.dx || g.pointer.dy) {
+          p.x = clamp(p.x + g.pointer.dx, 14, g.W - 14);
+          p.y = clamp(p.y + g.pointer.dy, 60, g.H - 20);
+        }
+      } else if (auto && s.pointerSeen) {
         /* fly to the cursor rather than snap to it — a snapped ship has no
            momentum to read, and the drops' magnetism stops feeling like pull */
         var follow = 1 - Math.exp(-15 * dt);
@@ -1822,7 +1991,7 @@
     from: 'Super Hexagon',
     blurb: 'Left, right, don\'t touch the walls. It opens slowly now, and the gaps sometimes carry dynamite.',
     controls: '<kbd>←</kbd> <kbd>→</kbd> orbit, or point the mouse where you want to be &nbsp;·&nbsp; <kbd>Space</kbd>/click detonates TNT',
-    touchHint: 'Touch the left or right half to orbit · TNT button detonates',
+    touchHint: 'Touch where you want to be · TNT button detonates',
     touch: { pad: false, a: 'TNT' },
     lives: 1,                      /* one clip ends the run — that is the genre */
     victory: 'Certified GOAT.',
@@ -1833,6 +2002,7 @@
     ],
 
     TURN: 6.8,          /* was 4.6 — the single biggest feel change */
+    DEAD: 40,           /* aim ignored inside this radius: core 22, cursor tip 48 */
 
     preview: function (c, w, h, t) {
       c.save(); c.translate(w / 2, h / 2); c.rotate(t * 0.5);
@@ -1905,11 +2075,11 @@
       s.speed = lerp(L.from, L.to, eased);
 
       /* --- input ---
-         Keys and the thumb pad nudge the cursor; a mouse points at where you
-         want it instead, which removes the acceleration bookkeeping without
-         removing the traversal. The mouse target is still clamped to the same
-         turn rate, so pointing across the field costs the same time it would
-         cost to hold a key — flinging the cursor cannot teleport you. */
+         Keys nudge the cursor; a mouse or a finger points at where you want it
+         instead, which removes the acceleration bookkeeping without removing
+         the traversal. That target is still clamped to the same turn rate, so
+         pointing across the field costs the same time it would cost to hold a
+         key — flinging the cursor cannot teleport you. */
       var pDelta = s.lastPx < 0 ? 0 : Math.abs(g.pointer.x - s.lastPx) + Math.abs(g.pointer.y - s.lastPy);
       s.lastPx = g.pointer.x; s.lastPy = g.pointer.y;
       s.pTravel = pDelta > 0 ? s.pTravel + pDelta : s.pTravel * 0.9;
@@ -1924,15 +2094,25 @@
       if (!dir && Input.stick.x) dir = Math.sign(Input.stick.x);
 
       var step = this.TURN * dt;
+      /* A finger aims exactly the way a mouse does: the cursor turns toward
+         whatever you are touching. Holding a half used to spin the cursor for
+         as long as you held it, so a touch you meant as `go there` never
+         arrived anywhere, it just kept going round. Touch aims while it is
+         down; a mouse has no down state to wait for, so it aims whenever it
+         has been seen. */
+      var aiming = g.isTouch() ? g.pointer.down : (!s.keyboard && s.pointerSeen);
       if (dir) {
         s.ang += dir * step;
-      } else if (g.isTouch()) {
-        /* on a touchscreen the half you are holding is the input */
-        if (g.pointer.down) s.ang += (g.pointer.x < g.W / 2 ? -1 : 1) * step;
-      } else if (!s.keyboard && s.pointerSeen) {
-        var want = Math.atan2(g.pointer.y - g.H / 2, g.pointer.x - g.W / 2);
-        var diff = ((want - s.ang + Math.PI * 3) % 6.2832) - Math.PI;
-        s.ang += clamp(diff, -step, step);
+      } else if (aiming) {
+        var ax = g.pointer.x - g.W / 2, ay = g.pointer.y - g.H / 2;
+        /* Over the core the bearing swings a whole quadrant for a pixel of
+           travel, so a finger parked on the middle holds its angle rather than
+           spinning on the noise. Outside that, aim is honest. */
+        if (ax * ax + ay * ay > this.DEAD * this.DEAD) {
+          var want = Math.atan2(ay, ax);
+          var diff = ((want - s.ang + Math.PI * 3) % 6.2832) - Math.PI;
+          s.ang += clamp(diff, -step, step);
+        }
       }
 
       /* --- field spin, also eased in --- */
@@ -2108,12 +2288,17 @@
       });
       c.restore();
 
-      /* clock + the speed ramp, so the warm-up is visible rather than just felt */
-      D.text(c, s.left.toFixed(2), cx, 88, 34, PAL.a('ink', .92));
-      var bw = Math.min(340, g.W - 80);
-      c.fillStyle = PAL.a('faint', .7); D.round(c, cx - bw / 2, 112, bw, 5, 3); c.fill();
-      c.fillStyle = PAL.accent; D.round(c, cx - bw / 2, 112, bw * (1 - s.left / L.dur), 5, 3); c.fill();
-      D.text(c, 'speed ' + Math.round(s.speed), cx, 130, 10, PAL.dim);
+      /* clock + the speed ramp, so the warm-up is visible rather than just felt.
+         Pinned under the HUD's top row rather than at a fixed y: that row is one
+         line wide-screen and two stacked lines on a phone, where it also carries
+         the safe-area inset, and the clock used to draw straight through the
+         score chip. Same measured inset the boss bar uses. */
+      var top = g.hudBottom() + 14;
+      D.text(c, s.left.toFixed(2), cx, top + 17, 34, PAL.a('ink', .92));
+      var bw = Math.min(340, g.W - 80), barY = top + 41;
+      c.fillStyle = PAL.a('faint', .7); D.round(c, cx - bw / 2, barY, bw, 5, 3); c.fill();
+      c.fillStyle = PAL.accent; D.round(c, cx - bw / 2, barY, bw * (1 - s.left / L.dur), 5, 3); c.fill();
+      D.text(c, 'speed ' + Math.round(s.speed), cx, barY + 18, 10, PAL.dim);
 
       /* held charges, bottom centre, where a thumb can see them */
       for (var t = 0; t < 3; t++) {
@@ -2129,7 +2314,7 @@
   });
 
   /* ==========================================================================
-     5 · The public surface. Mirrors window.siteTheme: a small frozen object,
+     6 · The public surface. Mirrors window.siteTheme: a small frozen object,
      no DOM handles, no live game definitions handed out.
      ========================================================================== */
   window.siteGames = Object.freeze({

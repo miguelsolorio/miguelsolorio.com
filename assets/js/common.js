@@ -330,7 +330,7 @@
     if (id === 'toggle-theme') {
       siteTheme.toggle();
     } else if (id.indexOf('play-') === 0) {
-      window.siteGames.play(id.slice(5));
+      window.siteGames.play(id.slice(5), 'palette');
     } else if (command.href && command.external) {
       window.open(command.href, '_blank', 'noopener,noreferrer');
     } else if (command.href) {

@@ -331,7 +331,7 @@ if (portfolioTerminal) {
     if (!item) return;
     addParts([{ text: 'launching ', className: 't-out' }, { text: item.name, className: 't-ok' }], true);
     scrollToBottom();
-    window.siteGames.play(item.id);
+    window.siteGames.play(item.id, 'terminal');
   }
 
   function showGames(args) {
@@ -353,7 +353,7 @@ if (portfolioTerminal) {
         return;
       }
       addParts([{ text: 'launching ', className: 't-out' }, { text: hit.name, className: 't-ok' }]);
-      window.siteGames.play(hit.id);
+      window.siteGames.play(hit.id, 'terminal');
       return;
     }
 
@@ -692,7 +692,7 @@ if (portfolioTerminal) {
 (function () {
   document.querySelectorAll('#side-projects [data-game]').forEach(function (tile) {
     tile.addEventListener('click', function () {
-      if (window.siteGames) window.siteGames.play(tile.dataset.game);
+      if (window.siteGames) window.siteGames.play(tile.dataset.game, 'tile');
     });
   });
 })();
