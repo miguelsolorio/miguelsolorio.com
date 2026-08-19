@@ -6,7 +6,6 @@
     --project-theme-position: 50% 50%;
     --project-theme-transform: none;
     --project-theme-hover-transform: none;
-    --project-theme-shadow-tint: var(--shadow-rgb);
   }
   .dark [data-project-theme] {
     --project-theme-surface: #1c1824;
@@ -20,7 +19,6 @@
       linear-gradient(145deg, #eff4f9 10%, #e8eff5 90%);
     --project-theme-size: 118% 118%;
     --project-theme-position: 50% 46%;
-    --project-theme-shadow-tint: 62 84 122;
   }
   .dark [data-project-theme="cli"] {
     --project-theme-surface: #1a2231;
@@ -28,7 +26,6 @@
       radial-gradient(ellipse 78% 145% at -6% 18%, #31435f 0%, rgba(49,67,95,.55) 34%, transparent 68%),
       radial-gradient(ellipse 86% 155% at 108% 82%, #263a52 0%, rgba(38,58,82,.5) 36%, transparent 70%),
       linear-gradient(145deg, #182030 10%, #1d2738 90%);
-    --project-theme-shadow-tint: 30 42 68;
   }
   .iterations-icons {
     color: #2d2d2d;

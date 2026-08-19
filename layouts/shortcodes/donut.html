@@ -122,10 +122,12 @@
     {{- $dy := math.Abs (sub .doty $lineY) -}}
     <g class="donut-callout" data-seg="{{ .i }}">
     {{- if eq .side "left" }}
+      <rect class="donut-hit" x="8" y="{{ printf "%.1f" (sub .labely 17.0) }}" width="212" height="34" fill="transparent"/>
       <polyline class="donut-lead" points="14,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (sub .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
       <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
       <text class="donut-label" x="14" y="{{ printf "%.1f" .labely }}" text-anchor="start">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>
     {{- else }}
+      <rect class="donut-hit" x="500" y="{{ printf "%.1f" (sub .labely 17.0) }}" width="212" height="34" fill="transparent"/>
       <polyline class="donut-lead" points="706,{{ printf "%.1f" $lineY }} {{ printf "%.1f" (add .dotx $dy) }},{{ printf "%.1f" $lineY }} {{ printf "%.1f" .dotx }},{{ printf "%.1f" .doty }}"/>
       <circle class="donut-dot" cx="{{ printf "%.1f" .dotx }}" cy="{{ printf "%.1f" .doty }}" r="4.5"/>
       <text class="donut-label" x="706" y="{{ printf "%.1f" .labely }}" text-anchor="end">{{ .label }}<tspan class="donut-value" dx=".28em">{{ .display }}</tspan></text>

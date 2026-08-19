@@ -33,8 +33,8 @@
     };
 
     svg.addEventListener('pointerover', (event) => {
-      const band = event.target.closest('.donut-seg');
-      if (band && band.dataset.seg != null) hold(band.dataset.seg);
+      const target = event.target.closest('.donut-seg, .donut-callout');
+      if (target && target.dataset.seg != null) hold(target.dataset.seg);
       else clear();
     });
 

@@ -150,7 +150,7 @@
     background-image: var(--project-theme-artwork);
     background-position: var(--project-theme-position);
     background-size: var(--project-theme-size);
-    --embed-shadow-tint: var(--project-theme-shadow-tint, var(--shadow-rgb));
+    --embed-shadow-tint: var(--shadow-rgb);
     --embed-shadow-far: .3;
     --embed-shadow-near: .2;
   }
@@ -289,8 +289,13 @@
     margin: 0;
     aspect-ratio: var(--embed-aspect);
   }
-  .single .project-embed--log {
+  .single > .project-embed--log {
     --embed-aspect: 820 / 481;
+    grid-column: text;
+  }
+  .single .project-embed--log iframe.embed-frame,
+  .dark .single .project-embed--log iframe.embed-frame {
+    box-shadow: none;
   }
   .single .project-embed--compare {
     --embed-aspect: 820 / 285;
@@ -747,28 +752,33 @@
   }
   .single .donut-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    grid-template-columns: 1fr;
     gap: var(--donut-gap);
   }
+  .single .donut-chart {
+    width: 100%;
+    max-width: 45rem;
+    margin-inline: auto;
+  }
   .single .donut--teal {
-    --donut-seg-0: #045a4d;
-    --donut-seg-1: #85b7ab;
-    --donut-seg-2: #67a597;
-    --donut-seg-3: #469484;
-    --donut-seg-4: #1a8371;
-    --donut-seg-5: #006f5f;
-    --donut-value: #037a69;
-    --donut-value-hi: #005448;
+    --donut-seg-0: #136849;
+    --donut-seg-1: #2cc08a;
+    --donut-seg-2: #25a979;
+    --donut-seg-3: #1f9369;
+    --donut-seg-4: #197d58;
+    --donut-seg-5: #0d5239;
+    --donut-value: #008062;
+    --donut-value-hi: #005b43;
   }
   .single .donut--blue {
-    --donut-seg-0: #0f3bb7;
-    --donut-seg-1: #99abce;
-    --donut-seg-2: #7d97cb;
-    --donut-seg-3: #6182c8;
-    --donut-seg-4: #456cc3;
-    --donut-seg-5: #2a56be;
-    --donut-value: #2d5ed4;
-    --donut-value-hi: #143ca1;
+    --donut-seg-0: #0c4bc4;
+    --donut-seg-1: #75a3f9;
+    --donut-seg-2: #548cf8;
+    --donut-seg-3: #3173f6;
+    --donut-seg-4: #1b5ee1;
+    --donut-seg-5: #073a9d;
+    --donut-value: #2b5cf0;
+    --donut-value-hi: #1439ad;
   }
   .single .donut-title {
     @apply font-bold text-slate-900;
@@ -782,6 +792,8 @@
     display: block;
     width: 100%;
     height: auto;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .single .donut-svg text {
     fill: var(--donut-label-ink);

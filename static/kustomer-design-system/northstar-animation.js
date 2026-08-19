@@ -9,6 +9,13 @@ const insightsCard = contextPanel.querySelector('[data-card="insights"]');
 const markDone = document.getElementById("markDone");
 const composer = document.getElementById("composer");
 const messageInput = document.getElementById("messageInput");
+const sendButton = composer.querySelector(".send-button");
+const conversationWindow = document.querySelector(".conversation-window");
+const replyRow = document.getElementById("replyRow");
+const conversationRows = Array.from(document.querySelectorAll(".conversation-list .conversation"));
+const rachelRow = document.querySelector('[data-inbox="rachel"]');
+const floydRow = document.querySelector('[data-inbox="floyd"]');
+const REPLY_TEXT = "Hi Rachel, so sorry about that! We found your items and they'll arrive by 3 PM today.";
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const params = new URLSearchParams(window.location.search);
 const cardMode = params.has("card");
@@ -61,6 +68,66 @@ function setPointerMode(mode) {
   pointerGlyph.textContent = dragging ? "pan_tool" : "arrow_selector_tool";
 }
 
+function setConversation(name) {
+  stage.classList.toggle("is-convo-floyd", name === "floyd");
+}
+
+function selectConversationRow(row) {
+  conversationRows.forEach((item) => item.classList.toggle("is-selected", item === row));
+}
+
+function setReplyVisible(visible) {
+  replyRow.classList.toggle("is-hidden", !visible);
+}
+
+function setMarkDone(done) {
+  markDone.classList.toggle("product-done", done);
+  markDone.textContent = done ? "Done" : "Mark Done";
+}
+
+function syncSendState() {
+  sendButton.disabled = !messageInput.value.trim();
+}
+
+async function typeText(input, text) {
+  input.value = "";
+  syncSendState();
+  for (const character of text) {
+    input.value += character;
+    syncSendState();
+    await animationContext.sleep(character === " " ? 60 : 26);
+  }
+}
+
+async function completeConversation(sleep, frame) {
+  rachelRow.classList.add("is-completed");
+  conversationWindow.style.transition = "transform 300ms cubic-bezier(0.55, 0, 0.55, 0.2), opacity 300ms ease-in";
+  conversationWindow.style.transform = "translate3d(-52px, 0, 0)";
+  conversationWindow.style.opacity = "0";
+  await sleep(320);
+
+  rachelRow.style.height = `${rachelRow.offsetHeight}px`;
+  await frame();
+  rachelRow.classList.add("is-done");
+  rachelRow.style.height = "0px";
+
+  setConversation("floyd");
+  selectConversationRow(floydRow);
+  setMarkDone(false);
+  conversationWindow.style.transition = "none";
+  conversationWindow.style.transform = "translate3d(64px, 0, 0)";
+  await frame();
+
+  conversationWindow.style.transition = "transform 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 380ms ease-out";
+  conversationWindow.style.transform = "translate3d(0, 0, 0)";
+  conversationWindow.style.opacity = "1";
+  await sleep(400);
+
+  conversationWindow.style.transition = "";
+  conversationWindow.style.transform = "";
+  conversationWindow.style.opacity = "";
+}
+
 function resetScene() {
   setPrimaryCollapsed(false);
   detailsCard.classList.remove("is-reordering", "is-pointer-target");
@@ -74,8 +141,17 @@ function resetScene() {
   setPointerMode("select");
   pointer.style.transitionDuration = "0ms";
   pointer.style.transform = "translate3d(36px, 1130px, 0)";
-  markDone.classList.remove("product-done");
-  markDone.textContent = "Mark Done";
+  setMarkDone(false);
+  setConversation("rachel");
+  selectConversationRow(rachelRow);
+  rachelRow.classList.remove("is-done", "is-completed");
+  rachelRow.style.height = "";
+  conversationWindow.style.transition = "";
+  conversationWindow.style.transform = "";
+  conversationWindow.style.opacity = "";
+  setReplyVisible(false);
+  messageInput.value = "";
+  syncSendState();
 }
 
 function targetPosition(target, offsetX = 0, offsetY = 0) {
@@ -147,9 +223,12 @@ async function run(context) {
   resetScene();
 
   if (reducedMotion.matches) {
-    setPrimaryCollapsed(true);
-    setPanelOrder(false);
-    await context.sleep(12750);
+    setPanelOrder(true);
+    rachelRow.classList.add("is-done");
+    rachelRow.style.height = "0px";
+    selectConversationRow(floydRow);
+    setConversation("floyd");
+    await context.sleep(17700);
     return;
   }
 
@@ -159,6 +238,7 @@ async function run(context) {
   await context.sleep(100);
   await clickPointer(() => setPrimaryCollapsed(true));
   await context.sleep(800);
+  await clickPointer(() => setPrimaryCollapsed(false));
   await context.sleep(630);
 
   await context.sleep(350);
@@ -168,17 +248,26 @@ async function run(context) {
   await context.sleep(130);
   await clickPointer(() => {});
   await flipPanels(true, 650);
-  await context.sleep(1250);
+  await context.sleep(700);
 
-  detailsCard.classList.add("is-pointer-target");
-  await movePointerTo(detailsCard.querySelector(".drag-handle"), 700, 4, 4);
-  await context.sleep(130);
+  await movePointerTo(messageInput, 650);
   await clickPointer(() => {});
-  await flipPanels(false, 650);
-  await context.sleep(1400);
+  await typeText(messageInput, REPLY_TEXT);
+  await context.sleep(250);
 
+  await movePointerTo(sendButton, 450, -14, 0);
+  await clickPointer(() => {
+    setReplyVisible(true);
+    messageInput.value = "";
+    syncSendState();
+  });
+  await context.sleep(950);
+
+  await movePointerTo(markDone, 600);
+  await clickPointer(() => rachelRow.classList.add("is-completed"));
   pointer.classList.remove("is-visible");
-  await context.sleep(2600);
+  await completeConversation((ms) => context.sleep(ms), () => context.nextFrame());
+  await context.sleep(4200);
 }
 
 primaryCollapse.addEventListener("click", () => {
@@ -188,15 +277,24 @@ primaryCollapse.addEventListener("click", () => {
 detailsCard.querySelector(".drag-handle").addEventListener("click", () => setPanelOrder(false));
 insightsCard.querySelector(".drag-handle").addEventListener("click", () => setPanelOrder(true));
 
+let manualComplete = false;
 markDone.addEventListener("click", () => {
-  markDone.classList.toggle("product-done");
-  markDone.textContent = markDone.classList.contains("product-done") ? "Done" : "Mark Done";
+  if (manualComplete || stage.classList.contains("is-convo-floyd") || pointer.classList.contains("is-visible")) return;
+  manualComplete = true;
+  const waitMs = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+  const waitFrame = () => new Promise((resolve) => window.requestAnimationFrame(() => window.requestAnimationFrame(resolve)));
+  completeConversation(waitMs, waitFrame).finally(() => {
+    manualComplete = false;
+  });
 });
+
+messageInput.addEventListener("input", syncSendState);
 
 composer.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!messageInput.value.trim()) return;
   messageInput.value = "";
+  syncSendState();
   messageInput.placeholder = "Message sent";
   window.setTimeout(() => {
     messageInput.placeholder = "Type a message...";

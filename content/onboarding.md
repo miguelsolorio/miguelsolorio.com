@@ -10,7 +10,7 @@ card_animation: "/onboarding/onboarding-animation.html"
 card_theme: "onboarding"
 ---
 
-{{< iframe src="/onboarding/onboarding-animation.html?v=12" height="720" title="VS Code onboarding concept walkthrough" frame_class="onboarding-project-demo" theme="onboarding" caption="An interactive replay of the onboarding concept, from welcome screen to UI tour" >}}
+{{< iframe src="/onboarding/onboarding-animation.html?v=14" height="720" title="VS Code onboarding concept walkthrough" frame_class="onboarding-project-demo" theme="onboarding" caption="An interactive replay of the onboarding concept, from welcome screen to UI tour" >}}
 
 As the lead designer, I redesigned VS Code's welcome page, and the process turned up a framework that could scale.
 
@@ -53,7 +53,7 @@ Our GitHub community is only a subset of our customers, so we ran concept tests 
 
 Our goal was to make setup easier for new users while helping everyone switch between projects quickly. We surveyed the market to see what other products had done. We also looked at how extensions tried to onboard their users with their features, which hinted at their intent.
 
-{{< image src="extensions.png" frame_class="project-embed--cutout" alt="Three overlapping VS Code windows showing how the Python, GitLens, and Bookmarks extensions each built their own onboarding page" gradient="true" caption="How extensions like Python, GitLens, and Bookmarks onboarded users on their own" >}}
+{{< image src="extensions.png" frame_class="project-embed--cutout project-embed--transparent" alt="Three overlapping VS Code windows showing how the Python, GitLens, and Bookmarks extensions each built their own onboarding page" gradient="true" caption="How extensions like Python, GitLens, and Bookmarks onboarded users on their own" >}}
 
 # Creating the carousel
 
@@ -98,7 +98,7 @@ This ==needs a lot of work==...it needs more relevant and useful content.
 
 We went back to the drawing board and tried another approach. The concept tests showed that most users wanted to refer back to the onboarding screens, a hint to put them directly on the welcome page.
 
-{{< image src="iterations.png" frame_class="project-embed--cutout" alt="Four iterations of the welcome page redesign, moving the getting-started checklist between the main page, a sidebar panel, and a dedicated Get Started tab" gradient="true" caption="Iterating on where the onboarding checklist should live" >}}
+{{< image src="iterations.png" frame_class="project-embed--cutout project-embed--transparent" alt="Four iterations of the welcome page redesign, moving the getting-started checklist between the main page, a sidebar panel, and a dedicated Get Started tab" gradient="true" caption="Iterating on where the onboarding checklist should live" >}}
 
 # Arriving at our destination
 

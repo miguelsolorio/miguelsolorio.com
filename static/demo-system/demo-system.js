@@ -2,6 +2,7 @@
   "use strict";
 
   var ROOT = document.documentElement;
+  var DEFAULT_LOOP_DELAY = 2000;
   var STATE_CLASSES = ["is-playing", "is-paused", "is-seeking", "is-done"];
   var themeSubscribers = [];
   var themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -91,9 +92,9 @@
       : Boolean(config.card);
     var labels = Object.assign({
       timeline: "Animation progress",
-      pause: "Pause",
-      play: "Play",
-      replay: "Replay"
+      playing: "Pause",
+      paused: "Play",
+      done: "Replay"
     }, config.labels || {});
     var icons = Object.assign({ playing: "⏸", paused: "▶", done: "↺" }, config.icons || {});
     var timeline = config.timeline === false
@@ -130,6 +131,25 @@
 
     stateTarget.classList.toggle("is-card", card);
 
+    function resolveLoopDelay() {
+      if (config.loop === false) return null;
+      var delay = card || config.loopDelay === undefined
+        ? config.cardLoopDelay
+        : config.loopDelay;
+      if (delay === false || delay === null) return null;
+      if (delay === undefined) return DEFAULT_LOOP_DELAY;
+      return Math.max(0, Number(delay) || 0);
+    }
+
+    function loopStartMs() {
+      var start = card ? config.cardStartMs : config.loopStartMs;
+      return Math.max(0, Number(start) || 0);
+    }
+
+    function isLooping() {
+      return loopRemaining !== null;
+    }
+
     function hook(name) {
       if (typeof config[name] !== "function") return;
       try {
@@ -149,9 +169,11 @@
 
     function renderButton() {
       if (!timeline) return;
-      var displayState = state === "done" ? "done" : (effectivePaused ? "paused" : "playing");
+      var displayState = state === "done" && !isLooping()
+        ? "done"
+        : (effectivePaused ? "paused" : "playing");
       timeline.button.textContent = icons[displayState];
-      timeline.button.setAttribute("aria-label", labels[displayState === "done" ? "replay" : displayState]);
+      timeline.button.setAttribute("aria-label", labels[displayState]);
     }
 
     function renderProgress(progress) {
@@ -307,10 +329,8 @@
         if (options.mode === "measure") return time;
         time = total;
         renderProgress(1);
+        loopRemaining = resolveLoopDelay();
         setState("done");
-        loopRemaining = card && config.cardLoopDelay !== false
-          ? Math.max(0, Number(config.cardLoopDelay) || 0)
-          : null;
         hook("onComplete", context);
         return time;
       } catch (error) {
@@ -373,7 +393,7 @@
     function attachTimeline() {
       if (!timeline) return;
       timeline.button.addEventListener("click", function () {
-        if (state === "done") replay();
+        if (state === "done" && !isLooping()) replay();
         else setManualPaused(!manualPaused);
       });
       timeline.track.addEventListener("pointerdown", function (event) {
@@ -471,7 +491,7 @@
         loopRemaining -= delta;
         if (loopRemaining <= 0) {
           loopRemaining = null;
-          seekToMs(config.cardStartMs || 0, { resume: true });
+          seekToMs(loopStartMs(), { resume: true });
         }
       }
 
@@ -550,6 +570,7 @@
           card: card,
           state: state,
           paused: effectivePaused,
+          looping: isLooping(),
           pause: pauseDetail(),
           time: time,
           total: total,

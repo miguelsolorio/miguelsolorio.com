@@ -49,7 +49,7 @@
   --radius-control: 7px;
   --radius-surface: 8px;
   --radius-small: 5px;
-  --app-frame-shadow-color: rgb(138 55 103 / 30%);
+  --app-frame-shadow-color: rgb(35 28 102 / 30%);
 }
 
 :root.dark {
@@ -60,7 +60,7 @@
   --demo-color-track: #555e68;
   --pointer-color: #f2f5f8;
   --pointer-stroke: #111315;
-  --app-frame-shadow-color: rgb(83 40 65 / 48%);
+  --app-frame-shadow-color: rgb(56 39 51 / 48%);
 }
 
 * { box-sizing: border-box; }

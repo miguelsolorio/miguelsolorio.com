@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kustomer North Star workspace demo</title>
-<script src="/demo-system/demo-system.js?v=3"></script>
+<script src="/demo-system/demo-system.js?v=4"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&amp;display=block">
 <link rel="stylesheet" href="/demo-system/demo-system.css?v=2">
-<link rel="stylesheet" href="./northstar-animation.css?v=7">
+<link rel="stylesheet" href="./northstar-animation.css?v=11">
 </head>
 <body class="demo-scene demo-scene--northstar" data-demo-scene="northstar">
 
@@ -53,14 +53,14 @@
           </header>
 
           <div class="conversation-list">
-            <article class="conversation is-selected">
+            <article class="conversation is-selected" data-inbox="rachel">
               <img class="channel-icon" src="./icons/whatsapp.svg" alt="WhatsApp">
               <div>
                 <div class="conversation-title"><strong>Rachel Díaz</strong><span class="msym priority priority--high">north</span><b>1m</b><i></i></div>
-                <p><span class="msym sentiment sentiment--sad">sentiment_dissatisfied</span> Delivery missing items</p>
+                <p><span class="msym done-check">check_circle</span><span class="msym sentiment sentiment--sad">sentiment_dissatisfied</span> Delivery missing items</p>
               </div>
             </article>
-            <article class="conversation">
+            <article class="conversation" data-inbox="floyd">
               <img class="channel-icon" src="./icons/facebookmessenger.svg" alt="Messenger">
               <div>
                 <div class="conversation-title"><strong>Floyd Miles</strong><span class="msym priority priority--high">north</span><b>1m</b><i></i></div>
@@ -99,14 +99,14 @@
         <button type="button" aria-label="Apps"><span class="msym">apps</span></button>
         <button type="button" aria-label="Search"><span class="msym">search</span></button>
         <button type="button" aria-label="Notifications" class="notification"><span class="msym">notifications</span><i></i></button>
-        <button type="button" class="agent-menu" aria-label="User menu"><img src="./northstar-agent.png" alt=""><span class="msym">arrow_drop_down</span></button>
+        <button type="button" class="agent-menu" aria-label="User menu"><img src="./northstar-agent-face.png" alt=""><span class="msym">arrow_drop_down</span></button>
       </div>
 
       <div class="conversation-window">
         <header class="conversation-header">
           <div>
-            <h1>Laundry Missing Items <span class="msym">arrow_drop_down</span></h1>
-            <p>Active 10 min ago</p>
+            <h1><span data-convo="rachel">Laundry Missing Items</span><span data-convo="floyd">Damaged Jacket</span> <span class="msym">arrow_drop_down</span></h1>
+            <p><span data-convo="rachel">Active 10 min ago</span><span data-convo="floyd">Active now</span></p>
           </div>
           <div class="conversation-actions">
             <button type="button" aria-label="More actions"><span class="msym">more_vert</span></button>
@@ -118,7 +118,7 @@
 
         <div class="conversation-body">
           <section class="message-area" aria-label="Conversation with Rachel Díaz">
-            <div class="message-content">
+            <div class="message-content" data-convo="rachel">
               <time>Jan 12, 6:00 PM</time>
               <div class="message-row">
                 <img class="customer-avatar" src="./northstar-rachel.png" alt="Rachel Díaz">
@@ -130,12 +130,38 @@
                   <div class="message-meta"><img src="./icons/whatsapp.svg" alt="WhatsApp"><span>1min</span></div>
                 </div>
               </div>
+              <div class="message-row message-row--outgoing is-hidden" id="replyRow">
+                <div>
+                  <div class="message-bubble">
+                    <p>Hi Rachel, so sorry about that! We found your items and they&rsquo;ll arrive by 3 PM today.</p>
+                  </div>
+                  <div class="message-meta"><img src="./icons/whatsapp.svg" alt="WhatsApp"><span>Just now</span></div>
+                </div>
+                <img class="customer-avatar" src="./northstar-agent-face.png" alt="You">
+              </div>
+            </div>
+
+            <div class="message-content" data-convo="floyd">
+              <time>Jan 12, 6:04 PM</time>
+              <div class="message-row">
+                <span class="customer-avatar initials-avatar" role="img" aria-label="Floyd Miles">FM</span>
+                <div>
+                  <div class="message-bubble">
+                    <p>Hey, I picked up my <strong>dry cleaning</strong> this morning and there&rsquo;s a <strong>tear on the sleeve</strong> of my <strong>wool jacket</strong>. It wasn&rsquo;t like that when I dropped it off.</p>
+                  </div>
+                  <div class="message-meta"><img src="./icons/facebookmessenger.svg" alt="Messenger"><span>1min</span></div>
+                </div>
+              </div>
+              <div class="typing-row">
+                <span class="customer-avatar initials-avatar" role="img" aria-label="Floyd Miles">FM</span>
+                <span class="typing-bubble"><i></i><i></i><i></i></span>
+              </div>
             </div>
 
             <form class="composer" id="composer">
-              <div class="composer-heading"><img src="./icons/whatsapp.svg" alt=""><strong>WhatsApp</strong><span class="msym">arrow_drop_down</span><span class="msym composer-notes">speaker_notes</span></div>
-              <label class="sr-only" for="messageInput">Message Rachel</label>
-              <input id="messageInput" type="text" placeholder="Type a message..." autocomplete="off">
+              <div class="composer-heading"><span class="composer-channel" data-convo="rachel"><img src="./icons/whatsapp.svg" alt=""><strong>WhatsApp</strong></span><span class="composer-channel" data-convo="floyd"><img src="./icons/facebookmessenger.svg" alt=""><strong>Messenger</strong></span><span class="msym">arrow_drop_down</span><span class="msym composer-notes">speaker_notes</span></div>
+              <label class="sr-only" for="messageInput"><span data-convo="rachel">Message Rachel</span><span data-convo="floyd">Message Floyd</span></label>
+              <textarea id="messageInput" rows="2" placeholder="Type a message..." autocomplete="off"></textarea>
               <div class="composer-footer">
                 <div>
                   <button type="button" aria-label="Add"><span class="msym">add_circle</span></button>
@@ -144,7 +170,7 @@
                   <button type="button" aria-label="Attach"><span class="msym">link</span></button>
                   <button type="button" aria-label="Insert variable"><span class="composer-code">{ }</span></button>
                 </div>
-                <button class="send-button" type="submit" aria-label="Send message"><span class="msym">send</span><i></i><span class="msym">arrow_drop_down</span></button>
+                <button class="send-button" type="submit" aria-label="Send message" disabled><span class="msym">send</span><i></i><span class="msym">arrow_drop_down</span></button>
               </div>
             </form>
           </section>
@@ -152,8 +178,9 @@
           <aside class="context-panel" id="contextPanel" aria-label="Customer context">
             <article class="context-card customer-card" data-card="customer">
               <div class="customer-summary">
-                <img src="./northstar-rachel.png" alt="Rachel Díaz">
-                <div><h2>Rachel Díaz</h2><p>4 Open Conversations</p></div>
+                <img src="./northstar-rachel.png" alt="Rachel Díaz" data-convo="rachel">
+                <span class="initials-avatar initials-avatar--large" role="img" aria-label="Floyd Miles" data-convo="floyd">FM</span>
+                <div><h2><span data-convo="rachel">Rachel Díaz</span><span data-convo="floyd">Floyd Miles</span></h2><p><span data-convo="rachel">4 Open Conversations</span><span data-convo="floyd">3 Open Conversations</span></p></div>
                 <button type="button" aria-label="Customer actions"><span class="msym">more_vert</span></button>
               </div>
               <div class="customer-channels">
@@ -171,9 +198,9 @@
               <button class="drag-handle" type="button" aria-label="Move Details above Insights"><span class="msym">drag_indicator</span></button>
               <header><h2>Details</h2><button type="button" aria-label="Details actions"><span class="msym">more_vert</span></button></header>
               <dl>
-                <dt>Sentiment</dt><dd><span class="msym sentiment sentiment--sad">sentiment_dissatisfied</span> Sad</dd>
+                <dt>Sentiment</dt><dd><span data-convo="rachel"><span class="msym sentiment sentiment--sad">sentiment_dissatisfied</span> Sad</span><span data-convo="floyd"><span class="msym sentiment sentiment--neutral">sentiment_neutral</span> Neutral</span></dd>
                 <dt>Status</dt><dd><b class="status-open">Open</b></dd>
-                <dt>Urgency</dt><dd><span class="msym priority priority--high">north</span> High</dd>
+                <dt>Urgency</dt><dd><span data-convo="rachel"><span class="msym priority priority--high">north</span> High</span><span data-convo="floyd"><span class="msym priority priority--high">north</span> High</span></dd>
               </dl>
             </article>
 
@@ -182,15 +209,17 @@
               <header><h2>Insights</h2><button type="button" aria-label="Insights actions"><span class="msym">more_vert</span></button></header>
               <dl>
                 <dt>Business</dt><dd>Bubble-T Laundromat</dd>
-                <dt>Phone</dt><dd>508-555-1212</dd>
+                <dt>Phone</dt><dd><span data-convo="rachel">508-555-1212</span><span data-convo="floyd">508-555-3488</span></dd>
                 <dt>Address</dt><dd>525 9th Ave,<br>New York, NY 10018</dd>
               </dl>
             </article>
 
             <article class="context-card tasks-card" data-card="tasks">
               <header><h2>Tasks</h2><button type="button" aria-label="Task actions"><span class="msym">more_vert</span></button></header>
-              <label><input type="checkbox" checked> Back office confirmation</label>
-              <label><input type="checkbox" checked> Double check the order</label>
+              <label data-convo="rachel"><input type="checkbox" checked> Back office confirmation</label>
+              <label data-convo="rachel"><input type="checkbox" checked> Double check the order</label>
+              <label data-convo="floyd"><input type="checkbox"> Pull the intake photos</label>
+              <label data-convo="floyd"><input type="checkbox"> Open a damage claim</label>
             </article>
 
             <article class="context-card timeline-card" data-card="timeline">
@@ -209,6 +238,6 @@
   </div>
 </main>
 
-<script src="./northstar-animation.js?v=3"></script>
+<script src="./northstar-animation.js?v=8"></script>
 </body>
 </html>

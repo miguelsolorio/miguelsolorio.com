@@ -62,7 +62,7 @@
   .bio-ribbon-clip {
     width: 100vw;
     margin-inline: calc(50% - 50vw);
-    padding-block: clamp(3rem, 5.5vw, 4.25rem);
+    padding-block: clamp(1.75rem, 3vw, 2.5rem) clamp(3rem, 5.5vw, 4.25rem);
   }
 
   .bio-ribbon {
@@ -179,7 +179,7 @@
     .bio-ribbon-clip {
       overflow-x: auto;
       overflow-y: hidden;
-      padding-block: 3.25rem;
+      padding-block: 1.75rem 3.25rem;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }

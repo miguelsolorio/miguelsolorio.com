@@ -12,7 +12,7 @@ card_theme: "kanvas"
 
 As the design system lead, I worked with our Engineering Lead to grow a community-driven design system into something teams could rely on. On a small team, I ran roadmap planning, weekly reviews, mentoring, and set our best practices.
 
-{{< iframe src="/kustomer-design-system/northstar-animation.html" height="800" title="Kanvas customer service workspace with collapsible navigation and reorderable context panels" theme="kanvas" frame_class="northstar-project-demo project-embed--bare" caption="An interactive north-star demo of the Kanvas workspace" >}}
+{{< iframe src="/kustomer-design-system/northstar-animation.html" height="800" title="Kanvas customer service workspace with collapsible navigation and reorderable context panels" theme="kanvas" frame_class="northstar-project-demo project-embed--bare project-embed--transparent" caption="An interactive north-star demo of the Kanvas workspace" >}}
 
 # Auditing the design system
 

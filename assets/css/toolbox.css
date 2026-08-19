@@ -58,10 +58,15 @@
     background-position: 0 100%;
     background-repeat: no-repeat;
     background-size: 0% 100%;
-    box-decoration: inset 0 0 0 transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    box-shadow: 0 0 0 transparent;
     transition: color .22s ease, background-size .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s cubic-bezier(.2, .8, .2, 1);
   }
-  .dark .toolbox-name { color: #8c839f; }
+  .dark .toolbox-name {
+    color: #8c839f;
+    background-image: linear-gradient(#efa9ae, #efa9ae);
+  }
 
   .toolbox-item:hover .toolbox-name,
   .toolbox-item:focus-visible .toolbox-name {

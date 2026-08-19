@@ -137,24 +137,24 @@
         color: #ede7f2;
     }
     .dark .single .donut--teal {
-        --donut-seg-0: #007463;
-        --donut-seg-1: #9ed0c4;
-        --donut-seg-2: #80beb0;
-        --donut-seg-3: #60ad9c;
-        --donut-seg-4: #3b9b88;
-        --donut-seg-5: #048976;
-        --donut-value: #54b9a5;
-        --donut-value-hi: #9ee5d4;
+        --donut-seg-0: #1f9369;
+        --donut-seg-1: #5cecb1;
+        --donut-seg-2: #41d69d;
+        --donut-seg-3: #2cc08a;
+        --donut-seg-4: #25a979;
+        --donut-seg-5: #187b57;
+        --donut-value: #40e2ae;
+        --donut-value-hi: #aef7e0;
     }
     .dark .single .donut--blue {
-        --donut-seg-0: #2456d3;
-        --donut-seg-1: #b2c4e9;
-        --donut-seg-2: #95b0e6;
-        --donut-seg-3: #789be2;
-        --donut-seg-4: #5c85de;
-        --donut-seg-5: #406ed9;
-        --donut-value: #81a4ea;
-        --donut-value-hi: #c0d5fe;
+        --donut-seg-0: #3173f6;
+        --donut-seg-1: #b5cffc;
+        --donut-seg-2: #95b9fa;
+        --donut-seg-3: #75a3f9;
+        --donut-seg-4: #548cf8;
+        --donut-seg-5: #1a5cdf;
+        --donut-value: #8fadff;
+        --donut-value-hi: #ccdaff;
     }
 
 }
