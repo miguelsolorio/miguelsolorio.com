@@ -39,7 +39,7 @@ Other | 1% | right
 
 I began exploring various layout combinations where the content shifted depending on the number of recent projects in the list. The assumption, still unvalidated, was that the more recent projects a user had, the more comfortable they were with the editor.
 
-{{< image src="wireframes.png" frame_class="project-embed--cutout" alt="A grid of eighteen grayscale wireframes exploring welcome page layouts, varying where recent projects, start actions, and help content appear" gradient="true" caption="Eighteen layout explorations for the welcome page" >}}
+{{< image src="wireframes.png" frame_class="project-embed--cutout" alt="A grid of wireframes exploring welcome page layouts, varying where recent projects, start actions, and help content appear" gradient="true" caption="Eighteen layout explorations for the welcome page" frame_class="project-embed--transparent"  >}}
 
 # Listening to the feedback
 
@@ -104,7 +104,7 @@ We went back to the drawing board and tried another approach. The concept tests 
 
 Of the options we explored, one clearly scaled best. We wanted to swap out content based on the user's experience, and let extensions use the same framework.
 
-{{< video src="onboarding-demo.mp4" poster="onboarding-demo-poster.png" alt="Screen recording of the final welcome page concept, where walkthrough cards swap content based on experience and can be dismissed" gradient="true" caption="The winning concept in motion: swappable walkthrough cards on the welcome page" >}}
+{{< video src="onboarding-demo.mp4" poster="onboarding-demo-poster.png" alt="Screen recording of the final welcome page concept, where walkthrough cards swap content based on experience and can be dismissed" gradient="true" caption="The winning concept in motion: swappable walkthrough cards on the welcome page" frame_class="project-embed--transparent"  >}}
 
 After rounds of testing, the cards concept hit our primary goal: content stayed on the page, and extensions could contribute their own. Experienced users who weren't interested could dismiss the cards and get the space back.
 
@@ -114,7 +114,7 @@ After rounds of testing, the cards concept hit our primary goal: content stayed 
 
 Since each walkthrough displayed different content, we introduced a new abstract illustration style to accompany the content. That surfaced a problem: the illustration colors needed to adapt to the user's theme. We then discovered a way to make them dynamic and reference CSS variables in the SVGs.
 
-{{< iframe src="/onboarding/theme-reveal.html" height="800" title="Drag the divider to wipe between the Python walkthrough in a light theme and the same walkthrough in a dark theme" theme="onboarding" frame_class="project-embed--reveal project-embed--reveal-4x3" caption="Drag the divider and the illustration pulls its colors from the theme" >}}
+{{< iframe src="/onboarding/theme-reveal.html" height="800" title="Drag the divider to wipe between the Python walkthrough in a light theme and the same walkthrough in a dark theme" theme="onboarding" frame_class="project-embed--reveal project-embed--reveal-4x3 project-embed--transparent" caption="Drag the divider and the illustration pulls its colors from the theme" >}}
 
 # Impact
 

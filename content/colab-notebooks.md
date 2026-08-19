@@ -18,7 +18,7 @@ As the lead designer, I partnered with our engineering and product teams to reim
 
 Colab's AI features had been added incrementally over the years, and it showed. Code generation was limited to a single cell, there was no continuity across chat sessions, and users had to context-switch between writing code in the notebook canvas and asking for help in the side panel.
 
-{{< image src="colab-original.png" alt="Colab's original per-cell Generate bar producing date-picker code from the prompt 'a calendar with date picker', with the Variables panel open" gradient="true" caption="Original version of Colab's per-cell generative feature" >}}
+{{< image src="colab-original.png" alt="Colab's original per-cell Generate bar producing date-picker code from the prompt 'a calendar with date picker', with the Variables panel open" gradient="true" caption="Original version of Colab's per-cell generative feature" frame_class="project-embed--transparent">}}
 
 We heard from our users that they wanted to stay in the flow, not copy-paste errors into a chat window or re-explain what they were working on. The opportunity was AI that knew where you were, what you'd run, and where you were trying to go.
 
@@ -34,13 +34,13 @@ Users needed to stay focused on the canvas and disliked switching between panels
 
 While designing AI interfaces, we realized Colab's UI needed to scale for new agentic workflows. That meant updating the visual language and introducing new patterns to scale the product. Taking cues from other developer tools, we introduced panel arrangements that more closely match our users' mental model.
 
-{{< iframe src="/colab-notebooks/ui-refresh-reveal.html" height="580" title="Drag the divider to wipe between Colab's original interface and the refreshed one" theme="notebooks" frame_class="project-embed--reveal" caption="Drag the divider to compare the two directly" >}}
+{{< iframe src="/colab-notebooks/ui-refresh-reveal.html" height="580" title="Drag the divider to wipe between Colab's original interface and the refreshed one" theme="notebooks" frame_class="project-embed--reveal project-embed--transparent" caption="Drag the divider to compare the two directly" >}}
 
 # Google I/O
 
 We shipped Colab's AI-first redesign at Google I/O in 2025. AI usage jumped across the board: user efficiency rose 4.9x, and satisfaction landed at 82%.
 
-{{< video src="ai-video-May2026.mp4" poster="ai-video-May2026-poster.png" alt="Launch video walking through the agentic Colab experience" gradient="true" caption="The launch video announcing the agentic experience" >}}
+{{< video src="ai-video-May2026.mp4" poster="ai-video-May2026-poster.png" alt="Launch video walking through the agentic Colab experience" gradient="true" caption="The launch video announcing the agentic experience" frame_class="project-embed--transparent" >}}
 
 # Impact
 

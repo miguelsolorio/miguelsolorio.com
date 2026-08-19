@@ -18,7 +18,7 @@ As the lead designer, I partnered with our engineering team to bring Gemini's ag
 
 Our users wanted Gemini in the terminal, without leaving the workflows they already had. The challenge was that terminals are text-only and are limited in what can be displayed. To bring agentic workflows to the CLI, we needed a more flexible framework.
 
-{{< image src="original.png" alt="The original Gemini CLI startup screen, with its dashed ASCII wordmark, getting-started tips, and a typed prompt for a Node.js boxing timer app" gradient="true" frame_class="project-embed--cutout" caption="The original Gemini CLI startup screen before the redesign" >}}
+{{< image src="original.png" alt="The original Gemini CLI startup screen, with its dashed ASCII wordmark, getting-started tips, and a typed prompt for a Node.js boxing timer app" gradient="true" frame_class="project-embed--cutout project-embed--transparent" caption="The original Gemini CLI startup screen before the redesign" >}}
 
 The team discovered a [React library (Ink)](https://github.com/vadimdemedes/ink) that allowed us to build interactive elements in the terminal. We weren't constrained by text-only UI anymore.
 
