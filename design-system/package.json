@@ -1,0 +1,26 @@
+{
+  "name": "miguelsolorio-ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.es.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build:js": "esbuild src/index.ts --bundle --format=esm --packages=external --jsx=automatic --outfile=dist/index.es.js",
+    "build:types": "tsc -p tsconfig.json",
+    "build:css": "node build-css.mjs && cd .. && npx tailwindcss -i design-system/dist/.main-inlined.css -o design-system/dist/.site-tw.css --content './layouts/**/*.html,./content/**/*.{html,md},./assets/js/**/*.js,./assets/icons/**/*.svg,./design-system/src/**/*.tsx,./.design-sync/previews/*.tsx' && cat design-system/src/fonts.css design-system/dist/.site-tw.css > design-system/dist/site.css && rm design-system/dist/.site-tw.css design-system/dist/.main-inlined.css",
+    "build": "npm run build:js && npm run build:types && npm run build:css"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "esbuild": "^0.24.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
+  }
+}

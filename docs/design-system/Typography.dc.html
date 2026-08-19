@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+  <style>
+    body { margin: 0; -webkit-font-smoothing: antialiased; }
+    a { color: #241bc7; }
+    a:hover { color: #3429ff; }
+    .ov { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b; }
+    .row { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; align-items: center; border-top: 1px solid #e2e8f0; padding: 18px 0; }
+    .spec-name { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 13px; font-weight: 600; color: #1e293b; line-height: 1.4; }
+    .spec { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; font-size: 10.5px; color: #64748b; letter-spacing: .02em; line-height: 1.6; }
+  </style>
+</helmet>
+<div style="width: 1160px; height: 2000px; box-sizing: border-box; padding: 56px; display: flex; flex-direction: column; gap: 40px; background: linear-gradient(180deg, #f2f0ff 0%, #f8f7ff 45%, #f5f5f5 100%); font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; color: #334155;">
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div class="ov">miguelsolorio.com design system</div>
+    <h1 style="margin: 0; font-size: 40px; font-weight: 700; letter-spacing: -.05em; line-height: 1; color: #1e293b;">Typography</h1>
+    <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #64748b; max-width: 640px;">Inter carries everything, tracked tight at display sizes. JetBrains Mono handles the terminal, labels, and sources.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 56px; font-weight: 700; letter-spacing: -.05em; line-height: 1; color: #1e293b;">Inter</div>
+      <div style="font-size: 15px; color: #64748b;">Sans for everything on the page</div>
+      <div style="display: flex; gap: 16px; align-items: baseline; font-size: 20px; color: #334155;">
+        <span style="font-weight: 400;">Aa 400</span>
+        <span style="font-weight: 500;">Aa 500</span>
+        <span style="font-weight: 600;">Aa 600</span>
+        <span style="font-weight: 700;">Aa 700</span>
+        <span style="font-weight: 800;">Aa 800</span>
+      </div>
+      <div class="spec">'Inter', ui-sans-serif, system-ui, sans-serif</div>
+    </div>
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; font-size: 46px; font-weight: 700; line-height: 1.2; color: #1e293b;">JB Mono</div>
+      <div style="font-size: 15px; color: #64748b;">Mono for the terminal, labels, and captions</div>
+      <div style="display: flex; gap: 16px; align-items: baseline; font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; font-size: 18px; color: #334155;">
+        <span style="font-weight: 400;">Aa 400</span>
+        <span style="font-weight: 500;">Aa 500</span>
+        <span style="font-weight: 700;">Aa 700</span>
+      </div>
+      <div class="spec">'JetBrains Mono', ui-monospace, SFMono-Regular, monospace</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column;">
+    <div class="ov" style="padding-bottom: 16px;">Scale</div>
+
+    <div class="row" style="border-top: 0; padding-top: 0;">
+      <div><div class="spec-name">Hero display</div><div class="spec">clamp(3.5rem, 6.8vw, 5.5rem) &middot; 700<br>lh .96 &middot; ls -.06em</div></div>
+      <div style="font-size: 88px; font-weight: 700; line-height: .96; letter-spacing: -.06em; color: #3429ff;">Designing software</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Page title</div><div class="spec">clamp(3rem, 8vw, 6rem) &middot; 800<br>lh .95 &middot; ls -.05em</div></div>
+      <div style="font-size: 96px; font-weight: 800; line-height: .95; letter-spacing: -.05em; color: #3429ff;">Notebooks</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Section, featured</div><div class="spec">clamp(2.5rem, 5vw, 3.5rem) &middot; 700<br>lh 1 &middot; ls -.05em</div></div>
+      <div style="font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -.05em; color: #1e293b;">Featured Work</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Section</div><div class="spec">clamp(2.125rem, 4vw, 2.75rem) &middot; 700<br>lh 1 &middot; ls -.05em</div></div>
+      <div style="font-size: 44px; font-weight: 700; line-height: 1; letter-spacing: -.05em; color: #1e293b;">About me</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Heading</div><div class="spec">clamp(1.875rem, 5vw, 2.25rem) &middot; 700 &middot; lh 1.15</div></div>
+      <div style="font-size: 36px; font-weight: 700; line-height: 1.15; color: #1e293b;">Arriving at our destination</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Description</div><div class="spec">clamp(1.0625rem, 2vw, 1.25rem) &middot; 500 &middot; lh 1.55</div></div>
+      <div style="font-size: 20px; font-weight: 500; line-height: 1.55; color: #334155;">Agent experiences for terminal-first developer workflows</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Body</div><div class="spec">1.125rem &middot; 400 &middot; lh 1.65</div></div>
+      <div style="font-size: 18px; font-weight: 400; line-height: 1.65; color: #334155; max-width: 608px;">I'm a software designer who loves developer tools, design systems, and open source.</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Quote</div><div class="spec">clamp(1rem, 2vw, 1.1875rem) &middot; 500<br>lh 1.55 &middot; ls -.01em</div></div>
+      <div style="font-size: 19px; font-weight: 500; line-height: 1.55; letter-spacing: -.01em; color: #334155;">I started using the Gemini CLI today, and I don't want to go to sleep.</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Caption</div><div class="spec">.8125rem &middot; 400 italic &middot; lh 1.6 &middot; ls .012em</div></div>
+      <div style="font-size: 13px; font-style: italic; line-height: 1.6; letter-spacing: .012em; color: #64748b;">Eighteen layout explorations for the new cell toolbar</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Stat value</div><div class="spec">clamp(1.75rem, 3.05vw, 2.75rem) &middot; 800<br>lh 1.06 &middot; ls -.05em &middot; tabular</div></div>
+      <div style="font-size: 44px; font-weight: 800; line-height: 1.06; letter-spacing: -.05em; font-variant-numeric: tabular-nums; color: #0f172a;">1,806,992</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Overline</div><div class="spec">.625rem &middot; 700 &middot; ls .1em &middot; uppercase</div></div>
+      <div style="font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b;">Before</div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Mono terminal</div><div class="spec">.75rem &middot; 400 &middot; lh 1.55</div></div>
+      <div style="font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; font-size: 12px; line-height: 1.55; color: #475569;"><span style="color: #15803d;">~</span> <span style="color: #0f172a;">miguelsolorio status</span></div>
+    </div>
+
+    <div class="row">
+      <div><div class="spec-name">Mono label</div><div class="spec">.625rem &middot; 400 &middot; ls .02em</div></div>
+      <div style="font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; font-size: 10px; letter-spacing: .02em; color: #64748b;">google-gemini/gemini-cli</div>
+    </div>
+  </div>
+
+</div>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

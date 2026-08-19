@@ -1,0 +1,13 @@
+{
+  "projectId": "83ca52a4-a29d-4dbf-8d11-4987801ef12f",
+  "shape": "package",
+  "pkg": "miguelsolorio-ui",
+  "globalName": "MiguelUI",
+  "buildCmd": "cd design-system && npm install && npm run build",
+  "cssEntry": "dist/site.css",
+  "docsDir": "docs",
+  "guidelinesGlob": [],
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {"Terminal": {"cardMode": "column"}},
+  "provider": {"component": "SiteShell"}
+}

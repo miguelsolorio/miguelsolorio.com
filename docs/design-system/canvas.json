@@ -1,0 +1,14 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1160, "h": 620, "title": "Cover" },
+    { "file": "Colors.dc.html", "x": 0, "y": 760, "w": 1160, "h": 2240 },
+    { "file": "Typography.dc.html", "x": 1300, "y": 760, "w": 1160, "h": 2000 },
+    { "file": "Foundations.dc.html", "x": 2600, "y": 760, "w": 1160, "h": 1880 },
+    { "file": "ComponentsLight.dc.html", "x": 1300, "y": 2900, "w": 1160, "h": 1980, "title": "Components, light" },
+    { "file": "ComponentsDark.dc.html", "x": 2600, "y": 2900, "w": 1160, "h": 1980, "title": "Components, dark" }
+  ],
+  "annotations": [
+    { "id": "source-note", "x": 1240, "y": 40, "w": 280, "text": "Every value is lifted straight from assets/css. Nothing is rounded or renamed." }
+  ],
+  "launch": { "view": "canvas" }
+}
