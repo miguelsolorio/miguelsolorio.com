@@ -29,12 +29,12 @@
         color: #efa9ae;
     }
 
-    .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)) {
+    .dark .site-content a:not(.project):not(.quote-card):not(.toolbox-item):not(:has(img, picture, video, canvas)) {
         color: #efa9ae;
         background-image: linear-gradient(#efa9ae, #efa9ae);
     }
-    .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)):hover,
-    .dark .site-content a:not(.project):not(.quote-card):not(:has(img, picture, video, canvas)):focus-visible {
+    .dark .site-content a:not(.project):not(.quote-card):not(.toolbox-item):not(:has(img, picture, video, canvas)):hover,
+    .dark .site-content a:not(.project):not(.quote-card):not(.toolbox-item):not(:has(img, picture, video, canvas)):focus-visible {
         color: #110e1a;
         box-shadow: .2em 0 #efa9ae, -.2em 0 #efa9ae;
     }
