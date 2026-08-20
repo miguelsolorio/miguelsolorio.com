@@ -17,8 +17,10 @@
 
   var Sfx = (function () {
     var ac = null, master = null, muted = storage.get('game-muted') === '1';
+    var SILENT = window.matchMedia('(pointer: coarse)').matches;
 
     function ctx() {
+      if (SILENT) return null;
       if (ac) return ac;
       var AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
@@ -75,14 +77,15 @@
       pick: function () { tone(880, 0.06, { type: 'triangle', gain: 0.3 }); tone(1320, 0.09, { type: 'triangle', gain: 0.2 }); },
       win: function () { chord([523, 659, 784, 1047], 0.25, { type: 'triangle', gain: 0.32 }); },
       lose: function () { tone(220, 0.5, { type: 'sawtooth', to: 70, gain: 0.35 }); },
-      isMuted: function () { return muted; },
-      mute: function (m) { muted = !!m; storage.set('game-muted', muted ? '1' : '0'); if (muted) suspend(); else resume(); }
+      isMuted: function () { return muted || SILENT; },
+      mute: function (m) { if (SILENT) return; muted = !!m; storage.set('game-muted', muted ? '1' : '0'); if (muted) suspend(); else resume(); }
     };
   }());
 
   var Input = (function () {
     var keys = Object.create(null), tapped = Object.create(null);
-    var pointer = { x: 0, y: 0, dx: 0, dy: 0, id: null, down: false, tap: false, up: false, moved: false };
+    var pointer = { x: 0, y: 0, dx: 0, dy: 0, id: null, down: false, tap: false, up: false, moved: false, click: false, travel: 0, downAt: 0 };
+    var TAP_SLOP = 14, TAP_MS = 320;
     var stick = { x: 0, y: 0, active: false };
     var pads = { a: false, b: false, aTap: false, bTap: false };
     var touchMode = window.matchMedia('(pointer: coarse)').matches;
@@ -112,19 +115,24 @@
         var p = stagePoint(e, host);
         pointer.x = p.x; pointer.y = p.y; pointer.down = true; pointer.tap = true; pointer.moved = false;
         pointer.dx = 0; pointer.dy = 0; pointer.id = e.pointerId;
+        pointer.click = false; pointer.travel = 0; pointer.downAt = performance.now();
         if (e.pointerType === 'touch') touchMode = true;
         if (host.setPointerCapture && e.pointerId != null) host.setPointerCapture(e.pointerId);
       });
       host.addEventListener('pointermove', function (e) {
         if (pointer.down && e.pointerId !== pointer.id) return;
         var p = stagePoint(e, host);
-        if (Math.abs(p.x - pointer.x) + Math.abs(p.y - pointer.y) > 2) pointer.moved = true;
-        if (pointer.down) { pointer.dx += p.x - pointer.x; pointer.dy += p.y - pointer.y; }
+        var mx = Math.abs(p.x - pointer.x), my = Math.abs(p.y - pointer.y);
+        if (mx + my > 2) pointer.moved = true;
+        if (pointer.down) { pointer.dx += p.x - pointer.x; pointer.dy += p.y - pointer.y; pointer.travel += mx + my; }
         pointer.x = p.x; pointer.y = p.y;
       });
       function release(e) {
         if (e && pointer.id != null && e.pointerId !== pointer.id) return;
-        if (pointer.down) pointer.up = true;
+        if (pointer.down) {
+          pointer.up = true;
+          pointer.click = pointer.travel < TAP_SLOP && performance.now() - pointer.downAt < TAP_MS;
+        }
         pointer.down = false; pointer.id = null;
       }
       host.addEventListener('pointerup', release);
@@ -169,8 +177,8 @@
 
     function reset() {
       keys = Object.create(null); tapped = Object.create(null);
-      pointer.down = false; pointer.tap = false; pointer.up = false;
-      pointer.dx = 0; pointer.dy = 0; pointer.id = null;
+      pointer.down = false; pointer.tap = false; pointer.up = false; pointer.click = false;
+      pointer.dx = 0; pointer.dy = 0; pointer.travel = 0; pointer.id = null;
       stick.x = stick.y = 0; pads.a = pads.b = false;
     }
     function anyDown(list) { for (var i = 0; i < list.length; i++) if (keys[list[i]]) return true; return false; }
@@ -180,7 +188,7 @@
       bind: bind, bindPad: bindPad, bindKey: bindKey, reset: reset,
       frameEnd: function () {
         tapped = Object.create(null);
-        pointer.tap = false; pointer.up = false; pointer.dx = 0; pointer.dy = 0;
+        pointer.tap = false; pointer.up = false; pointer.click = false; pointer.dx = 0; pointer.dy = 0;
         pads.aTap = false; pads.bTap = false;
       },
       enable: function (v) { enabled = v; if (!v) reset(); },
@@ -775,6 +783,7 @@
       el.name.textContent = def.name;
       el.controls.innerHTML = def.controls;
       el.keyA.textContent = (def.touch && def.touch.a) || 'A';
+      el.keyA.style.display = (def.touch && def.touch.a === false) ? 'none' : '';
       el.keyB.textContent = (def.touch && def.touch.b) || 'B';
       el.keyB.style.display = (def.touch && def.touch.b) ? '' : 'none';
       el.pad.style.display = hasPad ? '' : 'none';
@@ -894,14 +903,14 @@
     from: 'Ikaruga',
     blurb: 'Green orbs keep you alive, red wants you dead, and the rocks are just in the way. Six lives is the ceiling.',
     controls: '<kbd>WASD</kbd>/<kbd>↑ ↓ ← →</kbd> fly + <kbd>Space</kbd> fire + <kbd>Shift</kbd> bomb' +
-              '&nbsp;·&nbsp; or steer with the mouse — it fires itself, click bombs',
-    touch: { pad: false, a: 'BOMB' },
+              '&nbsp;·&nbsp; or steer with the mouse: it fires itself, click bombs',
+    touch: { pad: false, a: false },
     lives: 1,
     victory: 'GOAT status: confirmed.',
     levels: [
-      { name: 'Newbie', note: 'Steer with the mouse and the guns run themselves; touch a key and the trigger becomes yours. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', touchNote: 'Drag anywhere to fly and the guns run themselves. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', quota: 14, spawn: 1.45, rock: 6.5 },
-      { name: 'Mid', note: 'Every kill so far has made them faster and tougher, and that doesn\'t reset between levels. Watch for weapon crates.', quota: 22, spawn: 1.05, rock: 5 },
-      { name: 'GOAT', note: 'Twenty-eight of them, thicker rock cover, and then whatever has been sending them.', quota: 28, spawn: 0.8, rock: 4, boss: true }
+      { name: 'Newbie', note: 'Steer with the mouse and the guns run themselves; touch a key and the trigger becomes yours. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', touchNote: 'Drag anywhere to fly and the guns run themselves. Tap to bomb. Red drops green, so fly through an orb for a life, up to six. Incoming fire can be shot down: two hits each.', quota: 14, spawn: 1.45, rock: 6.5, diff: 0.8 },
+      { name: 'Mid', note: 'Every kill so far has made them faster and tougher, and that doesn\'t reset between levels. Neither do your weapon and bombs. Divers don\'t shoot, they just point themselves at you. Watch for weapon crates.', quota: 22, spawn: 1.05, rock: 5, diff: 1 },
+      { name: 'GOAT', note: 'Twenty-eight of them, thicker rock cover, snipers that fire in bursts, splitters that don\'t stay dead, and then whatever has been sending them.', quota: 28, spawn: 0.8, rock: 4, boss: true, diff: 1.2 }
     ],
 
     get RED()   { return PAL.red; },
@@ -911,12 +920,17 @@
     get STONE() { return PAL.dim; },
 
     TIERS: [
-      { at: 0,  name: 'grunt',   hp: 3,  sp: 46,  r: 15, sides: 4, fire: 1.9,  shots: 1, bullet: 210, score: 100 },
-      { at: 10, name: 'runner',  hp: 4,  sp: 96,  r: 13, sides: 3, fire: 1.5,  shots: 1, bullet: 300, score: 150 },
-      { at: 22, name: 'bruiser', hp: 11, sp: 34,  r: 22, sides: 6, fire: 1.7,  shots: 3, bullet: 200, score: 260 },
-      { at: 36, name: 'weaver',  hp: 7,  sp: 74,  r: 16, sides: 5, fire: 1.15, shots: 5, bullet: 235, score: 340 },
-      { at: 52, name: 'spiral',  hp: 14, sp: 52,  r: 19, sides: 8, fire: 0.85, shots: 8, bullet: 190, score: 450 }
+      { at: 0,  name: 'grunt',    hp: 3,  sp: 46,  r: 15, sides: 4, fire: 1.9,  shots: 1, bullet: 210, score: 100 },
+      { at: 8,  name: 'runner',   hp: 4,  sp: 96,  r: 13, sides: 3, fire: 1.5,  shots: 1, bullet: 300, score: 150 },
+      { at: 14, name: 'bruiser',  hp: 11, sp: 34,  r: 22, sides: 6, fire: 1.7,  shots: 3, bullet: 200, score: 260 },
+      { at: 20, name: 'diver',    hp: 5,  sp: 88,  r: 12, sides: 3, fire: 0,    shots: 0, bullet: 0,   dive: 340, score: 180 },
+      { at: 28, name: 'weaver',   hp: 7,  sp: 74,  r: 16, sides: 5, fire: 1.15, shots: 5, bullet: 235, score: 340 },
+      { at: 36, name: 'splitter', hp: 10, sp: 56,  r: 18, sides: 7, fire: 1.6,  shots: 2, bullet: 220, split: 3, score: 320 },
+      { at: 46, name: 'sniper',   hp: 8,  sp: 70,  r: 15, sides: 9, fire: 2.1,  shots: 1, bullet: 430, burst: 3, score: 380 },
+      { at: 54, name: 'spiral',   hp: 14, sp: 52,  r: 19, sides: 8, fire: 0.85, shots: 8, bullet: 190, score: 450 }
     ],
+
+    SHARD: { name: 'shard', hp: 2, sp: 120, r: 8, sides: 3, fire: 2.4, shots: 1, bullet: 240, score: 40 },
 
     WEAPONS: {
       basic:   { name: 'Pulse',  rate: 0.155, dmg: 1.9, shots: 1, ammo: Infinity, speed: 820, pal: 'accent' },
@@ -948,6 +962,9 @@
     init: function (g) {
       g.state.killed = 0;
       g.state.lives = 3;
+      g.state.weapon = 'basic';
+      g.state.ammo = Infinity;
+      g.state.bombs = 0;
     },
 
     tierFor: function (killed) {
@@ -958,10 +975,12 @@
 
     level: function (g, i) {
       var s = g.state, L = g.levelDef;
-      if (s.lives == null) s.lives = 3;
+      if (s.lives == null || s.lives < 3) s.lives = 3;
+      if (s.weapon == null) { s.weapon = 'basic'; s.ammo = Infinity; }
+      if (s.bombs == null) s.bombs = 0;
       s.p = { x: g.W / 2, y: g.H * 0.78, r: 9, sp: 340, iframe: 0, cool: 0 };
       s.bullets = []; s.shots = []; s.enemies = []; s.drops = []; s.rocks = [];
-      s.weapon = 'basic'; s.ammo = Infinity; s.bombs = 0; s.blast = 0;
+      s.blast = 0;
       s.spawnIn = 0.9; s.quota = L.quota; s.cleared = 0; s.boss = null;
       s.rockIn = L.rock * 0.5; s.giftIn = g.range(7, 11);
       s.streak = 0;
@@ -975,7 +994,7 @@
       var tier = this.tierFor(s.killed);
       var idx = this.TIERS.indexOf(tier);
       if (idx > 0 && g.rnd() < 0.45) tier = this.TIERS[Math.max(0, idx - 1 - Math.floor(g.rnd() * 2))];
-      var ramp = 1 + s.killed * 0.016;
+      var ramp = (1 + s.killed * 0.016) * (g.levelDef.diff || 1);
       s.enemies.push({
         x: g.range(60, g.W - 60), y: -40,
         tier: tier, r: tier.r, sides: tier.sides,
@@ -996,9 +1015,23 @@
       });
     },
 
+    spawnShards: function (g, from) {
+      var s = g.state;
+      for (var i = 0; i < from.tier.split; i++) {
+        var a = -1.5708 + (i - (from.tier.split - 1) / 2) * 0.9;
+        s.enemies.push({
+          x: clamp(from.x + Math.cos(a) * 26, 20, g.W - 20), y: from.y + 8,
+          tier: this.SHARD, r: this.SHARD.r, sides: this.SHARD.sides,
+          hp: this.SHARD.hp, max: this.SHARD.hp, chaff: true,
+          sp: this.SHARD.sp, cool: g.range(0.4, 1.4),
+          t: g.rnd() * 6, sway: g.range(-1, 1), hurt: 0
+        });
+      }
+    },
+
     spawnBoss: function (g) {
       var s = g.state;
-      var hp = 220 + s.killed * 4;
+      var hp = (220 + s.killed * 4) * (g.levelDef.diff || 1);
       s.boss = { x: g.W / 2, y: -140, r: 66, hp: hp, max: hp, t: 0, cool: 1.4, hurt: 0 };
       g.toast(g.W / 2, g.H * 0.3, 'FINAL BOSS', PAL.textRed, { size: '1.9rem', dur: 1600, rise: 8 });
       Sfx.boom();
@@ -1101,10 +1134,13 @@
       var i = s.enemies.indexOf(target);
       if (i === -1) return false;
       s.enemies.splice(i, 1);
-      s.killed++; s.cleared++; s.streak++;
+      s.streak++;
       g.score += target.tier.score + Math.min(s.streak, 25) * 12;
       g.particles.burst(target.x, target.y, 22, { color: this.RED, speed: 270, square: true });
       Sfx.hit(); g.shake(4);
+      if (target.tier.split) this.spawnShards(g, target);
+      if (target.chaff) return true;
+      s.killed++; s.cleared++;
       this.rollDrop(g, target.x, target.y, target.tier.hp > 8);
       var t0 = this.tierFor(s.killed - 1), t1 = this.tierFor(s.killed);
       if (t0 !== t1) {
@@ -1147,7 +1183,8 @@
       s.blast = Math.max(0, s.blast - dt * 1.5);
 
       if ((auto || g.fire()) && p.cool <= 0) this.fire(g);
-      var bombTap = g.altTap() || Input.pads.aTap || (auto && !g.isTouch() && g.pointer.tap);
+      var bombTap = g.altTap() || Input.pads.aTap ||
+                    (g.isTouch() ? g.pointer.click : (auto && g.pointer.tap));
       if (bombTap && s.bombs > 0) this.bomb(g);
 
       if (!s.boss) {
@@ -1187,23 +1224,48 @@
         var e = s.enemies[i];
         e.t += dt; e.hurt = Math.max(0, e.hurt - dt * 4);
         var targetY = 90 + (i % 4) * 54;
-        if (e.y < targetY) e.y += e.sp * dt;
-        else {
+        if (e.locked) {
+          e.x += e.vx * dt; e.y += e.vy * dt;
+        } else if (e.y < targetY) e.y += e.sp * dt;
+        else if (e.tier.dive) {
+          e.locked = true;
+          var da = Math.atan2(p.y - e.y, p.x - e.x);
+          e.vx = Math.cos(da) * e.tier.dive; e.vy = Math.sin(da) * e.tier.dive;
+          g.particles.burst(e.x, e.y, 8, { color: this.RED, speed: 130, life: 0.25 });
+          Sfx.tone(660, 0.14, { type: 'sawtooth', to: 220, gain: 0.1 });
+        } else {
           e.y += Math.sin(e.t * 0.8) * 18 * dt;
           e.x += Math.sin(e.t * 1.1 + e.sway * 3) * e.sp * 0.7 * dt;
         }
         e.x = clamp(e.x, e.r, g.W - e.r);
         e.cool -= dt;
-        if (e.cool <= 0 && e.y > 0) {
+        if (e.burst > 0) {
+          e.gap -= dt;
+          if (e.gap <= 0) {
+            e.burst--; e.gap = 0.12;
+            this.bullet(g, e.x, e.y, Math.atan2(p.y - e.y, p.x - e.x), e.tier.bullet);
+            Sfx.tone(430, 0.03, { type: 'sawtooth', gain: 0.05 });
+          }
+        } else if (e.cool <= 0 && e.y > 0 && e.tier.fire) {
           e.cool = e.tier.fire * g.range(0.75, 1.3);
-          var ang = Math.atan2(p.y - e.y, p.x - e.x);
-          var n = e.tier.shots;
-          if (n === 1) this.bullet(g, e.x, e.y, ang, e.tier.bullet);
-          else if (n <= 5) for (var k = 0; k < n; k++) this.bullet(g, e.x, e.y, ang + (k - (n - 1) / 2) * 0.2, e.tier.bullet);
-          else for (var k2 = 0; k2 < n; k2++) this.bullet(g, e.x, e.y, e.t * 1.3 + k2 * (6.2832 / n), e.tier.bullet);
-          Sfx.tone(300, 0.04, { type: 'sawtooth', gain: 0.05 });
+          if (e.tier.burst) { e.burst = e.tier.burst; e.gap = 0.3; }
+          else {
+            var ang = Math.atan2(p.y - e.y, p.x - e.x);
+            var n = e.tier.shots;
+            if (n === 1) this.bullet(g, e.x, e.y, ang, e.tier.bullet);
+            else if (n <= 5) for (var k = 0; k < n; k++) this.bullet(g, e.x, e.y, ang + (k - (n - 1) / 2) * 0.2, e.tier.bullet);
+            else for (var k2 = 0; k2 < n; k2++) this.bullet(g, e.x, e.y, e.t * 1.3 + k2 * (6.2832 / n), e.tier.bullet);
+            Sfx.tone(300, 0.04, { type: 'sawtooth', gain: 0.05 });
+          }
         }
-        if (D.dist(e.x, e.y, p.x, p.y) < e.r + p.r) { this.hurtPlayer(g, 'Flew into one.'); if (s.lives <= 0) return; }
+        if (D.dist(e.x, e.y, p.x, p.y) < e.r + p.r) {
+          this.hurtPlayer(g, e.tier.dive ? 'A diver got you.' : 'Flew into one.');
+          if (e.tier.dive) {
+            s.enemies.splice(i, 1); s.killed++; s.cleared++;
+            g.particles.burst(e.x, e.y, 18, { color: this.RED, speed: 240, square: true });
+          }
+          if (s.lives <= 0) return;
+        }
         if (e.y > g.H + 60) s.enemies.splice(i, 1);
       }
 
@@ -1467,8 +1529,10 @@
         var e = s.enemies[i];
         c.fillStyle = e.hurt > 0 ? PAL.ink : RED;
         D.poly(c, e.x, e.y, e.r, e.sides, e.t * 1.1); c.fill();
-        c.fillStyle = PAL.bg;
-        D.poly(c, e.x, e.y, e.r * 0.4, e.sides, e.t * 1.1); c.fill();
+        if (!e.tier.dive) {
+          c.fillStyle = PAL.bg;
+          D.poly(c, e.x, e.y, e.r * 0.4, e.sides, e.t * 1.1); c.fill();
+        }
         if (e.hp < e.max) {
           c.fillStyle = PAL.a('faint', .8); c.fillRect(e.x - e.r, e.y + e.r + 4, e.r * 2, 2);
           c.fillStyle = RED; c.fillRect(e.x - e.r, e.y + e.r + 4, e.r * 2 * (e.hp / e.max), 2);

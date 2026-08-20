@@ -197,9 +197,11 @@ html.dark .a-scrim::after { opacity: .15; mix-blend-mode: overlay; }
 }
 
 @media (max-width: 40rem) {
-  .a-hud-top { grid-template-columns: 1fr; justify-items: center; }
-  .a-hud-top .a-title { grid-column: 1; justify-self: start; }
-  .a-hud-top .a-stat { grid-column: 1; }
+  .a-hud-top {
+    display: flex; flex-wrap: wrap; align-items: flex-start;
+    justify-content: space-between; gap: .5rem;
+  }
+  .a-hud-top .a-stat { margin-left: auto; }
   .a-hud-bottom .a-hint { display: none; }
 }
 
@@ -216,11 +218,7 @@ body.is-game-open {
 .a-hud-right { display: flex; align-items: flex-end; gap: .5rem; }
 #a-mute { min-width: 5.5rem; justify-content: center; }
 
-#arcade.show-touch .a-hud-right {
-  position: absolute;
-  top: max(1rem, env(safe-area-inset-top));
-  right: 1rem;
-}
+#arcade.show-touch .a-hud-right { display: none; }
 
 @media (max-width: 40rem) {
   .a-stat { padding: .4rem .75rem; font-size: .6875rem; letter-spacing: .08em; }
