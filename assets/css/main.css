@@ -15,6 +15,7 @@
   :root {
     --site-max-width: 72rem;
     --site-gutter: max(clamp(1.25rem, 4vw, 3rem), env(safe-area-inset-left), env(safe-area-inset-right));
+    --site-header-h: 5rem;
 
     --primary: #3429ff;
 
@@ -51,6 +52,11 @@
   html {
     overflow-x: hidden;
     overflow-x: clip;
+    scroll-padding-top: calc(var(--site-header-h) + 1.5rem);
+  }
+
+  html.incognito {
+    scroll-padding-top: 0;
   }
 }
 
