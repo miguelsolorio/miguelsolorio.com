@@ -122,14 +122,13 @@ Once the walkthroughs shipped, the measures we had used to frame the problem sta
 
 {{< stats >}}
 5.6% | 2-day engaged users | engagement
-60% | Usage | usage
+60% | Product usage | usage
 116 | Extensions adopting walkthroughs | adoption
 {{< /stats >}}
 
-Because we designed in the open, the work itself is on the record too.
+In addition to these metrics, I contributed to our open source community across issues, pull requests, and commits. Designing in the open meant the work was public from the first sketch. Explorations and feedback lived in GitHub issues, and I shipped changes myself instead of handing off specs, so the numbers below are my own personal metrics on the VS Code repo.
 
 {{< stats source="microsoft/vscode" >}}
-160 | Pull requests opened | pr
 147 | Pull requests merged | merge
 1,100 | Commits on main | commit
 569 | Issues filed | issue
