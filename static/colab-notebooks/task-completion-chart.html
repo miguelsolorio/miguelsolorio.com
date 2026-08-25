@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task completion time with and without AI</title>
+<script src="/demo-system/demo-system.js?v=4"></script>
+<link rel="stylesheet" href="/demo-system/demo-system.css">
+<link rel="stylesheet" href="./task-completion-chart.css?v=2">
+<script defer src="./task-completion-chart.js?v=5"></script>
+</head>
+<body class="demo-scene time-scene" data-demo-scene="notebooks-task-times">
+
+<svg id="task-times" class="time-chart" role="img" aria-labelledby="time-title time-desc">
+  <title id="time-title">Mean task completion time in seconds for four study tasks, with and without AI</title>
+  <desc id="time-desc">
+    With AI, participants finished code generation in 2 minutes 47 seconds on
+    average, error resolution in 1 minute 24 seconds, data visualization in
+    3 minutes 11 seconds, and sentiment analysis in 4 minutes 5 seconds.
+    Without AI the same tasks took 10 minutes 17 seconds, 8 minutes 33 seconds,
+    8 minutes 37 seconds, and 26 minutes 14 seconds. The gap is widest on
+    sentiment analysis, where work without AI took more than six times as long.
+  </desc>
+</svg>
+
+</body>
+</html>

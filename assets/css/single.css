@@ -879,7 +879,7 @@
   }
 
   @media (max-width: 25rem) {
-    .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--reveal) iframe.embed-frame {
+    .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--reveal):not(.project-embed--chart) iframe.embed-frame {
       height: 47.5rem;
     }
   }

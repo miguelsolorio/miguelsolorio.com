@@ -1,0 +1,162 @@
+.time-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0;
+  background: transparent;
+
+  --chart-ink: #33415a;
+  --chart-ink-muted: #64748b;
+  --chart-rule: rgb(51 65 90 / 16%);
+  --chart-grid: rgb(51 65 90 / 10%);
+  --chart-ai: #1a73e8;
+  --chart-ai-lift: #3d84ea;
+  --chart-none: #b9bfc9;
+  --chart-none-lift: #c6ccd5;
+  --chart-tip-surface: #ffffff;
+  --chart-tip-shadow: rgb(15 23 42 / 14%);
+}
+
+:root.dark .time-scene {
+  --chart-ink: #cbd5e1;
+  --chart-ink-muted: #94a3b8;
+  --chart-rule: rgb(203 213 225 / 26%);
+  --chart-grid: rgb(203 213 225 / 14%);
+  --chart-ai: #5b93f0;
+  --chart-ai-lift: #74a3f3;
+  --chart-none: #565c6b;
+  --chart-none-lift: #646c7e;
+  --chart-tip-surface: #2b2735;
+  --chart-tip-shadow: rgb(0 0 0 / 45%);
+}
+
+.time-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-grid line {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+}
+
+.chart-axis-line {
+  stroke: var(--chart-rule);
+  stroke-width: 1.5;
+}
+
+.chart-tick {
+  fill: var(--chart-ink-muted);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.chart-axis-title {
+  fill: var(--chart-ink);
+  font-size: 15px;
+}
+
+.chart-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: chart-rise 0.7s cubic-bezier(0.3, 0, 0.2, 1) both;
+  animation-delay: var(--rise-delay, 0s);
+  transition: fill 120ms ease-out;
+}
+
+.chart-bar--ai {
+  fill: var(--chart-ai);
+}
+
+.chart-bar--none {
+  fill: var(--chart-none);
+}
+
+.chart-bar--ai.is-active {
+  fill: var(--chart-ai-lift);
+}
+
+.chart-bar--none.is-active {
+  fill: var(--chart-none-lift);
+}
+
+.chart-legend text {
+  fill: var(--chart-ink);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.chart-swatch--ai {
+  fill: var(--chart-ai);
+}
+
+.chart-swatch--none {
+  fill: var(--chart-none);
+}
+
+.chart-hit {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.chart-hit:focus {
+  outline: none;
+}
+
+.chart-tip {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+
+.chart-tip.is-visible {
+  opacity: 1;
+}
+
+.chart-tip-bg {
+  fill: var(--chart-tip-surface);
+  stroke: var(--chart-rule);
+  stroke-width: 1;
+  filter: drop-shadow(0 2px 6px var(--chart-tip-shadow));
+}
+
+.chart-tip-text {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+.chart-tip-value {
+  fill: var(--chart-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chart-tip-label {
+  fill: var(--chart-ink-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+@keyframes chart-rise {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-bar {
+    animation: none;
+    transform: none;
+    transition: none;
+  }
+  .chart-tip {
+    transition: none;
+  }
+}

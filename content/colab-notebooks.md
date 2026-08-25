@@ -62,8 +62,11 @@ Shipping it gave shape to a genuinely ambiguous problem. The team had diverging 
 
 {{< /quotes >}}
 
-
 {{< stats >}}
 4.9x | Increase in user efficiency | speed
-82% | User satisfaction rating | satisfaction
+82% | User satisfaction | satisfaction
+90% | Speed efficiency | usage
+98% | Productivity perception | engagement
 {{< /stats >}}
+
+{{< iframe src="/colab-notebooks/task-completion-chart.html" height="500" frame_class="project-embed--chart" title="Bar chart of mean task completion time for four study tasks, code generation, error resolution, data visualization, and sentiment analysis: with AI they took 2 minutes 47 seconds, 1 minute 24 seconds, 3 minutes 11 seconds, and 4 minutes 5 seconds on average, and without AI they took 10 minutes 17 seconds, 8 minutes 33 seconds, 8 minutes 37 seconds, and 26 minutes 14 seconds, with the widest gap on sentiment analysis" theme="notebooks" caption="Mean task completion time across the four study tasks" >}}
