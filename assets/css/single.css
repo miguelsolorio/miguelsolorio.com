@@ -266,6 +266,12 @@
     border-radius: 0 !important;
     box-shadow: none;
   }
+  .single .project-embed--snug {
+    width: 100%;
+    max-width: 900px;
+    margin-inline: auto;
+    padding: clamp(.625rem, 2vw, 1.375rem);
+  }
   .single .project-embed--chart {
     width: 100%;
     margin-inline: auto;

@@ -81,18 +81,36 @@ Once we shipped the icons, I knew it was time to give back to the community and 
 
 {{< image src="open-source.png" alt="Figma community page for Visual Studio Code Icons by Microsoft with 12.8k duplicates, previewing the icon library by category" gradient="true" caption="The icon library published to the Figma community" frame_class="project-embed--transparent" >}}
 
-# Impact
-
-Previously, referencing an icon meant three separate files, one per theme (Dark, Light, High Contrast), plus adding them in a separate file in your code. They would then be added as background images and lose any scalability benefits. With the new icon font, [Codicons](https://github.com/microsoft/vscode-codicons/), we could define a dictionary of icons and then reference them in the code.
-
-{{< iframe src="/icons/architecture.html" height="285" title="Before-and-after code comparison: an icon previously required three theme-specific SVGs, now a single Codicon reference" theme="icons" frame_class="project-embed--compare" caption="From three theme-specific SVGs to a single Codicon reference" >}}
-
-We also shipped the library as an npm package, for use outside VS Code or inside extensions. It took a year to reach 20k installs a week. It now averages over 500k a week, and has been downloaded more than 19 million times.
-
-{{< iframe src="/icons/npm-downloads.html" height="600" title="Line chart of weekly npm downloads for the codicons package from 2021 to 2026, rising from nothing to over 500k a week" theme="icons" frame_class="project-embed--bare" caption="Codicons npm downloads, every week since launch" >}}
-
 # Scaling for the future
 
 Research surfaced a new theme: customers wanted to customize the icons to match their own taste, since not everyone liked the outline style. Once the source code supported icon fonts, swapping icon styles got easy. That's where product icon themes came from. Partnering with our engineer, I helped introduce a new [API for product icon themes](https://code.visualstudio.com/api/extension-guides/product-icon-theme).
 
 {{< image src="product-icon-theme.png" alt="VS Code with a rounded custom product icon theme applied to the activity bar, file explorer, outline, and IntelliSense" gradient="true" caption="A custom product icon theme applied across the workbench"  frame_class="project-embed--transparent" >}}
+
+{{< quotes >}}
+
+    {{< quote name="Anthony Fu" handle="@antfu7" source="twitter" link="https://x.com/antfu7/status/1359217365385318400" stats="like:89 reply:3" >}}
+    Made a Product Icon theme for VS Code with my favorite Carbon Icons by @ibmdesign! It's so great that ==we can customize icons for VS Code now!== 🤩
+    {{< /quote >}}
+
+    {{< quote name="Phosphor Icons" handle="@_phosphoricons" source="twitter" link="https://x.com/_phosphoricons/status/1755357837859950727" >}}
+    More goodie drops! Phosphor now has a VSCode theme with two variants, ==file and product icons== 🎨🍫
+    {{< /quote >}}
+
+{{< /quotes >}}
+
+# Impact
+
+Previously, referencing an icon meant three separate files, one per theme (Dark, Light, High Contrast), plus adding them in a separate file in your code. They would then be added as background images and lose any scalability benefits. With the new icon font, [Codicons](https://github.com/microsoft/vscode-codicons/), we could define a dictionary of icons and then reference them in the code.
+
+{{< iframe src="/icons/architecture.html" height="285" title="Before-and-after code comparison: an icon previously required three theme-specific SVGs, now a single Codicon reference" theme="icons" frame_class="project-embed--compare project-embed--transparent project-embed--snug" >}}
+
+We also shipped the library as an npm package, for use outside VS Code or inside extensions. It took a year to reach 20k installs a week. It now averages over 500k a week, and has been downloaded more than 19 million times.
+
+{{< stats >}}
+19.5M | Downloads all time | usage
+580k | Average weekly downloads | engagement
+1.1k | Projects using it | adoption
+{{< /stats >}}
+
+{{< iframe src="/icons/npm-downloads.html" height="440" title="Line chart of weekly npm downloads for the codicons package from 2021 to 2026, rising from nothing to over 500k a week" theme="icons" frame_class="project-embed--bare project-embed--snug" >}}
