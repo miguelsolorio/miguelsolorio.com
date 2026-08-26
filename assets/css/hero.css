@@ -569,7 +569,18 @@
 }
 
 @media (pointer: coarse) {
-    .home-hero-terminal-form,
+    .home-hero-terminal-form {
+        width: 200%;
+        height: 1.25rem;
+        font-size: 2em;
+        transform: scale(.5);
+        transform-origin: left center;
+    }
+
+    .home-hero-terminal-input-wrap {
+        margin-left: .75rem;
+    }
+
     .home-hero-terminal-suggestions {
         font-size: max(1rem, 16px);
     }
