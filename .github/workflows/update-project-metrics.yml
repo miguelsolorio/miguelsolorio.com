@@ -11,6 +11,8 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,9 +21,11 @@ jobs:
       - name: Refresh Visual Studio Marketplace metrics
         run: npm run update:metrics
       - name: Commit updated metrics
+        id: commit
         run: |
           if git diff --quiet -- data/project_metrics.json; then
             echo "Project metrics are already current."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -29,3 +33,10 @@ jobs:
           git add data/project_metrics.json
           git commit -m "Update project metrics"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
