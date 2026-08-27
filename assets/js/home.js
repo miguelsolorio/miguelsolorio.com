@@ -954,6 +954,81 @@ var heroNoise3 = (function () {
 })();
 
 (function () {
+    var clip = document.querySelector('#bio .bio-ribbon-clip');
+    if (!clip) return;
+
+    function scrollable() {
+        return clip.scrollWidth - clip.clientWidth > 1;
+    }
+
+    function syncScrollable() {
+        clip.classList.toggle('is-scrollable', scrollable());
+    }
+    syncScrollable();
+    window.addEventListener('resize', syncScrollable, { passive: true });
+    window.addEventListener('load', syncScrollable);
+
+    clip.addEventListener('dragstart', function (event) {
+        event.preventDefault();
+    });
+
+    clip.addEventListener('wheel', function (event) {
+        if (!scrollable()) return;
+        var delta = Math.abs(event.deltaY) > Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+        if (!delta) return;
+        var atStart = clip.scrollLeft <= 0;
+        var atEnd = clip.scrollLeft + clip.clientWidth >= clip.scrollWidth - 1;
+        if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
+        clip.scrollLeft += delta;
+        event.preventDefault();
+    }, { passive: false });
+
+    var down = false;
+    var moved = false;
+    var startX = 0;
+    var startScroll = 0;
+
+    clip.addEventListener('pointerdown', function (event) {
+        if (event.pointerType === 'touch' || event.button !== 0) return;
+        if (!scrollable()) return;
+        down = true;
+        moved = false;
+        startX = event.clientX;
+        startScroll = clip.scrollLeft;
+    });
+
+    clip.addEventListener('pointermove', function (event) {
+        if (!down) return;
+        var dx = event.clientX - startX;
+        if (!moved) {
+            if (Math.abs(dx) < 4) return;
+            moved = true;
+            clip.classList.add('is-dragging');
+            clip.setPointerCapture(event.pointerId);
+        }
+        clip.scrollLeft = startScroll - dx;
+    });
+
+    function endDrag() {
+        if (!down) return;
+        down = false;
+        clip.classList.remove('is-dragging');
+    }
+
+    clip.addEventListener('pointerup', endDrag);
+    clip.addEventListener('pointercancel', endDrag);
+    window.addEventListener('blur', endDrag);
+
+    clip.addEventListener('click', function (event) {
+        if (moved) {
+            event.preventDefault();
+            event.stopPropagation();
+            moved = false;
+        }
+    }, true);
+})();
+
+(function () {
     var slots = document.querySelectorAll('#bio .bio-shot');
     if (!slots.length) return;
 

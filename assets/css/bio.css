@@ -62,7 +62,27 @@
   .bio-ribbon-clip {
     width: 100vw;
     margin-inline: calc(50% - 50vw);
-    padding-block: clamp(1.75rem, 3vw, 2.5rem) clamp(3rem, 5.5vw, 4.25rem);
+    padding-block: clamp(3rem, 3.5vw, 3.5rem) clamp(3.5rem, 5.5vw, 4.5rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .bio-ribbon-clip::-webkit-scrollbar {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .bio-ribbon-clip.is-scrollable {
+      cursor: grab;
+    }
+    .bio-ribbon-clip.is-dragging {
+      cursor: grabbing;
+      scroll-snap-type: none;
+    }
+    .bio-ribbon-clip.is-dragging .bio-shot {
+      pointer-events: none;
+    }
   }
 
   .bio-ribbon {
@@ -77,9 +97,10 @@
 
   .bio-shot {
     position: relative;
-    flex: 1 1 0%;
+    flex: 1 0 clamp(8.5rem, 12vw, 12rem);
     height: var(--bio-shot-h);
     perspective: 900px;
+    scroll-snap-align: center;
   }
 
   .bio-shot-frame {
@@ -112,6 +133,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    -webkit-user-drag: none;
+    user-select: none;
   }
 
   @media (hover: hover) {
