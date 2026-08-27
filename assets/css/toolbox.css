@@ -39,9 +39,11 @@
   .toolbox-mark--codex { color: #181818; }
   .toolbox-mark--ghostty { color: #3551f3; }
   .toolbox-mark--opencode { color: #181818; }
+  .toolbox-mark--conductor { color: #181818; transform: scale(.85); }
   .toolbox-mark--arc { color: #c25e70; }
   .toolbox-mark--raycast { color: #ff6363; }
   .dark .toolbox-mark--codex,
+  .dark .toolbox-mark--conductor,
   .dark .toolbox-mark--opencode { color: #ece9f1; }
   .dark .toolbox-mark--ghostty { color: #7c8cf8; }
   .dark .toolbox-mark--arc { color: #fcbfbd; }
