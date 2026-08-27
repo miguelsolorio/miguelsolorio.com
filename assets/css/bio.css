@@ -62,7 +62,7 @@
   .bio-ribbon-clip {
     width: 100vw;
     margin-inline: calc(50% - 50vw);
-    padding-block: clamp(3rem, 3.5vw, 3.5rem) clamp(3.5rem, 5.5vw, 4.5rem);
+    padding-block: clamp(5rem, 5.5vw, 5.25rem) clamp(5.5rem, 6vw, 5.75rem);
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
@@ -90,14 +90,15 @@
     display: flex;
     align-items: center;
     gap: clamp(.625rem, 1.25vw, 1rem);
-    width: 106%;
-    margin-left: -3%;
+    width: max-content;
+    max-width: none;
+    margin-inline: auto;
     rotate: -2deg;
   }
 
   .bio-shot {
     position: relative;
-    flex: 1 0 clamp(8.5rem, 12vw, 12rem);
+    flex: 0 0 clamp(9rem, 13vw, 13rem);
     height: var(--bio-shot-h);
     perspective: 900px;
     scroll-snap-align: center;

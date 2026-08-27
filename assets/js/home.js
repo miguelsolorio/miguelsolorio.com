@@ -1050,8 +1050,17 @@ var heroNoise3 = (function () {
     var edgeLift = 1.06;
     var edgeRibbonRotate = 2 * Math.PI / 180;
 
+    function atMaxWidth(slot) {
+        // Photos cap at 13rem (see .bio-shot flex-basis in bio.css). Once
+        // capped the ribbon centers with spare room, so shoving an end to the
+        // viewport edge just looks broken — skip the offset there.
+        var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        return slot.offsetWidth >= 13 * rem - 0.5;
+    }
+
     function applyEdgeShift(entry) {
         if (!pointerMedia.matches || motionMedia.matches) return;
+        if (atMaxWidth(entry.slot)) return;
         var frame = entry.slot.querySelector('.bio-shot-frame');
         if (!frame) return;
 
