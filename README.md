@@ -17,7 +17,7 @@ Install dependencies and start the local server:
 
 ```sh
 npm install
-npm run develop
+npm run start
 ```
 
 The development site runs at <http://localhost:1313> and includes draft content.

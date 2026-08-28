@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "develop",
+			"script": "start",
 			"problemMatcher": [],
 			"label": "Start Hugo Server",
 			"detail": "hugo server -D --port 1313 --forceSyncStatic --noHTTPCache",

@@ -9,7 +9,7 @@ Source styles and browser code live in `assets/`. `assets/css/main.css` is the T
 ## Build, Test, and Development Commands
 
 - `npm install` installs the local Hugo, Tailwind, and PostCSS toolchain.
-- `npm run develop` starts Hugo at `http://localhost:1313`, includes drafts, and refreshes static assets reliably.
+- `npm run start` starts Hugo at `http://localhost:1313`, includes drafts, and refreshes static assets reliably.
 - `npm run export` creates a clean, minified production site in `public/`.
 
 Run `npm run export` before requesting review.
@@ -22,7 +22,7 @@ Use Tailwind utilities for small template-level adjustments and named CSS classe
 
 ## Testing Guidelines
 
-There is no automated test suite or coverage requirement. Treat `npm run export` as the required validation step. For visual or interactive changes, use `npm run develop` to check affected pages at desktop and mobile widths, including dark mode, keyboard interaction, and reduced-motion behavior. Check the browser console and ensure referenced static assets do not return 404s.
+There is no automated test suite or coverage requirement. Treat `npm run export` as the required validation step. For visual or interactive changes, use `npm run start` to check affected pages at desktop and mobile widths, including dark mode, keyboard interaction, and reduced-motion behavior. Check the browser console and ensure referenced static assets do not return 404s.
 
 ## Commit & Pull Request Guidelines
 
