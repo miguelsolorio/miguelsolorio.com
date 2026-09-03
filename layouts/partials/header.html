@@ -68,8 +68,15 @@
           ? storedTheme === 'dark'
           : window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-        if (new URLSearchParams(window.location.search).has('transparent')) {
+        var params = new URLSearchParams(window.location.search);
+
+        if (params.has('transparent')) {
           document.documentElement.classList.add('transparent');
+        }
+
+        var zen = params.get('zen');
+        if (params.has('zen') && zen !== '0' && zen !== 'off' && zen !== 'false') {
+          document.documentElement.classList.add('zen');
         }
       }());
     </script>

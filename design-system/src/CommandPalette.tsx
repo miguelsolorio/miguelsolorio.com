@@ -93,7 +93,7 @@ function glyphFor(label: string): GlyphName {
 const DEFAULT_SECTIONS: Array<{ label: string; items: Array<{ label: string; active?: boolean }> }> = [
   {
     label: 'Tools',
-    items: [{ label: 'Toggle Dark Mode', active: true }, { label: 'Play Polarity' }]
+    items: [{ label: 'Toggle Dark Mode', active: true }, { label: 'Play Polarity' }, { label: 'Zen Mode' }]
   },
   {
     label: 'Featured Work',

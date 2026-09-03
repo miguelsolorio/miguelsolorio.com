@@ -98,6 +98,11 @@ if (portfolioTerminal) {
       name: 'about',
       description: 'jump to the about section',
       run: showAbout
+    },
+    {
+      name: 'zen',
+      description: 'a throwback to the plain html web',
+      run: showZen
     }
   ];
 
@@ -261,6 +266,15 @@ if (portfolioTerminal) {
     }
     addLine('scrolling to the about section...', 't-out');
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showZen() {
+    if (!window.siteZen) {
+      addLine('zen mode is unavailable right now', 't-error');
+      return;
+    }
+    const on = window.siteZen.toggle();
+    addLine(on ? 'dropping the styles...' : 'putting the styles back...', 't-out');
   }
 
   let pendingChoice = null;

@@ -1,0 +1,158 @@
+#zen-home,
+#zen-nav {
+  display: none;
+}
+
+html.zen {
+  all: revert !important;
+  overflow-x: clip !important;
+  scroll-padding-top: 0 !important;
+}
+
+html.zen.dark {
+  color-scheme: dark !important;
+}
+
+html.zen body {
+  all: revert !important;
+  max-width: 100ch !important;
+  margin: 0 auto !important;
+  padding: 1rem 1.25rem 3rem !important;
+  font-family: ui-monospace, Menlo, Consolas, monospace !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+html.zen .site-header,
+html.zen .site-content,
+html.zen .site-header *:where(:not(svg, svg *, iframe)),
+html.zen .site-content *:where(:not(svg, svg *, iframe)),
+html.zen .site-header *:where(:not(svg, svg *, iframe))::before,
+html.zen .site-content *:where(:not(svg, svg *, iframe))::before,
+html.zen .site-header *:where(:not(svg, svg *, iframe))::after,
+html.zen .site-content *:where(:not(svg, svg *, iframe))::after {
+  all: revert !important;
+}
+
+html.zen .site-header .sr-only,
+html.zen .site-content .sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+html.zen .site-content img,
+html.zen .site-content video {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+html.zen .site-content .embed-frame {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 1em 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color-scheme: normal !important;
+}
+
+html.zen .site-content .media-caption {
+  font-size: .85em !important;
+}
+
+html.zen svg {
+  max-width: 100% !important;
+}
+
+html.zen .site-ambient {
+  display: none !important;
+}
+
+html.zen .site-header #logo,
+html.zen .site-header .social,
+html.zen .site-content .home-hero-current,
+html.zen .site-content .section--featured-work,
+html.zen .site-content #selected-work,
+html.zen .site-content .section--side-projects,
+html.zen .site-content #side-projects,
+html.zen .site-content .project-media,
+html.zen .site-content .toolbox-mark,
+html.zen .site-content .side-project-metric-icon,
+html.zen .site-content .side-project-metric-separator,
+html.zen .site-content .stat-chart,
+html.zen .site-content .stat-key,
+html.zen .site-content .stat-icon,
+html.zen .site-content .stat-pill svg,
+html.zen .site-content .quote-logo,
+html.zen .site-content .quote-avatar,
+html.zen .site-content .video-play-button,
+html.zen .site-content .quote-stat-mark svg,
+html.zen .site-content .project .title svg,
+html.zen .site-content .site-footer-nav {
+  display: none !important;
+}
+
+html.zen #zen-nav {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  gap: .5rem 1.5rem !important;
+}
+
+html.zen .site-content .home-hero,
+html.zen .site-content .home-hero-line {
+  display: block !important;
+}
+
+html.zen .site-content h1,
+html.zen .site-content .single .title {
+  font-size: 1.6em !important;
+  font-weight: bold !important;
+  margin: 1.5em 0 .5em !important;
+}
+
+html.zen .site-content h2 {
+  font-size: 1.1em !important;
+  margin: 2em 0 .75em !important;
+  padding-top: 1em !important;
+  border-top: 1px solid !important;
+}
+
+html.zen .site-content dd {
+  margin: 0 0 .75em 4ch !important;
+}
+
+html.zen .site-content .toolbox-item {
+  display: list-item !important;
+  list-style: disc !important;
+  margin-left: 4ch !important;
+}
+
+html.zen .site-content .bio-ribbon {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: .75rem !important;
+  margin: 1em 0 !important;
+}
+
+html.zen .site-content .bio-shot-frame {
+  margin: 0 !important;
+}
+
+html.zen .site-content .bio-shot img {
+  width: 108px !important;
+  height: auto !important;
+}
+
+html.zen .site-content .bio-shot figcaption {
+  font-size: .85em !important;
+}

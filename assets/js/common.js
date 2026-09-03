@@ -90,6 +90,36 @@
 
   window.siteTheme = siteTheme;
 
+  const zenButton = document.getElementById('zen-exit');
+
+  function setZen(on) {
+    const enabled = Boolean(on);
+    root.classList.toggle('zen', enabled);
+    root.dispatchEvent(new CustomEvent('site:zenchange', { detail: { zen: enabled } }));
+    return enabled;
+  }
+
+  const zenUrl = new URL(window.location.href);
+  if (zenUrl.searchParams.has('zen')) {
+    zenUrl.searchParams.delete('zen');
+    window.history.replaceState(window.history.state, '', zenUrl);
+  }
+
+  const siteZen = Object.freeze({
+    get: () => root.classList.contains('zen'),
+    set: setZen,
+    toggle() {
+      return setZen(!root.classList.contains('zen'));
+    }
+  });
+
+  window.siteZen = siteZen;
+
+  zenButton?.addEventListener('click', (event) => {
+    event.preventDefault();
+    siteZen.toggle();
+  });
+
   const startingOverride = storedOverride();
   if (startingOverride === osTheme()) storage.remove(themeStorageKey);
 
@@ -137,6 +167,7 @@
   const COMMANDS = [
     { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Tools' },
     { id: 'play-polarity', label: 'Play Polarity', category: 'Tools', icon: '/polarity.png' },
+    { id: 'toggle-zen', label: 'Zen Mode', category: 'Tools', glyph: 'zen' },
     { id: 'go-notebooks', label: 'Colab Notebooks', category: 'Featured Work', href: '/colab-notebooks/', glyph: 'notebook' },
     { id: 'go-cli', label: 'CLI Agents', category: 'Featured Work', href: '/cli-agents/', glyph: 'terminal' },
     { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', href: '/onboarding/', glyph: 'flag' },
@@ -169,7 +200,8 @@
     shapes: '<circle cx="8" cy="8" r="5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>',
     flag: '<path d="M5 21V4.5"/><path d="M5 5c3-1.8 6 1.2 9-.5v8.5c-3 1.7-6-1.3-9 .5Z"/>',
     notebook: '<path d="M6 2h13v20H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M9 2v20"/>',
-    clear: '<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>'
+    clear: '<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>',
+    zen: '<path d="M4 6h16M4 12h10M4 18h13"/>'
   };
 
   function commandGlyph(command) {
@@ -205,6 +237,7 @@
   }
 
   function commandLabel(command) {
+    if (command.id === 'toggle-zen') return siteZen.get() ? 'Exit Zen Mode' : 'Zen Mode';
     if (command.id !== 'toggle-theme') return command.label;
     return siteTheme.get() === 'dark' ? 'Toggle Light Mode' : 'Toggle Dark Mode';
   }
@@ -249,6 +282,8 @@
 
     if (id === 'toggle-theme') {
       siteTheme.toggle();
+    } else if (id === 'toggle-zen') {
+      siteZen.toggle();
     } else if (id.indexOf('play-') === 0) {
       window.siteGames.play(id.slice(5), 'palette');
     } else if (command.href && command.external) {
@@ -399,6 +434,10 @@
 
   input.addEventListener('input', () => render(input.value));
 
+  root.addEventListener('site:zenchange', () => {
+    if (isOpen) render(input.value);
+  });
+
   root.addEventListener('site:themechange', () => {
     if (!isOpen) return;
     const activeId = filteredItems[activeIndex]?.id;
@@ -440,7 +479,11 @@
   document.querySelectorAll('.video-play-button').forEach((button) => {
     const video = button.parentElement?.querySelector('video');
     if (!video) return;
-    video.removeAttribute('controls');
+    const syncControls = () => {
+      video.controls = button.hidden || siteZen.get();
+    };
+    syncControls();
+    root.addEventListener('site:zenchange', syncControls);
     const beginPlayback = () => {
       if (button.hidden) return;
       button.hidden = true;

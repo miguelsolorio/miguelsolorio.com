@@ -1,0 +1,19 @@
+<div id="zen-home">
+  <h2>Featured Work</h2>
+  <dl>
+    {{ range where .Pages "Params.project" "==" "large" }}
+      <dt><a href="{{ .RelPermalink }}?zen">{{ .Title }}</a></dt>
+      <dd>{{ .Description }}</dd>
+    {{ end }}
+  </dl>
+
+  <h2>Projects</h2>
+  <dl>
+    {{ range where .Site.RegularPages "Params.project" "==" "small" }}
+      {{ if not .Params.game }}
+        <dt><a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer">{{ .Title }}</a></dt>
+        <dd>{{ .Description }}</dd>
+      {{ end }}
+    {{ end }}
+  </dl>
+</div>

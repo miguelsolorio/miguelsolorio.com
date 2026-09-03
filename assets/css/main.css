@@ -10,6 +10,7 @@
 @import './footer.css';
 @import './command-palette.css';
 @import './games.css';
+@import './zen.css';
 
 @layer base {
   :root {
