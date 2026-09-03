@@ -582,18 +582,42 @@
     return api;
   }
 
+  function measureTarget() {
+    return document.querySelector("[data-demo-measure]") || document.documentElement;
+  }
+
+  function outerSpace(element) {
+    var style = window.getComputedStyle(element);
+    return (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0) +
+           (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0);
+  }
+
+  var reportedHeight = 0;
+  var reportedWidth = -1;
+
   function reportHeight() {
     if (window.parent === window) return;
-    var height = Math.ceil(document.documentElement.getBoundingClientRect().height);
+    var target = measureTarget();
+    var rect = target.getBoundingClientRect();
+    var width = Math.round(rect.width);
+    var height = rect.height;
+    if (target !== document.documentElement) height += outerSpace(document.body);
+    height = Math.ceil(height);
+    if (width !== reportedWidth) {
+      reportedWidth = width;
+      reportedHeight = 0;
+    }
+    if (!height || height <= reportedHeight) return;
+    reportedHeight = height;
     window.parent.postMessage({ type: "demo:height", height: height }, "*");
   }
 
   function publishHeight() {
+    if (new URLSearchParams(window.location.search).has("card")) return;
     if (window.ResizeObserver) {
-      new ResizeObserver(reportHeight).observe(document.documentElement);
-    } else {
-      window.addEventListener("resize", reportHeight);
+      new ResizeObserver(reportHeight).observe(measureTarget());
     }
+    window.addEventListener("resize", reportHeight);
     reportHeight();
   }
 

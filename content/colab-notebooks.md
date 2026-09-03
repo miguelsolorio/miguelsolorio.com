@@ -12,7 +12,7 @@ card_theme: "notebooks"
 
 As the lead designer, I partnered with our engineering and product teams to reimagine Colab as an AI-first coding environment. The goal was to move past static AI suggestions and make Gemini a real collaborator, one that understands your entire notebook rather than the cell in front of it.
 
-{{< iframe src="/colab-notebooks/message-animation.html" height="710" title="Selecting code in a notebook cell to ask Gemini to modify it, then accepting and running the change" theme="notebooks" caption="A micro-interaction of Gemini in Colab" >}}
+{{< iframe src="/colab-notebooks/message-animation.html" height="710" min_height="44rem" title="Selecting code in a notebook cell to ask Gemini to modify it, then accepting and running the change" theme="notebooks" caption="A micro-interaction of Gemini in Colab" >}}
 
 # Understanding the problem
 
@@ -26,7 +26,7 @@ We heard from our users that they wanted to stay in the flow, not copy-paste err
 
 Early exploration surfaced a fundamental tension: how do you make AI easy to invoke without adding more noise? Notebooks are already visually dense (cells, outputs, toolbars), and a chat panel risked making them heavier still.
 
-{{< iframe src="/colab-notebooks/plan-animation.html" height="710" title="Choosing Plan mode from the composer slash menu, reviewing Gemini's analysis plan, then auto-running it cell by cell" theme="notebooks" caption="Plan mode: Gemini proposes a multi-step analysis plan to execute cell by cell" >}}
+{{< iframe src="/colab-notebooks/plan-animation.html" height="710" min_height="44rem" title="Choosing Plan mode from the composer slash menu, reviewing Gemini's analysis plan, then auto-running it cell by cell" theme="notebooks" caption="Plan mode: Gemini proposes a multi-step analysis plan to execute cell by cell" >}}
 
 Users needed to stay focused on the canvas and disliked switching between panels, so we put the agent directly in it. A small window sits in the canvas for quick prompts; a side panel handles denser work.
 

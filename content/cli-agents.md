@@ -12,7 +12,7 @@ card_theme: "cli"
 
 As the lead designer, I partnered with our engineering team to bring Gemini's agentic capabilities directly into the terminal. Gemini CLI is an open-source AI agent that lets developers write code, manipulate files, run shell commands, and automate complex workflows.
 
-{{< iframe src="/cli-agents/cli-animation.html" height="600" title="Gemini CLI planning and building a React todo app, with an interactive approval step" theme="cli" caption="Gemini CLI planning and building a React todo app, pausing for approval" >}}
+{{< iframe src="/cli-agents/cli-animation.html" height="600" min_height="20rem" title="Gemini CLI planning and building a React todo app, with an interactive approval step" theme="cli" caption="Gemini CLI planning and building a React todo app, pausing for approval" >}}
 
 # Understanding the problem
 
@@ -26,11 +26,11 @@ The team discovered a [React library (Ink)](https://github.com/vadimdemedes/ink)
 
 We knew that we wanted to mimic the chat model used in other Gemini interfaces. Bringing conversations to the terminal meant rethinking what one looked like: no chat bubble, no text field, no buttons. Just a prompt input and the streaming conversation.
 
-{{< iframe src="/cli-agents/theme-dialog.html" height="440" frame_class="project-embed--bare" title="Gemini CLI theme picker: pick one of six dark or four light themes from the numbered list, or step it with the scroll arrows, to preview its background, syntax, and diff colors" theme="cli" caption="The scrollable theme picker with live color previews" >}}
+{{< iframe src="/cli-agents/theme-dialog.html" height="440" fit="content" frame_class="project-embed--bare" title="Gemini CLI theme picker: pick one of six dark or four light themes from the numbered list, or step it with the scroll arrows, to preview its background, syntax, and diff colors" theme="cli" caption="The scrollable theme picker with live color previews" >}}
 
 Knowing that terminals are very personalized for developers, I wanted to make sure that the CLI was flexible enough to support different configurations (fonts, color schemes, and terminal apps) but also come with default themes that were accessible and familiar. Borrowing patterns developers already knew (slash commands, file mentions, syntax highlighting) made the CLI feel familiar from the first session.
 
-{{< iframe src="/cli-agents/cli-todo-animation.html" height="600" title="Gemini CLI reading a research plan, writing a grouped four-step todo list, and completing each task with its matching tool call" theme="cli" caption="The agent works through a grouped todo list, one visible tool call at a time" >}}
+{{< iframe src="/cli-agents/cli-todo-animation.html" height="600" min_height="28rem" title="Gemini CLI reading a research plan, writing a grouped four-step todo list, and completing each task with its matching tool call" theme="cli" caption="The agent works through a grouped todo list, one visible tool call at a time" >}}
 
 We needed building blocks that worked across all of it: one-shot prompts, iterative sessions, long-running tasks, and multi-step plans. We also needed to surface their usage, model configuration, and which modes granted elevated permissions. The design system we created provided a foundation for the CLI to be flexible and extensible for the future.
 
@@ -44,11 +44,11 @@ I began using Gemini CLI itself to test and validate design ideas, skipping the 
 
 Below is an example that started as a community contribution for a settings dialog ([#4738](https://github.com/google-gemini/gemini-cli/pull/4738)) and evolved to be a key feature of configuring the CLI. Previously, users had to edit their JSON files in a text editor, which broke their flow mid-session. The settings dialog allowed users to search, filter, and toggle settings inline without leaving the CLI.
 
-{{< iframe src="/cli-agents/settings-dialog.html" height="620" frame_class="project-embed--bare" title="Gemini CLI settings dialog: search to filter, Tab between General, Display, and Advanced sections, and Enter to toggle a setting - modified values show a green asterisk" theme="cli" caption="The settings dialog with search, tabbed sections, and inline toggles" >}}
+{{< iframe src="/cli-agents/settings-dialog.html" height="620" fit="content" frame_class="project-embed--bare" title="Gemini CLI settings dialog: search to filter, Tab between General, Display, and Advanced sections, and Enter to toggle a setting - modified values show a green asterisk" theme="cli" caption="The settings dialog with search, tabbed sections, and inline toggles" >}}
 
 Earlier concepts leaned too heavily on text-only styles, which made it difficult to read and understand the diff output. I iterated on the design to improve the readability and bring more familiarity by using patterns found in most text editors. The new design added line numbers, colored diff lines, and syntax highlighting to make it easier to read and understand.
 
-{{< iframe src="/cli-agents/diff-compare.html" height="620" title="The diff view before and after the fix: the original tinted whole lines and numbered them inconsistently, the shipped version adds line numbers, colored diff characters, and syntax highlighting" theme="cli" caption="The diff view before and after the fix" >}}
+{{< iframe src="/cli-agents/diff-compare.html" height="620" fit="content" title="The diff view before and after the fix: the original tinted whole lines and numbered them inconsistently, the shipped version adds line numbers, colored diff characters, and syntax highlighting" theme="cli" caption="The diff view before and after the fix" >}}
 
 # Impact
 

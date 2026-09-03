@@ -79,6 +79,19 @@
     @apply w-full;
     height: auto;
   }
+  .single iframe.embed-frame {
+    --embed-height: 700;
+    --embed-width: 752;
+    --embed-min-height: 16rem;
+    display: block;
+    width: 100%;
+    min-height: var(--embed-content-height, 0px);
+    height: clamp(
+      var(--embed-min-height),
+      calc(var(--embed-height) / var(--embed-width) * 100cqi),
+      calc(var(--embed-height) * 1px)
+    );
+  }
   .single .northstar-project-demo {
     margin-block: var(--media-gap);
   }
@@ -143,6 +156,7 @@
     line-height: 1.15;
   }
   .single .project-embed {
+    container-type: inline-size;
     margin: var(--media-gap) 0;
     padding: clamp(.75rem, 5vw, 3.5rem);
     border-radius: .75rem;
@@ -321,6 +335,11 @@
     aspect-ratio: 1224 / 714;
     border-radius: 0 !important;
     box-shadow: none;
+  }
+
+  .single iframe.embed-frame[data-embed-fit="content"] {
+    height: calc(var(--embed-height) * 1px);
+    min-height: 0;
   }
 
   .single .project-embed--chart[data-project-theme="cli"] {
@@ -884,9 +903,4 @@
     }
   }
 
-  @media (max-width: 25rem) {
-    .single .project-embed[data-project-theme="notebooks"]:not(.project-embed--reveal):not(.project-embed--chart) iframe.embed-frame {
-      height: 47.5rem;
-    }
-  }
 }

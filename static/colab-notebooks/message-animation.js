@@ -601,6 +601,7 @@ function start() {
   });
   const reveal = () => document.body.classList.add("scene-ready");
   window.messageDemo.ready.then(reveal, reveal);
+  DemoSystem.publishHeight();
 }
 
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);

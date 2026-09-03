@@ -143,7 +143,9 @@
     if (!height) return;
     const frame = [...document.querySelectorAll('iframe')]
       .find((candidate) => candidate.contentWindow === event.source);
-    if (frame) frame.style.height = `${height}px`;
+    if (!frame) return;
+    if (frame.dataset.embedFit === 'content') frame.style.height = `${height}px`;
+    else frame.style.setProperty('--embed-content-height', `${height}px`);
   });
 
   if (new URLSearchParams(window.location.search).has('incognito')) {
