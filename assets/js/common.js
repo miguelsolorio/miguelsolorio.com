@@ -189,6 +189,7 @@
     { id: 'go-paster', label: 'Paster', category: 'Projects', href: 'https://www.figma.com/community/plugin/1668696147027080221/paster', external: true, icon: '/paster.png' },
     { id: 'go-contrast-grid', label: 'Contrast Grid', category: 'Projects', href: 'https://miguelsolorio.github.io/contrast-grid-editor/', external: true, icon: '/contrast-grid.png' },
     { id: 'go-gradient-studio', label: 'Gradient Studio', category: 'Projects', href: 'https://miguelsolorio.github.io/gradient-studio/', external: true, icon: '/gradient-studio.png' },
+    { id: 'go-necromantle', label: 'Necromantle', category: 'Projects', href: 'https://miguelsolorio.github.io/necromantle/', external: true, icon: '/necromantle.png' },
     { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', href: 'https://www.figma.com/community/file/786632241522687494/Visual-Studio-Code-Toolkit', external: true, icon: '/code.svg' },
     { id: 'clear-recents', label: 'Clear Recents', category: 'Actions', glyph: 'clear', hidden: true }
   ];
