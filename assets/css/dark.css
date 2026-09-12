@@ -69,6 +69,11 @@
     .dark .side-project-description {
         color: #8c839f;
     }
+    .dark .side-project-model {
+        border-color: #4e4759;
+        background: #2a2534;
+        color: #a59cad;
+    }
     .dark .side-project-metrics {
         color: #8c839f;
         border-top-color: #3a3444;

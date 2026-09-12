@@ -300,6 +300,19 @@
     line-height: 1.35;
     overflow-wrap: anywhere;
   }
+  .side-project-model {
+    @apply m-0 inline-flex items-center justify-center;
+    margin-top: .625rem;
+    padding: .3125rem .5625rem;
+    gap: .3125rem;
+    border: 1px solid #dbe3ec;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: .6875rem;
+    font-weight: 400;
+    line-height: 1;
+  }
   .side-project-metrics {
     @apply flex items-center justify-center text-slate-500;
     margin-top: .75rem;

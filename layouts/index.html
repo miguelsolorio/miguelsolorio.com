@@ -76,6 +76,9 @@
             <img src="{{ .Params.thumbnail | relURL }}" alt="">
             <p class="side-project-title">{{ .Title }}</p>
             <p class="side-project-description">{{ .Description }}</p>
+            {{ with .Params.made_with }}
+              <p class="side-project-model">made with {{ . }}</p>
+            {{ end }}
             {{ with $metrics }}
               <div class="side-project-metrics">
                 {{ partial "project-metric.html" .primary }}

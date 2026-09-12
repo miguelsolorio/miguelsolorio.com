@@ -67,7 +67,8 @@ if (portfolioTerminal) {
         { name: 'Paster', description: 'fill your text layers from a list, one line at a time', url: 'https://www.figma.com/community/plugin/1668696147027080221/paster' },
         { name: 'Contrast Grid', description: 'test color pairings against a matrix grid for accessible contrast', url: 'https://miguelsolorio.github.io/contrast-grid-editor/' },
         { name: 'Gradient Studio', description: 'generate soft gradient backgrounds for UI screenshots', url: 'https://miguelsolorio.github.io/gradient-studio/' },
-        { name: 'Necromantle', description: 'a gothic action RPG game that runs in your browser', url: 'https://miguelsolorio.github.io/necromantle/' }
+        { name: 'Necromantle', description: 'a gothic action RPG game made with Fable', url: 'https://miguelsolorio.github.io/necromantle/' },
+        { name: 'Hallowmere', description: 'a fantasy action RPG game made with Astra', url: 'https://miguelsolorio.github.io/hallowmere/' }
       ]
     }
   ];

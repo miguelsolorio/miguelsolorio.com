@@ -12,7 +12,7 @@
     {{ range where .Site.RegularPages "Params.project" "==" "small" }}
       {{ if not .Params.game }}
         <dt><a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer">{{ .Title }}</a></dt>
-        <dd>{{ .Description }}</dd>
+        <dd>{{ .Description }}{{ with .Params.made_with }} — made with {{ . }}{{ end }}</dd>
       {{ end }}
     {{ end }}
   </dl>
