@@ -886,9 +886,9 @@
         var n = parseInt(q, 10);
         var shown = games.filter(function (x) { return !x.hidden; });
         var hit = (!isNaN(n) && shown[n - 1]) ||
-          games.filter(function (x) { return x.id === q; })[0] ||
-          games.filter(function (x) { return x.id.indexOf(q) === 0; })[0] ||
-          games.filter(function (x) { return x.name.toLowerCase().indexOf(q) !== -1; })[0];
+          shown.filter(function (x) { return x.id === q; })[0] ||
+          shown.filter(function (x) { return x.id.indexOf(q) === 0; })[0] ||
+          shown.filter(function (x) { return x.name.toLowerCase().indexOf(q) !== -1; })[0];
         return hit ? { id: hit.id, name: hit.name, blurb: hit.blurb, from: hit.from } : null;
       },
       play: play,

@@ -7,8 +7,8 @@ weight: 6
 # Shelved, so no `project` param and no card in the home page's Projects grid,
 # which ranges over pages with `project: "small"`. Not drafted, because the dev
 # server runs `hugo server -D` and a draft would still show up there. The game
-# itself stays registered in assets/js/games.js behind a `hidden` flag, so
-# `game hexrush` in the terminal still runs it. Restore both flags together.
+# itself stays registered in assets/js/games.js behind a `hidden` flag, which
+# excludes it from the terminal's game lookup too. Restore both flags together.
 # project: "small"
 thumbnail: "hexrush.png"
 # No link: the games take the page over from window.siteGames rather than
