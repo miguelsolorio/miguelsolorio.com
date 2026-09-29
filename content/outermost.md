@@ -1,6 +1,6 @@
 ---
 title: "Outermost"
-description: "A space exploration of the observable universe"
+description: "A space exploration game"
 date: 2026-09-26T10:00:00-07:00
 draft: false
 weight: 9

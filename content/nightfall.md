@@ -3,7 +3,7 @@ title: "Nightfall"
 description: "A first-person thriller game"
 date: 2026-09-23T10:00:00-07:00
 draft: false
-weight: 7
+weight: 6
 project: "small"
 thumbnail: "nightfall/app-icon.png"
 link: "https://miguelsolorio.github.io/nightfall/"
