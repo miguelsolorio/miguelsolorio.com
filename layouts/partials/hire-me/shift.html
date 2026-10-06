@@ -1,0 +1,29 @@
+{{ $b := . }}
+<figure class="hm-figure hm-reveal">
+  <figcaption class="hm-figure__head">
+    <h3 class="hm-h3">{{ $b.title }}</h3>
+    <p>{{ $b.text }}</p>
+  </figcaption>
+  <div class="hm-legend" aria-hidden="true">
+    <span class="hm-legend__item">Before</span>
+    <span class="hm-legend__item hm-legend__item--accent">After</span>
+  </div>
+  <div class="hm-pairs">
+    {{ range $b.rows }}
+      {{ $delta := cond (ge .to .from) (printf "Up %d points" (sub .to .from)) (printf "Down %d points" (sub .from .to)) }}
+      {{ $tip := dict "title" .label "rows" (slice (dict "l" "Before" "v" (printf "%d%%" .from)) (dict "l" "After" "v" (printf "%d%%" .to))) "note" $delta }}
+      <div class="hm-pair" data-tip="{{ partial "hire-me/tip.html" $tip }}">
+        <p class="hm-pair__label">{{ .label }}</p>
+        <p class="hm-bar" style="--w: {{ .from }}%">
+          <i></i>
+          <span><span class="sr-only">Before: </span>{{ .from }}%</span>
+        </p>
+        <p class="hm-bar hm-bar--accent" style="--w: {{ .to }}%">
+          <i></i>
+          <span><span class="sr-only">After: </span>{{ .to }}%</span>
+        </p>
+      </div>
+    {{ end }}
+  </div>
+  <p class="hm-caption">{{ $b.caption }}</p>
+</figure>

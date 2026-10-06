@@ -1,0 +1,89 @@
+{
+  "updated": "2026-10-06",
+  "items": [
+    {
+      "name": "Hallowmere",
+      "repo": "hallowmere",
+      "commits": 362,
+      "created": "2026-09-12",
+      "stars": 1,
+      "description": "A dark fantasy action RPG game made w/ Astra",
+      "made_with": "Astra"
+    },
+    {
+      "name": "miguelsolorio.com",
+      "repo": "miguelsolorio.com",
+      "commits": 245,
+      "created": "2021-01-03",
+      "stars": 15,
+      "description": "My personal site built with Hugo and Tailwind"
+    },
+    {
+      "name": "Symbols",
+      "repo": "vscode-symbols",
+      "commits": 240,
+      "created": "2022-08-01",
+      "stars": 551,
+      "description": "A file icon theme for VS Code"
+    },
+    {
+      "name": "Min",
+      "repo": "min-theme",
+      "commits": 71,
+      "created": "2018-09-05",
+      "stars": 244,
+      "description": "A minimal theme for Visual Studio Code"
+    },
+    {
+      "name": "Fluent Icons",
+      "repo": "vscode-fluent-icons",
+      "commits": 69,
+      "created": "2020-06-18",
+      "stars": 167,
+      "description": "Fluent Icons for Visual Studio Code"
+    },
+    {
+      "name": "Outermost",
+      "repo": "outermost",
+      "commits": 57,
+      "created": "2026-09-26",
+      "stars": 2,
+      "description": "A space exploration of the observable universe built with Opus 5.5",
+      "made_with": "Opus 5.5"
+    },
+    {
+      "name": "Necromantle",
+      "repo": "necromantle",
+      "commits": 44,
+      "created": "2026-09-05",
+      "stars": 1,
+      "description": "A gothic action RPG game that runs in your browser",
+      "made_with": "Fable"
+    },
+    {
+      "name": "Syntaxer",
+      "repo": "figma-syntaxer",
+      "commits": 44,
+      "created": "2024-08-29",
+      "stars": 11,
+      "description": "A figma plugin for applying syntax highlighting to code"
+    },
+    {
+      "name": "The Tithe",
+      "repo": "the-tithe",
+      "commits": 40,
+      "created": "2026-09-25",
+      "stars": 1,
+      "description": "A first-person horror game built with Opus 5.5",
+      "made_with": "Opus 5.5"
+    },
+    {
+      "name": "VS Code Icons",
+      "repo": "vscode-icons-figma",
+      "commits": 29,
+      "created": "2021-03-17",
+      "stars": 7,
+      "description": "A Figma plugin to use VS Code icons"
+    }
+  ]
+}

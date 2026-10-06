@@ -1,0 +1,3 @@
+{{ $t := 0.0 }}
+{{ range (index site.Data.hire_me_series .).weekly }}{{ $t = add $t (float .) }}{{ end }}
+{{ return $t }}

@@ -1,0 +1,317 @@
+contact:
+  email: me@miguelsolorio.com
+  linkedin: https://www.linkedin.com/in/miguel-solorio-a432b021
+  github: https://github.com/miguelsolorio
+  resume: /miguel-solorio-resume.pdf
+
+hero:
+  eyebrow: Staff Software Designer · Seattle
+  headline: Over the past 8 years I've designed for ==VS Code==, ==Gemini CLI==, and ==Google Colab==
+
+chapters:
+  - id: vscode
+    tint: "#2f7fd9"
+    years: 2018 to 2022
+    org: Microsoft
+    role: Principal designer, VS Code
+    title: Designed VS Code in the open
+    stats:
+      - { total_of: npm, label: Codicons downloads }
+      - { contrib_total: prs, label: Pull requests }
+      - { contrib_total: commits, label: Commits }
+    links:
+      - { label: Onboarding case study, href: /onboarding/ }
+      - { label: Icons case study, href: /icons/ }
+      - { label: Config 2020 talk, href: "https://www.youtube.com/watch?v=yZUZk9B-PlE", external: true }
+    blocks:
+      - kind: area
+        series: npm
+        title: Launched Codicons, VS Code's icon library
+        text: Open sourced icon library, which led to product icon themes that let any extension replace VS Code's icons
+        caption: Weekly npm downloads of Codicons
+        grid:
+          - { value: 500000, label: 500k }
+        marks:
+          - { index: 40, label: 20k a week after a year, align: start, place: above }
+          - { index: -1, label: "{value}", align: end, place: above }
+        mini:
+          - { source: total, label: Downloads all time }
+          - { source: recent, label: Downloads in four weeks }
+          - { value: 1.1k, label: Projects using it }
+      - kind: quotes
+        note: On the new product icons
+        ids: [marius, antfu]
+      - kind: contrib
+        title: Contributions on GitHub
+        total_noun: contributions
+        summary: Commits, pull requests, issues, and reviews on GitHub from 2018 to 2022, across microsoft/vscode and 31 other Microsoft repositories, excluding merge commits
+        series:
+          - { key: commits, label: Commits }
+          - { key: prs, label: Pull requests }
+          - { key: issues, label: Issues }
+          - { key: reviews, label: Reviews }
+        rows:
+          - { label: "2018", commits: 144, prs: 38, issues: 65, reviews: 4 }
+          - { label: "2019", commits: 605, prs: 76, issues: 113, reviews: 8 }
+          - { label: "2020", commits: 390, prs: 29, issues: 184, reviews: 11 }
+          - { label: "2021", commits: 438, prs: 28, issues: 188, reviews: 13 }
+          - { label: "2022", commits: 84, prs: 30, issues: 138, reviews: 18 }
+      - kind: quotes
+        note: On first run
+        ids: [nonameolsson, ntotten]
+
+  - id: gemini-cli
+    tint: "#5b7fc7"
+    years: "2025"
+    org: Google
+    role: Lead designer, Gemini CLI
+    title: Designed for the first open-sourced terminal agent
+    stats:
+      - { value: "72", suffix: k, label: GitHub stars in ten weeks }
+      - { contrib_total: prs, label: Pull requests }
+      - { contrib_total: issues, label: Issues }
+    links:
+      - { label: Gemini CLI case study, href: /cli-agents/ }
+    blocks:
+      - kind: embed
+        src: /cli-agents/cli-todo-animation.html
+        title: Gemini CLI reading a research plan, writing a grouped four-step todo list, and completing each task with its matching tool call
+        caption: The agent works through a grouped todo list, one visible tool call at a time
+        height: 600
+        width: 752
+        min_height: 28rem
+      - kind: contrib
+        title: Contributions on GitHub
+        total_noun: contributions
+        summary: Commits, pull requests, issues, and reviews on google-gemini/gemini-cli by month, excluding merge commits
+        series:
+          - { key: commits, label: Commits }
+          - { key: prs, label: Pull requests }
+          - { key: issues, label: Issues }
+          - { key: reviews, label: Reviews }
+        rows:
+          - { label: May 2025, commits: 14, prs: 12, issues: 0, reviews: 1 }
+          - { label: Jun 2025, commits: 7, prs: 9, issues: 0, reviews: 3 }
+          - { label: Jul 2025, commits: 6, prs: 7, issues: 7, reviews: 1 }
+          - { label: Aug 2025, commits: 4, prs: 11, issues: 5, reviews: 5 }
+          - { label: Sep 2025, commits: 10, prs: 16, issues: 9, reviews: 6 }
+          - { label: Oct 2025, commits: 3, prs: 4, issues: 0, reviews: 6 }
+          - { label: After Oct 2025, commits: 0, prs: 0, issues: 1, reviews: 2 }
+      - kind: quotes
+        ids: [taylor, tyler, yogesh, jgang, riccardo, jukka]
+
+  - id: colab
+    tint: "#f29900"
+    years: 2024 to now
+    org: Google
+    role: Lead designer, Google Colab
+    title: Re-designed Colab as an AI-first product
+    stats:
+      - { value: "4.9", suffix: x, label: Increase in user efficiency }
+      - { value: "82", suffix: "%", label: User satisfaction }
+    links:
+      - { label: Colab case study, href: /colab-notebooks/ }
+    blocks:
+      - kind: embed
+        src: /colab-notebooks/cell-animation.html
+        title: An animated prototype of Gemini generating cells in a Colab notebook
+        caption: A coded prototype of Gemini generating notebook cells
+        height: 710
+        width: 752
+        min_height: 44rem
+      - kind: pairs
+        title: Time to finish a task
+        text: Participants finished all four tasks faster, and sentiment analysis dropped from 26 minutes to four.
+        caption: Mean task completion time in a usability study
+        with_label: With Gemini
+        without_label: Without
+        rows:
+          - { label: Code generation, with: 167, without: 617 }
+          - { label: Error resolution, with: 84, without: 513 }
+          - { label: Data visualization, with: 191, without: 517 }
+          - { label: Sentiment analysis, with: 245, without: 1574 }
+      - kind: quotes
+        note: From users after the redesign
+        ids: [gpucpp, yajush, ladi]
+      - kind: quotes
+        note: From teammates on the project
+        ids: [mahi, chris, mahi2]
+
+  - id: meta
+    tint: "#7a5af8"
+    years: 2022 to 2023
+    org: Meta
+    role: Design system lead, Meta
+    title: Led the design system team
+    stats:
+      - { value: "123", suffix: "", label: Components in the library }
+      - { value: "75", suffix: "%", label: "Refreshed, up from 26%" }
+    links:
+      - { label: Kanvas case study, href: /kustomer-design-system/ }
+    blocks:
+      - kind: shift
+        title: Component health, before and after
+        text: The design team stopped wondering whether a component was out of date, and handoff improved.
+        caption: Share of the library by status
+        rows:
+          - { label: Refreshed, from: 26, to: 75 }
+          - { label: Stale, from: 33, to: 5 }
+          - { label: Missing, from: 41, to: 17 }
+      - kind: quotes
+        ids: [lina, alex, bree, julio]
+
+reach:
+  id: on-the-side
+  title: What I build on the side
+  intro: Outside work, I build the tools I wish I had.
+  groups:
+    - label: VS Code extensions
+      noun: installs
+      logos:
+        - { id: vscode }
+      items:
+        - { slug: fluent, name: Fluent Icons }
+        - { slug: symbols, name: Symbols }
+        - { slug: min, name: Min }
+    - label: Figma plugins
+      noun: users
+      logos:
+        - { id: figma }
+      items:
+        - { slug: chroma, name: Chroma Colors }
+        - { slug: colorizer, name: Colorizer }
+        - { slug: codicons, name: VS Code Icons }
+        - { slug: navigator, name: Navigator }
+        - { slug: regulator, name: Regulator }
+        - { slug: kaleidocode, name: Kaleidocode }
+        - { slug: syntaxer, name: Syntaxer }
+        - { slug: variables, name: Variables Generator }
+  repos:
+    noun: commits
+    label: Agentic development
+    logos:
+      - { id: claude, name: Claude }
+      - { id: openai, name: Codex }
+    summary: Commits I authored, excluding merge commits, in my ten most active public GitHub repositories
+
+career:
+  id: career
+  title: Where I've worked
+  items:
+    - { when: "2025", org: Google, what: Gemini CLI, level: Staff designer }
+    - { when: 2024 to now, org: Google, what: Google Colab, level: Staff designer }
+    - { when: 2023 to 2024, org: Google, what: Google Cloud, level: Staff designer }
+    - { when: 2022 to 2023, org: Meta, what: Design system, level: Staff designer }
+    - { when: 2018 to 2022, org: Microsoft, what: VS Code, level: Principal designer }
+    - { when: 2014 to 2018, org: Microsoft, what: Azure DevOps and Azure Data, level: Designer }
+    - { when: 2012 to 2014, org: Zumobi, what: Interaction design and development, level: Designer and developer }
+    - { when: 2009 to 2014, org: Freelance, what: Web design and development, level: Designer and developer }
+    - { when: 2011 to 2012, org: Beyond Traditional, what: Interaction development, level: Junior developer }
+    - { when: 2007 to 2009, org: Artmil, what: Web development, level: Developer }
+
+cta:
+  id: contact
+  title: If that sounds like your team, email me.
+  copy_label: Copy email
+  copied_label: Copied
+
+quotes:
+  mahi:
+    role: Product manager
+    org: Google
+    parts:
+      - You have single handedly given this team the vision to what we're building...
+      - thank you for being ==the best designer i've ever worked with==
+  mahi2:
+    role: Product manager
+    org: Google
+    parts:
+      - Your ability to take the random ideas we have into ==a thought out user experience== is incredible. Every time, it makes me go "yes! that's exactly what I meant!"
+  chris:
+    role: Director of Product
+    org: Google
+    parts:
+      - I will forever regret not being able to ==hire you sooner==
+  taylor:
+    role: Principal Engineer
+    org: Google
+    parts:
+      - You're the expert to be frank and ==I super trust your opinion== …
+      - like you haven't steered us wrong at all …
+      - First thing people say is they LOVE the look and they LOVE the flow of how it all works. That's all you
+  tyler:
+    role: Software Engineer
+    org: Google
+    parts:
+      - Never imagined the day when designers would be choppin it up in terminal programs. My heart swells ❤️
+      - "==i love all of it!=="
+  antfu:
+    org: "@antfu7, X"
+    parts:
+      - It's so great that ==we can customize icons== for VS Code now! 🤩
+  marius:
+    org: "@mariusschulz, GitHub"
+    parts:
+      - Both new icons are ==absolutely gorgeous!==
+      - Thank you for reaching out to the community, asking for feedback, and taking it into consideration. It really is much appreciated. 🙂
+  nonameolsson:
+    org: "@nonameolsson, GitHub"
+    parts:
+      - Love it! looks smooth, modern and at the same time very useful for first time users. … ==Great job on designing it!==
+  ntotten:
+    org: "@ntotten, GitHub"
+    parts:
+      - Love it! This would be something ==we would love to use== in the Salesforce extensions as well. Having an API to allow extensions to add to this would be really useful.
+  yogesh:
+    role: Gemini CLI user
+    org: Google
+    parts:
+      - The rate of updates to Gemini CLI has been incredible, and the amount of ==great UX==, that too on a command-line surface, is amazing!
+  jgang:
+    role: Gemini CLI user
+    org: Google
+    parts:
+      - I like the ==Gemini CLI interface better== than the Copilot CLI interface.
+  riccardo:
+    role: Gemini CLI user
+    org: Google
+    parts:
+      - I find the CLI so far ==superior to the web interface==
+  jukka:
+    role: Gemini CLI user
+    org: Google
+    parts:
+      - The UI is nice for ==keeping track of what's going on==.
+  gpucpp:
+    org: "@gpu_cpp, X"
+    parts:
+      - whoever is responsible for the new UI ==deserves a raise==
+  yajush:
+    org: "@Yajush_who, X"
+    parts:
+      - The new UI feels clean and polished, and honestly, it makes me ==want to code more==.
+      - Amazing how a good interface can boost motivation.
+  ladi:
+    org: "@ladi_akande, X"
+    parts:
+      - I love the new UI experience on @GoogleColab. This looks ==fresh and beautiful==. Nice upgrade!
+  bree:
+    role: Designer
+    org: Meta
+    parts:
+      - "==Gamechanger!== Also, I am loving the changelog!"
+  alex:
+    role: Designer
+    org: Meta
+    parts:
+      - Amaaaaaazing! This is so awesome! ==Thank you for owning this!==
+  lina:
+    role: Designer
+    org: Meta
+    parts:
+      - This is amazing work. As I build screens I can feel how much better all the Figma components are getting. Everything is beginning to feel ==so much more seamless==.
+  julio:
+    role: Designer
+    org: Meta
+    parts:
+      - Great job, I enjoy reviewing this type of stuff. ==This component looks amazing!==

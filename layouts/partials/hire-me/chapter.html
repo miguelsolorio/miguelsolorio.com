@@ -1,0 +1,29 @@
+{{ $c := .c }}
+{{ $contrib := dict }}
+{{ range $c.blocks }}{{ if eq .kind "contrib" }}{{ $contrib = . }}{{ end }}{{ end }}
+<section class="hm-chapter" id="{{ $c.id }}" style="--hm-tint: {{ $c.tint }}" aria-labelledby="{{ $c.id }}-title">
+  <div class="hm-chapter__rail">
+    <p class="hm-eyebrow">{{ $c.years }} · {{ $c.org }}</p>
+    <p class="hm-role">{{ $c.role }}</p>
+    <h2 class="hm-h2" id="{{ $c.id }}-title">{{ $c.title }}</h2>
+    <p class="hm-copy">{{ $c.lede }}</p>
+    <dl class="hm-railstats">
+      {{ range $c.stats }}
+        <div>
+          <dt>{{ .label }}</dt>
+          <dd><span data-count>{{ if .total_of }}{{ partial "compact-number.html" (partial "hire-me/series-total.html" .total_of) }}{{ else if .contrib_total }}{{ $key := .contrib_total }}{{ $sum := 0 }}{{ range $contrib.rows }}{{ $sum = add $sum (index . $key) }}{{ end }}{{ lang.FormatNumber 0 $sum }}{{ else }}{{ .value }}{{ .suffix }}{{ end }}</span></dd>
+        </div>
+      {{ end }}
+    </dl>
+    <p class="hm-links">
+      {{ range $c.links }}<a href="{{ .href | relURL }}"{{ if .external }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .label }}</a>{{ end }}
+    </p>
+  </div>
+  <div class="hm-chapter__body">
+    {{ range $c.blocks }}
+      {{ if not .hidden }}
+        {{ partial "hire-me/block.html" . }}
+      {{ end }}
+    {{ end }}
+  </div>
+</section>

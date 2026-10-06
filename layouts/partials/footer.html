@@ -45,6 +45,14 @@
       <script src="{{ $home.RelPermalink }}" defer{{ with $home.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
     {{ end }}
 
+    {{ if eq .Layout "hire-me" }}
+      {{ $hireMe := resources.Get "js/hire-me.js" }}
+      {{ if hugo.IsProduction }}
+        {{ $hireMe = $hireMe | minify | fingerprint }}
+      {{ end }}
+      <script src="{{ $hireMe.RelPermalink }}" defer{{ with $hireMe.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
+    {{ end }}
+
     {{ if .HasShortcode "quote" }}
       {{ $quotes := resources.Get "js/quote-avatars.js" }}
       {{ if hugo.IsProduction }}

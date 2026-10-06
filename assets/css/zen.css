@@ -97,6 +97,14 @@ html.zen .site-content .quote-avatar,
 html.zen .site-content .video-play-button,
 html.zen .site-content .quote-stat-mark svg,
 html.zen .site-content .project .title svg,
+html.zen .site-content .hm-chart,
+html.zen .site-content .hm-embed,
+html.zen .site-content .hm-pill,
+html.zen .site-content .hm-legend,
+html.zen .site-content .hm-bar i,
+html.zen .site-content .hm-stack,
+html.zen .site-content .hm-tip,
+html.zen .site-content .hm-logos,
 html.zen .site-content .site-footer-nav {
   display: none !important;
 }

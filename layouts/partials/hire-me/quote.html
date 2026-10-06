@@ -1,0 +1,9 @@
+<figure class="hm-quote hm-reveal">
+  <blockquote>
+    <p>{{ range $i, $part := .parts }}{{ if $i }} {{ end }}{{ partial "hire-me/rich.html" $part }}{{ end }}</p>
+  </blockquote>
+  <figcaption>
+    {{ with .role }}<span class="hm-quote__role">{{ . }}</span>{{ end }}
+    <span class="hm-quote__org">{{ .org }}</span>
+  </figcaption>
+</figure>

@@ -1,0 +1,62 @@
+{{ $b := . }}
+{{ $vals := (index site.Data.hire_me_series $b.series).weekly }}
+{{ $n := float (sub (len $vals) 1) }}
+{{ $max := 0.0 }}
+{{ range $vals }}{{ if gt (float .) $max }}{{ $max = float . }}{{ end }}{{ end }}
+{{ $start := (index site.Data.hire_me_series $b.series).start }}
+{{ $count := len $vals }}
+{{ $from := dateFormat "Jan 2006" $start }}
+{{ $to := dateFormat "Jan 2006" ((time $start).AddDate 0 0 (int (add (mul 7 (sub $count 1)) 6))) }}
+{{ $total := partial "hire-me/series-total.html" $b.series }}
+{{ $recent := 0.0 }}
+{{ range last 4 $vals }}{{ $recent = add $recent (float .) }}{{ end }}
+{{ $path := newScratch }}
+{{ range $i, $v := $vals }}
+  {{ $x := mul (div (float $i) $n) 100 }}
+  {{ $y := sub 88 (mul (div (float $v) $max) 78) }}
+  {{ $path.Add "d" (printf "%s%.2f %.2f " (cond (eq $i 0) "M" "L") $x $y) }}
+{{ end }}
+{{ $d := $path.Get "d" }}
+<figure class="hm-figure hm-reveal">
+  <figcaption class="hm-figure__head">
+    <h3 class="hm-h3">{{ $b.title }}</h3>
+    <p>{{ $b.text }}</p>
+  </figcaption>
+  <div class="hm-chart hm-chart--area" data-hm-scrub data-weekly="{{ delimit $vals "," }}" data-start="{{ $start }}" role="img" aria-label="{{ $b.caption }}, from {{ $from }} to {{ $to }}">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      {{ range $b.grid }}
+        {{ $gy := sub 88 (mul (div (float .value) $max) 78) }}
+        <line class="hm-chart__grid" x1="0" x2="100" y1="{{ printf "%.2f" $gy }}" y2="{{ printf "%.2f" $gy }}"/>
+      {{ end }}
+      <path class="hm-chart__fill" d="{{ $d }}L100 88 L0 88 Z"/>
+      <path class="hm-chart__line" d="{{ $d }}"/>
+      <line class="hm-chart__base" x1="0" x2="100" y1="88" y2="88"/>
+    </svg>
+    {{ range $b.grid }}
+      {{ $gy := sub 88 (mul (div (float .value) $max) 78) }}
+      <span class="hm-chart__tick" style="top: {{ printf "%.2f" $gy }}%">{{ .label }}</span>
+    {{ end }}
+    {{ range $b.marks }}
+      {{ $idx := cond (lt .index 0) (add $count .index) .index }}
+      {{ $mv := index $vals $idx }}
+      {{ $mx := mul (div (float $idx) $n) 100 }}
+      {{ $my := sub 88 (mul (div (float $mv) $max) 78) }}
+      {{ $label := .label | replaceRE "\\{value\\}" (partial "compact-number.html" $mv | string) }}
+      <span class="hm-mark" data-align="{{ .align }}" data-place="{{ .place }}" style="left: {{ printf "%.2f" $mx }}%; top: {{ printf "%.2f" $my }}%"><i></i><b>{{ $label }}</b></span>
+    {{ end }}
+    <span class="hm-chart__axis hm-chart__axis--start">{{ $from }}</span>
+    <span class="hm-chart__axis hm-chart__axis--end">{{ $to }}</span>
+  </div>
+  {{ with $b.mini }}
+    <dl class="hm-mini">
+      {{ range . }}
+        {{ $source := .source | default "" }}
+        <div>
+          <dt>{{ .label }}</dt>
+          <dd>{{ if eq $source "total" }}{{ partial "compact-number.html" $total }}{{ else if eq $source "recent" }}{{ partial "compact-number.html" $recent }}{{ else }}{{ .value }}{{ end }}</dd>
+        </div>
+      {{ end }}
+    </dl>
+  {{ end }}
+  <p class="hm-caption">{{ $b.caption }}</p>
+</figure>

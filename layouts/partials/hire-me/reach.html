@@ -1,0 +1,12 @@
+{{ $r := .reach }}
+<section class="hm-section" id="{{ $r.id }}" aria-labelledby="{{ $r.id }}-title">
+  <header class="hm-section__head hm-reveal">
+    <h2 class="hm-h2" id="{{ $r.id }}-title">{{ $r.title }}</h2>
+    <p class="hm-copy">{{ $r.intro }}</p>
+  </header>
+  <div class="hm-reach">
+    {{ partial "hire-me/reach-group.html" (index $r.groups 0) }}
+    {{ partial "hire-me/reach-group.html" (index $r.groups 1) }}
+    {{ partial "hire-me/reach-repos.html" $r.repos }}
+  </div>
+</section>

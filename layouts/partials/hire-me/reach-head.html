@@ -1,0 +1,5 @@
+<p class="hm-reachgroup__total"><span data-count>{{ .total }}</span> <span>{{ .noun }}</span></p>
+<p class="hm-reachgroup__label">
+  {{ with .logos }}<span class="hm-logos">{{ range . }}{{ partial "hire-me/logo.html" . }}{{ end }}</span>{{ end }}
+  <span>{{ .label }}</span>
+</p>

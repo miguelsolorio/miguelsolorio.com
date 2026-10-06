@@ -107,6 +107,18 @@
     "source": "vscode-marketplace",
     "updated": "2026-10-05"
   },
+  "syntaxer": {
+    "primary": {
+      "type": "users",
+      "value": 1500
+    },
+    "secondary": {
+      "type": "likes",
+      "value": 43
+    },
+    "source": "figma-manual",
+    "updated": "2026-10-06"
+  },
   "variables": {
     "primary": {
       "type": "users",

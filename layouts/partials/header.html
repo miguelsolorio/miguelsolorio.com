@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    {{ if not hugo.IsProduction }}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{{ end }}
+    {{ if or (not hugo.IsProduction) .Params.noindex }}<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">{{ end }}
     <title>{{ if .IsHome }}{{ .Site.Title }} · {{ .Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
     {{ $description := .Description | default .Site.Params.description }}
     <meta name="description" content="{{ $description }}">

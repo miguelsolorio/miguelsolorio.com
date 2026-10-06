@@ -1,0 +1,32 @@
+{{ $sum := 0.0 }}
+{{ $max := 0.0 }}
+{{ range .items }}
+  {{ $v := float (index site.Data.project_metrics .slug).primary.value }}
+  {{ $sum = add $sum $v }}
+  {{ if gt $v $max }}{{ $max = $v }}{{ end }}
+{{ end }}
+<div class="hm-reachgroup hm-reveal">
+  {{ partial "hire-me/reach-head.html" (dict "total" (partial "compact-number.html" $sum) "noun" .noun "label" .label "logos" .logos) }}
+  <div class="hm-pairs">
+    {{ range .items }}
+      {{ $m := index site.Data.project_metrics .slug }}
+      {{ $v := float $m.primary.value }}
+      {{ $trows := slice (dict "l" (title $m.primary.type) "v" (lang.FormatNumber 0 $m.primary.value)) }}
+      {{ with $m.secondary }}
+        {{ $sv := cond (eq .type "rating") (printf "%.1f of 5" (float .value)) (lang.FormatNumber 0 .value) }}
+        {{ $trows = $trows | append (dict "l" (title .type) "v" $sv) }}
+      {{ end }}
+      {{ $trows = $trows | append (dict "l" (printf "Share of %s" $.noun) "v" (printf "%.0f%%" (mul (div $v $sum) 100))) }}
+      {{ $labels := dict "vscode-marketplace" "VS Code Marketplace" "figma-manual" "Figma Community, checked by hand" }}
+      {{ $source := index $labels $m.source | default $m.source }}
+      {{ $tip := dict "title" .name "rows" $trows "note" (printf "%s, updated %s" $source (dateFormat "Jan 2, 2006" $m.updated)) }}
+      <div class="hm-pair" data-tip="{{ partial "hire-me/tip.html" $tip }}">
+        <p class="hm-pair__label">{{ .name }}</p>
+        <p class="hm-bar hm-bar--accent" style="--w: {{ printf "%.1f" (mul (div $v $max) 100) }}%">
+          <i></i>
+          <span>{{ partial "compact-number.html" $v }}</span>
+        </p>
+      </div>
+    {{ end }}
+  </div>
+</div>

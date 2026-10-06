@@ -35,7 +35,13 @@ if (portfolioTerminal) {
       ]
     },
     { spaced: false, parts: [{ text: '  modified   vibe-projects', className: 't-modified' }] },
-    { spaced: false, parts: [{ text: '  new file   next-chapter.md', className: 't-added' }] }
+    {
+      spaced: false,
+      parts: [
+        { text: '  new file   ', className: 't-added' },
+        { text: 'next-chapter.md', className: 't-added', href: '/hire-me/' }
+      ]
+    }
   ];
 
   const workGroups = [
@@ -150,10 +156,14 @@ if (portfolioTerminal) {
   function addParts(parts, spaced) {
     const row = createRow(spaced);
     parts.forEach(function (part) {
-      const span = document.createElement('span');
-      span.className = part.className || 't-out';
-      span.textContent = part.text;
-      row.appendChild(span);
+      const node = document.createElement(part.href ? 'a' : 'span');
+      node.className = part.className || 't-out';
+      node.textContent = part.text;
+      if (part.href) {
+        node.href = part.href;
+        node.classList.add('home-hero-terminal-secret', 'hm-plain');
+      }
+      row.appendChild(node);
     });
     terminalOutput.appendChild(row);
     return row;

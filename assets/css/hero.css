@@ -370,6 +370,16 @@
         text-decoration: underline;
     }
 
+    .home-hero-current .home-hero-terminal-secret {
+        text-decoration: none;
+        text-underline-offset: .18em;
+    }
+
+    .home-hero-current .home-hero-terminal-secret:hover,
+    .home-hero-current .home-hero-terminal-secret:focus-visible {
+        text-decoration: underline;
+    }
+
     .home-hero-current .home-hero-terminal-action {
         display: block;
         width: 100%;

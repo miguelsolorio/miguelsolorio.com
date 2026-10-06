@@ -1,0 +1,32 @@
+{{ $data := site.Data.hire_me_repos }}
+{{ $items := $data.items }}
+{{ $sum := 0.0 }}
+{{ $max := 0.0 }}
+{{ range $items }}
+  {{ $sum = add $sum (float .commits) }}
+  {{ if gt (float .commits) $max }}{{ $max = float .commits }}{{ end }}
+{{ end }}
+<div class="hm-reachgroup hm-reveal">
+  {{ partial "hire-me/reach-head.html" (dict "total" (lang.FormatNumber 0 $sum) "noun" .noun "label" .label "logos" .logos) }}
+  <p class="sr-only">{{ .summary }}</p>
+  <div class="hm-pairs">
+    {{ range $items }}
+      {{ $trows := slice (dict "l" "Commits" "v" (lang.FormatNumber 0 .commits)) (dict "l" "Share of commits" "v" (printf "%.0f%%" (mul (div (float .commits) $sum) 100))) }}
+      {{ if gt .stars 0 }}{{ $trows = $trows | append (dict "l" "Stars" "v" (lang.FormatNumber 0 .stars)) }}{{ end }}
+      {{ $trows = $trows | append (dict "l" "Created" "v" (dateFormat "Jan 2006" .created)) }}
+      {{ $trows = $trows | append (dict "l" "As of" "v" (dateFormat "Jan 2, 2006" $data.updated)) }}
+      {{ $tip := dict "title" .name "rows" $trows }}
+      {{ with .description }}{{ $tip = merge $tip (dict "sub" .) }}{{ end }}
+      {{ with .made_with }}{{ $tip = merge $tip (dict "note" (printf "Made with %s" .)) }}{{ end }}
+      <div class="hm-pair" data-tip="{{ partial "hire-me/tip.html" $tip }}">
+        <p class="hm-pair__label">
+          <a class="hm-repo hm-plain" href="https://github.com/miguelsolorio/{{ .repo }}" target="_blank" rel="noopener noreferrer">{{ .name }}</a>
+        </p>
+        <p class="hm-bar hm-bar--accent" style="--w: {{ printf "%.1f" (mul (div (float .commits) $max) 100) }}%">
+          <i></i>
+          <span>{{ partial "compact-number.html" (float .commits) }}<span class="sr-only"> commits</span></span>
+        </p>
+      </div>
+    {{ end }}
+  </div>
+</div>

@@ -1,0 +1,11 @@
+{{ $h := .hero }}
+<header class="hm-hero" data-hm-hero>
+  <p class="hm-eyebrow">{{ $h.eyebrow }}</p>
+  <h1 class="hm-title">{{ partial "hire-me/rich.html" $h.headline }}</h1>
+  <p class="hm-summary">{{ $h.summary }}</p>
+  <div class="hm-actions">
+    <a class="hm-btn hm-btn--primary hm-plain" href="mailto:{{ .contact.email }}">Email me</a>
+    <a class="hm-btn hm-plain" href="{{ .contact.resume | relURL }}" target="_blank" rel="noopener noreferrer">Resume</a>
+    <a class="hm-btn hm-plain" href="{{ .contact.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  </div>
+</header>

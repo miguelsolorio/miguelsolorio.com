@@ -1,0 +1,13 @@
+{{ $c := .cta }}
+<section class="hm-cta hm-reveal" id="{{ $c.id }}" data-hm-cta aria-labelledby="{{ $c.id }}-title">
+  <h2 class="hm-h2 hm-cta__title" id="{{ $c.id }}-title">{{ $c.title }}</h2>
+  <p class="hm-cta__email">{{ .contact.email }}</p>
+  <div class="hm-actions">
+    <a class="hm-btn hm-btn--primary hm-plain" href="mailto:{{ .contact.email }}">Email me</a>
+    <button class="hm-btn" type="button" data-hm-copy="{{ .contact.email }}" data-copied="{{ $c.copied_label }}">{{ $c.copy_label }}</button>
+    <a class="hm-btn hm-plain" href="{{ .contact.resume | relURL }}" target="_blank" rel="noopener noreferrer">Resume</a>
+    <a class="hm-btn hm-plain" href="{{ .contact.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a class="hm-btn hm-plain" href="{{ .contact.github }}" target="_blank" rel="noopener noreferrer">GitHub</a>
+  </div>
+  <p class="sr-only" role="status" aria-live="polite" data-hm-copy-status></p>
+</section>

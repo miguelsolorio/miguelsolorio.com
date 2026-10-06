@@ -1,0 +1,33 @@
+{{ $b := . }}
+{{ $max := 0.0 }}
+{{ range $b.rows }}{{ if gt (float .without) $max }}{{ $max = float .without }}{{ end }}{{ end }}
+<figure class="hm-figure hm-reveal">
+  <figcaption class="hm-figure__head">
+    <h3 class="hm-h3">{{ $b.title }}</h3>
+    <p>{{ $b.text }}</p>
+  </figcaption>
+  <div class="hm-legend" aria-hidden="true">
+    <span class="hm-legend__item hm-legend__item--accent">{{ $b.with_label }}</span>
+    <span class="hm-legend__item">{{ $b.without_label }}</span>
+  </div>
+  <div class="hm-pairs">
+    {{ range $b.rows }}
+      {{ $with := printf "%dm %02ds" (div .with 60) (mod .with 60) }}
+      {{ $without := printf "%dm %02ds" (div .without 60) (mod .without 60) }}
+      {{ $saved := sub .without .with }}
+      {{ $tip := dict "title" .label "rows" (slice (dict "l" $b.with_label "v" $with) (dict "l" $b.without_label "v" $without)) "note" (printf "%.1fx faster, %dm %02ds saved" (div (float .without) (float .with)) (div $saved 60) (mod $saved 60)) }}
+      <div class="hm-pair" data-tip="{{ partial "hire-me/tip.html" $tip }}">
+        <p class="hm-pair__label">{{ .label }}</p>
+        <p class="hm-bar hm-bar--accent" style="--w: {{ printf "%.1f" (mul (div (float .with) $max) 100) }}%">
+          <i></i>
+          <span><span class="sr-only">{{ $b.with_label }}: </span>{{ div .with 60 }}m {{ printf "%02d" (mod .with 60) }}s</span>
+        </p>
+        <p class="hm-bar" style="--w: {{ printf "%.1f" (mul (div (float .without) $max) 100) }}%">
+          <i></i>
+          <span><span class="sr-only">{{ $b.without_label }}: </span>{{ div .without 60 }}m {{ printf "%02d" (mod .without 60) }}s</span>
+        </p>
+      </div>
+    {{ end }}
+  </div>
+  <p class="hm-caption">{{ $b.caption }}</p>
+</figure>

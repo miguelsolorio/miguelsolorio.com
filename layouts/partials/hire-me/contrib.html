@@ -1,0 +1,51 @@
+{{ $b := . }}
+{{ $s := newScratch }}
+{{ $max := 0 }}
+{{ range $b.rows }}
+  {{ $r := . }}
+  {{ $rt := 0 }}
+  {{ range $b.series }}
+    {{ $v := index $r .key }}
+    {{ $rt = add $rt $v }}
+    {{ $s.Add .key $v }}
+    {{ $s.Add "total" $v }}
+  {{ end }}
+  {{ if gt $rt $max }}{{ $max = $rt }}{{ end }}
+{{ end }}
+<figure class="hm-figure hm-contrib hm-reveal">
+  <figcaption class="hm-figure__head">
+    <h3 class="sr-only">{{ $b.title }}</h3>
+    <p class="hm-reachgroup__total"><span data-count>{{ lang.FormatNumber 0 ($s.Get "total") }}</span> <span>{{ $b.total_noun }}</span></p>
+    <p class="sr-only">{{ $b.summary }}</p>
+  </figcaption>
+  <div class="hm-pairs">
+    {{ range $i, $r := $b.rows }}
+      {{ $rt := 0 }}
+      {{ range $b.series }}{{ $rt = add $rt (index $r .key) }}{{ end }}
+      {{ $trows := slice }}
+      {{ range $b.series }}
+        {{ $v := index $r .key }}
+        {{ $trows = $trows | append (dict "k" .key "l" .label "v" (lang.FormatNumber 0 $v) "p" (printf "%.0f%%" (mul (div (float $v) (float $rt)) 100))) }}
+      {{ end }}
+      {{ $tip := dict "title" $r.label "sub" (printf "%s %s" (lang.FormatNumber 0 $rt) $b.total_noun) "rows" $trows }}
+      <div class="hm-pair" style="--i: {{ $i }}" data-tip="{{ partial "hire-me/tip.html" $tip }}">
+        <p class="hm-pair__label">{{ $r.label }}</p>
+        <p class="hm-stackrow" style="--w: {{ printf "%.1f" (mul (div (float $rt) (float $max)) 100) }}%">
+          <span class="hm-stack" aria-hidden="true">
+            {{ range $b.series }}<i data-kind="{{ .key }}" style="--v: {{ index $r .key }}" title="{{ .label }}: {{ index $r .key }}"></i>{{ end }}
+          </span>
+          <span class="hm-stackrow__total">{{ lang.FormatNumber 0 $rt }}</span>
+          <span class="sr-only">{{ range $j, $x := $b.series }}{{ if $j }}, {{ end }}{{ index $r $x.key }} {{ lower $x.label }}{{ end }}</span>
+        </p>
+      </div>
+    {{ end }}
+  </div>
+  <dl class="hm-mini">
+    {{ range $b.series }}
+      <div data-kind="{{ .key }}">
+        <dt>{{ .label }}</dt>
+        <dd>{{ lang.FormatNumber 0 ($s.Get .key) }}</dd>
+      </div>
+    {{ end }}
+  </dl>
+</figure>

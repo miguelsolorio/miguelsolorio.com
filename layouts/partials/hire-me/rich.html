@@ -1,0 +1,1 @@
+{{- . | htmlEscape | replaceRE "==(.+?)==" "<mark class=\"hm-hl\">$1</mark>" | replaceRE "(^|[^A-Za-z0-9_])@([A-Za-z0-9_]+)" "$1<a class=\"hm-mention hm-plain\" href=\"https://x.com/$2\" target=\"_blank\" rel=\"noopener noreferrer\">@$2</a>" | safeHTML -}}

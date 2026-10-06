@@ -1,0 +1,13 @@
+{{ define "main" }}
+  {{ $d := site.Data.hire_me }}
+  <main id="content" class="hire-me">
+    {{ partial "hire-me/hero.html" $d }}
+    {{ range $d.chapters }}
+      {{ partial "hire-me/chapter.html" (dict "c" . "d" $d) }}
+    {{ end }}
+    {{ partial "hire-me/reach.html" $d }}
+    {{ partial "hire-me/career.html" $d }}
+    {{ partial "hire-me/cta.html" $d }}
+    <a class="hm-pill hm-btn hm-btn--primary hm-plain" href="mailto:{{ $d.contact.email }}" data-hm-pill hidden>Email me</a>
+  </main>
+{{ end }}

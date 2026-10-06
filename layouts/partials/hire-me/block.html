@@ -1,0 +1,27 @@
+{{ $b := . }}
+{{ if eq $b.kind "area" }}
+  {{ partial "hire-me/area.html" $b }}
+{{ else if eq $b.kind "pairs" }}
+  {{ partial "hire-me/pairs.html" $b }}
+{{ else if eq $b.kind "shift" }}
+  {{ partial "hire-me/shift.html" $b }}
+{{ else if eq $b.kind "contrib" }}
+  {{ partial "hire-me/contrib.html" $b }}
+{{ else if eq $b.kind "embed" }}
+  <figure class="hm-embed hm-reveal" style="--embed-height: {{ $b.height }}; --embed-width: {{ $b.width }}; --embed-min-height: {{ $b.min_height }}">
+    <iframe class="embed-frame" src="{{ $b.src }}" title="{{ $b.title }}" loading="lazy" scrolling="no"></iframe>
+    <figcaption class="hm-caption">{{ $b.caption }}</figcaption>
+  </figure>
+{{ else if eq $b.kind "quotes" }}
+  <div class="hm-quoteblock">
+    {{ with $b.note }}<p class="hm-eyebrow hm-quotes__note">{{ . }}</p>{{ end }}
+    <div class="hm-quotes">
+      {{ range $b.ids }}
+        {{ $q := index site.Data.hire_me.quotes . }}
+        {{ if not $q.hidden }}
+          {{ partial "hire-me/quote.html" $q }}
+        {{ end }}
+      {{ end }}
+    </div>
+  </div>
+{{ end }}

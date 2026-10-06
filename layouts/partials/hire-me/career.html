@@ -1,0 +1,15 @@
+{{ $c := .career }}
+<section class="hm-section" id="{{ $c.id }}" aria-labelledby="{{ $c.id }}-title">
+  <header class="hm-section__head hm-reveal">
+    <h2 class="hm-h2" id="{{ $c.id }}-title">{{ $c.title }}</h2>
+  </header>
+  <ol class="hm-timeline">
+    {{ range $c.items }}
+      <li class="hm-reveal">
+        <span class="hm-timeline__when">{{ .when }}</span>
+        <p class="hm-timeline__what"><b>{{ .org }}</b> · {{ .what }}</p>
+        <p class="hm-timeline__level">{{ .level }}</p>
+      </li>
+    {{ end }}
+  </ol>
+</section>

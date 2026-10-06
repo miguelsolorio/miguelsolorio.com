@@ -1,0 +1,2 @@
+{{ $d := index site.Data.hire_me_logos .id }}
+<svg class="hm-logo" data-logo="{{ .id }}" viewBox="0 0 24 24" fill="currentColor"{{ if .name }} role="img" aria-label="{{ .name }}"{{ else }} aria-hidden="true"{{ end }}><path d="{{ $d }}"/></svg>
