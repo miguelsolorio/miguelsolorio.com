@@ -37,7 +37,7 @@ chapters:
         mini:
           - { source: total, label: Downloads all time }
           - { source: recent, label: Downloads in four weeks }
-          - { value: 1.1k, label: Projects using it }
+          - { value: 976, label: Projects using it }
       - kind: quotes
         note: On the new product icons
         ids: [marius, antfu]
@@ -54,7 +54,7 @@ chapters:
           - { label: "2018", commits: 144, prs: 38, issues: 65, reviews: 4 }
           - { label: "2019", commits: 605, prs: 76, issues: 113, reviews: 8 }
           - { label: "2020", commits: 390, prs: 29, issues: 184, reviews: 11 }
-          - { label: "2021", commits: 438, prs: 28, issues: 188, reviews: 13 }
+          - { label: "2021", commits: 437, prs: 28, issues: 188, reviews: 13 }
           - { label: "2022", commits: 84, prs: 30, issues: 138, reviews: 18 }
       - kind: quotes
         note: On first run

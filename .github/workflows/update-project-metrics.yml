@@ -2,7 +2,7 @@ name: Update project metrics
 
 on:
   schedule:
-    - cron: "17 15 * * 1"
+    - cron: "17 15 * * 2"
   workflow_dispatch:
 
 permissions:
@@ -20,17 +20,28 @@ jobs:
           node-version: 20
       - name: Refresh Visual Studio Marketplace metrics
         run: npm run update:metrics
+      - name: Refresh Codicons downloads and dependents
+        run: npm run update:codicons
       - name: Commit updated metrics
         id: commit
+        env:
+          TRACKED: >-
+            data/project_metrics.json
+            data/hire_me_series.json
+            data/codicons_stats.json
+            data/hire_me.yaml
+            content/icons.md
+            static/icons/npm-downloads.js
+            static/icons/npm-downloads.html
         run: |
-          if git diff --quiet -- data/project_metrics.json; then
+          if git diff --quiet -- $TRACKED; then
             echo "Project metrics are already current."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/project_metrics.json
+          git add $TRACKED
           git commit -m "Update project metrics"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"

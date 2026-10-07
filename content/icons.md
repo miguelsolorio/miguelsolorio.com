@@ -105,12 +105,12 @@ Previously, referencing an icon meant three separate files, one per theme (Dark,
 
 {{< iframe src="/icons/architecture.html" height="285" title="Before-and-after code comparison: an icon previously required three theme-specific SVGs, now a single Codicon reference" theme="icons" frame_class="project-embed--compare project-embed--transparent project-embed--snug" >}}
 
-We also shipped the library as an npm package, for use outside VS Code or inside extensions. It took a year to reach 20k installs a week. It now averages over 500k a week, and has been downloaded more than 19 million times.
+We also shipped the library as an npm package, for use outside VS Code or inside extensions. It took a year to reach 20k installs a week. It now averages about 590k a week, and has been downloaded more than 23 million times.
 
 {{< stats >}}
-19.5M | Downloads all time | usage
-580k | Average weekly downloads | engagement
-1.1k | Projects using it | adoption
+23.9M | Downloads all time | usage
+590k | Average weekly downloads | engagement
+976 | Projects using it | adoption
 {{< /stats >}}
 
-{{< iframe src="/icons/npm-downloads.html" height="440" title="Line chart of weekly npm downloads for the codicons package from 2021 to 2026, rising from nothing to over 500k a week" theme="icons" frame_class="project-embed--bare project-embed--snug" >}}
+{{< iframe src="/icons/npm-downloads.html" height="440" title="Line chart of weekly npm downloads for the codicons package from 2021 to 2026, rising from nothing to about 590k a week" theme="icons" frame_class="project-embed--bare project-embed--snug" >}}
