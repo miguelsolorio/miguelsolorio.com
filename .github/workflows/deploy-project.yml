@@ -1,0 +1,81 @@
+name: Deploy project
+
+on:
+  workflow_call:
+    inputs:
+      slug:
+        description: 'Folder under /projects/ on the site. Defaults to the calling repo name.'
+        type: string
+        default: ''
+      artifact:
+        description: 'Artifact holding the build, either a GitHub Pages artifact or a plain folder'
+        type: string
+        default: github-pages
+      dry_run:
+        description: 'Connect and list changes without uploading anything'
+        type: boolean
+        default: false
+    secrets:
+      FTP_SERVER:
+        required: true
+      FTP_USERNAME:
+        required: true
+      FTP_PASSWORD:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    concurrency:
+      group: deploy-project-${{ github.repository }}-${{ inputs.slug }}
+      cancel-in-progress: false
+    steps:
+      - name: Resolve slug
+        id: slug
+        env:
+          SLUG: ${{ inputs.slug }}
+        run: |
+          slug="${SLUG:-${GITHUB_REPOSITORY#*/}}"
+          if [[ ! "$slug" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
+            echo "::error::Invalid project slug: $slug"
+            exit 1
+          fi
+          echo "value=$slug" >> "$GITHUB_OUTPUT"
+          echo "Deploying to https://miguelsolorio.com/projects/$slug/"
+
+      - name: Download build
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.artifact }}
+          path: artifact
+
+      - name: Unpack build
+        run: |
+          if [[ -f artifact/artifact.tar ]]; then
+            mkdir site
+            tar -xf artifact/artifact.tar -C site
+          else
+            mv artifact site
+          fi
+          test -f site/index.html || { echo "::error::index.html missing from the build"; exit 1; }
+          echo "Built $(find site -type f | wc -l) files, $(du -sh site | cut -f1)"
+
+      - name: Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./site/
+          server-dir: ./${{ steps.slug.outputs.value }}/
+          dry-run: ${{ inputs.dry_run }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
+          timeout: 600000
+          log-level: standard
