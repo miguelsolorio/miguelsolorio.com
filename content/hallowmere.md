@@ -6,7 +6,7 @@ draft: false
 weight: 6
 project: "small"
 thumbnail: "hallowmere/app-icon.png"
-link: "https://miguelsolorio.github.io/hallowmere/"
+link: "https://miguelsolorio.com/projects/hallowmere/"
 made_with: "Astra"
 
 # The card links out, so this page has no body to show. Keep it out of the
