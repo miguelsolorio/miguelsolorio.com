@@ -6,7 +6,7 @@ draft: false
 weight: 6
 project: "small"
 thumbnail: "nightfall/app-icon.png"
-link: "https://miguelsolorio.github.io/nightfall/"
+link: "https://miguelsolorio.com/projects/nightfall/"
 made_with: "Opus 5.5"
 
 # The card links out, so this page has no body to show. Keep it out of the

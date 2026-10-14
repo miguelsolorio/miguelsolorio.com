@@ -6,7 +6,7 @@ draft: false
 weight: 8
 project: "small"
 thumbnail: "the-tithe/app-icon.png"
-link: "https://miguelsolorio.github.io/the-tithe/"
+link: "https://miguelsolorio.com/projects/the-tithe/"
 made_with: "Opus 5.5"
 
 # The card links out, so this page has no body to show. Keep it out of the

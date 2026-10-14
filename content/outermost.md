@@ -6,7 +6,7 @@ draft: false
 weight: 9
 project: "small"
 thumbnail: "outermost/app-icon.png"
-link: "https://miguelsolorio.github.io/outermost/"
+link: "https://miguelsolorio.com/projects/outermost/"
 made_with: "Opus 5.5"
 
 # The card links out, so this page has no body to show. Keep it out of the
