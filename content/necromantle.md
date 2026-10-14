@@ -13,4 +13,5 @@ made_with: "Fable"
 # build rather than publish an empty /<slug>/ page.
 _build:
   render: false
+  list: never
 ---
