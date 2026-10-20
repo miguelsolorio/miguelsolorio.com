@@ -6,7 +6,8 @@
 
     .dark #logo,
     .dark .social a,
-    .dark .social #theme-toggle {
+    .dark .social #theme-toggle,
+    .dark .social #search-toggle {
         color: #ede7f2;
     }
 
@@ -40,13 +41,26 @@
     }
 
     .dark .social a:hover,
-    .dark nav #theme-toggle:hover {
+    .dark nav #theme-toggle:hover,
+    .dark nav #search-toggle:hover {
         background-color: #efa9ae;
     }
     .dark .social a:hover svg,
     .dark .social a:hover svg path,
-    .dark nav #theme-toggle:hover svg {
+    .dark nav #theme-toggle:hover svg,
+    .dark nav #search-toggle:hover svg {
         fill: #110e1a;
+    }
+
+    .dark .nav-tooltip {
+        background: #ffffff;
+        color: #110e1a;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .dark .nav-tooltip kbd {
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #64748b;
     }
 
     .dark #logo:hover {

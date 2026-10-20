@@ -163,7 +163,8 @@
   }
 
   .social a,
-  #theme-toggle {
+  #theme-toggle,
+  #search-toggle {
     @apply rounded-md p-1.5 text-slate-700 transition-all duration-300;
   }
 
@@ -173,13 +174,15 @@
   }
 
   .social a:hover,
-  nav #theme-toggle:hover {
+  nav #theme-toggle:hover,
+  nav #search-toggle:hover {
     @apply bg-primary;
   }
 
   .social a:hover svg,
   .social a:hover svg path,
-  nav #theme-toggle:hover svg {
+  nav #theme-toggle:hover svg,
+  nav #search-toggle:hover svg {
     @apply fill-white;
   }
 
@@ -187,8 +190,64 @@
     @apply flex items-center text-sm gap-3;
   }
 
-  .social #theme-toggle {
+  .social #theme-toggle,
+  .social #search-toggle {
     @apply flex items-center justify-center bg-transparent transition-all duration-100;
+  }
+
+  .social #search-toggle {
+    @apply relative;
+  }
+
+  .nav-tooltip {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.35rem 0.3rem 0.6rem;
+    border-radius: 6px;
+    background: #111111;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: #ffffff;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(-50%, -3px);
+    pointer-events: none;
+    transition: opacity .12s ease, transform .12s ease;
+  }
+
+  .nav-tooltip kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1em 0.38em;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  nav #search-toggle:hover .nav-tooltip,
+  nav #search-toggle:focus-visible .nav-tooltip {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (hover: none) {
+    .nav-tooltip {
+      display: none;
+    }
   }
 
   #logo {
@@ -214,5 +273,10 @@
   .site-content a:not(.project):not(.hm-plain):not(:has(img, picture, video, canvas)),
   .site-header {
     transition: none;
+  }
+
+  .nav-tooltip {
+    transform: translateX(-50%);
+    transition-property: opacity;
   }
 }

@@ -404,9 +404,26 @@
     window.setTimeout(focusInput, 0);
   }
 
+  const searchButton = document.getElementById('search-toggle');
+  searchButton?.addEventListener('click', openPalette);
+
+  const platform = navigator.userAgentData?.platform || navigator.platform || '';
+  if (searchButton && !/Mac|iPhone|iPad|iPod/i.test(platform)) {
+    searchButton.setAttribute('aria-keyshortcuts', 'Control+K');
+    searchButton.querySelector('.nav-tooltip kbd')?.replaceChildren('Ctrl K');
+  }
+
   document.addEventListener('keydown', (event) => {
-    const toggleShortcut = (event.metaKey || event.ctrlKey) && event.shiftKey &&
-      (event.code === 'KeyP' || event.key.toLowerCase() === 'p');
+    const modifier = event.metaKey || event.ctrlKey;
+    const isK = event.code === 'KeyK' || event.key.toLowerCase() === 'k';
+    const isP = event.code === 'KeyP' || event.key.toLowerCase() === 'p';
+    if (modifier && event.shiftKey && isK) {
+      if (!isOpen) return;
+      event.preventDefault();
+      clearRecents();
+      return;
+    }
+    const toggleShortcut = modifier && ((event.shiftKey && isP) || (!event.shiftKey && !event.altKey && isK));
     if (toggleShortcut) {
       event.preventDefault();
       isOpen ? closePalette() : openPalette();
@@ -414,10 +431,7 @@
     }
     if (!isOpen) return;
 
-    if ((event.metaKey || event.ctrlKey) && (event.code === 'KeyK' || event.key.toLowerCase() === 'k')) {
-      event.preventDefault();
-      clearRecents();
-    } else if (event.key === 'Escape') {
+    if (event.key === 'Escape') {
       event.preventDefault();
       closePalette();
     } else if (event.key === 'ArrowDown' && filteredItems.length) {
