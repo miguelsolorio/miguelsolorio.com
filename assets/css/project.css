@@ -271,6 +271,9 @@
     box-shadow: var(--shadow-hover);
   }
   .side-project--game {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     width: 100%;
     font: inherit;
     color: inherit;
