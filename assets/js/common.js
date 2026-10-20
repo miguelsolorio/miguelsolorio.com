@@ -167,49 +167,33 @@
 
   const CATEGORY_ORDER = ['Tools', 'Featured Work', 'Projects'];
   const COMMANDS = [
-    { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Tools' },
-    { id: 'play-polarity', label: 'Play Polarity', category: 'Tools', icon: '/polarity.png' },
-    { id: 'toggle-zen', label: 'Zen Mode', category: 'Tools', glyph: 'zen' },
-    { id: 'go-notebooks', label: 'Colab Notebooks', category: 'Featured Work', href: '/colab-notebooks/', glyph: 'notebook' },
-    { id: 'go-cli', label: 'CLI Agents', category: 'Featured Work', href: '/cli-agents/', glyph: 'terminal' },
-    { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', href: '/onboarding/', glyph: 'flag' },
-    { id: 'go-kanvas', label: 'Kanvas Design System', category: 'Featured Work', href: '/kustomer-design-system/', glyph: 'layers' },
-    { id: 'go-icons', label: 'Icons', category: 'Featured Work', href: '/icons/', glyph: 'shapes' },
-    { id: 'go-fluent', label: 'Fluent Icons', category: 'Projects', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons', external: true, icon: '/fluent.png' },
-    { id: 'go-symbols', label: 'Symbols', category: 'Projects', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols', external: true, icon: '/symbols.png' },
-    { id: 'go-min', label: 'Min Theme', category: 'Projects', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme', external: true, icon: '/min.svg' },
-    { id: 'go-chroma', label: 'Chroma Colors', category: 'Projects', href: 'https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors', external: true, icon: '/chroma.svg' },
-    { id: 'go-colorizer', label: 'Colorizer', category: 'Projects', href: 'https://www.figma.com/community/plugin/816889819624434639/Colorizer', external: true, icon: '/colorizer.svg' },
-    { id: 'go-codicons', label: 'VS Code Icons', category: 'Projects', href: 'https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons', external: true, icon: '/codicons.svg' },
-    { id: 'go-navigator', label: 'Navigator', category: 'Projects', href: 'https://www.figma.com/community/plugin/739558587628004077/Navigator', external: true, icon: '/navigator.svg' },
-    { id: 'go-regulator', label: 'Regulator', category: 'Projects', href: 'https://www.figma.com/community/plugin/772054917007268360/Regulator', external: true, icon: '/regulator.svg' },
-    { id: 'go-kaleidocode', label: 'Kaleidocode', category: 'Projects', href: 'https://www.figma.com/community/plugin/736060893363678891/theme-importer-for-visual-studio-code', external: true, icon: '/kaleidocode-logo.svg' },
-    { id: 'go-variables', label: 'Variables Generator', category: 'Projects', href: 'https://www.figma.com/community/plugin/1319728928151105267/variables-generator', external: true, icon: '/variables.png' },
-    { id: 'go-syntaxer', label: 'Syntaxer', category: 'Projects', href: 'https://www.figma.com/community/plugin/1411162491720421622/syntaxer', external: true, icon: '/syntaxer.png' },
-    { id: 'go-paster', label: 'Paster', category: 'Projects', href: 'https://www.figma.com/community/plugin/1668696147027080221/paster', external: true, icon: '/paster.png' },
-    { id: 'go-contrast-grid', label: 'Contrast Grid', category: 'Projects', href: 'https://miguelsolorio.github.io/contrast-grid-editor/', external: true, icon: '/contrast-grid.png' },
-    { id: 'go-gradient-studio', label: 'Gradient Studio', category: 'Projects', href: 'https://miguelsolorio.github.io/gradient-studio/', external: true, icon: '/gradient-studio.png' },
-    { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', href: 'https://www.figma.com/community/file/786632241522687494/Visual-Studio-Code-Toolkit', external: true, icon: '/code.svg' },
-    { id: 'clear-recents', label: 'Clear Recents', category: 'Actions', glyph: 'clear', hidden: true }
+    { id: 'toggle-theme', label: 'Toggle Dark Mode', category: 'Tools', kind: 'Command' },
+    { id: 'play-polarity', label: 'Play Polarity', category: 'Tools', kind: 'Game' },
+    { id: 'toggle-zen', label: 'Zen Mode', category: 'Tools', kind: 'Command' },
+    { id: 'go-notebooks', label: 'Colab Notebooks', category: 'Featured Work', kind: 'Page', href: '/colab-notebooks/' },
+    { id: 'go-cli', label: 'CLI Agents', category: 'Featured Work', kind: 'Page', href: '/cli-agents/' },
+    { id: 'go-onboarding', label: 'Onboarding', category: 'Featured Work', kind: 'Page', href: '/onboarding/' },
+    { id: 'go-kanvas', label: 'Kanvas Design System', category: 'Featured Work', kind: 'Page', href: '/kustomer-design-system/' },
+    { id: 'go-icons', label: 'Icons', category: 'Featured Work', kind: 'Page', href: '/icons/' },
+    { id: 'go-fluent', label: 'Fluent Icons', category: 'Projects', kind: 'VS Code extension', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.fluent-icons', external: true },
+    { id: 'go-symbols', label: 'Symbols', category: 'Projects', kind: 'VS Code extension', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.symbols', external: true },
+    { id: 'go-min', label: 'Min Theme', category: 'Projects', kind: 'VS Code extension', href: 'https://marketplace.visualstudio.com/items?itemName=miguelsolorio.min-theme', external: true },
+    { id: 'go-chroma', label: 'Chroma Colors', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/739237058450529919/Chroma-Colors', external: true },
+    { id: 'go-colorizer', label: 'Colorizer', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/816889819624434639/Colorizer', external: true },
+    { id: 'go-codicons', label: 'VS Code Icons', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/786075219184960694/Visual-Studio-Code-Icons', external: true },
+    { id: 'go-navigator', label: 'Navigator', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/739558587628004077/Navigator', external: true },
+    { id: 'go-regulator', label: 'Regulator', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/772054917007268360/Regulator', external: true },
+    { id: 'go-kaleidocode', label: 'Kaleidocode', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/736060893363678891/theme-importer-for-visual-studio-code', external: true },
+    { id: 'go-variables', label: 'Variables Generator', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/1319728928151105267/variables-generator', external: true },
+    { id: 'go-syntaxer', label: 'Syntaxer', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/1411162491720421622/syntaxer', external: true },
+    { id: 'go-paster', label: 'Paster', category: 'Projects', kind: 'Figma plugin', href: 'https://www.figma.com/community/plugin/1668696147027080221/paster', external: true },
+    { id: 'go-contrast-grid', label: 'Contrast Grid', category: 'Projects', kind: 'Site', href: 'https://miguelsolorio.github.io/contrast-grid-editor/', external: true },
+    { id: 'go-gradient-studio', label: 'Gradient Studio', category: 'Projects', kind: 'Site', href: 'https://miguelsolorio.github.io/gradient-studio/', external: true },
+    { id: 'go-toolkit', label: 'VS Code Toolkit', category: 'Projects', kind: 'Figma file', href: 'https://www.figma.com/community/file/786632241522687494/Visual-Studio-Code-Toolkit', external: true },
+    { id: 'clear-recents', label: 'Clear Recents', category: 'Actions', kind: 'Command', hidden: true }
   ];
 
-  const GLYPH_ATTRS = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
-  const GLYPH_PATHS = {
-    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
-    moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
-    layers: '<path d="m12 2 9 5-9 5-9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/>',
-    terminal: '<path d="m4 17 6-5-6-5"/><path d="M12 19h8"/>',
-    shapes: '<circle cx="8" cy="8" r="5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>',
-    flag: '<path d="M5 21V4.5"/><path d="M5 5c3-1.8 6 1.2 9-.5v8.5c-3 1.7-6-1.3-9 .5Z"/>',
-    notebook: '<path d="M6 2h13v20H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M9 2v20"/>',
-    clear: '<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>',
-    zen: '<path d="M4 6h16M4 12h10M4 18h13"/>'
-  };
-
-  function commandGlyph(command) {
-    if (command.id === 'toggle-theme') return siteTheme.get() === 'dark' ? 'sun' : 'moon';
-    return command.glyph || null;
-  }
+  const EXTERNAL_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
 
   const overlay = document.getElementById('cmd-palette-overlay');
   const palette = document.getElementById('cmd-palette');
@@ -354,24 +338,16 @@
       item.dataset.id = command.id;
       item.dataset.index = String(index);
 
-      const left = makeElement('span', 'cmd-item-left');
-      if (command.icon) {
-        const icon = makeElement('img', 'cmd-item-icon');
-        icon.src = command.icon;
-        icon.alt = '';
-        icon.setAttribute('aria-hidden', 'true');
-        left.appendChild(icon);
-      } else {
-        const glyph = commandGlyph(command);
-        if (glyph) {
-          const box = makeElement('span', 'cmd-item-icobox');
-          box.setAttribute('aria-hidden', 'true');
-          box.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" ${GLYPH_ATTRS} aria-hidden="true">${GLYPH_PATHS[glyph]}</svg>`;
-          left.appendChild(box);
-        }
+      item.appendChild(makeElement('span', 'cmd-item-label', command.label));
+      const meta = makeElement('span', 'cmd-item-meta');
+      meta.appendChild(makeElement('span', 'cmd-item-kind', command.kind));
+      if (command.external) {
+        const arrow = makeElement('span', 'cmd-item-ext');
+        arrow.setAttribute('aria-hidden', 'true');
+        arrow.innerHTML = EXTERNAL_ARROW;
+        meta.appendChild(arrow);
       }
-      left.appendChild(makeElement('span', 'cmd-item-label', command.label));
-      item.appendChild(left);
+      item.appendChild(meta);
       results.appendChild(item);
     });
   }

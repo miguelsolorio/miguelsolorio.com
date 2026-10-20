@@ -29,6 +29,8 @@
       {{ $styles = $styles | minify | fingerprint }}
     {{ end }}
     <link href="{{ $styles.RelPermalink }}" rel="stylesheet"{{ with $styles.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" media="print" onload="this.media='all'">
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
