@@ -5,6 +5,7 @@ date: 2026-09-24T10:00:00-07:00
 draft: false
 weight: 8
 project: "small"
+cartridge: true
 thumbnail: "the-tithe/app-icon.png"
 link: "https://miguelsolorio.com/projects/the-tithe/"
 made_with: "Opus 5.5"

@@ -43,6 +43,12 @@
         {{ $home = $home | minify | fingerprint }}
       {{ end }}
       <script src="{{ $home.RelPermalink }}" defer{{ with $home.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
+
+      {{ $cartridge := resources.Get "js/cartridge.js" }}
+      {{ if hugo.IsProduction }}
+        {{ $cartridge = $cartridge | minify | fingerprint }}
+      {{ end }}
+      <script src="{{ $cartridge.RelPermalink }}" defer{{ with $cartridge.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>
     {{ end }}
 
     {{ if eq .Layout "hire-me" }}

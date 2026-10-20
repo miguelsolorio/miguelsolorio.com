@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartridge and console designs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3429ff; --shadow-hover: 0 12px 28px -8px rgb(35 28 102 / .38); --bg-a: #f2f0ff;
+      --bg-b: #f8f7ff; --bg-c: #f5f5f5; --ink: #1e293b;
+      --muted: #64748b; --bar: rgb(255 255 255 / .78); --bar-line: #e2e8f0;
+      --card: #fff; --card-line: #e2e8f0; --card-title: #1e293b;
+      --card-desc: #64748b; --pill-line: #dbe3ec; --pill-bg: #f8fafc;
+      --pill-ink: #64748b; --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    html.dark {
+      --primary: #8b85ff; --bg-a: #161320; --bg-b: #1a1626;
+      --bg-c: #110e1a; --ink: #ede7f2; --muted: #8c839f;
+      --bar: rgb(26 22 38 / .8); --bar-line: #3a3444; --card: #201c28;
+      --card-line: #3a3444; --card-title: #ede7f2; --card-desc: #8c839f;
+      --pill-line: #4e4759; --pill-bg: #2a2534; --pill-ink: #a59cad;
+      color-scheme: dark;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding-bottom: 6rem;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, var(--bg-a), var(--bg-b) 45%, var(--bg-c)) fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+    .lab-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .875rem;
+      padding: .5rem 1rem;
+      background: var(--bar);
+      border-bottom: 1px solid var(--bar-line);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+    .lab-bar-title { margin: 0; font: 700 .75rem/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+    .lab-theme, .lab-copy, .lab-sound {
+      font: 600 .75rem/1 Inter, system-ui, sans-serif;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--bar-line);
+      border-radius: 999px;
+      padding: .4375rem .75rem;
+      cursor: pointer;
+      transition: color .15s ease, border-color .15s ease;
+    }
+    .lab-theme:hover, .lab-copy:hover, .lab-sound:hover { color: var(--ink); border-color: var(--primary); }
+    .lab-theme:focus-visible, .lab-copy:focus-visible, .lab-sound:focus-visible, .lab-tile:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .lab-main { max-width: 64rem; margin: 0 auto; padding: 0 1rem; }
+    .lab-section { padding-top: 2rem; }
+    .lab-h { margin: 0; font: 700 .8125rem/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+    .lab-sub { margin: .5rem 0 1rem; font-size: .875rem; line-height: 1.45; color: var(--muted); }
+    .lab-empty { grid-column: 1 / -1; margin: 0; padding: 1.5rem 0; font: 500 .75rem/1 var(--mono); color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(12.5rem, calc(50% - .5rem)), 1fr)); gap: 1rem; }
+    .stage { perspective: 1200px; }
+    .side-project {
+      display: block;
+      background: var(--card);
+      color: inherit;
+      text-align: center;
+      text-decoration: none;
+      border: 1px solid var(--card-line);
+      border-radius: 1rem;
+      padding: clamp(1.125rem, 3vw, 1.375rem) clamp(.75rem, 2.5vw, 1rem);
+      transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease;
+    }
+    .side-project:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .side-project img { display: block; width: 3.5rem; height: 3.5rem; margin: 0 auto; border-radius: .875rem; }
+    .side-project-title { margin: .75rem 0 0; font-size: .9375rem; font-weight: 700; color: var(--card-title); }
+    .side-project-description {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: .375rem 0 0;
+      font-size: .8125rem;
+      line-height: 1.35;
+      color: var(--card-desc);
+      overflow-wrap: anywhere;
+    }
+    .side-project-model {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: .625rem 0 0;
+      padding: .3125rem .5625rem;
+      border: 1px solid var(--pill-line);
+      border-radius: 999px;
+      background: var(--pill-bg);
+      color: var(--pill-ink);
+      font-size: .6875rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .lab-toasts {
+      position: fixed;
+      left: 1rem;
+      bottom: 4rem;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .5rem;
+      pointer-events: none;
+    }
+    .lab-toast {
+      max-width: min(26rem, calc(100vw - 2rem));
+      padding: .625rem .875rem;
+      border-radius: .75rem;
+      background: #1e1b2e;
+      color: #f4f1ff;
+      font: 500 .75rem/1.35 var(--mono);
+      box-shadow: 0 10px 24px -8px rgb(20 16 60 / .5);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .2s ease, transform .2s ease;
+      overflow-wrap: anywhere;
+    }
+    .lab-toast.is-in { opacity: 1; transform: none; }
+    html.dark .lab-toast { background: #ede7f2; color: #1a1626; }
+    .lab-readout {
+      position: fixed;
+      left: 1rem;
+      bottom: 1rem;
+      z-index: 150;
+      display: flex;
+      align-items: center;
+      gap: .625rem;
+      padding: .375rem .375rem .375rem .875rem;
+      background: var(--bar);
+      border: 1px solid var(--bar-line);
+      border-radius: 999px;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+    .lab-readout-text { font: 700 .6875rem/1 var(--mono); letter-spacing: .04em; white-space: nowrap; }
+    .lab-item { position: relative; display: flex; flex-direction: column; padding-top: 4rem; outline: none; }
+    .lab-item.is-active { z-index: 60; }
+    .lab-item > .side-project { position: relative; z-index: 2; flex: 1; }
+    .lab-peek {
+      position: absolute;
+      top: calc(4rem + 4px);
+      left: 50%;
+      width: 112px;
+      height: 104px;
+      margin-left: -56px;
+      z-index: 1;
+      pointer-events: none;
+      transform: translateY(0);
+      transition: transform .26s cubic-bezier(.4, 0, .6, 1), rotate .26s ease;
+    }
+    .lab-item.is-peek .lab-peek {
+      transform: translateY(-42px);
+      rotate: -3deg;
+      transition-duration: .32s;
+      transition-timing-function: cubic-bezier(.2, .8, .2, 1);
+      animation: lab-peek-bob 2.4s ease-in-out .32s infinite;
+    }
+    .lab-item.is-peek .lab-peek:hover { transform: translateY(-66px); rotate: -2deg; transition-duration: .22s; }
+    .lab-item.is-active .lab-peek { z-index: 3; rotate: none; translate: none; animation: none; transition: none; }
+    .lab-peek .cart { position: absolute; inset: 0; margin: auto; cursor: grab; touch-action: none; outline: none; pointer-events: auto; }
+    .lab-peek .cart.lab-grow, .lab-peek .cart.lab-grow.is-dragging { transition: transform .2s cubic-bezier(.2, .8, .2, 1); }
+    .lab-peek .cart:focus-visible { filter: drop-shadow(0 0 6px var(--cart-color, var(--primary))); }
+    @keyframes lab-peek-bob {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -2px; }
+    }
+    .lab-dock {
+      position: fixed;
+      left: 50%;
+      bottom: 12px;
+      z-index: 50;
+      width: max-content;
+      pointer-events: none;
+      transform: translate(-50%, 170%);
+      transition: transform .55s cubic-bezier(.34, 1.3, .64, 1);
+    }
+    .lab-dock.is-up { transform: translate(-50%, 0); }
+    .lab-dock .console { transform-origin: 50% 100%; }
+    .lab-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 1rem; }
+    #lab-consoles { grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); }
+    .lab-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: .25rem;
+      padding: .75rem;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--card-line);
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: box-shadow .2s ease, border-color .2s ease;
+    }
+    .lab-tile:hover { border-color: var(--primary); }
+    .lab-tile.is-selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
+    .lab-tile .stage {
+      display: grid;
+      place-items: center;
+      min-height: 9.5rem;
+      margin-bottom: .5rem;
+      border-radius: .625rem;
+      background: var(--pill-bg);
+    }
+    .lab-console-stage { display: block; padding: .5rem; min-height: 0; }
+    .lab-fit { position: relative; margin: 0 auto; }
+    .lab-fit .console { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+    .lab-tile-name { font: 700 .6875rem/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+    .lab-tile-note { font-size: .75rem; line-height: 1.35; color: var(--muted); }
+    .cart {
+      position: relative;
+      perspective: 900px;
+      transform:
+        translate3d(var(--drag-x, 0px), var(--drag-y, 0px), 0)
+        var(--cart-transform, none);
+      transition: transform .18s ease-out;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .cart.is-dragging { transition: none; cursor: grabbing; z-index: 50; }
+    .cart.is-spring { transition: transform .45s cubic-bezier(.34, 1.56, .64, 1); }
+    .cart.is-flying { transition: transform .5s cubic-bezier(.34, 1.3, .64, 1); }
+    .cart.lab-fly { transition: transform .32s cubic-bezier(.2, .8, .2, 1); }
+    .cart.lab-sink { transition: none; }
+    .lab-static {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      image-rendering: pixelated;
+      transition: opacity .12s linear;
+    }
+    .lab-static.is-in { opacity: 1; }
+    .lab-static.is-out { transition-duration: .16s; }
+    .lab-static.is-plain { background: rgb(0 0 0 / .6); transition: none; }
+    body.lab-seq .lab-dock { z-index: 320; }
+    body.lab-seq .lab-item.is-active { z-index: 330; }
+    body.lab-static-on .lab-item.is-active .side-project { visibility: hidden; }
+    body.lab-seq .lab-toasts { z-index: 400; }
+    .lab-bar-actions { display: flex; align-items: center; gap: .5rem; }
+    .cart--float { animation: lab-bob 3.2s ease-in-out infinite; }
+    .cart--float.is-dragging, .cart--float.is-spring { animation: none; }
+    @keyframes lab-bob {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -6px; }
+    }
+    .console { position: relative; perspective: 1200px; }
+    .console-screen { position: relative; overflow: hidden; container-type: size; }
+    .screen-static, .screen-logo, .screen-title {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+    }
+    .screen-static {
+      background:
+        repeating-linear-gradient(0deg, rgb(255 255 255 / .55) 0 1px, rgb(0 0 0 / .6) 1px 2px),
+        repeating-linear-gradient(90deg, rgb(255 255 255 / .4) 0 2px, rgb(0 0 0 / .4) 2px 5px),
+        #777;
+      animation: lab-static .24s steps(4) infinite;
+    }
+    @keyframes lab-static {
+      to { background-position: 0 7px, 11px 0, 0 0; }
+    }
+    .screen-logo::before {
+      content: "MS";
+      padding: .4em .5em;
+      font: 700 clamp(7px, 14cqh, 14px)/1 var(--mono);
+      letter-spacing: .08em;
+      background: var(--primary);
+      color: #fff;
+      image-rendering: pixelated;
+      box-shadow: 3px 3px 0 #000, inset -2px -2px 0 rgb(0 0 0 / .3), inset 2px 2px 0 rgb(255 255 255 / .35);
+    }
+    .screen-title {
+      padding: 4px;
+      text-align: center;
+      font: 700 clamp(7px, 10cqw, 13px)/1.25 var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #9bffb5;
+      text-shadow: 0 0 6px rgb(155 255 181 / .7);
+    }
+    .console-screen.is-static .screen-static,
+    .console.is-error .screen-static { opacity: 1; }
+    .console-screen.is-logo .screen-logo { opacity: 1; }
+    .console-screen.is-title .screen-title { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .cart--float, .screen-static { animation: none; }
+      .cart, .cart.is-spring, .cart.is-flying, .cart.lab-fly { transition: none; }
+      .lab-static { transition: none; }
+      .side-project, .lab-toast, .lab-tile, .console-slot { transition: none; }
+      .side-project:hover { transform: none; }
+      .lab-peek, .lab-item.is-peek .lab-peek { transition: none; animation: none; rotate: none; opacity: 0; }
+      .lab-item.is-peek .lab-peek, .lab-item.is-active .lab-peek { opacity: 1; }
+      .lab-peek .cart.lab-grow, .lab-peek .cart.lab-grow.is-dragging { transition: none; }
+      .lab-dock { transform: translate(-50%, 0); opacity: 0; transition: opacity .2s; }
+      .lab-dock.is-up { opacity: 1; }
+    }
+  </style>
+<style>
+.ck-1 { width: 112px; height: 104px; user-select: none; }
+.ck-1 .ck-1-body { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+.ck-1 .ck-1-face { position: absolute; box-sizing: border-box; }
+.ck-1 img { display: block; pointer-events: none; }
+
+.ck-1 .ck-1-front, .ck-1 .ck-1-back { left: 0; top: 0; width: 112px; height: 104px; border-radius: 3px; backface-visibility: hidden; }
+.ck-1 .ck-1-front {
+  transform: translateZ(8px);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, rgba(0,0,0,.03) 1px 2px),
+    linear-gradient(180deg, #b4b5ba, #a4a5aa 45%, #8e8f95);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -2px 4px rgba(0,0,0,.25), inset 1px 0 0 rgba(255,255,255,.2), inset -1px 0 0 rgba(0,0,0,.18);
+}
+.ck-1 .ck-1-back {
+  transform: rotateY(180deg) translateZ(8px);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, rgba(0,0,0,.03) 1px 2px),
+    linear-gradient(180deg, #a9aaaf, #9a9ba0 50%, #85868c);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 4px rgba(0,0,0,.25);
+}
+.ck-1 .ck-1-pcb { position: absolute; left: 16px; right: 16px; top: 18px; bottom: 14px; border-radius: 3px; background: #8b8c92; box-shadow: inset 0 2px 5px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.3); }
+
+.ck-1 .ck-1-grip { position: absolute; top: 12px; width: 10px; height: 32px; background: repeating-linear-gradient(180deg, rgba(0,0,0,.34) 0 2px, rgba(255,255,255,.5) 2px 3px, transparent 3px 8px); }
+.ck-1 .ck-1-grip-l { left: 4px; }
+.ck-1 .ck-1-grip-r { right: 4px; }
+
+.ck-1 .ck-1-left, .ck-1 .ck-1-right, .ck-1 .ck-1-top, .ck-1 .ck-1-bottom { background: linear-gradient(90deg, #8e8f95, #9d9ea3 50%, #8e8f95); }
+.ck-1 .ck-1-left, .ck-1 .ck-1-right { top: 0; width: 16px; height: 104px; }
+.ck-1 .ck-1-left { left: -8px; transform: rotateY(-90deg); border-radius: 0; }
+.ck-1 .ck-1-right { left: 104px; transform: rotateY(90deg); border-radius: 0; }
+.ck-1 .ck-1-ribs { position: absolute; left: 0; right: 0; top: 12px; height: 32px; background: repeating-linear-gradient(180deg, rgba(0,0,0,.34) 0 2px, rgba(255,255,255,.5) 2px 3px, transparent 3px 8px); }
+.ck-1 .ck-1-top { left: 0; top: -8px; width: 112px; height: 16px; transform: rotateX(90deg); background: linear-gradient(180deg, #b8b9be, #9d9ea3); border-radius: 0; }
+.ck-1 .ck-1-bottom { left: 0; top: 96px; width: 112px; height: 16px; transform: rotateX(-90deg); background: linear-gradient(180deg, #7b7c82, #6d6e74); border-radius: 0; }
+
+.ck-1 .ck-1-label { position: absolute; left: 18px; top: 10px; width: 76px; height: 52px; box-sizing: border-box; background: #000; border-radius: 2px; overflow: hidden; box-shadow: 0 0 0 1px #1c1c1f, 0 1px 0 rgba(255,255,255,.35); }
+.ck-1 .ck-1-label img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.ck-1 .ck-1-mark { position: absolute; right: 20px; top: 67px; font: 700 8px/1 Arial, sans-serif; letter-spacing: 1px; color: #a1a2a7; text-shadow: 0 1px 0 rgba(255,255,255,.45), 0 -1px 0 rgba(0,0,0,.2); }
+
+.ck-1 .ck-1-thumb { position: absolute; left: 28px; width: 56px; height: 24px; bottom: 0; background: linear-gradient(180deg, #b9bac0, #c4c5ca); border-radius: 4px 4px 0 0; box-shadow: inset 0 3px 5px rgba(0,0,0,.4), inset 2px 0 3px rgba(0,0,0,.2), inset -2px 0 3px rgba(0,0,0,.2); }
+.ck-1 .ck-1-screw { position: absolute; bottom: 6px; width: 5px; height: 5px; border-radius: 50%; background: #2b2b30; box-shadow: inset 0 1px 1px rgba(0,0,0,.8), 0 1px 0 rgba(255,255,255,.35); }
+.ck-1 .ck-1-screw-l { left: 7px; }
+.ck-1 .ck-1-screw-r { right: 7px; }
+
+.dark .ck-1 .ck-1-front { background: repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, rgba(0,0,0,.04) 1px 2px), linear-gradient(180deg, #9a9ca6, #8a8c96 45%, #747682); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 -2px 4px rgba(0,0,0,.35), inset 1px 0 0 rgba(255,255,255,.3), inset -1px 0 0 rgba(255,255,255,.12), 0 0 0 1px rgba(255,255,255,.12); }
+.dark .ck-1 .ck-1-back { background: linear-gradient(180deg, #8f919b, #80828c 50%, #6c6e79); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -2px 4px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.12); }
+.dark .ck-1 .ck-1-left, .dark .ck-1 .ck-1-right, .dark .ck-1 .ck-1-top, .dark .ck-1 .ck-1-bottom { background: linear-gradient(90deg, #6e707b, #8a8c96 50%, #6e707b); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+.dark .ck-1 .ck-1-top { background: linear-gradient(180deg, #9c9ea8, #82848e); }
+.dark .ck-1 .ck-1-bottom { background: linear-gradient(180deg, #666874, #585a65); }
+.dark .ck-1 .ck-1-mark { color: #868893; }
+.dark .ck-1 .ck-1-thumb { background: linear-gradient(180deg, #a0a2ac, #acaeb8); }
+.dark .ck-1 .ck-1-label { box-shadow: 0 0 0 1px #2a2a30, 0 1px 0 rgba(255,255,255,.3); }
+
+
+
+.cs-1 {
+  width: 250px;
+  height: 180px;
+  --t: #d9d8d3;
+  --f: #c6c5c0;
+  --s: #b3b2ad;
+  --dt: #dddcd7;
+  --df: #cac9c4;
+  --ds: #b7b6b1;
+  --ink: #8d8c87;
+  --recess: #b4b3ae;
+  --holes: #3a3a3d;
+}
+
+.dark .cs-1 {
+  --t: #b2b1ad;
+  --f: #a2a19d;
+  --s: #93928e;
+  --dt: #b6b5b1;
+  --df: #a6a5a1;
+  --ds: #979692;
+  --ink: #74736f;
+  --recess: #8c8b87;
+  --holes: #26262a;
+}
+
+.cs-1 .cs-1-body {
+  position: absolute;
+  left: 0;
+  top: calc(100% - 40px);
+  width: 250px;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-14deg);
+  transform-origin: 50% 0 -125px;
+}
+
+.cs-1 .cs-1-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.cs-1 .cs-1-top { background: var(--t); }
+.cs-1 .cs-1-front { background: var(--f); }
+.cs-1 .cs-1-left,
+.cs-1 .cs-1-right { background: var(--s); }
+
+.cs-1 .cs-1-deck.cs-1-top { background: var(--dt); }
+.cs-1 .cs-1-deck.cs-1-front { background: var(--df); }
+.cs-1 .cs-1-deck.cs-1-left,
+.cs-1 .cs-1-deck.cs-1-right { background: var(--ds); }
+
+.cs-1 .cs-1-shadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 280px;
+  height: 275px;
+  transform-origin: 0 0;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.18) 45%, rgba(0, 0, 0, 0) 72%);
+  pointer-events: none;
+}
+
+.cs-1 .cs-1-cap {
+  transition: transform 0.18s ease;
+}
+
+.cs-1 .cs-1-cap.cs-1-top {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 55%), #5a47c4;
+}
+.cs-1 .cs-1-cap.cs-1-front { background: #4a3aa6; }
+.cs-1 .cs-1-cap.cs-1-left,
+.cs-1 .cs-1-cap.cs-1-right { background: #3f318f; }
+
+.cs-1.is-on .cs-1-power { --slide: 6px; }
+
+.cs-1 .cs-1-cap-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 4px/1 var(--mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.18em;
+  color: #fff;
+  text-indent: 0.18em;
+  pointer-events: none;
+}
+
+.cs-1 .cs-1-vent {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.28) 0 3px, rgba(255, 255, 255, 0.22) 3px 6px);
+}
+
+.cs-1 .cs-1-port {
+  position: absolute;
+  top: 5px;
+  width: 44px;
+  height: 14px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.2)), var(--t);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.cs-1 .cs-1-port-a { left: 48px; }
+.cs-1 .cs-1-port-b { left: 158px; }
+
+.cs-1 .cs-1-hole {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--holes);
+}
+
+.cs-1 .console-led {
+  position: absolute;
+  left: 14.5px;
+  top: 12.5px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #3a3a3d;
+}
+
+.cs-1.is-on .console-led {
+  background: #ff3b30;
+  box-shadow: 0 0 4px #ff3b30;
+}
+
+.cs-1.is-error .console-led {
+  animation: cs1-blink 0.5s steps(2, jump-none) infinite;
+}
+
+@keyframes cs1-blink {
+  0% { background: #ff3b30; box-shadow: 0 0 4px #ff3b30; }
+  100% { background: #3a3a3d; box-shadow: none; }
+}
+
+.cs-1 .cs-1-micro {
+  position: absolute;
+  left: 21px;
+  top: 12px;
+  font: 700 4px/4px var(--mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.cs-1 .cs-1-emboss {
+  position: absolute;
+  left: 40px;
+  top: 0;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  font: 700 7px/1 var(--mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.3em;
+  color: var(--df);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 -1px 0 rgba(0, 0, 0, 0.28);
+}
+
+.cs-1 .cs-1-seam {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.cs-1 .cs-1-seam-a { left: 50px; top: 30px; width: 138px; height: 1px; }
+.cs-1 .cs-1-seam-b { left: 50px; top: 70px; width: 138px; height: 1px; }
+.cs-1 .cs-1-seam-c { left: 124px; top: 30px; width: 1px; height: 40px; }
+
+.cs-1 .cs-1-flap {
+  position: absolute;
+  left: 50px;
+  top: 70px;
+  width: 138px;
+  height: 56px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.12));
+}
+
+.cs-1 .console-slot {
+  position: absolute;
+  left: 50px;
+  top: 90px;
+  width: 150px;
+  height: 30px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  background: #1c1c1f;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.85), inset 0 0 0 1px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.cs-1 .console-slot.is-hot {
+  border-color: var(--primary, #3429ff);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.85), 0 0 10px 2px var(--primary, #3429ff);
+}
+
+.cs-1 .cs-1-eject {
+  position: absolute;
+  left: 112px;
+  top: 160px;
+  width: 26px;
+  height: 45px;
+  background: var(--recess);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.cs-1 .cs-1-eject-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 4px/1 var(--mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.12em;
+  text-indent: 0.12em;
+  color: var(--ink);
+}
+
+.cs-1 .console-seat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: 105px;
+  transform-origin: 50% 100%;
+  transform: translate3d(56px, -159px, -141px) rotateX(14deg);
+  pointer-events: none;
+}
+
+.cs-1 .console-screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-1 .cs-1-cap,
+  .cs-1 .console-slot { transition: none; }
+  .cs-1.is-error .console-led { animation: none; background: #ff3b30; }
+}
+
+
+</style>
+</head>
+<body>
+  <header class="lab-bar">
+    <h1 class="lab-bar-title">Cartridge console easter egg</h1>
+    <div class="lab-bar-actions">
+      <button class="lab-sound" id="lab-sound" type="button" aria-pressed="true">Sound on</button>
+      <button class="lab-theme" id="lab-theme" type="button" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+  <main class="lab-main">
+    <section class="lab-section" aria-labelledby="lab-h-try">
+      <h2 class="lab-h" id="lab-h-try">Try it</h2>
+      <p class="lab-sub">Hover a card and a cartridge peeks out. Drag it into the console, or click the card to open the game.</p>
+      <div class="grid" id="lab-grid"></div>
+    </section>
+    <section class="lab-section" aria-labelledby="lab-h-carts">
+      <h2 class="lab-h" id="lab-h-carts">Cartridges</h2>
+      <p class="lab-sub">The same cartridge for each game. Hover to tilt.</p>
+      <div class="lab-gallery" id="lab-carts"></div>
+    </section>
+    <section class="lab-section" aria-labelledby="lab-h-consoles">
+      <h2 class="lab-h" id="lab-h-consoles">Consoles</h2>
+      <p class="lab-sub">The console. Slides up while you drag.</p>
+      <div class="lab-gallery" id="lab-consoles"></div>
+    </section>
+  </main>
+  <div class="lab-dock" id="lab-dock" aria-hidden="true"></div>
+  <div class="lab-readout">
+    <span class="lab-readout-text" id="lab-readout"></span>
+    <button class="lab-copy" id="lab-copy" type="button">Copy choice</button>
+  </div>
+  <div class="lab-toasts" id="lab-toasts" role="status" aria-live="polite"></div>
+  <script>
+    (function () {
+      var LAUNCH_URL_BEHAVIOR = 'toast';
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var coarse = window.matchMedia('(pointer: coarse)');
+      var Lab = {
+        games: [
+          { id: 'nightfall', title: 'Nightfall', description: 'A first-person thriller game', madeWith: 'Opus 5.5', link: 'https://miguelsolorio.com/projects/nightfall/', icon: '../nightfall/app-icon.png', color: '#4b5bff' },
+          { id: 'hallowmere', title: 'Hallowmere', description: 'A fantasy action RPG game', madeWith: 'Astra', link: 'https://miguelsolorio.com/projects/hallowmere/', icon: '../hallowmere/app-icon.png', color: '#c0392b' },
+          { id: 'the-tithe', title: 'The Tithe', description: 'A first-person horror game', madeWith: 'Opus 5.5', link: 'https://miguelsolorio.com/projects/the-tithe/', icon: '../the-tithe/app-icon.png', color: '#6b2d8a' },
+          { id: 'upside-down', title: 'Upside Down', description: 'An 8-bit Stranger Things arcade game', madeWith: 'Sonnet 5.5', link: 'https://miguelsolorio.com/projects/upside-down-campaign/', icon: '../upside-down/app-icon.png', color: '#e0342c' },
+          { id: 'outermost', title: 'Outermost', description: 'A space exploration game', madeWith: 'Opus 5.5', link: 'https://miguelsolorio.com/projects/outermost/', icon: '../outermost/app-icon.png', color: '#1f8a70' }
+        ],
+        cartSkins: [],
+        consoleSkins: [],
+        muted: false
+      };
+      Object.defineProperty(Lab, 'reducedMotion', { get: function () { return reduced.matches; } });
+      Object.defineProperty(Lab, 'coarse', { get: function () { return coarse.matches; } });
+      Lab.cartSkin = function (def) {
+        Lab.cartSkins.push(def);
+      };
+      Lab.consoleSkin = function (def) {
+        Lab.consoleSkins.push(def);
+      };
+      Lab.toast = function (text) {
+        var host = document.getElementById('lab-toasts');
+        var el = document.createElement('div');
+        el.className = 'lab-toast';
+        el.textContent = text;
+        host.appendChild(el);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { el.classList.add('is-in'); });
+        });
+        setTimeout(function () {
+          el.classList.remove('is-in');
+          setTimeout(function () { el.remove(); }, 250);
+        }, 2500);
+      };
+      Lab.launch = function (game) {
+        if (LAUNCH_URL_BEHAVIOR === 'toast') Lab.toast('Would open ' + game.link);
+        else location.href = game.link;
+      };
+      Lab.cardHTML = function (g) {
+        return '<a class="side-project" href="' + g.link + '" target="_blank" rel="noopener noreferrer" data-game-id="' + g.id + '">' +
+          '<img src="' + g.icon + '" alt="" width="56" height="56">' +
+          '<p class="side-project-title">' + g.title + '</p>' +
+          '<p class="side-project-description">' + g.description + '</p>' +
+          '<p class="side-project-model">' + g.madeWith + '</p>' +
+          '</a>';
+      };
+      Lab.tilt = function (cart, area) {
+        area = area || cart;
+        function clamp(v) { return Math.max(-.6, Math.min(.6, v)); }
+        area.addEventListener('pointermove', function (e) {
+          if (Lab.reducedMotion || e.pointerType === 'touch') return;
+          if (document.body.classList.contains('lab-seq')) return;
+          if (cart.classList.contains('is-dragging') || cart.classList.contains('is-flying') || cart.classList.contains('lab-fly') || cart.classList.contains('lab-sink')) return;
+          var r = cart.getBoundingClientRect();
+          var px = clamp((e.clientX - r.left) / r.width - .5);
+          var py = clamp((e.clientY - r.top) / r.height - .5);
+          cart.style.setProperty('--rx', (-py * 26).toFixed(1) + 'deg');
+          cart.style.setProperty('--ry', (px * 26).toFixed(1) + 'deg');
+        });
+        area.addEventListener('pointerleave', function () {
+          if (document.body.classList.contains('lab-seq')) return;
+          cart.style.setProperty('--rx', '0deg');
+          cart.style.setProperty('--ry', '0deg');
+        });
+      };
+      Lab.attachConsole = function (el) {
+        var slot = el.querySelector('.console-slot');
+        var screen = el.querySelector('.console-screen');
+        var title = null;
+        var timers = [];
+        if (screen) {
+          screen.insertAdjacentHTML('beforeend', '<div class="screen-static"></div><div class="screen-logo"></div><div class="screen-title"></div>');
+          title = screen.querySelector('.screen-title');
+        }
+        function clear() { timers.forEach(clearTimeout); timers = []; }
+        function phase(name) {
+          if (!screen) return;
+          screen.classList.remove('is-static', 'is-logo', 'is-title');
+          if (name) screen.classList.add('is-' + name);
+        }
+        el.setHot = function (on) { if (slot) slot.classList.toggle('is-hot', !!on); };
+        el.power = function (on) { el.classList.toggle('is-on', !!on); if (!on) el.classList.remove('is-booted'); };
+        el.boot = function (g) {
+          clear();
+          if (title) title.textContent = g.title;
+          el.classList.remove('is-error', 'is-booted');
+          el.power(true);
+          var t = Lab.reducedMotion ? [0, 100, 200, 300] : [0, 600, 1100, 1600];
+          return new Promise(function (resolve) {
+            timers.push(setTimeout(function () { phase('static'); }, t[0]));
+            timers.push(setTimeout(function () { phase('logo'); }, t[1]));
+            timers.push(setTimeout(function () { phase('title'); }, t[2]));
+            timers.push(setTimeout(function () {
+              el.classList.add('is-booted');
+              resolve(g);
+            }, t[3]));
+          });
+        };
+        el.reset = function () {
+          clear();
+          phase('');
+          el.setHot(false);
+          el.classList.remove('is-on', 'is-booted', 'is-error');
+        };
+        el.error = function () { el.classList.toggle('is-error'); };
+        return el;
+      };
+      Lab.drag = function (cart, o) {
+        o = o || {};
+        var pid = null;
+        var sx = 0;
+        var sy = 0;
+        var bx = 0;
+        var by = 0;
+        var hover = false;
+        var springTimer = null;
+        function num(name) { return parseFloat(cart.style.getPropertyValue(name)) || 0; }
+        function inside() {
+          if (!o.slotEl) return false;
+          var c = cart.getBoundingClientRect();
+          var s = o.slotEl.getBoundingClientRect();
+          var cx = c.left + c.width / 2;
+          var cy = c.top + c.height / 2;
+          var pad = 0;
+          return cx >= s.left - pad && cx <= s.right + pad && cy >= s.top - pad && cy <= s.bottom + pad;
+        }
+        function setHover(on) {
+          if (on === hover) return;
+          hover = on;
+          if (o.onHover) o.onHover(on);
+        }
+        function set(x, y) {
+          cart.style.setProperty('--drag-x', x + 'px');
+          cart.style.setProperty('--drag-y', y + 'px');
+        }
+        function down(e) {
+          if (Lab.coarse || Lab.reducedMotion) return;
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          clearTimeout(springTimer);
+          cart.classList.remove('is-spring');
+          pid = e.pointerId;
+          cart.setPointerCapture(pid);
+          sx = e.clientX;
+          sy = e.clientY;
+          bx = num('--drag-x');
+          by = num('--drag-y');
+          cart.classList.add('is-dragging');
+          if (o.onStart) o.onStart();
+          e.preventDefault();
+        }
+        function move(e) {
+          if (e.pointerId !== pid) return;
+          var x = bx + e.clientX - sx;
+          var y = by + e.clientY - sy;
+          set(x, y);
+          if (o.onMove) o.onMove(x, y);
+          setHover(inside());
+        }
+        function end(e, cancelled) {
+          if (e.pointerId !== pid) return;
+          var hit = !cancelled && inside();
+          pid = null;
+          if (cart.hasPointerCapture(e.pointerId)) cart.releasePointerCapture(e.pointerId);
+          cart.classList.remove('is-dragging');
+          setHover(false);
+          if (hit) { if (o.onDrop) o.onDrop(); return; }
+          cart.classList.add('is-spring');
+          if (o.onSpring) o.onSpring();
+          set(0, 0);
+          var done = false;
+          function finish() {
+            if (done) return;
+            done = true;
+            clearTimeout(springTimer);
+            cart.removeEventListener('transitionend', finish);
+            cart.classList.remove('is-spring');
+            if (o.onMiss) o.onMiss();
+          }
+          cart.addEventListener('transitionend', finish);
+          springTimer = setTimeout(finish, 520);
+        }
+        function up(e) { end(e, false); }
+        function cancel(e) { end(e, true); }
+        function click() { if ((Lab.coarse || Lab.reducedMotion) && o.onDrop) o.onDrop(); }
+        function key(e) {
+          if ((e.key === 'Enter' || e.key === ' ') && o.onDrop) { e.preventDefault(); o.onDrop(); }
+        }
+        cart.addEventListener('pointerdown', down);
+        cart.addEventListener('pointermove', move);
+        cart.addEventListener('pointerup', up);
+        cart.addEventListener('pointercancel', cancel);
+        cart.addEventListener('click', click);
+        cart.addEventListener('keydown', key);
+        return {
+          destroy: function () {
+            clearTimeout(springTimer);
+            cart.removeEventListener('pointerdown', down);
+            cart.removeEventListener('pointermove', move);
+            cart.removeEventListener('pointerup', up);
+            cart.removeEventListener('pointercancel', cancel);
+            cart.removeEventListener('click', click);
+            cart.removeEventListener('keydown', key);
+            cart.classList.remove('is-dragging', 'is-spring');
+            set(0, 0);
+          }
+        };
+      };
+      window.Lab = Lab;
+    })();
+  </script>
+<script>
+(function () {
+  function h(tag, cls, parent) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (parent) parent.appendChild(node);
+    return node;
+  }
+
+  function sixteen(game) {
+    var root = h('div', 'cart ck-1');
+    root.dataset.gameId = game.id;
+    var body = h('div', 'ck-1-body', root);
+    var faces = {};
+    ['back', 'left', 'right', 'top', 'bottom', 'front'].forEach(function (name) {
+      faces[name] = h('div', 'ck-1-face ck-1-' + name, body);
+    });
+    h('div', 'ck-1-pcb', faces.back);
+    h('i', 'ck-1-ribs', faces.left);
+    h('i', 'ck-1-ribs', faces.right);
+    h('i', 'ck-1-grip ck-1-grip-l', faces.front);
+    h('i', 'ck-1-grip ck-1-grip-r', faces.front);
+    var label = h('div', 'ck-1-label', faces.front);
+    var img = h('img', '', label);
+    img.src = game.icon;
+    img.alt = '';
+    img.draggable = false;
+    var mark = h('span', 'ck-1-mark', faces.front);
+    mark.textContent = 'MS';
+    h('i', 'ck-1-thumb', faces.front);
+    h('i', 'ck-1-screw ck-1-screw-l', faces.front);
+    h('i', 'ck-1-screw ck-1-screw-r', faces.front);
+    return root;
+  }
+
+  Lab.cartSkin({ id: 'ck-1', name: 'Sixteen-bit', note: 'Grey plastic, ribbed grips, the game art fills the whole label.', build: sixteen });
+})();
+
+
+
+(function () {
+  const W = 250;
+  const D = 250;
+
+  const mk = (cls, parent, tag) => {
+    const el = document.createElement(tag || 'div');
+    el.className = cls;
+    if (parent) parent.appendChild(el);
+    return el;
+  };
+
+  const label = (text, parent, cls) => {
+    const el = mk(cls, parent, 'span');
+    el.textContent = text;
+    return el;
+  };
+
+  const box = (stage, cls, x, y, z, w, h, d) => {
+    const slide = 'var(--slide, 0px)';
+    const face = (kind, fw, fh, tx, tz, rot) => {
+      const el = mk('cs-1-face cs-1-' + kind + ' ' + cls, stage);
+      el.style.width = fw + 'px';
+      el.style.height = fh + 'px';
+      el.style.transform =
+        'translate3d(calc(' + tx + 'px + ' + slide + '), ' + -(y + h) + 'px, ' + tz + 'px)' + rot;
+      return el;
+    };
+    return {
+      front: face('front', w, h, x, z + d - D, ''),
+      top: face('top', w, d, x, z - D, ' rotateX(90deg)'),
+      left: face('left', d, h, x, z - D, ' rotateY(-90deg)'),
+      right: face('right', d, h, x + w, z - D, ' rotateY(-90deg)')
+    };
+  };
+
+  const holes = (plate) => {
+    [[4, 13, 3], [3, 15.5, 8]].forEach((row) => {
+      for (let i = 0; i < row[0]; i++) {
+        const hole = mk('cs-1-hole', plate);
+        hole.style.left = row[1] + i * 5 + 'px';
+        hole.style.top = row[2] + 'px';
+      }
+    });
+  };
+
+  Lab.consoleSkin({
+    id: 'cs-1',
+    name: 'Sixteen-bit',
+    note: 'Two-tone grey, raised rear deck with the slot, purple power and reset caps on the controller pillars.',
+    build() {
+      const root = mk('console cs-1');
+      const stage = mk('cs-1-body', root);
+
+      const floor = mk('cs-1-shadow', stage);
+      floor.style.transform = 'translate3d(-15px, 0px, ' + (-10 - D) + 'px) rotateX(90deg)';
+
+      const base = box(stage, 'cs-1-base', 0, 0, 0, W, 28, D);
+      const deck = box(stage, 'cs-1-deck', 6, 28, 0, 238, 26, 140);
+      box(stage, 'cs-1-pillar', 34, 28, 140, 72, 14, 110);
+      box(stage, 'cs-1-pillar', 144, 28, 140, 72, 14, 110);
+      const power = box(stage, 'cs-1-cap cs-1-power', 42, 42, 142, 56, 9, 26);
+      const reset = box(stage, 'cs-1-cap cs-1-reset', 152, 42, 142, 56, 9, 26);
+
+      mk('cs-1-vent', base.front);
+      ['a', 'b'].forEach((k) => holes(mk('cs-1-port cs-1-port-' + k, base.front)));
+      mk('console-led', base.front);
+      label('POWER', base.front, 'cs-1-micro');
+
+      label('MS', deck.front, 'cs-1-emboss');
+
+      mk('cs-1-seam cs-1-seam-a', deck.top);
+      mk('cs-1-seam cs-1-seam-b', deck.top);
+      mk('cs-1-seam cs-1-seam-c', deck.top);
+      mk('cs-1-flap', deck.top);
+      mk('console-slot', deck.top);
+
+      label('EJECT', mk('cs-1-eject', base.top), 'cs-1-eject-text');
+
+      label('POWER', power.top, 'cs-1-cap-label');
+      label('RESET', reset.top, 'cs-1-cap-label');
+
+      mk('console-seat', stage);
+      mk('console-screen', root);
+      return root;
+    }
+  });
+})();
+
+
+</script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var themeBtn = document.getElementById('lab-theme');
+      var soundBtn = document.getElementById('lab-sound');
+      var grid = document.getElementById('lab-grid');
+      var cartHost = document.getElementById('lab-carts');
+      var consoleHost = document.getElementById('lab-consoles');
+      var dock = document.getElementById('lab-dock');
+      var readout = document.getElementById('lab-readout');
+      var sel = { cart: null, console: null };
+      var items = [];
+      var fits = [];
+      var timers = [];
+      var cons = null;
+      var slot = null;
+      var seat = null;
+      var cur = null;
+      function byId(list, id) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === id) return list[i];
+        }
+        return null;
+      }
+      function numOf(id) { return id ? id.split('-')[1] : '-'; }
+      function later(fn, ms) {
+        var t = setTimeout(fn, ms);
+        timers.push(t);
+        return t;
+      }
+      function syncTheme() {
+        var dark = root.classList.contains('dark');
+        themeBtn.textContent = dark ? 'Light' : 'Dark';
+        themeBtn.setAttribute('aria-pressed', String(dark));
+      }
+      function syncSound() {
+        soundBtn.textContent = Lab.muted ? 'Sound off' : 'Sound on';
+        soundBtn.setAttribute('aria-pressed', String(!Lab.muted));
+      }
+      soundBtn.addEventListener('click', function () {
+        Lab.muted = !Lab.muted;
+        syncSound();
+      });
+      syncSound();
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark');
+      syncTheme();
+      themeBtn.addEventListener('click', function () {
+        root.classList.toggle('dark');
+        syncTheme();
+      });
+      function readoutText() { return 'Cartridge ' + numOf(sel.cart) + ' · Console ' + numOf(sel.console); }
+      function syncReadout() { readout.textContent = readoutText(); }
+      document.getElementById('lab-copy').addEventListener('click', function () {
+        var text = readoutText();
+        var done = function () { Lab.toast('Copied: ' + text); };
+        var fail = function () { Lab.toast('Copy failed. Choice: ' + text); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, fail);
+        } else {
+          fail();
+        }
+      });
+      function setPos(c, x, y) { c.style.setProperty('--drag-x', x + 'px'); c.style.setProperty('--drag-y', y + 'px'); }
+      function getPos(c) {
+        return {
+          x: parseFloat(c.style.getPropertyValue('--drag-x')) || 0,
+          y: parseFloat(c.style.getPropertyValue('--drag-y')) || 0
+        };
+      }
+      function flatTilt(c) { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); }
+      var PEEK_SCALE = 1;
+      var PEEK_TRANSFORM = 'scale(' + PEEK_SCALE + ')';
+      function peek(it, v) {
+        if (v && (!it.cart || (cur && cur !== it))) return;
+        it.el.classList.toggle('is-peek', v);
+      }
+      function lift() { dock.classList.add('is-up'); }
+      function lower() { dock.classList.remove('is-up'); if (cons) cons.setHot(false); }
+      function settle(it) {
+        cur = null;
+        it.el.classList.remove('is-active');
+        items.forEach(function (o) { peek(o, o.held); });
+      }
+      var SEQ = { fly: 320, sink: 240, settle: 80, hold: 220, run: 650, fadeIn: 120, fadeOut: 160, plain: 500, linger: 400, lift: 200 };
+      var SINK_FRACTION = .34;
+      var seqRaf = 0;
+      var staticRaf = 0;
+      var staticEl = null;
+      var audioCtx = null;
+      function tween(ms, step, done) {
+        var t0 = performance.now();
+        function frame(now) {
+          var k = Math.max(0, Math.min(1, (now - t0) / ms));
+          step(k);
+          if (k < 1) {
+            seqRaf = requestAnimationFrame(frame);
+          } else {
+            seqRaf = 0;
+            done();
+          }
+        }
+        seqRaf = requestAnimationFrame(frame);
+      }
+      function audio() {
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          if (!audioCtx) audioCtx = new AC();
+          if (audioCtx.state === 'suspended') {
+            var r = audioCtx.resume();
+            if (r && r.catch) r.catch(function () {});
+          }
+          return audioCtx;
+        } catch (err) {
+          return null;
+        }
+      }
+      function noiseBuffer(ctx, seconds) {
+        var len = Math.max(1, Math.ceil(ctx.sampleRate * seconds));
+        var buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+        return buf;
+      }
+      function playClick() {
+        if (Lab.muted) return;
+        try {
+          var ctx = audio();
+          if (!ctx) return;
+          var t = ctx.currentTime;
+          var master = ctx.createGain();
+          master.gain.value = .22;
+          master.connect(ctx.destination);
+          var tick = ctx.createBufferSource();
+          tick.buffer = noiseBuffer(ctx, .01);
+          var hp = ctx.createBiquadFilter();
+          hp.type = 'bandpass';
+          hp.frequency.value = 5200;
+          hp.Q.value = 1.5;
+          var tickEnv = ctx.createGain();
+          tickEnv.gain.setValueAtTime(.8, t);
+          tickEnv.gain.exponentialRampToValueAtTime(.001, t + .02);
+          tick.connect(hp);
+          hp.connect(tickEnv);
+          tickEnv.connect(master);
+          tick.start(t);
+          var notes = [[1046.5, 0], [1568, .05]];
+          notes.forEach(function (n) {
+            var osc = ctx.createOscillator();
+            var env = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(n[0], t + n[1]);
+            env.gain.setValueAtTime(.0001, t + n[1]);
+            env.gain.exponentialRampToValueAtTime(1, t + n[1] + .006);
+            env.gain.exponentialRampToValueAtTime(.001, t + n[1] + .11);
+            osc.connect(env);
+            env.connect(master);
+            osc.start(t + n[1]);
+            osc.stop(t + n[1] + .12);
+          });
+        } catch (err) {}
+      }
+      var hiss = null;
+      function startHiss() {
+        if (Lab.muted || hiss) return;
+        try {
+          var ctx = audio();
+          if (!ctx) return;
+          var src = ctx.createBufferSource();
+          src.buffer = noiseBuffer(ctx, 1.5);
+          src.loop = true;
+          var band = ctx.createBiquadFilter();
+          band.type = 'bandpass';
+          band.frequency.value = 2400;
+          band.Q.value = .4;
+          var gain = ctx.createGain();
+          gain.gain.setValueAtTime(.0001, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(.05, ctx.currentTime + .12);
+          src.connect(band);
+          band.connect(gain);
+          gain.connect(ctx.destination);
+          src.start();
+          hiss = { src: src, gain: gain, ctx: ctx };
+        } catch (err) {}
+      }
+      function stopHiss() {
+        if (!hiss) return;
+        var h = hiss;
+        hiss = null;
+        try {
+          var t = h.ctx.currentTime;
+          h.gain.gain.cancelScheduledValues(t);
+          h.gain.gain.setValueAtTime(h.gain.gain.value || .05, t);
+          h.gain.gain.exponentialRampToValueAtTime(.0001, t + .16);
+          h.src.stop(t + .18);
+        } catch (err) {}
+      }
+      function applySink(c, g, dy) {
+        setPos(c, g.x, g.y + dy);
+        c.style.clipPath = 'inset(0 0 ' + (Math.max(0, dy) / g.sc).toFixed(2) + 'px 0)';
+      }
+      function drawStatic(el) {
+        var w = Math.max(1, Math.ceil(window.innerWidth / 3));
+        var h = Math.max(1, Math.ceil(window.innerHeight / 3));
+        el.width = w;
+        el.height = h;
+        var ctx = el.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        var img = ctx.createImageData(w, h);
+        var px = new Uint32Array(img.data.buffer);
+        var bar = Math.max(4, Math.round(h * .14));
+        var last = 0;
+        function frame(now) {
+          staticRaf = requestAnimationFrame(frame);
+          if (now - last < 1000 / 24) return;
+          last = now;
+          for (var i = 0; i < px.length; i++) px[i] = 0xff000000 | (30 + (Math.random() * 200 | 0)) * 0x010101;
+          ctx.putImageData(img, 0, 0);
+          ctx.fillStyle = 'rgba(255, 255, 255, .08)';
+          ctx.fillRect(0, ((now * .12) % (h + bar)) - bar, w, bar);
+        }
+        staticRaf = requestAnimationFrame(frame);
+      }
+      function showStatic() {
+        var el = document.createElement('canvas');
+        el.className = 'lab-static';
+        document.body.appendChild(el);
+        staticEl = el;
+        document.body.classList.add('lab-static-on');
+        startHiss();
+        if (Lab.reducedMotion) {
+          el.classList.add('is-plain', 'is-in');
+          return;
+        }
+        drawStatic(el);
+        void el.offsetWidth;
+        el.classList.add('is-in');
+      }
+      function hideStatic() {
+        if (!staticEl) return;
+        stopHiss();
+        staticEl.classList.add('is-out');
+        staticEl.classList.remove('is-in');
+      }
+      function clearStatic() {
+        cancelAnimationFrame(staticRaf);
+        staticRaf = 0;
+        stopHiss();
+        document.body.classList.remove('lab-static-on');
+        if (staticEl) staticEl.remove();
+        staticEl = null;
+      }
+      function clearSeq() {
+        cancelAnimationFrame(seqRaf);
+        seqRaf = 0;
+        clearStatic();
+        document.body.classList.remove('lab-seq');
+      }
+      function finishEject(it) {
+        var c = it.cart;
+        c.classList.remove('is-flying', 'lab-fly', 'lab-sink');
+        c.style.clipPath = '';
+        cons.reset();
+        document.body.classList.remove('lab-seq');
+        it.busy = false;
+        settle(it);
+      }
+      function flyBack(it) {
+        var c = it.cart;
+        c.style.clipPath = '';
+        lower();
+        c.style.setProperty('--cart-transform', PEEK_TRANSFORM);
+        if (Lab.reducedMotion) {
+          setPos(c, 0, 0);
+          later(function () { finishEject(it); }, 0);
+          return;
+        }
+        c.classList.remove('lab-sink');
+        c.classList.add('lab-fly');
+        setPos(c, 0, 0);
+        later(function () { finishEject(it); }, SEQ.fly);
+      }
+      function eject(it, g) {
+        var c = it.cart;
+        if (Lab.reducedMotion) {
+          applySink(c, g, 0);
+          flyBack(it);
+          return;
+        }
+        tween(SEQ.lift, function (k) { applySink(c, g, g.d * (1 - k) * (1 - k)); }, function () { flyBack(it); });
+      }
+      function launch(it, g) {
+        Lab.launch(it.game);
+        later(function () {
+          hideStatic();
+          later(function () {
+            clearStatic();
+            eject(it, g);
+          }, Lab.reducedMotion ? 0 : SEQ.fadeOut);
+        }, SEQ.linger);
+      }
+      function powerUp(it, g) {
+        cons.setHot(false);
+        cons.power(true);
+        later(function () {
+          showStatic();
+          later(function () { launch(it, g); }, Lab.reducedMotion ? SEQ.plain : SEQ.fadeIn + SEQ.run);
+        }, SEQ.hold);
+      }
+      function insertCart(it, g) {
+        var c = it.cart;
+        flatTilt(c);
+        c.classList.remove('lab-fly');
+        c.classList.add('lab-sink');
+        if (Lab.reducedMotion) {
+          applySink(c, g, g.d);
+          playClick();
+          powerUp(it, g);
+          return;
+        }
+        tween(SEQ.sink, function (k) { applySink(c, g, g.d * k * k); }, function () {
+          playClick();
+          tween(SEQ.settle, function (k) { applySink(c, g, g.d + 2 * Math.sin(Math.PI * k)); }, function () {
+            applySink(c, g, g.d);
+            powerUp(it, g);
+          });
+        });
+      }
+      function sink(it) {
+        var c = it.cart;
+        it.busy = true;
+        flatTilt(c);
+        if (!Lab.muted) audio();
+        document.body.classList.add('lab-seq');
+        var a = c.getBoundingClientRect();
+        var b = seat.getBoundingClientRect();
+        var p = getPos(c);
+        var sc = b.width / c.offsetWidth;
+        var h = c.offsetHeight * sc;
+        var g = {
+          x: p.x + (b.left + b.width / 2) - (a.left + a.width / 2),
+          y: p.y + b.bottom - (a.top + a.height / 2 + h / 2),
+          sc: sc,
+          d: h * SINK_FRACTION
+        };
+        c.classList.add('is-flying');
+        c.style.setProperty('--cart-transform', 'scale(' + sc.toFixed(4) + ')');
+        if (Lab.reducedMotion) {
+          setPos(c, g.x, g.y);
+          insertCart(it, g);
+          return;
+        }
+        c.classList.add('lab-fly');
+        setPos(c, g.x, g.y);
+        later(function () { insertCart(it, g); }, SEQ.fly);
+      }
+      function insert(it) {
+        if (!it.cart || it.busy || (cur && cur !== it)) return;
+        if (!cons || !seat) { Lab.toast('No console skin registered'); return; }
+        cur = it;
+        it.busy = true;
+        it.el.classList.add('is-active');
+        var wait = dock.classList.contains('is-up') ? 0 : Lab.reducedMotion ? 220 : 580;
+        lift();
+        later(function () {
+          it.busy = false;
+          sink(it);
+        }, wait);
+      }
+      function reset() {
+        timers.forEach(clearTimeout);
+        timers = [];
+        clearSeq();
+        cur = null;
+        lower();
+        if (cons) cons.reset();
+        items.forEach(function (it) {
+          it.held = false;
+          it.busy = false;
+          it.dragging = false;
+          if (it.cart) {
+            it.cart.classList.remove('is-flying', 'is-spring', 'is-dragging', 'lab-fly', 'lab-sink', 'lab-grow');
+            it.cart.style.clipPath = '';
+            it.cart.style.setProperty('--cart-transform', PEEK_TRANSFORM);
+            setPos(it.cart, 0, 0);
+            flatTilt(it.cart);
+          }
+          it.el.classList.remove('is-active', 'is-peek');
+        });
+      }
+      function mountCart(it) {
+        if (it.destroy) it.destroy();
+        if (it.cart) it.cart.remove();
+        it.cart = null;
+        it.destroy = null;
+        var skin = byId(Lab.cartSkins, sel.cart);
+        if (!skin) return;
+        var cart;
+        try {
+          cart = skin.build(it.game);
+        } catch (err) {
+          return;
+        }
+        cart.style.setProperty('--cart-color', it.game.color);
+        cart.tabIndex = 0;
+        cart.setAttribute('role', 'button');
+        cart.setAttribute('aria-label', 'Insert ' + it.game.title + ' cartridge');
+        cart.style.setProperty('--cart-transform', PEEK_TRANSFORM);
+        Lab.tilt(cart);
+        it.peek.appendChild(cart);
+        it.cart = cart;
+        it.destroy = Lab.drag(cart, {
+          slotEl: { getBoundingClientRect: function () { if (!slot) return { left: 0, right: 0, top: 0, bottom: 0 }; var s = slot.getBoundingClientRect(); var r = cons.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top - 140, bottom: s.bottom + 24 }; } },
+          onStart: function () {
+            it.dragging = true;
+            cur = it;
+            flatTilt(cart);
+            it.el.classList.add('is-active');
+            cart.classList.add('lab-grow');
+            cart.style.setProperty('--cart-transform', 'scale(1)');
+            later(function () { cart.classList.remove('lab-grow'); }, 200);
+            lift();
+          },
+          onSpring: function () {
+            cart.style.setProperty('--cart-transform', PEEK_TRANSFORM);
+          },
+          onHover: function (h) { if (cons) cons.setHot(h); },
+          onDrop: function () {
+            if (cons) cons.setHot(false);
+            if (it.dragging) {
+              it.dragging = false;
+              if (!cons || !seat) { Lab.toast('No console skin registered'); return; }
+              sink(it);
+            } else {
+              insert(it);
+            }
+          },
+          onMiss: function () {
+            it.dragging = false;
+            later(function () {
+              lower();
+              settle(it);
+            }, 200);
+          }
+        }).destroy;
+      }
+      function buildItem(game) {
+        var el = document.createElement('div');
+        el.className = 'lab-item';
+        el.innerHTML = Lab.cardHTML(game) + '<div class="lab-peek"></div>';
+        var it = { el: el, game: game, peek: el.querySelector('.lab-peek'), cart: null, held: false, busy: false, dragging: false };
+        el.addEventListener('pointerenter', function (e) {
+          if (e.pointerType === 'mouse') { it.held = true; peek(it, true); }
+        });
+        el.addEventListener('pointerleave', function (e) {
+          if (e.pointerType === 'mouse') { it.held = false; if (!cur) peek(it, false); }
+        });
+        el.addEventListener('focusin', function () {
+          it.held = true;
+          peek(it, true);
+        });
+        el.addEventListener('focusout', function (e) {
+          if (!el.contains(e.relatedTarget)) { it.held = false; if (!cur) peek(it, false); }
+        });
+        mountCart(it);
+        return it;
+      }
+      function fitDock() {
+        if (!cons) return;
+        var s = Math.min(1.25, (window.innerWidth - 24) / cons.offsetWidth);
+        cons.style.transform = 'scale(' + s.toFixed(3) + ')';
+      }
+      function mountConsole() {
+        dock.innerHTML = '';
+        cons = null;
+        slot = null;
+        seat = null;
+        var skin = byId(Lab.consoleSkins, sel.console);
+        if (!skin) return;
+        try {
+          cons = Lab.attachConsole(skin.build());
+        } catch (err) {
+          cons = null;
+          return;
+        }
+        dock.appendChild(cons);
+        slot = cons.querySelector('.console-slot');
+        seat = cons.querySelector('.console-seat') || slot;
+        fitDock();
+      }
+      function fitConsoleTiles() {
+        fits.forEach(function (f) {
+          var w = f.stage.clientWidth - 16;
+          var cw = f.cons.offsetWidth;
+          var s = Math.min(1, w / cw);
+          f.cons.style.transform = 'scale(' + s.toFixed(3) + ')';
+          f.box.style.width = Math.round(cw * s) + 'px';
+          f.box.style.height = Math.round(f.cons.offsetHeight * s) + 'px';
+        });
+      }
+      function markSelected(host, id) {
+        Array.prototype.forEach.call(host.querySelectorAll('.lab-tile'), function (t) {
+          var on = t.dataset.id === id;
+          t.classList.toggle('is-selected', on);
+          t.setAttribute('aria-pressed', String(on));
+        });
+      }
+      function makeTile(skin, stageClass) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'lab-tile';
+        b.dataset.id = skin.id;
+        b.setAttribute('aria-pressed', 'false');
+        b.innerHTML = '<div class="stage ' + (stageClass || '') + '"></div><span class="lab-tile-name"></span><span class="lab-tile-note"></span>';
+        b.querySelector('.lab-tile-name').textContent = String(numOf(skin.id)).padStart(2, '0') + ' ' + skin.name;
+        b.querySelector('.lab-tile-note').textContent = skin.note;
+        return b;
+      }
+      function empty(host) { host.innerHTML = '<p class="lab-empty">No skins registered</p>'; }
+      function renderCartGallery() {
+        cartHost.innerHTML = '';
+        if (!Lab.cartSkins.length) return empty(cartHost);
+        Lab.cartSkins.forEach(function (skin) {
+          Lab.games.forEach(function (game) {
+            var tile = makeTile(skin);
+            tile.querySelector('.lab-tile-name').textContent = skin.name;
+            tile.querySelector('.lab-tile-note').textContent = game.title;
+            var stage = tile.querySelector('.stage');
+            try {
+              var cart = skin.build(game);
+              cart.style.setProperty('--cart-color', game.color);
+              cart.classList.add('cart--float');
+              stage.appendChild(cart);
+              Lab.tilt(cart, tile);
+            } catch (err) {
+              stage.textContent = 'Build failed';
+            }
+            tile.addEventListener('click', function () { chooseCart(skin.id); });
+            cartHost.appendChild(tile);
+          });
+        });
+        markSelected(cartHost, sel.cart);
+      }
+      function renderConsoleGallery() {
+        consoleHost.innerHTML = '';
+        fits = [];
+        if (!Lab.consoleSkins.length) return empty(consoleHost);
+        Lab.consoleSkins.forEach(function (skin) {
+          var tile = makeTile(skin, 'lab-console-stage');
+          var stage = tile.querySelector('.stage');
+          var box = document.createElement('div');
+          box.className = 'lab-fit';
+          stage.appendChild(box);
+          try {
+            var c = skin.build();
+            box.appendChild(c);
+            fits.push({ stage: stage, box: box, cons: c });
+          } catch (err) {
+            stage.textContent = 'Build failed';
+          }
+          tile.addEventListener('click', function () { chooseConsole(skin.id); });
+          consoleHost.appendChild(tile);
+        });
+        markSelected(consoleHost, sel.console);
+        fitConsoleTiles();
+      }
+      function chooseCart(id) {
+        sel.cart = id;
+        reset();
+        items.forEach(mountCart);
+        markSelected(cartHost, id);
+        syncReadout();
+      }
+      function chooseConsole(id) {
+        sel.console = id;
+        reset();
+        mountConsole();
+        markSelected(consoleHost, id);
+        syncReadout();
+      }
+      function init() {
+        var c = byId(Lab.cartSkins, 'ck-1') || Lab.cartSkins[0];
+        var k = byId(Lab.consoleSkins, 'cs-1') || Lab.consoleSkins[0];
+        sel.cart = c ? c.id : null;
+        sel.console = k ? k.id : null;
+        mountConsole();
+        items = Lab.games.map(buildItem);
+        items.forEach(function (it) { grid.appendChild(it.el); });
+        renderCartGallery();
+        renderConsoleGallery();
+        syncReadout();
+      }
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') reset();
+      });
+      document.addEventListener('pointerdown', function (e) {
+        if (Lab.coarse && !cur && !e.target.closest('.lab-item')) reset();
+      });
+      var frame = 0;
+      window.addEventListener('resize', function () {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(function () {
+          fitDock();
+          fitConsoleTiles();
+        });
+      });
+      init();
+    })();
+  </script>
+</body>
+</html>

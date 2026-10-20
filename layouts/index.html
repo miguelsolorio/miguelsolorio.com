@@ -55,6 +55,7 @@
       {{ range sort $ranked "reach" "desc" }}
         {{ $metrics := .metrics }}
         {{ with .page }}
+          {{ if .Params.cartridge }}<div class="side-project-cart" data-cartridge-title="{{ .Title }}" data-cartridge-icon="{{ .Params.thumbnail | relURL }}" data-cartridge-link="{{ .Params.link }}">{{ end }}
           {{ if .Params.game }}
             <button
               type="button"
@@ -87,6 +88,7 @@
               </div>
             {{ end }}
           {{ if .Params.game }}</button>{{ else }}</a>{{ end }}
+          {{ if .Params.cartridge }}</div>{{ end }}
         {{ end }}
       {{ end }}
     </div>

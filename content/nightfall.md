@@ -5,6 +5,7 @@ date: 2026-09-23T10:00:00-07:00
 draft: false
 weight: 6
 project: "small"
+cartridge: true
 thumbnail: "nightfall/app-icon.png"
 link: "https://miguelsolorio.com/projects/nightfall/"
 made_with: "Opus 5.5"

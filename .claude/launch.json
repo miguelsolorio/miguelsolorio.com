@@ -4,7 +4,10 @@
     {
       "name": "hugo-dev",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "hugo server -D --port \"$PORT\""],
+      "runtimeArgs": [
+        "-c",
+        "hugo server -D --port \"$PORT\""
+      ],
       "port": 1313,
       "autoPort": true
     },
@@ -13,7 +16,7 @@
       "runtimeExecutable": "sh",
       "runtimeArgs": [
         "-c",
-        "IP=$(ipconfig getifaddr en0 || ipconfig getifaddr en1); hugo server -D --bind 0.0.0.0 --port \"$PORT\" --baseURL \"http://$IP\""
+        "IP=$(ipconfig getifaddr en0 || ipconfig getifaddr en1); if [ -z \"$IP\" ] || [ \"$IP\" = 192.0.0.2 ]; then IP=\"[$(ifconfig en0 | awk '/inet6 .*autoconf secured/{print $2; exit}')]\"; fi; hugo server -D --bind :: --port \"$PORT\" --appendPort=false --baseURL \"http://$IP:$PORT\""
       ],
       "port": 1314,
       "autoPort": true

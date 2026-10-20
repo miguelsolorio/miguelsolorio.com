@@ -5,6 +5,7 @@ date: 2026-09-12T10:00:00-07:00
 draft: false
 weight: 6
 project: "small"
+cartridge: true
 thumbnail: "hallowmere/app-icon.png"
 link: "https://miguelsolorio.com/projects/hallowmere/"
 made_with: "Astra"
