@@ -335,7 +335,7 @@
       band.Q.value = 0.4;
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.015, ctx.currentTime + 0.12);
       src.connect(band);
       band.connect(gain);
       gain.connect(ctx.destination);
@@ -351,7 +351,7 @@
     try {
       const t = h.ctx.currentTime;
       h.gain.gain.cancelScheduledValues(t);
-      h.gain.gain.setValueAtTime(h.gain.gain.value || 0.05, t);
+      h.gain.gain.setValueAtTime(h.gain.gain.value || 0.015, t);
       h.gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
       h.src.stop(t + 0.18);
     } catch (err) {}
