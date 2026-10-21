@@ -247,7 +247,7 @@
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
     if (restoreFocus && previouslyFocused instanceof HTMLElement && previouslyFocused.isConnected) {
-      previouslyFocused.focus();
+      previouslyFocused.focus({ preventScroll: true });
     }
     previouslyFocused = null;
     announcePalette(false);
