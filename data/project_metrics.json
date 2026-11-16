@@ -38,14 +38,14 @@
   "fluent": {
     "primary": {
       "type": "installs",
-      "value": 1854547
+      "value": 1857309
     },
     "secondary": {
       "type": "rating",
       "value": 5
     },
     "source": "vscode-marketplace",
-    "updated": "2026-11-09"
+    "updated": "2026-11-16"
   },
   "kaleidocode": {
     "primary": {
@@ -62,14 +62,14 @@
   "min": {
     "primary": {
       "type": "installs",
-      "value": 637703
+      "value": 638829
     },
     "secondary": {
       "type": "rating",
       "value": 4.9
     },
     "source": "vscode-marketplace",
-    "updated": "2026-11-09"
+    "updated": "2026-11-16"
   },
   "navigator": {
     "primary": {
@@ -98,14 +98,14 @@
   "symbols": {
     "primary": {
       "type": "installs",
-      "value": 946035
+      "value": 948663
     },
     "secondary": {
       "type": "rating",
       "value": 4.9
     },
     "source": "vscode-marketplace",
-    "updated": "2026-11-09"
+    "updated": "2026-11-16"
   },
   "syntaxer": {
     "primary": {
